@@ -118,6 +118,7 @@ class FilesystemManagerTest extends FrameworkTestCase {
 		$filesystem->extend(
 			'custom-driver',
 			function ( $app, array $config ) use ( $adapter ) {
+				$this->assertInstanceOf( \Mantle\Contracts\Application::class, $this->opaque( $app ) );
 				$this->assertSame( [ 'driver' => 'custom-driver', 'extra_config' => 'value', 'root' => '/path' ], $config );
 
 				$_SERVER['__custom_driver_called']++;
@@ -131,5 +132,12 @@ class FilesystemManagerTest extends FrameworkTestCase {
 
 		// Ensure that the custom driver was instantiated once.
 		$this->assertSame( 1, $_SERVER['__custom_driver_called'] );
+	}
+
+	/**
+	 * Pass a value through untyped so PHPStan cannot narrow it.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }

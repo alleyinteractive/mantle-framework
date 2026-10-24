@@ -55,10 +55,21 @@ class UploadedFileTest extends FrameworkTestCase {
 
 		$attachment = $file->store_as_attachment( '/', 'test-uploaded-file.txt' );
 
+		$attachment = $this->opaque( $attachment );
+
+		$this->assertInstanceOf( \Mantle\Database\Model\Attachment::class, $attachment );
+
 		$url = $attachment->url();
 
 		$this->assertIsString( $url );
 		$this->assertStringContainsString( '/wp-content/uploads/test-uploaded-file.txt', $url );
 		$this->assertFileExists( WP_CONTENT_DIR . '/uploads/test-uploaded-file.txt' );
+	}
+
+	/**
+	 * Pass a value through untyped so PHPStan cannot narrow it.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }

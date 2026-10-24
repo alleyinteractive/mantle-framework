@@ -373,18 +373,22 @@ class HttpClientTest extends FrameworkTestCase {
 	public function test_no_exception_thrown_by_default(): void {
 		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 500 ) );
 
-		$response = $this->http_factory->get( 'https://example.com/' );
+		$response = $this->opaque( $this->http_factory->get( 'https://example.com/' ) );
 
+		$this->assertInstanceOf( Response::class, $response );
 		$this->assertSame( 500, $response->status() );
 	}
 
 	public function test_no_exception_thrown_if_muted(): void {
 		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 500 ) );
 
-		$response = $this->http_factory
-			->dont_throw_exception()
-			->get( 'https://example.com/' );
+		$response = $this->opaque(
+			$this->http_factory
+				->dont_throw_exception()
+				->get( 'https://example.com/' )
+		);
 
+		$this->assertInstanceOf( Response::class, $response );
 		$this->assertSame( 500, $response->status() );
 	}
 
@@ -722,6 +726,9 @@ EOF
 			$this->assertEmpty( $feed->data );
 		} );
 
+		$feed = $this->opaque( $feed );
+
+		$this->assertInstanceOf( \SimplePie::class, $feed );
 		$this->assertTrue( $options_callback );
 		$this->assertSame( 'Alley', $feed->get_title() );
 		$this->assertNotEmpty( $feed->get_items() );
@@ -748,8 +755,16 @@ EOF
 
 		$this->assertFalse( $request->is_feed() );
 
-		$feed = $request->feed();
+		$feed = $this->opaque( $request->feed() );
 
+		$this->assertInstanceOf( \SimplePie::class, $feed );
 		$this->assertTrue( $feed->error() !== null );
+	}
+
+	/**
+	 * Pass a value through untyped so PHPStan cannot narrow it.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }

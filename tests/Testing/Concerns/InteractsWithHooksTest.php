@@ -43,7 +43,7 @@ class InteractsWithHooksTest extends FrameworkTestCase {
 			->once()
 			->andReturn( true );
 
-		add_action( 'hook_to_add', static function (): void {} );
+		add_filter( 'hook_to_add', '__return_true' );
 
 		$this->expectAdded( 'filter_to_add', '__return_true' );
 

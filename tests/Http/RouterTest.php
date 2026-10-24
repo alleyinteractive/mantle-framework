@@ -71,16 +71,20 @@ class RouterTest extends FrameworkTestCase {
 		$router = $this->get_router();
 		$router->get( 'head/request', fn () => 'hello' );
 
-		$this->assertEmpty(
-			$router->dispatch( Request::create('head/request', 'HEAD' ) )?->getContent()
-		);
+		$response = $router->dispatch( Request::create( 'head/request', 'HEAD' ) );
+
+		$this->assertNotNull( $response );
+		$this->assertEmpty( $response->getContent() );
 
 		$router = $this->get_router();
 		$router->any( 'any/request', fn () => 'hello' );
 
 		$this->assertSame( 'hello', $router->dispatch( Request::create( 'any/request', 'GET' ) )?->getContent() );
 		$this->assertSame( 'hello', $router->dispatch( Request::create( 'any/request', 'POST' ) )?->getContent() );
-		$this->assertEmpty( $router->dispatch( Request::create( 'any/request', 'HEAD' ) )?->getContent() );
+		$response = $router->dispatch( Request::create( 'any/request', 'HEAD' ) );
+
+		$this->assertNotNull( $response );
+		$this->assertEmpty( $response->getContent() );
 
 		$router = $this->get_router();
 		$router->get(
@@ -163,7 +167,7 @@ class RouterTest extends FrameworkTestCase {
 			array(
 				'middleware' => Substitute_Bindings::class,
 				'callback'   => function ( RouteModelBindingStub $name ) {
-					return strtoupper( $name->get( 'route_key' ) );
+					return $name->get( 'route_key' );
 				},
 			)
 		);
@@ -510,7 +514,8 @@ class RouterTest extends FrameworkTestCase {
 
 		$response = $router->dispatch( Request::create( 'empty-array', 'GET' ) );
 
-		$this->assertSame( '[]', $response?->getContent() );
+		$this->assertNotNull( $response );
+		$this->assertSame( '[]', $response->getContent() );
 		$this->assertStringContainsString( 'application/json', (string) $response->headers->get( 'content-type' ) );
 		$this->assertSame( '0', $router->dispatch( Request::create( 'zero-string', 'GET' ) )?->getContent() );
 	}
@@ -571,7 +576,7 @@ class RouteModelBindingStub extends Post {
 	}
 
 	public function resolve_route_binding( $value, $field = null ) {
-		$this->set_attribute( $field ?? $this->get_route_key_name(), $value );
+		$this->set_attribute( $field ?? $this->get_route_key_name(), strtoupper( (string) $value ) );
 		return $this;
 	}
 }

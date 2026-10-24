@@ -32,6 +32,7 @@ class CachedHttpClientTest extends FrameworkTestCase {
 	}
 
 	public function test_can_create_cached_client(): void {
+		$this->assertInstanceOf( Pending_Request::class, $this->opaque( $this->client ) );
 		$this->assertTrue(
 			collect( $this->client->get_middleware() )->contains( fn( $middleware ) => $middleware instanceof Cache_Middleware )
 		);
@@ -100,7 +101,10 @@ class CachedHttpClientTest extends FrameworkTestCase {
 
 		$this->assertRequestCount( 1 );
 
-		$this->assertTrue( $this->client->purge( 'https://example.com' ) );
+		$pending = $this->opaque( $this->client->url( 'https://example.com' ) );
+
+		$this->assertInstanceOf( Pending_Request::class, $pending );
+		$this->assertTrue( $pending->purge() );
 
 		$this->client->get( 'https://example.com' );
 
@@ -294,5 +298,12 @@ class CachedHttpClientTest extends FrameworkTestCase {
 		http_client()->cache()->get( 'https://example.com' );
 
 		$this->assertRequestCount( 1 );
+	}
+
+	/**
+	 * Pass a value through untyped so PHPStan cannot narrow it.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }

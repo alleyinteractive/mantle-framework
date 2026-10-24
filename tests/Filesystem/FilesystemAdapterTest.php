@@ -59,6 +59,8 @@ class FilesystemAdapterTest extends TestCase {
 		$this->filesystem->write( 'file.txt', 'Hello World' );
 		$files    = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 		$response = $files->response( 'file.txt' );
+		$response = $this->opaque( $response );
+		$this->assertInstanceOf( \Symfony\Component\HttpFoundation\StreamedResponse::class, $response );
 
 		ob_start();
 		$response->sendContent();
@@ -72,6 +74,8 @@ class FilesystemAdapterTest extends TestCase {
 	$this->filesystem->write( 'file.txt', 'Hello World' );
 	$files    = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 	$response = $files->download( 'file.txt', 'hello.txt' );
+	$response = $this->opaque( $response );
+	$this->assertInstanceOf( \Symfony\Component\HttpFoundation\StreamedResponse::class, $response );
 	$this->assertSame( 'attachment; filename=hello.txt', $response->headers->get( 'content-disposition' ) );
 	}
 
@@ -79,6 +83,8 @@ class FilesystemAdapterTest extends TestCase {
 	$this->filesystem->write( 'file.txt', 'Hello World' );
 	$files    = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 	$response = $files->download( 'file.txt', 'пиздюк.txt' );
+	$response = $this->opaque( $response );
+	$this->assertInstanceOf( \Symfony\Component\HttpFoundation\StreamedResponse::class, $response );
 	$this->assertSame( "attachment; filename=pizdiuk.txt; filename*=utf-8''%D0%BF%D0%B8%D0%B7%D0%B4%D1%8E%D0%BA.txt", $response->headers->get( 'content-disposition' ) );
 	}
 
@@ -86,6 +92,8 @@ class FilesystemAdapterTest extends TestCase {
 	$this->filesystem->write( 'пиздюк.txt', 'Hello World' );
 	$files    = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 	$response = $files->download( 'пиздюк.txt' );
+	$response = $this->opaque( $response );
+	$this->assertInstanceOf( \Symfony\Component\HttpFoundation\StreamedResponse::class, $response );
 	$this->assertSame( 'attachment; filename=pizdiuk.txt; filename*=utf-8\'\'%D0%BF%D0%B8%D0%B7%D0%B4%D1%8E%D0%BA.txt', $response->headers->get( 'content-disposition' ) );
 	}
 
@@ -93,6 +101,8 @@ class FilesystemAdapterTest extends TestCase {
 	$this->filesystem->write( 'Hello%World.txt', 'Hello World' );
 	$files    = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 	$response = $files->download( 'Hello%World.txt', 'Hello%World.txt' );
+	$response = $this->opaque( $response );
+	$this->assertInstanceOf( \Symfony\Component\HttpFoundation\StreamedResponse::class, $response );
 	$this->assertSame( 'attachment; filename=HelloWorld.txt; filename*=utf-8\'\'Hello%25World.txt', $response->headers->get( 'content-disposition' ) );
 	}
 
@@ -293,5 +303,12 @@ class FilesystemAdapterTest extends TestCase {
 		$this->assertSame( 44, strlen( $storagePath ) ); // random 40 characters + ".txt"
 
 		$filesystem_adapter->assertExists( $storagePath );
+	}
+
+	/**
+	 * Pass a value through untyped so PHPStan cannot narrow it.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }

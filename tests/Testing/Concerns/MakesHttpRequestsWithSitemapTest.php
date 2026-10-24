@@ -52,7 +52,9 @@ class MakesHttpRequestsWithSitemapTest extends FrameworkTestCase {
 			'post_name'  => 'example-post-for-sitemap',
 		] );
 
-		$server = wp_sitemaps_get_server();
+		$server = $this->opaque( wp_sitemaps_get_server() );
+
+		$this->assertInstanceOf( \WP_Sitemaps::class, $server );
 
 		$this->assertTrue( $server->sitemaps_enabled(), 'Expected sitemaps to be enabled.' );
 
@@ -95,5 +97,12 @@ class MakesHttpRequestsWithSitemapTest extends FrameworkTestCase {
 		return collect( range( 1, 3 ) )
 			->map_with_keys( fn ( $i ) => [ "run_{$i}" => [ $i ] ] )
 			->all();
+	}
+
+	/**
+	 * Pass a value through untyped so PHPStan cannot narrow it.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }

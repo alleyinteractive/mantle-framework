@@ -63,8 +63,9 @@ class RedirectorTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	}
 
 	public function testBasicRedirectTo(): void {
-		$response = $this->redirect->to( 'bar' );
+		$response = $this->opaque( $this->redirect->to( 'bar' ) );
 
+		$this->assertInstanceOf( \Symfony\Component\HttpFoundation\RedirectResponse::class, $response );
 		$this->assertSame( 'http://foo.com/bar', $response->getTargetUrl() );
 		$this->assertSame( 302, $response->getStatusCode() );
 	}
@@ -112,5 +113,12 @@ class RedirectorTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	public function test_home_redirect(): void {
 		$response = $this->redirect->home();
 		$this->assertSame( home_url(), $response->getTargetUrl() );
+	}
+
+	/**
+	 * Pass a value through untyped so PHPStan cannot narrow it.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }
