@@ -450,11 +450,11 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$c = new Collection(['foo', 'bar']);
 		$c = $c->forget(0)->all();
-		$this->assertArrayNotHasKey('foo', $c);
+		$this->assertArrayNotHasKey(0, $c);
 
 		$c = new Collection(['foo' => 'bar', 'baz' => 'qux']);
 		$c = $c->forget('foo')->all();
-		$this->assertFalse(isset($c['foo']));
+		$this->assertArrayNotHasKey('foo', $c);
 	}
 
 	public function testForgetArrayOfKeys(): void
@@ -524,7 +524,9 @@ class CollectionTest extends FrameworkTestCase {
 	public function testIterable(): void
 	{
 		$c = new Collection(['foo']);
-		$this->assertSame(['foo'], $c->getIterator()->getArrayCopy());
+		$iterator = $this->opaque($c->getIterator());
+		$this->assertInstanceOf(ArrayIterator::class, $iterator);
+		$this->assertSame(['foo'], $iterator->getArrayCopy());
 	}
 
 	/**
@@ -1980,7 +1982,9 @@ class CollectionTest extends FrameworkTestCase {
 			Stringable::make( 'here' ),
 		] );
 
-		$this->assertSame( 'example string here', $data->implode_str( ' ' )->value() );
+		$result = $this->opaque( $data->implode_str( ' ' ) );
+		$this->assertInstanceOf( Stringable::class, $result );
+		$this->assertSame( 'example string here', $result->value() );
 	}
 
 	/**
@@ -5253,6 +5257,8 @@ class CollectionTest extends FrameworkTestCase {
 			'c' => 3,
 		])->collect();
 
+		$data = $this->opaque($data);
+		$this->assertInstanceOf(Collection::class, $data);
 		$this->assertSame([
 			'a' => 1,
 			'b' => 2,
