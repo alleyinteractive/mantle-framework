@@ -13,18 +13,18 @@ class PhpViewsTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->app['view.loader']
+		app()['view.loader']
 			->clear_paths()
 			->add_path( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view', 'unit-test' );
 	}
 
-	public function test_get_container() {
-		$this->assertSame( $this->app, $this->app['view']->get_container() );
+	public function test_get_container(): void {
+		$this->assertSame( app(), app()['view']->get_container() );
 	}
 
-	public function test_share_service_provider() {
+	public function test_share_service_provider(): void {
 
-		$this->view_factory = $this->app['view'];
+		$this->view_factory = app()['view'];
 
 		$this->assertSame( 'default-value', $this->view_factory->shared( 'test-to-share', 'default-value' ) );
 
@@ -49,38 +49,38 @@ class PhpViewsTest extends FrameworkTestCase {
 		$this->assertSame( 'nested-value', $this->view_factory->shared( 'nested-data.level0.level1.level2' ) );
 	}
 
-	public function test_get_factory() {
-		$this->assertSame( $this->app['view'], $this->app['view']->shared( '__env' ) );
+	public function test_get_factory(): void {
+		$this->assertSame( app()['view'], app()['view']->shared( '__env' ) );
 	}
 
-	public function test_basic_load() {
+	public function test_basic_load(): void {
 		$contents = (string) view( 'basic' );
 		$this->assertStringContainsString( 'Template loaded: successfully', $contents );
 	}
 
-	public function test_basic_load_name() {
+	public function test_basic_load_name(): void {
 		$contents = (string) view( 'basic', 'variant' );
 		$this->assertStringContainsString( 'Variant loaded: successfully', $contents );
 	}
 
-	public function test_basic_load_name_fallback() {
+	public function test_basic_load_name_fallback(): void {
 		$contents = (string) view( 'basic', 'phony' );
 		$this->assertStringContainsString( 'Template loaded: successfully', $contents );
 	}
 
-	public function test_basic_var() {
+	public function test_basic_var(): void {
 		$test = wp_rand();
 		$contents = (string) view( 'basic', [ 'custom_var' => $test ] );
 		$this->assertStringContainsString( "Template loaded: {$test}", $contents );
 	}
 
-	public function test_parent_child_load() {
+	public function test_parent_child_load(): void {
 		$contents = (string) view( 'parent' );
 		$this->assertStringContainsString( 'Parent loaded: successfully', $contents );
 		$this->assertStringContainsString( 'Child loaded: successfully', $contents );
 	}
 
-	public function test_iterate() {
+	public function test_iterate(): void {
 		$items = [
 			rand_str(),
 			rand_str(),
@@ -92,7 +92,7 @@ class PhpViewsTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_iterate_string_keys() {
+	public function test_iterate_string_keys(): void {
 		$items = [
 			'one'   => rand_str(),
 			'two'   => rand_str(),
@@ -104,7 +104,7 @@ class PhpViewsTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_variables_colliding_with_globals() {
+	public function test_variables_colliding_with_globals(): void {
 		$post = static::factory()->post->create_and_get( [ 'post_title' => 'Passed post' ] );
 
 		$contents = (string) view( 'var-id', [ 'id' => 42, 'post' => $post ] );
@@ -112,7 +112,7 @@ class PhpViewsTest extends FrameworkTestCase {
 		$this->assertStringContainsString( 'id=42;post=Passed post', $contents );
 	}
 
-	public function test_loop_collection() {
+	public function test_loop_collection(): void {
 		$post_ids = [
 			static::factory()->post->create(),
 			static::factory()->post->create(),
@@ -125,7 +125,7 @@ class PhpViewsTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_loop_array() {
+	public function test_loop_array(): void {
 		$post_ids = [
 			static::factory()->post->create(),
 			static::factory()->post->create(),
@@ -139,7 +139,7 @@ class PhpViewsTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_loop_query() {
+	public function test_loop_query(): void {
 		$posts = [
 			static::factory()->post->create(
 				[
@@ -173,7 +173,7 @@ class PhpViewsTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_reset_post() {
+	public function test_reset_post(): void {
 		$posts = [
 			static::factory()->post->create( [ 'post_date' => '2016-01-01 00:00:00' ] ),
 			static::factory()->post->create( [ 'post_date' => '2015-03-01 00:00:00' ] ),
@@ -183,6 +183,7 @@ class PhpViewsTest extends FrameworkTestCase {
 
 		global $post;
 		$post = get_post( $posts[0] );
+		$this->assertInstanceOf( \WP_Post::class, $post );
 		setup_postdata( $post );
 		$this->assertSame( $posts[0], get_the_ID() );
 
@@ -194,7 +195,7 @@ class PhpViewsTest extends FrameworkTestCase {
 		$this->assertSame( $posts[0], get_the_ID() );
 	}
 
-	public function test_loop_array_string_keys() {
+	public function test_loop_array_string_keys(): void {
 		$posts = [
 			'one' => static::factory()->post->create(),
 			'two' => static::factory()->post->create(),
@@ -206,7 +207,7 @@ class PhpViewsTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_nested_loops() {
+	public function test_nested_loops(): void {
 		$create_post = function( $date ) {
 			return static::factory()->post->create(
 				[
@@ -232,6 +233,7 @@ class PhpViewsTest extends FrameworkTestCase {
 
 		global $post;
 		$post = get_post( $posts[0] );
+		$this->assertInstanceOf( \WP_Post::class, $post );
 		setup_postdata( $post );
 
 		$this->assertSame( $posts[0], get_the_ID() );
@@ -258,10 +260,10 @@ class PhpViewsTest extends FrameworkTestCase {
 
 		$this->assertSame( $expected, $contents );
 		$this->assertSame( $posts[0], get_the_ID() );
-		$this->assertNull( $this->app['view']->get_current() );
+		$this->assertNull( app()['view']->get_current() );
 	}
 
-	public function test_empty_post_restoring() {
+	public function test_empty_post_restoring(): void {
 		unset( $GLOBALS['post'] );
 
 		$parent_post = static::factory()->post->create( [ 'post_date' => '2016-01-01 00:00:00' ] );
@@ -276,10 +278,10 @@ class PhpViewsTest extends FrameworkTestCase {
 		);
 
 		$this->assertSame( "[Parent loop post 0: {$parent_post}]\n[Post 0: {$child_post}]\n", $contents );
-		$this->assertSame( null, $GLOBALS['post'] );
+		$this->assertNull( $GLOBALS['post'] );
 	}
 
-	public function test_basic_cache_load() {
+	public function test_basic_cache_load(): void {
 		$slug = 'cache';
 
 		// Set a dynamic value used in the template
@@ -310,7 +312,7 @@ class PhpViewsTest extends FrameworkTestCase {
 		$this->assertSame( "Template loaded: {$new_rand}", $contents );
 	}
 
-	public function test_cache_load_custom_key() {
+	public function test_cache_load_custom_key(): void {
 		$slug = 'cache';
 		$key = 'cached_partials_test';
 

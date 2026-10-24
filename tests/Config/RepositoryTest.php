@@ -23,12 +23,12 @@ class RepositoryTest extends TestCase {
 		);
 	}
 
-	public function test_has() {
+	public function test_has(): void {
 		$this->assertTrue( $this->repository->has( 'foo' ) );
 		$this->assertFalse( $this->repository->has( 'nope' ) );
 	}
 
-	public function test_get() {
+	public function test_get(): void {
 		$this->assertSame( 'bar', $this->repository->get( 'foo' ) );
 		$this->assertSame( 'bar', $this->repository['foo'] );
 
@@ -36,7 +36,7 @@ class RepositoryTest extends TestCase {
 		$this->assertSame( 'child-value', $this->repository['parent.child'] );
 	}
 
-	public function test_set() {
+	public function test_set(): void {
 		$this->assertNull( $this->repository->get( 'test-item' ) );
 		$this->repository->set( 'test-item', 'the-value' );
 		$this->assertSame( 'the-value', $this->repository->get( 'test-item' ) );
@@ -55,7 +55,7 @@ class RepositoryTest extends TestCase {
 		);
 	}
 
-	public function test_unset() {
+	public function test_unset(): void {
 		$this->assertTrue( $this->repository->has( 'foo' ) );
 		unset( $this->repository['foo'] );
 		$this->assertNull( $this->repository->get( 'foo' ) );

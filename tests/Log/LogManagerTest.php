@@ -57,7 +57,7 @@ class LogManagerTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		Facade::clear_resolved_instances();
 	}
 
-	public function test_log_with_integer_level() {
+	public function test_log_with_integer_level(): void {
 		$this->instance->log( \Monolog\Logger::WARNING, 'Integer level' );
 		$this->instance->log( 'warning', 'String level' );
 
@@ -65,7 +65,7 @@ class LogManagerTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertTrue( $this->handler->hasRecord( 'String level', 'warning' ) );
 	}
 
-	public function test_normal_logging() {
+	public function test_normal_logging(): void {
 		$this->instance->info( 'Test Message' );
 		$this->instance->error( 'Error Message' );
 		$this->instance->debug( 'Debug Message to ignore' );
@@ -80,7 +80,7 @@ class LogManagerTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertFalse( $this->handler->hasRecord( 'Debug Message to ignore', 'debug' ) );
 	}
 
-	public function test_channel_method() {
+	public function test_channel_method(): void {
 		$this->instance->channel( [ 'testing' ] )->info( 'Channel method' );
 		$this->assertTrue( $this->handler->hasRecord( 'Channel method', 'info' ) );
 
@@ -88,12 +88,12 @@ class LogManagerTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertFalse( $this->handler->hasRecord( 'Another channel message', 'info' ) );
 	}
 
-	public function test_stack_handler() {
+	public function test_stack_handler(): void {
 		$this->instance->channel( 'stack' )->info( 'Stack logging' );
 		$this->assertTrue( $this->handler->hasRecord( 'Stack logging', 'info' ) );
 	}
 
-	public function test_logging_with_facade() {
+	public function test_logging_with_facade(): void {
 		Log::info( 'Facade info message' );
 		Log::error( 'Facade error message' );
 

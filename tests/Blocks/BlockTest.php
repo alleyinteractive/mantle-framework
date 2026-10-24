@@ -10,6 +10,9 @@ class BlockTest extends FrameworkTestCase {
 		$block = new class() extends Block {
 			protected string $name = 'example-block';
 
+			/**
+			 * @var array<int, string>
+			 */
 			protected array $editor_script_dependencies = [ 'wp-blocks' ];
 		};
 
@@ -18,7 +21,5 @@ class BlockTest extends FrameworkTestCase {
 
 		$register = new ReflectionMethod( $block, 'register_editor_assets' );
 		$register->invoke( $block );
-
-		$this->assertTrue( true );
 	}
 }

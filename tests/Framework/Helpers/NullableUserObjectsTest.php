@@ -18,8 +18,10 @@ class NullableUserObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_user_object()` returns a user object.
 	 */
-	public function test_user_object_returns_user() {
+	public function test_user_object_returns_user(): void {
 		$known_id = self::factory()->user->create();
+
+		$this->assertIsInt( $known_id );
 
 		$found = get_user_object( $known_id );
 
@@ -31,8 +33,8 @@ class NullableUserObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_user_object()` returns null when there is no user.
 	 */
-	public function test_user_object_returns_null() {
-		$found = get_user_object( $this->impossible_id );
+	public function test_user_object_returns_null(): void {
+		$found = get_user_object( PHP_INT_MAX );
 
 		$this->assertNull( $found );
 	}
@@ -40,7 +42,7 @@ class NullableUserObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_user_object_by()` returns a user object.
 	 */
-	public function test_user_object_by_returns_user() {
+	public function test_user_object_by_returns_user(): void {
 		$known_user = self::factory()->user->create_and_get();
 
 		$found = get_user_object_by( 'email', $known_user->user_email );
@@ -53,7 +55,7 @@ class NullableUserObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_user_object_by()` returns null when there is no user.
 	 */
-	public function test_user_object_by_returns_null() {
+	public function test_user_object_by_returns_null(): void {
 		$found = get_user_object_by( 'email', \rand_str() );
 
 		$this->assertNull( $found );

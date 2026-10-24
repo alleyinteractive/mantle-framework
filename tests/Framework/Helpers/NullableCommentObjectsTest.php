@@ -18,8 +18,10 @@ class NullableCommentObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_comment_object()` returns a comment object.
 	 */
-	public function test_comment_object_returns_comment() {
+	public function test_comment_object_returns_comment(): void {
 		$known_id = self::factory()->comment->create();
+
+		$this->assertIsInt( $known_id );
 
 		$found_object = get_comment_object( $known_id );
 
@@ -31,8 +33,8 @@ class NullableCommentObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_comment_object()` returns null when there is no comment.
 	 */
-	public function test_comment_object_returns_null() {
-		$found_object = get_comment_object( $this->impossible_id );
+	public function test_comment_object_returns_null(): void {
+		$found_object = get_comment_object( PHP_INT_MAX );
 
 		$this->assertNull( $found_object );
 	}

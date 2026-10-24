@@ -38,11 +38,11 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		Provider::register_data_types();
 	}
 
-	public function test_cron_action() {
+	public function test_cron_action(): void {
 		$this->assertTrue( has_action( Scheduler::EVENT ) );
 	}
 
-	public function test_run_command_count_option() {
+	public function test_run_command_count_option(): void {
 		$command = new \Mantle\Queue\Console\Run_Command();
 
 		$this->assertTrue( $command->getDefinition()->getOption( 'count' )->acceptValue() );
@@ -51,7 +51,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		Example_Job::dispatch( false );
 		Example_Job::dispatch( false );
 
-		$command->set_container( $this->app );
+		$command->set_container( app() );
 		$command->run(
 			new \Symfony\Component\Console\Input\ArrayInput( [ '--count' => '3' ], $command->getDefinition() ),
 			new \Symfony\Component\Console\Output\NullOutput(),
@@ -70,8 +70,8 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_queue_delay_configuration() {
-		$this->app['config']->set( 'queue.wordpress.delay', 120 );
+	public function test_queue_delay_configuration(): void {
+		app()['config']->set( 'queue.wordpress.delay', 120 );
 
 		Example_Job::dispatch( false );
 
@@ -89,7 +89,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->assertGreaterThanOrEqual( time() + 110, min( $timestamps ) );
 	}
 
-	public function test_job_dispatch() {
+	public function test_job_dispatch(): void {
 		$_SERVER['__example_job'] = false;
 
 		Example_Job::dispatch();
@@ -115,7 +115,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		] );
 	}
 
-	public function test_job_string_properties_keep_their_backslashes() {
+	public function test_job_string_properties_keep_their_backslashes(): void {
 		$_SERVER['__slashed_job'] = null;
 
 		$job = new Slashed_Job( 'Mantle\\Tests\\Example' );
@@ -130,13 +130,13 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->assertSame( 'Mantle\\Tests\\Example', $_SERVER['__slashed_job'] );
 	}
 
-	public function test_job_is_not_slashed_when_storing_it_fails() {
+	public function test_job_is_not_slashed_when_storing_it_fails(): void {
 		$job = new Slashed_Job( 'Mantle\\Tests\\Example' );
 
 		add_filter( 'wp_insert_post_empty_content', '__return_true' );
 
 		try {
-			( new Provider( $this->app ) )->push( $job );
+			( new Provider( app() ) )->push( $job );
 			$this->fail( 'Expected the job insert to fail.' );
 		} catch ( Model_Exception ) {
 			// Expected.
@@ -145,7 +145,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->assertSame( 'Mantle\\Tests\\Example', $job->value );
 	}
 
-	public function test_job_dispatch_now() {
+	public function test_job_dispatch_now(): void {
 		$this->assertNotInCronQueue( Example_Job::class );
 
 		$_SERVER['__example_job'] = false;
@@ -161,10 +161,10 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		] );
 	}
 
-	public function test_job_failure() {
+	public function test_job_failure(): void {
 		$_SERVER['__failed_run'] = 0;
 
-		$this->app['events']->listen( Job_Failed::class, fn () => $_SERVER['__failed_run']++ );
+		app()['events']->listen( Job_Failed::class, fn () => $_SERVER['__failed_run']++ );
 
 		$this->assertNotInCronQueue( Job_To_Fail::class );
 
@@ -184,7 +184,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		] );
 	}
 
-	public function test_job_dispatch_anonymous() {
+	public function test_job_dispatch_anonymous(): void {
 		$_SERVER['__closure_job'] = false;
 
 		dispatch( function() {
@@ -216,11 +216,11 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		] );
 	}
 
-	public function test_job_dispatch_anonymous_failure() {
+	public function test_job_dispatch_anonymous_failure(): void {
 		$_SERVER['__closure_job'] = false;
 		$_SERVER['__failed_run']  = false;
 
-		$this->app['events']->listen(
+		app()['events']->listen(
 			Job_Failed::class,
 			fn () => $_SERVER['__failed_run'] = true,
 		);
@@ -252,7 +252,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		] );
 	}
 
-	public function test_dispatch_job_delay() {
+	public function test_dispatch_job_delay(): void {
 		$_SERVER['__example_job'] = false;
 
 		$start = now()->addMonth();
@@ -278,9 +278,9 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		] );
 	}
 
-	public function test_schedule_multiple_queue_workers() {
-		$this->app['config']->set( 'queue.max_concurrent_batches', 10 );
-		$this->app['config']->set( 'queue.batch_size', 10 );
+	public function test_schedule_multiple_queue_workers(): void {
+		app()['config']->set( 'queue.max_concurrent_batches', 10 );
+		app()['config']->set( 'queue.batch_size', 10 );
 
 		for ( $i = 0; $i < 100; $i++ ) {
 			Example_Job::dispatch();
@@ -301,11 +301,11 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->assertSame( 0, Scheduler::get_scheduled_count() );
 	}
 
-	public function test_schedule_does_not_overschedule_when_underutilized() {
+	public function test_schedule_does_not_overschedule_when_underutilized(): void {
 		// With a large batch size and concurrency ceiling but only a single pending
 		// job, the scheduler should schedule a single batch and not fill the ceiling.
-		$this->app['config']->set( 'queue.max_concurrent_batches', 5 );
-		$this->app['config']->set( 'queue.batch_size', 100 );
+		app()['config']->set( 'queue.max_concurrent_batches', 5 );
+		app()['config']->set( 'queue.batch_size', 100 );
 
 		Example_Job::dispatch();
 
@@ -314,7 +314,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->assertSame( 1, Scheduler::get_scheduled_count() );
 	}
 
-	public function test_failed_job() {
+	public function test_failed_job(): void {
 		$_SERVER['__failed_run'] = 0;
 
 		Job_To_Fail::dispatch();
@@ -334,7 +334,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->dispatch_queue();
 	}
 
-	public function test_retry_failed_job() {
+	public function test_retry_failed_job(): void {
 		$_SERVER['__failed_run'] = 0;
 
 		Job_To_Fail_Retry::dispatch();
@@ -354,9 +354,9 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->assertInCronQueue( Job_To_Fail_Retry::class );
 	}
 
-	public function test_schedule_next_run_after_complete() {
+	public function test_schedule_next_run_after_complete(): void {
 		// Limit the queue batch size.
-		$this->app['config']->set( 'queue.batch_size', 5 );
+		app()['config']->set( 'queue.batch_size', 5 );
 
 		for ( $i = 0; $i < 8; $i++ ) {
 			Example_Job::dispatch();
@@ -385,8 +385,8 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->assertNotInCronQueue( Scheduler::EVENT, null );
 	}
 
-	public function test_cleanup_completed_jobs() {
-		$this->app['config']->set( 'queue.delete_after', 60 * 60 * 24 );
+	public function test_cleanup_completed_jobs(): void {
+		app()['config']->set( 'queue.delete_after', 60 * 60 * 24 );
 
 		$record = Queue_Record::create( [
 			'post_status' => Post_Status::COMPLETED->value,
@@ -411,7 +411,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->assertInCronQueue( Example_Job::class );
 	}
 
-	public function test_cron_event_count_assertions() {
+	public function test_cron_event_count_assertions(): void {
 		for ( $i = 0; $i < 5; $i++ ) {
 			wp_schedule_single_event( time() + $i, 'example_hook', [ $i ] );
 		}
@@ -419,14 +419,14 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->assertCronCount( 'example_hook', 5 );
 	}
 
-	public function test_dispatch_after_response() {
+	public function test_dispatch_after_response(): void {
 		$_SERVER['__example_job'] = false;
 
 		dispatch( fn () => $_SERVER['__example_job'] = true )->after_response();
 
 		$this->assertFalse( $_SERVER['__example_job'] );
 
-		$this->app->terminate();
+		app()->terminate();
 
 		$this->assertTrue( $_SERVER['__example_job'] );
 	}

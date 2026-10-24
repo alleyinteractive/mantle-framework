@@ -17,7 +17,7 @@ class NullablePostObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_post_object()` returns a post object.
 	 */
-	public function test_post_object_returns_post() {
+	public function test_post_object_returns_post(): void {
 		$known_id = self::factory()->post->create();
 
 		$found_object = get_post_object( $known_id );
@@ -30,7 +30,7 @@ class NullablePostObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_post_object()` honors the requested filter.
 	 */
-	public function test_post_object_returns_filtered_post() {
+	public function test_post_object_returns_filtered_post(): void {
 		$title = 'Post Title';
 
 		$known_id = self::factory()->post->create(
@@ -39,18 +39,24 @@ class NullablePostObjectsTest extends FrameworkTestCase {
 			]
 		);
 
-		$this->assertSame( $title, get_post_object( $known_id, \OBJECT, 'edit' )->post_title );
+		$found_object = get_post_object( $known_id, \OBJECT, 'edit' );
+
+		$this->assertInstanceOf( \WP_Post::class, $found_object );
+		$this->assertSame( $title, $found_object->post_title );
 
 		\add_filter( 'edit_post_title', '__return_empty_string' );
 
-		$this->assertEmpty( get_post_object( $known_id, \OBJECT, 'edit' )->post_title );
+		$found_object = get_post_object( $known_id, \OBJECT, 'edit' );
+
+		$this->assertInstanceOf( \WP_Post::class, $found_object );
+		$this->assertEmpty( $found_object->post_title );
 	}
 
 	/**
 	 * Test that `get_post_object()` returns null when there is no post.
 	 */
-	public function test_post_object_returns_null() {
-		$found_object = get_post_object( $this->impossible_id );
+	public function test_post_object_returns_null(): void {
+		$found_object = get_post_object( PHP_INT_MAX );
 
 		$this->assertNull( $found_object );
 	}

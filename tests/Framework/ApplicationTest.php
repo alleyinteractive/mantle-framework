@@ -14,7 +14,7 @@ class ApplicationTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		unset( $_ENV['APP_ENV'] );
 	}
 
-	public function test_environment() {
+	public function test_environment(): void {
 		$_ENV['APP_ENV'] = 'test-env';
 
 		$app = new Application();
@@ -26,7 +26,7 @@ class ApplicationTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( 'another-test-env', $app->environment() );
 	}
 
-	public function test_is_environment() {
+	public function test_is_environment(): void {
 		$_ENV['APP_ENV'] = 'test-env';
 
 		$app = new Application();
@@ -36,7 +36,7 @@ class ApplicationTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertFalse( $app->is_environment( 'not-the-correct-env' ) );
 	}
 
-	public function test_abort_404() {
+	public function test_abort_404(): void {
 		$app = new Application();
 
 		$this->expectException( NotFoundHttpException::class );
@@ -45,7 +45,7 @@ class ApplicationTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$app->abort( 404, 'Not found message' );
 	}
 
-	public function test_abort_500() {
+	public function test_abort_500(): void {
 		$app = new Application();
 
 		$this->expectException( HttpException::class );
@@ -54,7 +54,7 @@ class ApplicationTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$app->abort( 500, 'Something went wrong' );
 	}
 
-	public function test_boot_callback() {
+	public function test_boot_callback(): void {
 		$_SERVER['__booting_callback'] = false;
 		$_SERVER['__boot_callback']    = false;
 
@@ -81,14 +81,16 @@ class ApplicationTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertTrue( $_SERVER['__booting_callback'] <= $_SERVER['__boot_callback'] );
 	}
 
-	public function test_terminating_callback() {
+	public function test_terminating_callback(): void {
 		$_SERVER['__terminating_callback'] = false;
 
 		$app = new Application();
 
 		$app->flush();
 		$app->terminating(
-			fn() => $_SERVER['__terminating_callback'] = microtime( true ),
+			function (): void {
+				$_SERVER['__terminating_callback'] = microtime( true );
+			},
 		);
 
 		$app->terminate();
@@ -96,7 +98,7 @@ class ApplicationTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertNotFalse( $_SERVER['__terminating_callback'] );
 	}
 
-	public function test_service_provider_instance() {
+	public function test_service_provider_instance(): void {
 		$app = new Application();
 		$app->register( Test_App_Service_Provider::class );
 
@@ -105,10 +107,10 @@ class ApplicationTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		// Ensure it is a global instance.
 		$this->assertSame( $provider, $app->get_provider( Test_App_Service_Provider::class ) );
-		$this->assertNull( $app->get_provider( \Invalid_Class::class ) );
+		$this->assertNull( $app->get_provider( Unregistered_App_Service_Provider::class ) );
 	}
 
-	public function test_is_running_in_console() {
+	public function test_is_running_in_console(): void {
 		unset( $_ENV['APP_RUNNING_IN_CONSOLE'] );
 		$this->assertFalse( ( new Application() )->is_running_in_console() );
 
@@ -119,7 +121,7 @@ class ApplicationTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		unset( $_ENV['APP_RUNNING_IN_CONSOLE'] );
 	}
 
-	public function test_can_load_env_file() {
+	public function test_can_load_env_file(): void {
 		$this->assertNull( $_ENV['ENV_VAR_FOO'] ?? null );
 
 		$app = new Application();
@@ -132,7 +134,7 @@ class ApplicationTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( 'bar', $_SERVER['ENV_VAR_FOO'] );
 	}
 
-	public function test_can_fail_loading_config_silently() {
+	public function test_can_fail_loading_config_silently(): void {
 		$this->expectOutputString( '' );
 
 		$app = new Application();
@@ -144,3 +146,5 @@ class ApplicationTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 
 class Test_App_Service_Provider extends Service_Provider { }
+
+class Unregistered_App_Service_Provider extends Service_Provider { }

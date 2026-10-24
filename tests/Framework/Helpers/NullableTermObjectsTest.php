@@ -18,8 +18,10 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_term_object()` returns a term object.
 	 */
-	public function test_term_object_returns_term() {
+	public function test_term_object_returns_term(): void {
 		$known_id = self::factory()->term->create();
+
+		$this->assertIsInt( $known_id );
 
 		$found_object = get_term_object( $known_id );
 
@@ -31,7 +33,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_term_object()` returns a term object given a taxonomy.
 	 */
-	public function test_term_object_with_taxonomy_returns_term() {
+	public function test_term_object_with_taxonomy_returns_term(): void {
 		$known_term = self::factory()->term->create_and_get();
 
 		$found_object = get_term_object( $known_term->term_id, $known_term->taxonomy );
@@ -44,7 +46,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_term_object()` honors the requested filter.
 	 */
-	public function test_term_object_returns_filtered_term() {
+	public function test_term_object_returns_filtered_term(): void {
 		$slug = 'test-term';
 
 		$known_id = self::factory()->term->create(
@@ -53,18 +55,26 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 			]
 		);
 
-		$this->assertSame( $slug, get_term_object( $known_id, '', \OBJECT, 'edit' )->slug );
+		$this->assertIsInt( $known_id );
+
+		$found_object = get_term_object( $known_id, '', \OBJECT, 'edit' );
+
+		$this->assertInstanceOf( \WP_Term::class, $found_object );
+		$this->assertSame( $slug, $found_object->slug );
 
 		\add_filter( 'edit_term_slug', '__return_empty_string' );
 
-		$this->assertEmpty( get_term_object( $known_id, '', \OBJECT, 'edit' )->slug );
+		$found_object = get_term_object( $known_id, '', \OBJECT, 'edit' );
+
+		$this->assertInstanceOf( \WP_Term::class, $found_object );
+		$this->assertEmpty( $found_object->slug );
 	}
 
 	/**
 	 * Test that `get_term_object()` returns null when there is no term.
 	 */
-	public function test_term_object_returns_null() {
-		$found_object = get_term_object( $this->impossible_id );
+	public function test_term_object_returns_null(): void {
+		$found_object = get_term_object( PHP_INT_MAX );
 
 		$this->assertNull( $found_object );
 	}
@@ -72,7 +82,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_term_object()` returns null when `get_term()` returns errors.
 	 */
-	public function test_term_object_returns_null_not_error() {
+	public function test_term_object_returns_null_not_error(): void {
 		$invalid = 0;
 
 		$this->assertWPError( \get_term( $invalid ) );
@@ -83,7 +93,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_term_object_by()` returns a term object.
 	 */
-	public function test_term_object_by_returns_term() {
+	public function test_term_object_by_returns_term(): void {
 		$known_term = self::factory()->term->create_and_get();
 
 		$found_object = get_term_object_by( 'slug', $known_term->slug, $known_term->taxonomy );
@@ -96,7 +106,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_term_object_by()` honors the requested filter.
 	 */
-	public function test_term_object_by_returns_filtered_term() {
+	public function test_term_object_by_returns_filtered_term(): void {
 		$known_term = self::factory()->term->create_and_get(
 			[
 				// 'slug' => $this->data1,
@@ -111,6 +121,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 			'edit'
 		);
 
+		$this->assertInstanceOf( \WP_Term::class, $found_object );
 		$this->assertSame(
 			$known_term->slug,
 			$found_object->slug
@@ -126,6 +137,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 			'edit'
 		);
 
+		$this->assertInstanceOf( \WP_Term::class, $found_object );
 		$this->assertEmpty(
 			$found_object->slug
 		);
@@ -134,7 +146,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_term_object_by()` returns null when there is no term.
 	 */
-	public function test_term_object_by_returns_null() {
+	public function test_term_object_by_returns_null(): void {
 		$valid = self::factory()->term->create_and_get();
 
 		$found_object = get_term_object_by( 'slug', '', $valid->taxonomy );
