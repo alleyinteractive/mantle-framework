@@ -66,11 +66,17 @@ parameters:
 			paths:
 				- src/Mantle/Support/Collection.php
 
+	universalObjectCratesClasses:
+		- Mantle\Database\Model\Meta\Model_Meta_Proxy
+		- Mantle\Support\Higher_Order_Collection_Proxy
+		- Mantle\Support\Higher_Order_When_Proxy
+
 	scanFiles:
 		- %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-stubs.php
 
 	scanDirectories:
 		- tests/fixtures/phpstan
+		- %currentWorkingDirectory%/vendor/squizlabs/php_codesniffer/src
 
 	excludePaths:
 		analyseAndScan:
@@ -99,6 +105,7 @@ parameters:
 			- tests/fixtures
 			- tests/includes
 			- tests/template-parts
+			- tests/Console/hook-usage
 
 			# Tests that still need to be fixed. Removed one group at a time.
 			- tests/Support/CollectionTest.php
@@ -142,3 +149,13 @@ parameters:
 			- tests/Blocks
 			- tests/Types
 			- tests/FakerTest.php
+
+services:
+	-
+		class: Mantle\Tests\PHPStan\Higher_Order_Proxy_Extension
+		tags:
+			- phpstan.broker.methodsClassReflectionExtension
+	-
+		class: Mantle\Tests\PHPStan\Faker_Provider_Extension
+		tags:
+			- phpstan.broker.methodsClassReflectionExtension
