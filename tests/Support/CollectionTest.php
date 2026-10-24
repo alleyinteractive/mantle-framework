@@ -2291,7 +2291,15 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([], $data->all());
 
 		$data = $collection::make();
-		$this->assertSame([], $data->all());
+		$this->assertSame([], $this->opaque($data->all()));
+	}
+
+	/**
+	 * Return the value unchanged, typed as mixed so PHPStan cannot narrow it.
+	 */
+	private function opaque(mixed $value): mixed
+	{
+		return $value;
 	}
 
 	/**
@@ -3465,7 +3473,7 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$c = new Collection([]);
 		$value = $c->pull(0, 'foo');
-		$this->assertSame('foo', $value);
+		$this->assertSame('foo', $this->opaque($value));
 	}
 
 	/**
@@ -5130,7 +5138,10 @@ class CollectionTest extends FrameworkTestCase {
 		$data = new $collection;
 		$this->expectException(Exception::class);
 		$this->expectExceptionMessage('Property [foo] does not exist on this collection instance.');
-		$data->foo;
+
+		// Access through an opaque name so the undefined property is only seen at runtime.
+		$property = $this->opaque('foo');
+		$value = $data->$property;
 	}
 
 	/**
@@ -5142,7 +5153,8 @@ class CollectionTest extends FrameworkTestCase {
 	public function testGetWithNullReturnsNull(string $collection ): void
 	{
 		$data = new $collection([1, 2, 3]);
-		$this->assertNull($data->get(null));
+		// Pass the intentionally invalid null key through an opaque helper.
+		$this->assertNull($data->get($this->opaque(null)));
 	}
 
 	/**
