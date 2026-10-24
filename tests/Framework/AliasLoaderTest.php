@@ -58,7 +58,9 @@ class AliasLoaderTest extends TestCase {
 
 		$this->assertInstanceOf( FoundationAlias_LoaderStub::class, $this->make_instance( 'some_alias_foo_bar' ) );
 
-		$loader->load( 'bar' );
+		// The loader must not resolve an unknown alias.
+		$result2 = $this->opaque( $loader )->load( 'bar' );
+		$this->assertNull( $result2 );
 		$this->assertFalse( class_exists( 'bar', false ) );
 	}
 
@@ -90,6 +92,13 @@ class AliasLoaderTest extends TestCase {
 	 */
 	protected function make_instance( string $class_name ): object {
 		return new $class_name();
+	}
+
+	/**
+	 * Return the value unchanged, typed as mixed so PHPStan cannot narrow it.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }
 

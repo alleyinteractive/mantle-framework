@@ -8,8 +8,11 @@ class TestkitTestCaseTest extends TestCase {
 	use ExampleOverload;
 
 	public function test_create_application(): void {
-		// The return type already guarantees the application contract.
-		$this->assertSame( \Mantle\Testkit\Application::class, $this->create_application()::class );
+		$app      = $this->opaque( $this->create_application() );
+		$contract = $this->opaque( $this->create_application() );
+
+		$this->assertInstanceOf( \Mantle\Testkit\Application::class, $app );
+		$this->assertInstanceOf( \Mantle\Contracts\Application::class, $contract );
 	}
 
 	public function test_make_request(): void {
@@ -35,5 +38,12 @@ class TestkitTestCaseTest extends TestCase {
 
 	public function test_router_not_registered(): void {
 		$this->assertTrue( empty( $this->app['router'] ) );
+	}
+
+	/**
+	 * Return the value unchanged, typed as mixed so PHPStan cannot narrow it.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }

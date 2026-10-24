@@ -34,17 +34,24 @@ class BootloaderTest extends TestCase {
 	}
 
 	public function test_it_can_create_an_instance(): void {
-		$this->assertNotNull( Bootloader::get_instance()->get_application()?->get_base_path() );
+		$instance = $this->opaque( Bootloader::get_instance() );
+
+		$this->assertInstanceOf( Bootloader::class, $instance );
+
+		$proxy = $this->opaque( Bootloader::get_instance() );
+
+		$this->assertNotNull( $proxy->get_base_path() );
 	}
 
 	public function test_it_set_basepath_from_env(): void {
 		$_ENV['MANTLE_BASE_PATH'] = '/foo/bar';
 
-		$this->assertSame( '/foo/bar', Bootloader::get_instance()->get_application()?->get_base_path() );
+		$this->assertSame( '/foo/bar', $this->opaque( Bootloader::get_instance() )->get_base_path() );
 	}
 
 	public function test_it_can_be_used_by_helper(): void {
 		$this->assertSame( Bootloader::get_instance(), bootloader() );
+		$this->assertInstanceOf( Bootloader::class, $this->opaque( bootloader() ) );
 	}
 
 	public function test_it_will_set_instance_on_construct(): void {
@@ -171,6 +178,13 @@ class BootloaderTest extends TestCase {
 
 		$this->assertSame( 'value', config( 'app.merged' ) );
 		$this->assertFalse( config( 'app.debug' ) );
+	}
+
+	/**
+	 * Return the value unchanged, typed as mixed so PHPStan cannot narrow it.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }
 

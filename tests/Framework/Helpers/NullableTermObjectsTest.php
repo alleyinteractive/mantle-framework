@@ -16,6 +16,11 @@ use function Mantle\Support\Helpers\get_term_object_by;
  */
 class NullableTermObjectsTest extends FrameworkTestCase {
 	/**
+	 * An ID that can never belong to a real object.
+	 */
+	private const IMPOSSIBLE_ID = PHP_INT_MAX;
+
+	/**
 	 * Test that `get_term_object()` returns a term object.
 	 */
 	public function test_term_object_returns_term(): void {
@@ -74,7 +79,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	 * Test that `get_term_object()` returns null when there is no term.
 	 */
 	public function test_term_object_returns_null(): void {
-		$found_object = get_term_object( PHP_INT_MAX );
+		$found_object = get_term_object( self::IMPOSSIBLE_ID );
 
 		$this->assertNull( $found_object );
 	}

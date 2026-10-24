@@ -110,5 +110,6 @@ class AssetLoaderTest extends TestCase {
 		asset()->script( '/unknown.js' )->async();
 
 		// Ensure that no exception was thrown.
+		$this->addToAssertionCount( 1 );
 	}
 }
