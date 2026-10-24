@@ -7,9 +7,17 @@ use Mantle\Support\Str;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\UuidInterface;
 use ReflectionClass;
 
 class StrTest extends TestCase {
+	/**
+	 * Return a value untouched so PHPStan cannot narrow its type.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
+	}
+
 
 	public function testStringCanBeLimitedByWords(): void {
 		$this->assertSame( 'Taylor...', Str::words( 'Taylor Otwell', 1 ) );
@@ -458,6 +466,7 @@ class StrTest extends TestCase {
 
 	public function testRandom(): void {
 		$this->assertSame( 16, strlen( Str::random() ) );
+		$this->assertIsString( $this->opaque( Str::random() ) );
 		$randomInteger = random_int( 1, 100 );
 		$this->assertSame( $randomInteger, strlen( Str::random( $randomInteger ) ) );
 	}
@@ -795,6 +804,8 @@ class StrTest extends TestCase {
 	}
 
 	public function testUuid(): void {
+		$this->assertInstanceOf( UuidInterface::class, $this->opaque( Str::uuid() ) );
+		$this->assertIsString( $this->opaque( (string) Str::uuid() ) );
 		$this->assertTrue( Str::is_uuid( (string) Str::uuid() ) );
 	}
 

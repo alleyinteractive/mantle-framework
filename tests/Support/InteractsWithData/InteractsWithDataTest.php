@@ -11,6 +11,13 @@ use PHPUnit\Framework\TestCase;
  */
 #[Group('interactsWithData')]
 class InteractsWithDataTest extends TestCase {
+	/**
+	 * Return a value untouched so PHPStan cannot narrow its type.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
+	}
+
 	public function test_as_string(): void {
 		$this->assertSame( 'test', TestableInteractsWithData::create( 'test' )->string() );
 		$this->assertSame( '1234', TestableInteractsWithData::create( 1234 )->string() );
@@ -23,6 +30,8 @@ class InteractsWithDataTest extends TestCase {
 	public function test_as_stringable(): void {
 		$option = TestableInteractsWithData::create( 'test' );
 
+		$stringable = $this->opaque( $option->stringable() );
+		$this->assertInstanceOf( \Mantle\Support\Stringable::class, $stringable );
 		$this->assertSame(
 			'test',
 			$option->stringable()->value(),

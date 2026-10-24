@@ -64,7 +64,8 @@ class HtmlTest extends TestCase {
 	public function test_it_can_match_an_element_by_id(): void {
 		$crawler = new HTML( self::TEST_CONTENT );
 
-		$query = $crawler->first_by_id( 'test-id' );
+		$query = $this->opaque( $crawler->first_by_id( 'test-id' ) );
+		$this->assertInstanceOf( HTML::class, $query );
 
 		$this->assertSame( 'Example Div By ID', $query->text() );
 		$this->assertSame( 'div', $query->nodeName() );
@@ -74,7 +75,8 @@ class HtmlTest extends TestCase {
 	public function test_it_can_match_an_element_by_query_selector(): void {
 		$crawler = new HTML( self::TEST_CONTENT );
 
-		$query = $crawler->first_by_selector( '.test-class' );
+		$query = $this->opaque( $crawler->first_by_selector( '.test-class' ) );
+		$this->assertInstanceOf( HTML::class, $query );
 
 		$this->assertSame( 'Example Div By Class', $query->text() );
 		$this->assertSame( 'div', $query->nodeName() );
@@ -84,7 +86,8 @@ class HtmlTest extends TestCase {
 	public function test_it_can_match_an_element_by_xpath(): void {
 		$crawler = new HTML( self::TEST_CONTENT );
 
-		$query = $crawler->first_by_xpath( '//div[@id="test-id"]' );
+		$query = $this->opaque( $crawler->first_by_xpath( '//div[@id="test-id"]' ) );
+		$this->assertInstanceOf( HTML::class, $query );
 
 		$this->assertSame( 'Example Div By ID', $query->text() );
 		$this->assertSame( 'div', $query->nodeName() );
@@ -590,7 +593,8 @@ class HtmlTest extends TestCase {
 
 	public function test_it_can_get_the_nearest_previous_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
-		$previous = $html->filter('#test-id')->previous_sibling();
+		$previous = $this->opaque($html->filter('#test-id')->previous_sibling());
+		$this->assertInstanceOf(HTML::class, $previous);
 		$this->assertSame('div', $previous->nodeName());
 		$this->assertSame('test-class', $previous->attr('class'));
 		$this->assertSame('Example Div By Class', $previous->text());
@@ -598,26 +602,37 @@ class HtmlTest extends TestCase {
 
 	public function test_it_can_get_the_nearest_next_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
-		$next = $html->filter('#test-id')->next_sibling();
+		$next = $this->opaque($html->filter('#test-id')->next_sibling());
+		$this->assertInstanceOf(HTML::class, $next);
 		$this->assertSame('ul', $next->nodeName());
 	}
 
 	public function test_it_returns_empty_crawler_for_missing_next_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
-		$next = $html->filter('ul')->next_sibling();
+		$next = $this->opaque($html->filter('ul')->next_sibling());
+		$this->assertInstanceOf(HTML::class, $next);
 		$this->assertCount( 0, $next );
 	}
 
 	public function test_it_can_get_the_nearest_previous_filtered_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
-		$previous = $html->filter('#test-id')->previous_sibling('section');
+		$previous = $this->opaque($html->filter('#test-id')->previous_sibling('section'));
+		$this->assertInstanceOf(HTML::class, $previous);
 		$this->assertSame('section', $previous->nodeName());
 	}
 
 	public function test_it_can_get_the_nearest_next_filtered_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
-		$next = $html->filter('section')->next_sibling('ul');
+		$next = $this->opaque($html->filter('section')->next_sibling('ul'));
+		$this->assertInstanceOf(HTML::class, $next);
 		$this->assertSame('ul', $next->nodeName());
 	}
 
+
+	/**
+	 * Return a value untouched so PHPStan cannot narrow its type.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
+	}
 }

@@ -3,6 +3,7 @@
 namespace Mantle\Tests\Support;
 
 use Carbon\Carbon;
+use Mantle\Support\Collection;
 use Mantle\Support\Stringable;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -1235,6 +1236,8 @@ class StringableTest extends TestCase {
 	}
 
 	public function testExplode(): void {
+		$this->assertInstanceOf( Collection::class, $this->opaque( $this->stringable( 'Foo Bar Baz' )->explode( ' ' ) ) );
+
 		$this->assertSame( '["Foo","Bar","Baz"]', (string) $this->stringable( 'Foo Bar Baz' )->explode( ' ' ) );
 
 		// with limit
@@ -1243,8 +1246,9 @@ class StringableTest extends TestCase {
 	}
 
 	public function testChunk(): void {
-		$chunks = $this->stringable( 'foobarbaz' )->split( 3 );
+		$chunks = $this->opaque( $this->stringable( 'foobarbaz' )->split( 3 ) );
 
+		$this->assertInstanceOf( Collection::class, $chunks );
 		$this->assertSame( [ 'foo', 'bar', 'baz' ], $chunks->all() );
 	}
 
@@ -1275,6 +1279,7 @@ class StringableTest extends TestCase {
 			return 'bar';
 		};
 
+		$this->assertInstanceOf( Stringable::class, $this->opaque( $this->stringable( 'foo' )->pipe( $callback ) ) );
 		$this->assertSame( 'bar', (string) $this->stringable( 'foo' )->pipe( $callback ) );
 	}
 
@@ -1504,5 +1509,12 @@ class StringableTest extends TestCase {
 			[ 'te', 'yv0et0te', [ 0 ] ],
 			[ 'te', 'yv2et2te', [ 2 ] ],
 		];
+	}
+
+	/**
+	 * Return a value untouched so PHPStan cannot narrow its type.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }

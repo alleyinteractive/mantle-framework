@@ -9,6 +9,13 @@ use Psr\Container\ContainerExceptionInterface;
 use stdClass;
 
 class ContainerTest extends TestCase {
+	/**
+	 * Return a value untouched so PHPStan cannot narrow its type.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
+	}
+
 	protected function tearDown(): void {
 		Container::set_instance( null );
 	}
@@ -39,6 +46,7 @@ class ContainerTest extends TestCase {
 
 		$container2 = Container::get_instance();
 
+		$this->assertInstanceOf( Container::class, $this->opaque( $container2 ) );
 		$this->assertNotSame( $container, $container2 );
 	}
 
@@ -363,6 +371,9 @@ class ContainerTest extends TestCase {
 		$this->build_with( $container, 'Foo\Bar\Baz\DummyClass' );
 	}
 
+	/**
+	 * Build a concrete that PHPStan would otherwise reject, to test the runtime failure.
+	 */
 	private function build_with( Container $container, mixed $concrete ): mixed {
 		return $container->build( $concrete );
 	}

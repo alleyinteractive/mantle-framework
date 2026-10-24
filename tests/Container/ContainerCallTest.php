@@ -11,6 +11,13 @@ use ReflectionException;
 use stdClass;
 
 class ContainerCallTest extends TestCase {
+	/**
+	 * Return a value untouched so PHPStan cannot narrow its type.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
+	}
+
 
 	public function testCallWithAtSignBasedClassReferencesWithoutMethodThrowsException(): void {
 		$this->expectException( Error::class );
@@ -169,6 +176,7 @@ class ContainerCallTest extends TestCase {
 			[ 'bar' => 'taylor' ]
 		);
 
+		$this->assertInstanceOf( Closure::class, $this->opaque( $result ) );
 		$result = $result();
 
 		$this->assertInstanceOf( stdClass::class, $result[0] );
