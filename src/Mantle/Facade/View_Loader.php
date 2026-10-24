@@ -14,6 +14,7 @@ namespace Mantle\Facade;
  * @method static string[] get_extensions()
  * @method static \Mantle\Http\View\View_Finder add_path(string $path, string $alias = null)
  * @method static \Mantle\Http\View\View_Finder remove_path(string $path)
+ * @method static void set_default_paths()
  * @method static array<string> get_paths()
  * @method static \Mantle\Http\View\View_Finder clear_paths()
  * @method static string find(string $slug, string $name = null)

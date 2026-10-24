@@ -10,6 +10,7 @@ namespace Mantle\Facade;
 /**
  * View Facade
  *
+ * @method static void share(array<string, mixed>|string $key, mixed $value = null)
  * @method static string get_path()
  * @method static \Mantle\Http\View\View set_post(\Mantle\Database\Model\Post|\WP_Post|int $post)
  * @method static \Mantle\Http\View\View with(string|array $key, mixed $value = null)
