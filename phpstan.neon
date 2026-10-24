@@ -110,10 +110,6 @@ parameters:
 			# Tests that still need to be fixed. Removed one group at a time.
 
 
-			- tests/Filesystem
-			- tests/Http
-			- tests/HttpClient
-			- tests/Testing
 
 			- tests/Framework
 			- tests/Queue
