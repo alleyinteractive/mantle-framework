@@ -157,6 +157,8 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 			]
 		)->create();
 
+		$this->assertIsInt( $user_id );
+
 		$this->assertSame( '_test_meta_value', get_user_meta( $user_id, '_test_meta_key', true ) );
 	}
 
@@ -308,6 +310,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 
 		$post_tags = get_the_terms( $post, 'post_tag' );
 
+		$this->assertIsArray( $post_tags );
 		$this->assertCount( 5, $post_tags );
 		$this->assertSame(
 			collect( $tags )->sort()->values()->all(),
@@ -326,6 +329,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 
 		$post_tags = get_the_terms( $post, 'post_tag' );
 
+		$this->assertIsArray( $post_tags );
 		$this->assertCount( 5, $post_tags );
 		$this->assertSame(
 			collect( $tags )->sort()->values()->all(),
@@ -410,6 +414,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 
 		$post_tags = get_the_terms( $post, 'post_tag' );
 
+		$this->assertIsArray( $post_tags );
 		$this->assertCount( 4, $post_tags );
 		$this->assertSame(
 			[ 'another-new-tag', 'another-term', 'existing', 'unknown-term' ],
@@ -488,6 +493,8 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 
 	public function test_attachment_with_image(): void {
 		$attachment = static::factory()->attachment->with_image()->create();
+
+		$this->assertIsInt( $attachment );
 
 		$this->assertNotEmpty( wp_get_attachment_image_url( $attachment ) );
 	}
@@ -600,6 +607,8 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	public function test_with_meta_array_value_is_one_serialized_entry(): void {
 		$post_id = static::factory()->post->with_meta( [ 'tags' => [ 'a', 'b' ] ] )->create();
 
+		$this->assertIsInt( $post_id );
+
 		$this->assertSame( [ 'a', 'b' ], get_post_meta( $post_id, 'tags', true ) );
 		$this->assertCount( 1, get_post_meta( $post_id, 'tags', false ) );
 	}
@@ -610,6 +619,8 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 			->with_meta( [ 'k' => 'b' ] )
 			->create();
 
+		$this->assertIsInt( $post_id );
+
 		$this->assertSame( [ 'a', 'b' ], get_post_meta( $post_id, 'k', true ) );
 		$this->assertCount( 1, get_post_meta( $post_id, 'k', false ) );
 	}
@@ -617,11 +628,15 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	public function test_with_meta_named_arguments(): void {
 		$post_id = static::factory()->post->with_meta( meta: 'k', value: 'v' )->create();
 
+		$this->assertIsInt( $post_id );
+
 		$this->assertSame( 'v', get_post_meta( $post_id, 'k', true ) );
 	}
 
 	public function test_with_meta_array_meta_ignores_scalar_value(): void {
 		$post_id = static::factory()->post->with_meta( [ 'k' => 'a' ], 'ignored' )->create();
+
+		$this->assertIsInt( $post_id );
 
 		$this->assertSame( 'a', get_post_meta( $post_id, 'k', true ) );
 		$this->assertCount( 1, get_post_meta( $post_id, 'k', false ) );
@@ -659,6 +674,8 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 			)
 			->create();
 
+		$this->assertIsInt( $post_id );
+
 		$this->assertSame( 'one', get_post_meta( $post_id, 'single', true ) );
 		$this->assertSame( [ 'a', 'b', 'c' ], get_post_meta( $post_id, 'multi', false ) );
 	}
@@ -670,6 +687,8 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 				[ 'multi' => 'b' ],
 			)
 			->create();
+
+		$this->assertIsInt( $user_id );
 
 		$this->assertSame( [ 'a', 'b' ], get_user_meta( $user_id, 'multi', false ) );
 	}
@@ -696,6 +715,8 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 				[ 'enum' => Testable_Factory_Meta::Value_B, 'related' => static::factory()->post ],
 			)
 			->create();
+
+		$this->assertIsInt( $post_id );
 
 		$this->assertSame( [ 'value-a', 'value-b' ], get_post_meta( $post_id, 'enum', false ) );
 

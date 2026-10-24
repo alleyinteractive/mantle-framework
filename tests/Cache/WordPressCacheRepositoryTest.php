@@ -136,7 +136,7 @@ class WordPressCacheRepositoryTest extends FrameworkTestCase {
 		$this->assertSame( 'original-value', $stale );
 
 		// Ensure it wasn't scheduled for refresh.
-		$this->app->terminate();
+		app()->terminate();
 
 		$this->assertFalse( $_SERVER['__CALLED'] );
 	}
@@ -169,7 +169,7 @@ class WordPressCacheRepositoryTest extends FrameworkTestCase {
 		$this->assertSame( 'original-value', $stale );
 
 		// Ensure it was scheduled for refresh.
-		$this->app->terminate();
+		app()->terminate();
 
 		$this->assertTrue( $_SERVER['__CALLED'] );
 		$this->assertSame( 'updated-value', Cache::flexible(

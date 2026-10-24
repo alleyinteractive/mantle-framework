@@ -27,7 +27,7 @@ class FilesystemManagerTest extends FrameworkTestCase {
 	public function test_default_disk(): void {
 		$this->expectApplied( 'mantle_filesystem_local_config' )->once()->andReturnArray();
 
-		$filesystem = $this->app->make( Filesystem_Manager::class );
+		$filesystem = app()->make( Filesystem_Manager::class );
 
 		$drive = $filesystem->drive();
 

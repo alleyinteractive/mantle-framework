@@ -114,8 +114,8 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		$this->assertFalse( $_SERVER['test_action_if_should_not_run'] ?? false );
 	}
 
-	public function test_filter_handler() {
-		$this->app['events']->filter(
+	public function test_filter_handler(): void {
+		app()['events']->filter(
 			'test_filter_handler',
 			fn( string $string ) => strtoupper( $string ),
 		);
@@ -126,8 +126,8 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_filter_handler_typehint() {
-		$this->app['events']->filter(
+	public function test_filter_handler_typehint(): void {
+		app()['events']->filter(
 			'test_filter_handler_typehint',
 			fn ( array $string ) => $string,
 		);
@@ -138,8 +138,8 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_filter_handler_typehint_collection_returns_array() {
-		$this->app['events']->filter(
+	public function test_filter_handler_typehint_collection_returns_array(): void {
+		app()['events']->filter(
 			'test_filter_handler_typehint_collection_returns_array',
 			fn ( Collection $col ): array => $col->to_array(),
 		);
@@ -183,7 +183,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 			}
 		);
 
-		$this->app['events']->dispatch( new Example_Typehint_Event( 'test' ) );
+		app()['events']->dispatch( new Example_Typehint_Event( 'test' ) );
 
 		$this->assertInstanceOf( Example_Typehint_Event::class, $_SERVER['__test'] );
 		$this->assertSame( 'test', $_SERVER['__test']->example );

@@ -261,6 +261,7 @@ class FilesystemAdapterTest extends TestCase {
 
 		$storagePath = $filesystem_adapter->put_file_as( '/', $filePath, 'new.txt' );
 
+		$this->assertIsString( $storagePath );
 		$this->assertSame( 'normal file content', $filesystem_adapter->read( $storagePath ) );
 	}
 
@@ -273,6 +274,7 @@ class FilesystemAdapterTest extends TestCase {
 
 		$storagePath = $filesystem_adapter->put_file( '/', $uploadedFile );
 
+		$this->assertIsString( $storagePath );
 		$this->assertSame( 44, strlen( $storagePath ) ); // random 40 characters + ".txt"
 
 		$this->assertFileExists( $filePath );
@@ -287,6 +289,7 @@ class FilesystemAdapterTest extends TestCase {
 
 		$storagePath = $filesystem_adapter->put_file( '/', $filePath );
 
+		$this->assertIsString( $storagePath );
 		$this->assertSame( 44, strlen( $storagePath ) ); // random 40 characters + ".txt"
 
 		$filesystem_adapter->assertExists( $storagePath );

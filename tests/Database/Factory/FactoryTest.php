@@ -27,7 +27,7 @@ class FactoryTest extends FrameworkTestCase {
 	}
 
 	public function test_definition_runs_once_per_create(): void {
-		$factory = new Counting_Post_Factory( $this->app->make( \Faker\Generator::class ) );
+		$factory = new Counting_Post_Factory( app()->make( \Faker\Generator::class ) );
 
 		$post_ids = $factory->create_many( 5 );
 

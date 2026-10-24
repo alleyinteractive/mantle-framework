@@ -15,8 +15,10 @@ class InteractsWithConsoleTest extends FrameworkTestCase {
 		parent::setUp();
 
 		// Manually bind the console kernel if it's not bound already.
-		if ( ! isset( $this->app[ \Mantle\Contracts\Console\Kernel::class ] ) ) {
-			$this->app[ \Mantle\Contracts\Console\Kernel::class ] = $this->app->make(
+		$app = app();
+
+		if ( ! isset( $app[ \Mantle\Contracts\Console\Kernel::class ] ) ) {
+			$app[ \Mantle\Contracts\Console\Kernel::class ] = $app->make(
 				\Mantle\Framework\Console\Kernel::class,
 			);
 		}

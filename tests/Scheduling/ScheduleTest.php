@@ -24,7 +24,7 @@ class ScheduleTest extends FrameworkTestCase {
 		$_SERVER['__event_should_run']   = false;
 		$_SERVER['__event_shouldnt_run'] = false;
 
-		$schedule = $this->app->make(Schedule::class);
+		$schedule = app()->make(Schedule::class);
 		assert( $schedule instanceof Schedule );
 		$schedule->call( function() {
 			$_SERVER['__event_should_run'] = true;
@@ -41,8 +41,8 @@ class ScheduleTest extends FrameworkTestCase {
 		$this->assertFalse( $_SERVER['__event_shouldnt_run'] );
 	}
 
-	public function test_running_command_event() {
-		$schedule = $this->app->make( Schedule::class );
+	public function test_running_command_event(): void {
+		$schedule = app()->make( Schedule::class );
 
 		$event = $schedule->command( \Mantle\Queue\Console\Cleanup_Jobs_Command::class );
 
@@ -56,7 +56,7 @@ class ScheduleTest extends FrameworkTestCase {
 		$_SERVER['__event_before_callback'] = false;
 		$_SERVER['__event_after_callback']  = false;
 
-		$schedule = $this->app->make(Schedule::class);
+		$schedule = app()->make(Schedule::class);
 		$schedule
 			->call( function() { } )
 			->before( function() {
@@ -86,8 +86,8 @@ class ScheduleTest extends FrameworkTestCase {
 				}
 			);
 
-		$event->call_before_callbacks( $this->app->make( Container::class ) );
-		$event->call_after_callbacks( $this->app->make( Container::class ) );
+		$event->call_before_callbacks( app()->make( Container::class ) );
+		$event->call_after_callbacks( app()->make( Container::class ) );
 
 		$this->assertTrue( $thenCalled );
 
@@ -101,7 +101,7 @@ class ScheduleTest extends FrameworkTestCase {
 			$_SERVER['__run'] = true;
 		} )->when( fn () => true );
 
-		$this->app->make(Schedule::class)->run_due_events();
+		app()->make(Schedule::class)->run_due_events();
 
 		$this->assertTrue( $_SERVER['__run'] );
 	}

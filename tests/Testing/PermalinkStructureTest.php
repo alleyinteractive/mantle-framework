@@ -66,6 +66,8 @@ class PermalinkStructureTest extends FrameworkTestCase {
 
 		$post_id = static::factory()->post->create();
 
+		$this->assertIsInt( $post_id );
+
 		$permalink = get_permalink( $post_id );
 
 		$this->assertSame( home_url( '?p=' . $post_id ), $permalink );

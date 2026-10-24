@@ -21,6 +21,8 @@ class NullableUserObjectsTest extends FrameworkTestCase {
 	public function test_user_object_returns_user(): void {
 		$known_id = self::factory()->user->create();
 
+		$this->assertIsInt( $known_id );
+
 		$found = get_user_object( $known_id );
 
 		$this->assertInstanceOf( \WP_User::class, $found );

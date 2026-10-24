@@ -63,6 +63,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 					// Store the ID for testing later.
 					$related_post_ids[ $post->id ] = $related_post->id;
 
+					$this->assertInstanceOf( Another_Testable_Post_Eager::class, $post->post_relationship );
 					$this->assertSame( $related_post->id, $post->post_relationship->id );
 
 					return $post;

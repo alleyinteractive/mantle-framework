@@ -51,7 +51,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		Example_Job::dispatch( false );
 		Example_Job::dispatch( false );
 
-		$command->set_container( $this->app );
+		$command->set_container( app() );
 		$command->run(
 			new \Symfony\Component\Console\Input\ArrayInput( [ '--count' => '3' ], $command->getDefinition() ),
 			new \Symfony\Component\Console\Output\NullOutput(),
@@ -70,8 +70,8 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_queue_delay_configuration() {
-		$this->app['config']->set( 'queue.wordpress.delay', 120 );
+	public function test_queue_delay_configuration(): void {
+		app()['config']->set( 'queue.wordpress.delay', 120 );
 
 		Example_Job::dispatch( false );
 
@@ -136,7 +136,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		add_filter( 'wp_insert_post_empty_content', '__return_true' );
 
 		try {
-			( new Provider( $this->app ) )->push( $job );
+			( new Provider( app() ) )->push( $job );
 			$this->fail( 'Expected the job insert to fail.' );
 		} catch ( Model_Exception ) {
 			// Expected.
@@ -164,7 +164,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 	public function test_job_failure(): void {
 		$_SERVER['__failed_run'] = 0;
 
-		$this->app['events']->listen( Job_Failed::class, fn () => $_SERVER['__failed_run']++ );
+		app()['events']->listen( Job_Failed::class, fn () => $_SERVER['__failed_run']++ );
 
 		$this->assertNotInCronQueue( Job_To_Fail::class );
 
@@ -220,7 +220,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$_SERVER['__closure_job'] = false;
 		$_SERVER['__failed_run']  = false;
 
-		$this->app['events']->listen(
+		app()['events']->listen(
 			Job_Failed::class,
 			fn () => $_SERVER['__failed_run'] = true,
 		);
@@ -278,9 +278,9 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		] );
 	}
 
-	public function test_schedule_multiple_queue_workers() {
-		$this->app['config']->set( 'queue.max_concurrent_batches', 10 );
-		$this->app['config']->set( 'queue.batch_size', 10 );
+	public function test_schedule_multiple_queue_workers(): void {
+		app()['config']->set( 'queue.max_concurrent_batches', 10 );
+		app()['config']->set( 'queue.batch_size', 10 );
 
 		for ( $i = 0; $i < 100; $i++ ) {
 			Example_Job::dispatch();
@@ -304,8 +304,8 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 	public function test_schedule_does_not_overschedule_when_underutilized(): void {
 		// With a large batch size and concurrency ceiling but only a single pending
 		// job, the scheduler should schedule a single batch and not fill the ceiling.
-		$this->app['config']->set( 'queue.max_concurrent_batches', 5 );
-		$this->app['config']->set( 'queue.batch_size', 100 );
+		app()['config']->set( 'queue.max_concurrent_batches', 5 );
+		app()['config']->set( 'queue.batch_size', 100 );
 
 		Example_Job::dispatch();
 
@@ -356,7 +356,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 
 	public function test_schedule_next_run_after_complete(): void {
 		// Limit the queue batch size.
-		$this->app['config']->set( 'queue.batch_size', 5 );
+		app()['config']->set( 'queue.batch_size', 5 );
 
 		for ( $i = 0; $i < 8; $i++ ) {
 			Example_Job::dispatch();
@@ -385,8 +385,8 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 		$this->assertNotInCronQueue( Scheduler::EVENT, null );
 	}
 
-	public function test_cleanup_completed_jobs() {
-		$this->app['config']->set( 'queue.delete_after', 60 * 60 * 24 );
+	public function test_cleanup_completed_jobs(): void {
+		app()['config']->set( 'queue.delete_after', 60 * 60 * 24 );
 
 		$record = Queue_Record::create( [
 			'post_status' => Post_Status::COMPLETED->value,
@@ -426,7 +426,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 
 		$this->assertFalse( $_SERVER['__example_job'] );
 
-		$this->app->terminate();
+		app()->terminate();
 
 		$this->assertTrue( $_SERVER['__example_job'] );
 	}

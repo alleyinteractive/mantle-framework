@@ -13,18 +13,18 @@ class PhpViewsTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->app['view.loader']
+		app()['view.loader']
 			->clear_paths()
 			->add_path( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view', 'unit-test' );
 	}
 
-	public function test_get_container() {
-		$this->assertSame( $this->app, $this->app['view']->get_container() );
+	public function test_get_container(): void {
+		$this->assertSame( app(), app()['view']->get_container() );
 	}
 
 	public function test_share_service_provider(): void {
 
-		$this->view_factory = $this->app['view'];
+		$this->view_factory = app()['view'];
 
 		$this->assertSame( 'default-value', $this->view_factory->shared( 'test-to-share', 'default-value' ) );
 
@@ -49,8 +49,8 @@ class PhpViewsTest extends FrameworkTestCase {
 		$this->assertSame( 'nested-value', $this->view_factory->shared( 'nested-data.level0.level1.level2' ) );
 	}
 
-	public function test_get_factory() {
-		$this->assertSame( $this->app['view'], $this->app['view']->shared( '__env' ) );
+	public function test_get_factory(): void {
+		$this->assertSame( app()['view'], app()['view']->shared( '__env' ) );
 	}
 
 	public function test_basic_load(): void {
@@ -183,6 +183,7 @@ class PhpViewsTest extends FrameworkTestCase {
 
 		global $post;
 		$post = get_post( $posts[0] );
+		$this->assertInstanceOf( \WP_Post::class, $post );
 		setup_postdata( $post );
 		$this->assertSame( $posts[0], get_the_ID() );
 
@@ -232,6 +233,7 @@ class PhpViewsTest extends FrameworkTestCase {
 
 		global $post;
 		$post = get_post( $posts[0] );
+		$this->assertInstanceOf( \WP_Post::class, $post );
 		setup_postdata( $post );
 
 		$this->assertSame( $posts[0], get_the_ID() );
@@ -258,7 +260,7 @@ class PhpViewsTest extends FrameworkTestCase {
 
 		$this->assertSame( $expected, $contents );
 		$this->assertSame( $posts[0], get_the_ID() );
-		$this->assertNull( $this->app['view']->get_current() );
+		$this->assertNull( app()['view']->get_current() );
 	}
 
 	public function test_empty_post_restoring(): void {

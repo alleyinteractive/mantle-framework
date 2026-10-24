@@ -459,6 +459,7 @@ class StrTest extends TestCase {
 
 	public function testRandom(): void {
 		$this->assertSame( 16, strlen( Str::random() ) );
+		$this->assertIsString( with( Str::random() ) );
 		$randomInteger = random_int( 1, 100 );
 		$this->assertSame( $randomInteger, strlen( Str::random( $randomInteger ) ) );
 	}

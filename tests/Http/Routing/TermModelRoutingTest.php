@@ -26,6 +26,8 @@ class TermModelRoutingTest extends FrameworkTestCase {
 		$category = Testable_Category_Model::create( [ 'name' => 'Example Category' ] );
 		$post_id  = static::factory()->post->create();
 
+		$this->assertIsInt( $post_id );
+
 		wp_set_post_categories( $post_id, [ $category->id() ], true );
 
 		$term_link = get_term_link( $category->id(), 'category' );
@@ -50,6 +52,8 @@ class TermModelRoutingTest extends FrameworkTestCase {
 
 		$tag = static::factory()->tag->create( [ 'name' => 'Example Tag' ] );
 
+		$this->assertIsInt( $tag );
+
 		$this->assertSame( home_url( '/tag/example-tag/' ), get_term_link( $tag ) );
 	}
 
@@ -69,6 +73,9 @@ class TermModelRoutingTest extends FrameworkTestCase {
 		);
 
 		$post_id = static::factory()->post->create();
+
+		$this->assertIsInt( $post_id );
+
 		wp_set_object_terms( $post_id, [ $term->id() ], 'test_tax_test', true );
 
 		$term_link = $term->permalink();

@@ -29,11 +29,9 @@ class PostObjectTest extends FrameworkTestCase {
 		unregister_post_type( Test_Post_Type::get_object_name() );
 	}
 
-	public function test_post_object() {
-		$post   = $this->factory->post->create_and_get();
-		$object = Testable_Post::find( $post );
-
-		$this->assertInstanceOf( Testable_Post::class, $object );
+	public function test_post_object(): void {
+		$post   = static::factory()->post->create_and_get();
+		$object = Testable_Post::find_or_fail( $post );
 
 		$this->assertSame( $post->ID, $object->id() );
 		$this->assertSame( $post->post_title, $object->name() );
@@ -55,9 +53,11 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertSame( $object->id(), $core_object->ID );
 	}
 
-	public function test_post_object_parent() {
-		$parent_id = $this->factory->post->create();
-		$post_id   = $this->factory->post->create( [ 'post_parent' => $parent_id ] );
+	public function test_post_object_parent(): void {
+		$parent_id = static::factory()->post->create();
+		$post_id   = static::factory()->post->create( [ 'post_parent' => $parent_id ] );
+
+		$this->assertIsInt( $post_id );
 
 		$object = Testable_Post::find( $post_id );
 
@@ -67,9 +67,9 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertSame( $parent_object->id(), $parent_id );
 	}
 
-	public function test_post_meta() {
-		$post   = $this->factory->post->create_and_get();
-		$object = Testable_Post::find( $post );
+	public function test_post_meta(): void {
+		$post   = static::factory()->post->create_and_get();
+		$object = Testable_Post::find_or_fail( $post );
 
 		$this->assertEmpty( \get_post_meta( $post->ID, 'meta_value_to_set', true ) );
 
@@ -81,9 +81,9 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertEmpty( $object->get_meta( 'meta_key_to_set' ) );
 	}
 
-	public function test_post_meta_isset_and_missing() {
-		$post   = $this->factory->post->create_and_get();
-		$object = Testable_Post::find( $post );
+	public function test_post_meta_isset_and_missing(): void {
+		$post   = static::factory()->post->create_and_get();
+		$object = Testable_Post::find_or_fail( $post );
 
 		$this->assertFalse( isset( $object->meta['unknown_meta_key'] ) );
 		$this->assertNull( $object->meta->unknown_meta_key );
@@ -95,8 +95,8 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertSame( '', $object->meta->empty_meta_key );
 	}
 
-	public function test_find_with_empty_value_does_not_return_global_post() {
-		$post = $this->factory->post->create_and_get();
+	public function test_find_with_empty_value_does_not_return_global_post(): void {
+		$post = static::factory()->post->create_and_get();
 
 		$GLOBALS['post'] = $post;
 
@@ -116,9 +116,9 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertSame( 'Raw Title', get_post( $model->id() )->post_title );
 	}
 
-	public function test_post_meta_attributes() {
-		$post   = $this->factory->post->create_and_get();
-		$object = Testable_Post::find( $post );
+	public function test_post_meta_attributes(): void {
+		$post   = static::factory()->post->create_and_get();
+		$object = Testable_Post::find_or_fail( $post );
 
 		$this->assertEmpty( \get_post_meta( $post->ID, 'attr_meta_key_to_set', true ) );
 
@@ -171,14 +171,15 @@ class PostObjectTest extends FrameworkTestCase {
 
 		$core = get_post( $post->id() );
 
+		$this->assertInstanceOf( \WP_Post::class, $core );
 		$this->assertEquals( 'future', $core->post_status );
 		$this->assertEquals( $date->toDateTimeString(), $core->post_date );
 		$this->assertEquals( get_gmt_from_date( $core->post_date ), $core->post_date_gmt );
 	}
 
-	public function test_updating_post() {
-		$post   = $this->factory->post->create_and_get();
-		$object = Testable_Post::find( $post );
+	public function test_updating_post(): void {
+		$post   = static::factory()->post->create_and_get();
+		$object = Testable_Post::find_or_fail( $post );
 
 		$object->post_content = 'Updated Content';
 		$object->save();
@@ -189,9 +190,9 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertSame( 'Updated Content', $post->post_content );
 	}
 
-	public function test_updating_with_alias() {
-		$post   = $this->factory->post->create_and_get();
-		$object = Testable_Post::find( $post );
+	public function test_updating_with_alias(): void {
+		$post   = static::factory()->post->create_and_get();
+		$object = Testable_Post::find_or_fail( $post );
 
 		$object->name = 'Updated Title';
 		$object->save();
@@ -202,9 +203,9 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertSame( 'Updated Title', $post->post_title );
 	}
 
-	public function test_updating_only_save_method() {
-		$post   = $this->factory->post->create_and_get();
-		$object = Testable_Post::find( $post );
+	public function test_updating_only_save_method(): void {
+		$post   = static::factory()->post->create_and_get();
+		$object = Testable_Post::find_or_fail( $post );
 
 		$object->save(
 			[
@@ -218,11 +219,9 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertSame( 'Saved Through Attribute', $post->post_title );
 	}
 
-	public function test_delete_post() {
-		$post   = $this->factory->post->create_and_get();
-		$object = Testable_Post::find( $post );
-
-		$this->assertInstanceOf( Testable_Post::class, $object );
+	public function test_delete_post(): void {
+		$post   = static::factory()->post->create_and_get();
+		$object = Testable_Post::find_or_fail( $post );
 
 		// Test trashing a post.
 		$object->delete( false );
@@ -254,8 +253,8 @@ class PostObjectTest extends FrameworkTestCase {
 	public function test_setting_guarded_id(): void {
 		$this->expectException( Model_Exception::class );
 
-		$post   = $this->factory->post->create_and_get();
-		$object = Testable_Post::find( $post );
+		$post   = static::factory()->post->create_and_get();
+		$object = Testable_Post::find_or_fail( $post );
 
 		$object->id = 12345;
 		$object->save();
@@ -264,22 +263,26 @@ class PostObjectTest extends FrameworkTestCase {
 	public function test_setting_unguarded_attribute(): void {
 		$this->expectException( Model_Exception::class );
 
-		$post   = $this->factory->post->create_and_get();
-		$object = Testable_Post::find( $post );
+		$post   = static::factory()->post->create_and_get();
+		$object = Testable_Post::find_or_fail( $post );
 
 		$object->id = 12345;
 		$object->set_model_guard( false );
 		$object->save();
 	}
 
-	public function test_model_post_type() {
-		$post = $this->factory->post->create( [ 'post_type' => 'example-post-type' ] );
+	public function test_model_post_type(): void {
+		$post = static::factory()->post->create( [ 'post_type' => 'example-post-type' ] );
+
+		$this->assertIsInt( $post );
 		$object = Test_Post_Type::find( $post );
 		$this->assertInstanceOf( Test_Post_Type::class, $object );
 	}
 
-	public function test_incorrect_post_type_for_model() {
-		$post = $this->factory->post->create( [ 'post_type' => 'post' ] );
+	public function test_incorrect_post_type_for_model(): void {
+		$post = static::factory()->post->create( [ 'post_type' => 'post' ] );
+
+		$this->assertIsInt( $post );
 		$object = Test_Post_Type::find( $post );
 		$this->assertNull( $object );
 	}
@@ -294,7 +297,9 @@ class PostObjectTest extends FrameworkTestCase {
 
 	public function test_model_incorrect_post_type(): void {
 		register_post_type( 'example_post_type' );
-		$post_id = $this->factory->post->create( [ 'post_type' => 'example_post_type' ] );
+		$post_id = static::factory()->post->create( [ 'post_type' => 'example_post_type' ] );
+
+		$this->assertIsInt( $post_id );
 
 		$this->assertNull( Testable_Post::find( $post_id ) );
 	}
@@ -302,8 +307,10 @@ class PostObjectTest extends FrameworkTestCase {
 	public function test_dynamic_model_instance(): void {
 		register_post_type( 'foo_post_type' );
 
-		$post_id = $this->factory->post->for( 'foo_post_type' )->create();
-		$post_two = $this->factory->post->for( 'foo_post_type' )->create( [
+		$post_id = static::factory()->post->for( 'foo_post_type' )->create();
+
+		$this->assertIsInt( $post_id );
+		$post_two = static::factory()->post->for( 'foo_post_type' )->create( [
 			'post_title' => 'Post Two',
 		] );
 
@@ -335,6 +342,8 @@ class PostObjectTest extends FrameworkTestCase {
 	public function test_query_builder(): void {
 		$post_id = $this->get_random_post_id();
 		$first = Testable_Post::where( 'id', $post_id )->first();
+
+		$this->assertInstanceOf( Testable_Post::class, $first );
 
 		$this->assertSame( $post_id, $first->id() );
 	}

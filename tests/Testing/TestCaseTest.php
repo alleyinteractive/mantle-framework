@@ -75,6 +75,8 @@ if ( FrameworkTestCase::phpunit_version_compare( '11.0.0', '<' ) ) {
 
 			$blog_id = static::factory()->blog->create();
 
+			$this->assertIsInt( $blog_id );
+
 			switch_to_blog( $blog_id );
 
 			$this->assertSame( $blog_id, get_current_blog_id() );

@@ -58,6 +58,8 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->whereSlug( 'post-to-find' )
 			->first();
 
+		$this->assertInstanceOf( Testable_Post::class, $first );
+
 		$this->assertSame( 'post-to-find', $first->slug() );
 	}
 
@@ -90,6 +92,8 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			)
 			->first();
 
+		$this->assertInstanceOf( Testable_Post::class, $result );
+
 		$this->assertSame( $post->ID, $result->id() );
 	}
 
@@ -100,6 +104,8 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$first = Builder::create( Testable_Post::class )
 			->whereMeta( 'meta-key', 'the-meta-value' )
 			->first();
+
+		$this->assertInstanceOf( Testable_Post::class, $first );
 
 		$this->assertSame( $post_id, $first->id() );
 	}
@@ -112,6 +118,8 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->whereMeta( 'something', 'different' )
 			->orWhereMeta( 'meta-key', 'the-meta-value' )
 			->first();
+
+		$this->assertInstanceOf( Testable_Post::class, $first );
 
 		$this->assertSame( $post_id, $first->id() );
 	}
@@ -126,6 +134,8 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->andWhereMeta( 'another-meta-key', 'another-meta-value' )
 			->first();
 
+		$this->assertInstanceOf( Testable_Post::class, $first );
+
 		$this->assertSame( $post_id, $first->id() );
 
 		// Test against a post with only one meta value.
@@ -136,6 +146,8 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->whereMeta( 'meta-key', 'the-meta-value' )
 			->andWhereMeta( 'another-meta-key', 'another-meta-value' )
 			->first();
+
+		$this->assertInstanceOf( Testable_Post::class, $first );
 
 		$this->assertSame( $post_id, $first->id() );
 	}
@@ -149,12 +161,16 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->whereTerm( $term )
 			->first();
 
+		$this->assertInstanceOf( Testable_Post::class, $first );
+
 		$this->assertSame( $post_id, $first->id() );
 	}
 
 	public function test_term_or_query(): void {
 		$post_id = $this->get_random_post_id();
 		$term_other = static::factory()->term->create();
+
+		$this->assertIsInt( $term_other );
 		$term = static::factory()->term->create_and_get();
 		wp_set_object_terms( $post_id, $term->term_id, $term->taxonomy, true );
 
@@ -163,19 +179,27 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->orWhereTerm( $term )
 			->first();
 
+		$this->assertInstanceOf( Testable_Post::class, $first );
+
 		$this->assertSame( $post_id, $first->id() );
 	}
 
 	public function test_term_and_query(): void {
 		$post_id = $this->get_random_post_id();
 		$term_other = static::factory()->term->create();
+
+		$this->assertIsInt( $term_other );
 		$term = static::factory()->term->create();
+
+		$this->assertIsInt( $term );
 		wp_set_object_terms( $post_id, [ $term_other, $term ], 'post_tag', true );
 
 		$first = Builder::create( Testable_Post::class )
 			->whereTerm( $term_other )
 			->andWhereTerm( $term )
 			->first();
+
+		$this->assertInstanceOf( Testable_Post::class, $first );
 
 		$this->assertSame( $post_id, $first->id() );
 
@@ -187,6 +211,8 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->whereTerm( $term_other )
 			->andWhereTerm( $term )
 			->first();
+
+		$this->assertInstanceOf( Testable_Post::class, $first );
 
 		$this->assertSame( $post_id, $first->id() );
 	}
@@ -203,11 +229,16 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->orWhereTerm( $term )
 			->first();
 
+		$this->assertInstanceOf( Testable_Post::class, $first );
+
 		$this->assertSame( $post_id, $first->id() );
 	}
 
 	public function test_query_by_author(): void {
 		$user_id = static::factory()->user->create();
+
+		$this->assertIsInt( $user_id );
+
 		$post_id = $this->get_random_post_id();
 		wp_update_post(
 			[
@@ -220,11 +251,14 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->whereAuthor( $user_id )
 			->first();
 
+		$this->assertInstanceOf( Testable_Post::class, $first );
 		$this->assertSame( $post_id, $first->id() );
 
 		$first = Builder::create( Testable_Post::class )
 			->whereIn( 'author', [ $user_id ] )
 			->first();
+
+		$this->assertInstanceOf( Testable_Post::class, $first );
 
 		$this->assertSame( $post_id, $first->id() );
 	}
@@ -243,6 +277,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->whereAuthorName( $user->user_nicename )
 			->first();
 
+		$this->assertInstanceOf( Testable_Post::class, $first );
 		$this->assertSame( $post_id, $first->id() );
 	}
 
@@ -250,10 +285,14 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		Utils::delete_all_data();
 
 		$post_a = static::factory()->post->create( [ 'post_date' => Carbon::now()->subWeek()->subHour()->toDateTimeString() ] );
+
+		$this->assertIsInt( $post_a );
 		$post_b = static::factory()->post->create( [
 			'post_date' => Carbon::now()->subWeek()->toDateTimeString(),
 			'post_type' => Another_Testable_Post::get_object_name(),
 		] );
+
+		$this->assertIsInt( $post_b );
 
 		// Create some posts after for some randomness.
 		static::factory()->post->create_many( 10 );
@@ -324,6 +363,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			)
 			->first();
 
+		$this->assertInstanceOf( Testable_Post::class, $first );
 		$this->assertSame( $post_id, $first->id() );
 
 		$next = Testable_Post::first();
@@ -472,6 +512,8 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->where_raw( 'ID', $post_id )
 			->first();
 
+		$this->assertInstanceOf( Testable_Post::class, $result );
+
 		$this->assertSame( $result->id(), $post_id );
 	}
 
@@ -481,6 +523,8 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$result = Testable_Post::query()
 			->where_raw( 'post_title', 'LIKE', get_the_title( $post_id ) )
 			->first();
+
+		$this->assertInstanceOf( Testable_Post::class, $result );
 
 		$this->assertSame( $result->id(), $post_id );
 
@@ -492,6 +536,8 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->order_by( 'id', 'asc' )
 			->where_raw( 'post_title', 'LIKE', 'This is a%' )
 			->first();
+
+		$this->assertInstanceOf( Testable_Post::class, $result );
 
 		$this->assertSame( $result->id(), $post_id );
 	}
@@ -524,6 +570,8 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$result = Testable_Post::whereRaw( 'ID', 'unknown' )
 			->orWhereRaw( 'ID', $post_id )
 			->first();
+
+		$this->assertInstanceOf( Testable_Post::class, $result );
 
 		$this->assertSame( $result->id(), $post_id );
 	}
@@ -649,7 +697,11 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$now      = Carbon::now( wp_timezone() );
 
 		$old_post_id = Testable_Post::factory()->create();
+
+		$this->assertIsInt( $old_post_id );
 		$now_post_id = Testable_Post::factory()->create();
+
+		$this->assertIsInt( $now_post_id );
 
 		$this->update_post_modified( $old_post_id, $old_date );
 		$this->update_post_modified( $now_post_id, $now );

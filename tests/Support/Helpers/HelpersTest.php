@@ -76,7 +76,7 @@ class HelpersTest extends TestCase {
 
 	public function test_logger_helpers(): void {
 		logger( 'This is a helper debug message.' );
-		logger()->warning( 'This is a warning.' );
+		logger()?->warning( 'This is a warning.' );
 
 		$this->assertTrue( $this->handler->hasRecord( 'This is a helper debug message.', 'debug' ) );
 		$this->assertTrue( $this->handler->hasRecord( 'This is a warning.', 'warning' ) );

@@ -12,9 +12,13 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 		$tag_id = $this->get_random_term_id();
 		$tag    = \get_term( $tag_id );
 
+		$this->assertInstanceOf( \WP_Term::class, $tag );
+
 		$first = Builder::create( Testable_Tag_Term::class )
 			->whereName( $tag->name )
 			->first();
+
+		$this->assertInstanceOf( Testable_Tag_Term::class, $first );
 
 		$this->assertSame( $tag_id, $first->id() );
 	}
@@ -23,9 +27,13 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 		$tag_id = $this->get_random_term_id();
 		$tag    = \get_term( $tag_id );
 
+		$this->assertInstanceOf( \WP_Term::class, $tag );
+
 		$first = Testable_Tag_Term::query()
 			->whereSlug( $tag->slug )
 			->first();
+
+		$this->assertInstanceOf( Testable_Tag_Term::class, $first );
 
 		$this->assertSame( $tag_id, $first->id() );
 	}
@@ -34,9 +42,13 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 		$tag_id = $this->get_random_term_id();
 		$tag    = \get_term( $tag_id );
 
+		$this->assertInstanceOf( \WP_Term::class, $tag );
+
 		$first = Builder::create( Testable_Tag_Term::class )
 			->whereId( $tag->term_id )
 			->first();
+
+		$this->assertInstanceOf( Testable_Tag_Term::class, $first );
 
 		$this->assertSame( $tag_id, $first->id() );
 	}
@@ -49,6 +61,8 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 		$first = Builder::create( Testable_Tag_Term::class )
 			->whereMeta( 'term-key', 'term-value' )
 			->first();
+
+		$this->assertInstanceOf( Testable_Tag_Term::class, $first );
 
 		$this->assertSame( $tag_id, $first->id() );
 	}
@@ -127,6 +141,8 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 		$next = Testable_Tag::query()
 			->order_by( 'id', 'asc' )
 			->first();
+
+		$this->assertInstanceOf( Testable_Tag::class, $next );
 
 		$this->assertNotSame( $term_id, $next->id() );
 		$this->assertSame( 1, $applied_count ); // The clauses should only be applied once.

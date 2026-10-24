@@ -15,8 +15,8 @@ class DiscoverEventsTest extends FrameworkTestCase {
 		parent::setUp();
 
 		// Mock a true Mantle application.
-		$this->app['config']->set( 'app.namespace', 'Mantle\\Tests' );
-		$this->app->set_app_path( dirname( __DIR__, 2 ) );
+		app()['config']->set( 'app.namespace', 'Mantle\\Tests' );
+		app()->set_app_path( dirname( __DIR__, 2 ) );
 
 		require_once __DIR__ . '/fixtures/listeners/class-example-listener.php';
 		require_once __DIR__ . '/fixtures/events/class-event-one.php';
@@ -24,14 +24,14 @@ class DiscoverEventsTest extends FrameworkTestCase {
 	}
 
 	protected function tearDown(): void {
-		$this->app->set_app_path( $this->app->get_base_path( 'app' ) );
-		$this->app['config']->set( 'app.namespace', 'App' );
+		app()->set_app_path( app()->get_base_path( 'app' ) );
+		app()['config']->set( 'app.namespace', 'App' );
 
 		parent::tearDown();
 	}
 
-	public function test_events_can_be_discovered() {
-		$this->assertSame( 'Mantle\\Tests', $this->app->get_namespace() );
+	public function test_events_can_be_discovered(): void {
+		$this->assertSame( 'Mantle\\Tests', app()->get_namespace() );
 
 		$this->assertTrue( class_exists( Example_Listener::class ) );
 		$this->assertTrue( class_exists( Event_One::class ) );

@@ -5,9 +5,9 @@ use Mantle\Database\Model\Comment;
 use Mantle\Testing\FrameworkTestCase;
 
 class CommentObjectTest extends FrameworkTestCase {
-	public function test_comment_object() {
-		$comment = $this->factory->comment->create_and_get();
-		$object  = Comment::find( $comment );
+	public function test_comment_object(): void {
+		$comment = static::factory()->comment->create_and_get();
+		$object  = Comment::find_or_fail( $comment );
 
 		$this->assertSame( $object->id(), (int) $comment->comment_ID );
 		$this->assertSame( $object->name(), $comment->comment_author );
@@ -23,9 +23,9 @@ class CommentObjectTest extends FrameworkTestCase {
 		$this->assertSame( $object->id(), (int) $core_object->comment_ID );
 	}
 
-	public function test_comment_object_parent() {
-		$parent_id  = $this->factory->comment->create();
-		$comment_id = $this->factory->comment->create( [ 'comment_parent' => $parent_id ] );
+	public function test_comment_object_parent(): void {
+		$parent_id  = static::factory()->comment->create();
+		$comment_id = static::factory()->comment->create( [ 'comment_parent' => $parent_id ] );
 
 		$object = Comment::find( $comment_id );
 
@@ -35,9 +35,9 @@ class CommentObjectTest extends FrameworkTestCase {
 		$this->assertSame( $parent_object->id(), $parent_id );
 	}
 
-	public function test_comment_save_update() {
-		$comment = $this->factory->comment->create_and_get();
-		$object  = Comment::find( $comment );
+	public function test_comment_save_update(): void {
+		$comment = static::factory()->comment->create_and_get();
+		$object  = Comment::find_or_fail( $comment );
 
 		$this->assertTrue( $object->save( [ 'comment_content' => 'Updated content' ] ) );
 
@@ -49,9 +49,9 @@ class CommentObjectTest extends FrameworkTestCase {
 		$this->assertEquals( $comment->comment_ID, $object->id() );
 	}
 
-	public function test_comment_meta() {
-		$comment   = $this->factory->comment->create_and_get( [ 'taxonomy' => 'category' ] );
-		$object = Comment::find( $comment );
+	public function test_comment_meta(): void {
+		$comment   = static::factory()->comment->create_and_get( [ 'taxonomy' => 'category' ] );
+		$object = Comment::find_or_fail( $comment );
 
 		$this->assertEmpty( \get_comment_meta( $comment->comment_ID, 'meta_value_to_set', true ) );
 
