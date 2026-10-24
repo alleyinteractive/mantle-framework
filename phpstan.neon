@@ -111,21 +111,6 @@ parameters:
 
 
 
-			- tests/Framework
-			- tests/Queue
-			- tests/View
-			- tests/Console
-			- tests/Events
-			- tests/Scheduling
-			- tests/Assets
-			- tests/Cache
-			- tests/Testkit
-			- tests/Config
-			- tests/Log
-			- tests/Blocks
-			- tests/Types
-			- tests/FakerTest.php
-
 services:
 	-
 		class: Mantle\Tests\PHPStan\Higher_Order_Proxy_Extension
