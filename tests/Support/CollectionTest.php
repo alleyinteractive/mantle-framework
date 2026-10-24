@@ -18,7 +18,6 @@ use Mantle\Support\Stringable;
 use Mantle\Testing\FrameworkTestCase;
 use Mockery as m;
 use PHPUnit\Framework\Attributes\DataProvider;
-use ReflectionClass;
 use stdClass;
 
 use function Mantle\Support\Helpers\collect;
@@ -275,31 +274,28 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection;
 
-		$class = new ReflectionClass($collection);
-		$method = $class->getMethod('get_arrayable_items');
-
 		$items = new TestArrayableObject;
-		$array = $method->invokeArgs($data, [$items]);
+		$array = invade($data)->get_arrayable_items($items);
 		$this->assertSame(['foo' => 'bar'], $array);
 
 		$items = new TestJsonableObject;
-		$array = $method->invokeArgs($data, [$items]);
+		$array = invade($data)->get_arrayable_items($items);
 		$this->assertSame(['foo' => 'bar'], $array);
 
 		$items = new TestJsonSerializeObject;
-		$array = $method->invokeArgs($data, [$items]);
+		$array = invade($data)->get_arrayable_items($items);
 		$this->assertSame(['foo' => 'bar'], $array);
 
 		$items = new TestJsonSerializeWithScalarValueObject;
-		$array = $method->invokeArgs($data, [$items]);
+		$array = invade($data)->get_arrayable_items($items);
 		$this->assertSame(['foo'], $array);
 
 		$items = new $collection(['foo' => 'bar']);
-		$array = $method->invokeArgs($data, [$items]);
+		$array = invade($data)->get_arrayable_items($items);
 		$this->assertSame(['foo' => 'bar'], $array);
 
 		$items = ['foo' => 'bar'];
-		$array = $method->invokeArgs($data, [$items]);
+		$array = invade($data)->get_arrayable_items($items);
 		$this->assertSame(['foo' => 'bar'], $array);
 	}
 

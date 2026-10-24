@@ -35,6 +35,7 @@
         "psr/simple-cache": "^3.0",
         "ramsey/uuid": "^4.7.4",
         "spatie/backtrace": "^1.8",
+        "spatie/invade": "^2.1",
         "symfony/console": "^7.2",
         "symfony/css-selector": "^7.2.0",
         "symfony/dom-crawler": "^7.4.12",
