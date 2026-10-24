@@ -118,10 +118,6 @@ class FrequencyTest extends FrameworkTestCase {
 			}
 		);
 
-		// Macros are resolved through __call(), which PHPStan cannot see.
-		$event = $this->event->__call( 'everyXMinutes', [ 6 ] );
-
-		$this->assertInstanceOf( Event::class, $event );
-		$this->assertSame( '*/6 * * * *', $event->get_expression() );
+		$this->assertSame( '*/6 * * * *', $this->event->everyXMinutes( 6 )->get_expression() ); // @phpstan-ignore method.notFound (macro resolved via __call)
 	}
 }

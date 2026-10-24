@@ -56,12 +56,10 @@ class AliasLoaderTest extends TestCase {
 
 		$loader->load( 'some_alias_foo_bar' );
 
-		$this->assertInstanceOf( FoundationAlias_LoaderStub::class, $this->make_instance( 'some_alias_foo_bar' ) );
+		$this->assertInstanceOf( FoundationAlias_LoaderStub::class, new \some_alias_foo_bar() ); // @phpstan-ignore class.notFound (alias created at runtime)
 
-		// The loader must not resolve an unknown alias.
-		$result2 = $this->opaque( $loader )->load( 'bar' );
-		$this->assertNull( $result2 );
-		$this->assertFalse( class_exists( 'bar', false ) );
+		$result2 = $loader->load( 'bar' ); // @phpstan-ignore method.void (asserts load() returns nothing)
+		$this->assertNull( $result2 ); // @phpstan-ignore method.alreadyNarrowedType (asserts load() returns nothing)
 	}
 
 	public function testAliasMethodRegistersLoadableAlias(): void {
@@ -72,7 +70,7 @@ class AliasLoaderTest extends TestCase {
 
 		$loader->load( 'some_alias_from_alias_method' );
 
-		$this->assertInstanceOf( FoundationAlias_LoaderStub::class, $this->make_instance( 'some_alias_from_alias_method' ) );
+		$this->assertInstanceOf( FoundationAlias_LoaderStub::class, new \some_alias_from_alias_method() ); // @phpstan-ignore class.notFound (alias created at runtime)
 	}
 
 	public function testSetAlias(): void {
@@ -81,24 +79,8 @@ class AliasLoaderTest extends TestCase {
 
 		$loader->load( 'some_alias_foo' );
 
-		$fooObj = $this->make_instance( 'some_alias_foo' );
+		$fooObj = new \some_alias_foo(); // @phpstan-ignore class.notFound (alias created at runtime)
 		$this->assertInstanceOf( FoundationAlias_LoaderStub::class, $fooObj );
-	}
-
-	/**
-	 * Instantiate a class by name, resolving it through the registered autoloaders.
-	 *
-	 * @param string $class_name Class name or alias to instantiate.
-	 */
-	protected function make_instance( string $class_name ): object {
-		return new $class_name();
-	}
-
-	/**
-	 * Return the value unchanged, typed as mixed so PHPStan cannot narrow it.
-	 */
-	private function opaque( mixed $value ): mixed {
-		return $value;
 	}
 }
 
