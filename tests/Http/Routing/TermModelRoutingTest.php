@@ -16,7 +16,7 @@ use Mantle\Testing\Attributes\PermalinkStructure;
 use Mantle\Testing\FrameworkTestCase;
 
 class TermModelRoutingTest extends FrameworkTestCase {
-	public function test_category_term() {
+	public function test_category_term(): void {
 		Testable_Category_Model::boot_if_not_booted();
 
 		Route::middleware( [ Substitute_Bindings::class ] )->group( function () {
@@ -26,22 +26,28 @@ class TermModelRoutingTest extends FrameworkTestCase {
 		$category = Testable_Category_Model::create( [ 'name' => 'Example Category' ] );
 		$post_id  = static::factory()->post->create();
 
+		$this->assertIsInt( $post_id );
+
 		wp_set_post_categories( $post_id, [ $category->id() ], true );
 
 		$term_link = get_term_link( $category->id(), 'category' );
 
 		$this->assertSame( home_url( '/custom-category-rewrite/' . $category->slug() ), $term_link );
 
+		$term = get_term( $category->id() );
+
+		$this->assertInstanceOf( \WP_Term::class, $term );
+
 		$this
 			->get( $term_link )
 			->assertOk()
 			->assertSee( $category->slug() )
-			->assertQueriedObject( get_term( $category->id() ) )
+			->assertQueriedObject( $term )
 			->assertQueriedObjectId( $category->id() )
 			->assertQueryTrue( 'is_archive', 'is_category', 'is_tax' );
 	}
 
-	public function test_tag_url() {
+	public function test_tag_url(): void {
 		$this->assertTrue( taxonomy_exists( 'post_tag' ) );
 
 		// Account for an edge case where this was accidentally cleared during development of
@@ -50,17 +56,22 @@ class TermModelRoutingTest extends FrameworkTestCase {
 
 		$tag = static::factory()->tag->create( [ 'name' => 'Example Tag' ] );
 
+		$this->assertIsInt( $tag );
+
 		$this->assertSame( home_url( '/tag/example-tag/' ), get_term_link( $tag ) );
 	}
 
-	public function test_custom_taxonomy() {
+	public function test_custom_taxonomy(): void {
 		Testable_Custom_Taxonomy_Model::register_object();
 
 		Route::middleware( [ Substitute_Bindings::class ] )->group( function () {
 			Route::model( Testable_Custom_Taxonomy_Model::class, Testable_Custom_Term_Model_Controller::class );
 		} );
 
-		$this->assertTrue( taxonomy_exists( Testable_Custom_Taxonomy_Model::get_object_name() ) );
+		$taxonomy = Testable_Custom_Taxonomy_Model::get_object_name();
+
+		$this->assertIsString( $taxonomy );
+		$this->assertTrue( taxonomy_exists( $taxonomy ) );
 
 		$term = Testable_Custom_Taxonomy_Model::create(
 			[
@@ -69,17 +80,24 @@ class TermModelRoutingTest extends FrameworkTestCase {
 		);
 
 		$post_id = static::factory()->post->create();
+
+		$this->assertIsInt( $post_id );
+
 		wp_set_object_terms( $post_id, [ $term->id() ], 'test_tax_test', true );
 
 		$term_link = $term->permalink();
 
 		$this->assertSame( home_url( '/test_tax_test/' . $term->slug() . '/' ), $term_link );
 
+		$core_term = get_term( $term->id() );
+
+		$this->assertInstanceOf( \WP_Term::class, $core_term );
+
 		$this
 			->get( $term_link )
 			->assertOk()
 			->assertContent( $term->slug() )
-			->assertQueriedObject( get_term( $term->id() ) )
+			->assertQueriedObject( $core_term )
 			->assertQueriedObjectId( $term->id() )
 			->assertQueryTrue( 'is_archive', 'is_tax' );
 	}
@@ -96,7 +114,7 @@ class Testable_Category_Model extends Term {
 }
 
 class Testable_Term_Model_Controller extends Controller {
-	public function show( Testable_Category_Model $category  ) {
+	public function show( Testable_Category_Model $category ): string {
 		return $category->slug();
 	}
 }
@@ -115,7 +133,7 @@ class Testable_Custom_Taxonomy_Model extends Term implements Registrable {
 }
 
 class Testable_Custom_Term_Model_Controller extends Controller {
-	public function show( Testable_Custom_Taxonomy_Model $test_tax_test  ) {
+	public function show( Testable_Custom_Taxonomy_Model $test_tax_test ): string {
 		return $test_tax_test->slug();
 	}
 }

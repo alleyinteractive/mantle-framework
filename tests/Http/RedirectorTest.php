@@ -11,17 +11,26 @@ use Mantle\Http\Request;
 use Mantle\Http\Routing\Redirector;
 use Mantle\Http\Routing\Url_Generator;
 use Mockery as m;
+use Mockery\MockInterface;
 use Symfony\Component\HttpFoundation\HeaderBag;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class RedirectorTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
+	/**
+	 * @var Request&MockInterface
+	 */
 	protected Request $request;
 
+	/**
+	 * @var Url_Generator&MockInterface
+	 */
 	protected Url_Generator $url;
 
 	protected Redirector $redirect;
 
+	/**
+	 * @var HeaderBag&MockInterface
+	 */
 	protected HeaderBag $headers;
 
 	public function setUp(): void {
@@ -53,21 +62,21 @@ class RedirectorTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->redirect = new Redirector( $this->url );
 	}
 
-	public function testBasicRedirectTo() {
-		$response = $this->redirect->to( 'bar' );
+	public function testBasicRedirectTo(): void {
+		$response = $this->opaque( $this->redirect->to( 'bar' ) );
 
-		$this->assertInstanceOf( RedirectResponse::class, $response );
+		$this->assertInstanceOf( \Symfony\Component\HttpFoundation\RedirectResponse::class, $response );
 		$this->assertSame( 'http://foo.com/bar', $response->getTargetUrl() );
 		$this->assertSame( 302, $response->getStatusCode() );
 	}
 
-	public function testComplexRedirectTo() {
+	public function testComplexRedirectTo(): void {
 		$response = $this->redirect->to(
 			'bar',
 			303,
 			[
-				'X-RateLimit-Limit'     => 60,
-				'X-RateLimit-Remaining' => 59,
+				'X-RateLimit-Limit'     => '60',
+				'X-RateLimit-Remaining' => '59',
 			],
 			true
 		);
@@ -78,31 +87,38 @@ class RedirectorTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( '59', $response->headers->get( 'X-RateLimit-Remaining' ) );
 	}
 
-	public function testRefreshRedirectToCurrentUrl() {
+	public function testRefreshRedirectToCurrentUrl(): void {
 		$this->request->shouldReceive( 'path' )->andReturn( 'http://foo.com/bar' );
 		$response = $this->redirect->refresh();
 		$this->assertSame( 'http://foo.com/bar', $response->getTargetUrl() );
 	}
 
-	public function testBackRedirectToHttpReferer() {
+	public function testBackRedirectToHttpReferer(): void {
 		$this->headers->shouldReceive( 'has' )->with( 'referer' )->andReturn( true );
 		$this->url->shouldReceive( 'previous' )->andReturn( 'http://foo.com/bar' );
 		$response = $this->redirect->back();
 		$this->assertSame( 'http://foo.com/bar', $response->getTargetUrl() );
 	}
 
-	public function testAwayDoesntValidateTheUrl() {
+	public function testAwayDoesntValidateTheUrl(): void {
 		$response = $this->redirect->away( 'bar' );
 		$this->assertSame( 'bar', $response->getTargetUrl() );
 	}
 
-	public function testSecureRedirectToHttpsUrl() {
+	public function testSecureRedirectToHttpsUrl(): void {
 		$response = $this->redirect->secure( 'bar' );
 		$this->assertSame( 'https://foo.com/bar', $response->getTargetUrl() );
 	}
 
-	public function test_home_redirect() {
+	public function test_home_redirect(): void {
 		$response = $this->redirect->home();
 		$this->assertSame( home_url(), $response->getTargetUrl() );
+	}
+
+	/**
+	 * Pass a value through untyped so PHPStan cannot narrow it.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }

@@ -24,7 +24,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 
 		$this->get( rest_url( '/namespace/v1/example-closure' ) )
 			->assertOk()
-			->assertContent( json_encode( 'example-closure' ) );
+			->assertContent( $this->encode_json( 'example-closure' ) );
 
 		$this->post( rest_url( '/namespace/v1/example-closure' ) )
 			->assertNotFound()
@@ -44,7 +44,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 
 		$this->get( rest_url( '/namespace/v1/example-array' ) )
 			->assertOk()
-			->assertContent( json_encode( 'example-array' ) );
+			->assertContent( $this->encode_json( 'example-array' ) );
 
 		$this->post( rest_url( '/namespace/v1/example-array' ) )
 			->assertNotFound()
@@ -62,7 +62,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 
 		$this->get( rest_url( '/namespace/v1/example-string' ) )
 			->assertOk()
-			->assertContent( json_encode( 'function-response' ) );
+			->assertContent( $this->encode_json( 'function-response' ) );
 	}
 
 	public function test_register_routes_in_callback(): void {
@@ -84,18 +84,18 @@ class RestApiRoutingTest extends FrameworkTestCase {
 
 		$this->get( rest_url( '/namespace/v1/example-group-get' ) )
 			->assertOk()
-			->assertContent( json_encode( 'example-group-get' ) );
+			->assertContent( $this->encode_json( 'example-group-get' ) );
 
 		$this->get( rest_url( '/namespace/v1/example-with-param/the-slug' ) )
 			->assertOk()
-			->assertContent( json_encode( 'the-slug' ) );
+			->assertContent( $this->encode_json( 'the-slug' ) );
 
 		$this->post( rest_url( '/namespace/v1/example-post' ) )
 			->assertOk()
-			->assertContent( json_encode( 'example-post' ) );
+			->assertContent( $this->encode_json( 'example-post' ) );
 	}
 
-	public function test_controller_route() {
+	public function test_controller_route(): void {
 		// Registering a group of routes from controller methods.
 		Route::rest_api(
 			'namespace/v1',
@@ -109,15 +109,15 @@ class RestApiRoutingTest extends FrameworkTestCase {
 
 		$this->get( rest_url( '/namespace/v1/example-invoke' ) )
 			->assertOk()
-			->assertContent( json_encode( 'invoke-response' ) );
+			->assertContent( $this->encode_json( 'invoke-response' ) );
 
 		$this->get( rest_url( '/namespace/v1/example-controller/index' ) )
 			->assertOk()
-			->assertContent( json_encode( 'index-response' ) );
+			->assertContent( $this->encode_json( 'index-response' ) );
 
 		$this->get( rest_url( '/namespace/v1/example-controller/show' ) )
 			->assertOk()
-			->assertContent( json_encode( 'show-response' ) );
+			->assertContent( $this->encode_json( 'show-response' ) );
 	}
 
 	public function test_register_with_controller_at_method_string(): void {
@@ -129,7 +129,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 
 		$this->get( rest_url( '/namespace/v1/example-at-method' ) )
 			->assertOk()
-			->assertContent( json_encode( 'index-response' ) );
+			->assertContent( $this->encode_json( 'index-response' ) );
 	}
 
 	public function test_fluent_attributes_do_not_leak_to_sibling_routes(): void {
@@ -143,11 +143,11 @@ class RestApiRoutingTest extends FrameworkTestCase {
 
 		$this->get( rest_url( '/namespace/v1/sibling-admin' ) )
 			->assertOk()
-			->assertContent( json_encode( 'middleware-response' ) );
+			->assertContent( $this->encode_json( 'middleware-response' ) );
 
 		$this->get( rest_url( '/namespace/v1/sibling-public' ) )
 			->assertOk()
-			->assertContent( json_encode( 'public' ) );
+			->assertContent( $this->encode_json( 'public' ) );
 	}
 
 	public function test_registrar_prefix_applies_to_rest_route(): void {
@@ -155,7 +155,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 
 		$this->get( rest_url( '/namespace/v1/prefixed/rest-prefix' ) )
 			->assertOk()
-			->assertContent( json_encode( 'rest-prefix' ) );
+			->assertContent( $this->encode_json( 'rest-prefix' ) );
 	}
 
 	public function test_registrar_prefix_applies_to_rest_route_in_callback(): void {
@@ -169,22 +169,22 @@ class RestApiRoutingTest extends FrameworkTestCase {
 
 		$this->get( rest_url( '/namespace/v1/inner/rest-inner-prefix' ) )
 			->assertOk()
-			->assertContent( json_encode( 'inner-prefix' ) );
+			->assertContent( $this->encode_json( 'inner-prefix' ) );
 
 		$this->get( rest_url( '/namespace/v1/rest-no-prefix' ) )
 			->assertOk()
-			->assertContent( json_encode( 'no-prefix' ) );
+			->assertContent( $this->encode_json( 'no-prefix' ) );
 	}
 
 	public function test_same_path_in_different_namespaces(): void {
 		Route::rest_api( 'namespace-a/v1', '/same-path', fn () => 'a' );
 		Route::rest_api( 'namespace-b/v1', '/same-path', fn () => 'b' );
 
-		$this->get( rest_url( '/namespace-a/v1/same-path' ) )->assertOk()->assertContent( json_encode( 'a' ) );
-		$this->get( rest_url( '/namespace-b/v1/same-path' ) )->assertOk()->assertContent( json_encode( 'b' ) );
+		$this->get( rest_url( '/namespace-a/v1/same-path' ) )->assertOk()->assertContent( $this->encode_json( 'a' ) );
+		$this->get( rest_url( '/namespace-b/v1/same-path' ) )->assertOk()->assertContent( $this->encode_json( 'b' ) );
 	}
 
-	public function test_middleware_class_route() {
+	public function test_middleware_class_route(): void {
 		Route::middleware( Testable_Before_Middleware::class )
 			->rest_api(
 				'namespace/v1',
@@ -196,7 +196,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 
 		$this->get( rest_url( '/namespace/v1/example-middleware-route' ) )
 			->assertOk()
-			->assertContent( json_encode( 'middleware-response' ) );
+			->assertContent( $this->encode_json( 'middleware-response' ) );
 	}
 
 	public function test_middleware_closure_route(): void {
@@ -216,7 +216,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 
 		$this->post( rest_url( '/namespace/v1/example-middleware-modify-post' ), [ 'input' => 'value' ] )
 			->assertOk()
-			->assertContent( json_encode( 'modified' ) );
+			->assertContent( $this->encode_json( 'modified' ) );
 	}
 
 	public function test_middleware_added_fluently(): void {
@@ -233,10 +233,10 @@ class RestApiRoutingTest extends FrameworkTestCase {
 
 		$this->get( rest_url( '/namespace/v1/example-middleware-fluent' ) )
 			->assertOk()
-			->assertContent( json_encode( 'middleware-response' ) );
+			->assertContent( $this->encode_json( 'middleware-response' ) );
 	}
 
-	public function test_group_route() {
+	public function test_group_route(): void {
 		Route::middleware( Testable_Before_Middleware::class )->group(
 			function() {
 				Route::rest_api(
@@ -251,32 +251,41 @@ class RestApiRoutingTest extends FrameworkTestCase {
 
 		$this->get( rest_url( '/namespace/v1/example-group' ) )
 			->assertOk()
-			->assertContent( json_encode( 'middleware-response' ) );
+			->assertContent( $this->encode_json( 'middleware-response' ) );
+	}
+
+	/**
+	 * Encode a value as JSON for comparing against response content.
+	 *
+	 * @param mixed $value Value to encode.
+	 */
+	protected function encode_json( mixed $value ): string {
+		return json_encode( $value, JSON_THROW_ON_ERROR );
 	}
 }
 
 class Testable_Before_Middleware {
-	public function handle( $request, Closure $next ) {
+	public function handle( mixed $request, Closure $next ): string {
 		return 'middleware-response';
 	}
 }
 
 class Testable_Rest_Api_Controller extends Controller {
-	public function index() {
+	public function index(): string {
 		return 'index-response';
 	}
 
-	public function show() {
+	public function show(): string {
 		return 'show-response';
 	}
 }
 
 class Testable_Invokable_Rest_Api_Controller extends Controller {
-	public function __invoke() {
+	public function __invoke(): string {
 		return 'invoke-response';
 	}
 }
 
-function testable_function_name() {
+function testable_function_name(): string {
 	return 'function-response';
 }

@@ -23,7 +23,7 @@ class InteractsWithMailTest extends FrameworkTestCase {
 		);
 	}
 
-	public function testMailSentSuccessfully() {
+	public function testMailSentSuccessfully(): void {
 		$this->assertMailSent();
 		$this->assertMailSent( 'test@example.com' );
 		$this->assertMailSent(
@@ -31,7 +31,7 @@ class InteractsWithMailTest extends FrameworkTestCase {
 		);
 	}
 
-	public function testMailNotSent() {
+	public function testMailNotSent(): void {
 		$this->assertMailNotSent( 'other@example.org' );
 		$this->assertMailNotSent(
 			fn ( Mail_Message $message ) => $message->subject === 'Test Subject' && $message->body === 'Non the body',

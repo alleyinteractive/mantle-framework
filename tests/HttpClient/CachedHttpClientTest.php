@@ -31,14 +31,14 @@ class CachedHttpClientTest extends FrameworkTestCase {
 		remove_all_actions( 'shutdown' );
 	}
 
-	public function test_can_create_cached_client() {
-		$this->assertInstanceOf( Pending_Request::class, $this->client );
+	public function test_can_create_cached_client(): void {
+		$this->assertInstanceOf( Pending_Request::class, $this->opaque( $this->client ) );
 		$this->assertTrue(
 			collect( $this->client->get_middleware() )->contains( fn( $middleware ) => $middleware instanceof Cache_Middleware )
 		);
 	}
 
-	public function test_it_can_make_http_request() {
+	public function test_it_can_make_http_request(): void {
 		// $this->allow_stray_requests();
 		$this->fake_request( mock_http_response()->with_json( [ 'example' => 'value' ] ) );
 
@@ -54,7 +54,7 @@ class CachedHttpClientTest extends FrameworkTestCase {
 		$this->assertRequestCount( 1 );
 	}
 
-	public function test_it_can_detect_different_http_methods() {
+	public function test_it_can_detect_different_http_methods(): void {
 		$this->fake_request( mock_http_response()->with_json( [ 'example' => 'value' ] ) );
 
 		$this->client->get( 'https://example.com' );
@@ -63,7 +63,7 @@ class CachedHttpClientTest extends FrameworkTestCase {
 		$this->assertRequestCount( 2 );
 	}
 
-	public function test_it_can_detect_different_bodies() {
+	public function test_it_can_detect_different_bodies(): void {
 		$this->fake_request( mock_http_response()->with_json( [ 'example' => 'value' ] ) );
 
 		$this->client->post( 'https://example.com', [ 'body' => [ 'example' => 'value' ] ] );
@@ -76,7 +76,7 @@ class CachedHttpClientTest extends FrameworkTestCase {
 		$this->assertRequestCount( 2 );
 	}
 
-	public function test_it_can_control_the_cache_ttl() {
+	public function test_it_can_control_the_cache_ttl(): void {
 		$_SERVER['__ttl_called'] = false;
 
 		$this->client = Factory::create()->cache( function () {
@@ -93,7 +93,7 @@ class CachedHttpClientTest extends FrameworkTestCase {
 		$this->assertTrue( $_SERVER['__ttl_called'] );
 	}
 
-	public function test_it_can_purge_cache() {
+	public function test_it_can_purge_cache(): void {
 		$this->fake_request( mock_http_response()->with_json( [ 'example' => 'value' ] ) );
 
 		$this->client->get( 'https://example.com' );
@@ -101,7 +101,10 @@ class CachedHttpClientTest extends FrameworkTestCase {
 
 		$this->assertRequestCount( 1 );
 
-		$this->assertTrue( $this->client->url( 'https://example.com' )->purge() );
+		$pending = $this->opaque( $this->client->url( 'https://example.com' ) );
+
+		$this->assertInstanceOf( Pending_Request::class, $pending );
+		$this->assertTrue( $pending->purge() );
 
 		$this->client->get( 'https://example.com' );
 
@@ -126,7 +129,7 @@ class CachedHttpClientTest extends FrameworkTestCase {
 	public function test_it_throws_an_exception_when_passing_an_invalid_ttl_callback(): void {
 		$this->expectException( \InvalidArgumentException::class );
 
-		$this->client = Factory::create()->cache( fn () => 'string' );
+		$this->client = Factory::create()->cache( fn () => 'string' ); // @phpstan-ignore argument.type (invalid TTL callback on purpose)
 
 		$this->fake_request( mock_http_response()->with_json( [ 'example' => 'value' ] ) );
 
@@ -288,5 +291,12 @@ class CachedHttpClientTest extends FrameworkTestCase {
 		http_client()->cache()->get( 'https://example.com' );
 
 		$this->assertRequestCount( 1 );
+	}
+
+	/**
+	 * Pass a value through untyped so PHPStan cannot narrow it.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }
