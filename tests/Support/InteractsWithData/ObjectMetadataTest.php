@@ -150,6 +150,9 @@ class ObjectMetadataTest extends FrameworkTestCase {
 		$this->assertSame( 0.0, $metadata->float() );
 	}
 
+	/**
+	 * @return array<string, array{0: string}>
+	 */
 	public static function objectTypeProvider(): array {
 		return [
 			'post' => [ 'post' ],

@@ -88,6 +88,7 @@ class UserObjectTest extends FrameworkTestCase {
 	/**
 	 * Get a random user ID, ensures the ID is not the last in the set.
 	 *
+	 * @param array<string, mixed> $args Arguments for the users.
 	 * @return integer
 	 */
 	protected function get_random_user_id( $args = [] ): int {

@@ -9,6 +9,9 @@ use PHPUnit\Framework\TestCase;
 
 class PrinterTest extends TestCase {
 	protected static string $temp_dir;
+	/**
+	 * @var array<int, string>
+	 */
 	protected static array $argv;
 
 	protected static Filesystem $filesystem;

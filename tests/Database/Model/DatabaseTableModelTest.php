@@ -216,6 +216,13 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 	}
 }
 
+/**
+ * @property int|null $id
+ * @property string $name
+ * @property array<string, mixed>|null $json_data
+ * @property bool|null $boolean_value
+ * @property float|null $float_value
+ */
 class TestableDatabaseModel extends Database_Table_Model {
 	protected array $casts = [
 		'json_data' => 'array',
@@ -230,11 +237,18 @@ enum ExampleEnum: string {
 	case VALUE_THREE = 'value_three';
 }
 
+/**
+ * @property int|null $id
+ * @property ExampleEnum|null $example_enum
+ */
 class TestableDatabaseModelWithEnum extends Database_Table_Model {
 	protected array $casts = [
 		'example_enum' => ExampleEnum::class,
 	];
 
+	/**
+	 * @return array<string, class-string<ExampleEnum>>
+	 */
 	protected function get_enum_attributes(): array {
 		return [
 			'example_enum' => ExampleEnum::class,

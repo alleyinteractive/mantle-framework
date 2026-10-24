@@ -3,6 +3,7 @@ namespace Mantle\Tests\Database\Builder;
 
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Term;
+use Mantle\Support\Collection;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Utils;
@@ -324,6 +325,11 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 	}
 }
 
+/**
+ * @property Another_Testable_Post_Eager|null $post_relationship
+ * @property Collection<int, Another_Testable_Post_Eager> $posts_relationship
+ * @property array<int, Testable_Tag_Eager>|null $term_relationship
+ */
 class Testable_Post_Eager extends Post {
 	public static $object_name = 'post';
 
@@ -340,6 +346,9 @@ class Testable_Post_Eager extends Post {
 	}
 }
 
+/**
+ * @property Testable_Post_Eager $post
+ */
 class Another_Testable_Post_Eager extends Post {
 	public static $object_name = 'example-post-eager';
 
@@ -348,6 +357,10 @@ class Another_Testable_Post_Eager extends Post {
 	}
 }
 
+/**
+ * @property Collection<int, Testable_Category_Eager>|null $category
+ * @property Collection<int, Testable_Post_Eager>|null $posts
+ */
 class Testable_Tag_Eager extends Term {
 	public static $object_name = 'post_tag';
 
@@ -360,6 +373,10 @@ class Testable_Tag_Eager extends Term {
 	}
 }
 
+/**
+ * @property Testable_Tag_Eager|null $tag
+ * @property Collection<int, Testable_Tag_Eager>|null $tags
+ */
 class Testable_Category_Eager extends Testable_Tag_Eager {
 	public static $object_name = 'category';
 

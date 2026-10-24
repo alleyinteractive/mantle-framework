@@ -182,6 +182,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 	/**
 	 * Get a random term ID, ensures the term ID is not the last in the set.
 	 *
+	 * @param array<string, mixed> $args Arguments for the terms.
 	 * @return integer
 	 */
 	protected function get_random_term_id( $args = [] ): int {
@@ -194,6 +195,9 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 	}
 }
 
+/**
+ * @method static int count()
+ */
 class Testable_Tag extends Term {
 	public static $object_name = 'post_tag';
 }

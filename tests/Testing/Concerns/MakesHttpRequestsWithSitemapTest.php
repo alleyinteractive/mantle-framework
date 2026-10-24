@@ -85,6 +85,8 @@ class MakesHttpRequestsWithSitemapTest extends FrameworkTestCase {
 
 	/**
 	 * Data provider to run the multiple requests test several times.
+	 *
+	 * @return array<string, array<int>>
 	 */
 	public static function dataprovider_run_test_multiple_times(): array {
 		return collect( range( 1, 3 ) )

@@ -146,6 +146,9 @@ class FactoryTest extends FrameworkTestCase {
 		$this->assertSame( $expected, Factory\Factory::resolve_custom_factory_name( $model ) );
 	}
 
+	/**
+	 * @return array<string, array{string, string}>
+	 */
 	public static function factory_resolve_custom_names(): array {
 		return [
 			'App\\Models\\Post' => [ 'App\\Models\\Post', 'App\\Database\\Factory\\Post_Factory' ],
@@ -157,12 +160,18 @@ class FactoryTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider factory_resolve_default
+	 *
+	 * @param class-string<Model\Model> $model Model class name.
+	 * @param string                    $expected Expected factory name.
 	 */
 	#[DataProvider( 'factory_resolve_default' )]
 	public function test_resolve_default( string $model, string $expected ): void {
 		$this->assertSame( $expected, Factory\Factory::default_factory_name( $model ) );
 	}
 
+	/**
+	 * @return array<string, array{class-string<Model\Model>, string}>
+	 */
 	public static function factory_resolve_default(): array {
 		return [
 			Model\Attachment::class => [ Model\Attachment::class, Factory\Attachment_Factory::class ],
@@ -289,7 +298,7 @@ class Testable_Post extends Model\Post {
 }
 
 /**
- * @method static Testable_Post_Factory<static, \WP_Post, static> factory()
+ * @method static Testable_Post_Factory<static> factory()
  */
 class Testable_Post_With_Factory extends Model\Post {
 	public static $object_name = 'post';
@@ -300,7 +309,7 @@ class Testable_Post_With_Factory extends Model\Post {
 }
 
 /**
- * @method static Testable_Post_Factory<static, \WP_Post, static> factory()
+ * @method static Testable_Post_Factory<static> factory()
  */
 class Testable_Post_With_Factory_String extends Model\Post {
 	public static $object_name = 'post';
@@ -314,6 +323,11 @@ class Testable_Category extends Model\Term {
 	public static $object_name = 'category';
 }
 
+/**
+ * @template TModel of Model\Post
+ *
+ * @extends Factory\Post_Factory<TModel, \WP_Post, TModel>
+ */
 class Testable_Post_Factory extends Factory\Post_Factory {
 	public function definition(): array {
 		return [
@@ -338,6 +352,9 @@ class Testable_Custom_Taxonomy extends Model\Term {
 	public static $object_name = 'custom_taxonomy';
 }
 
+/**
+ * @extends Post_Factory<Post, \WP_Post, Post>
+ */
 class Counting_Post_Factory extends Post_Factory {
 	public int $definition_calls = 0;
 

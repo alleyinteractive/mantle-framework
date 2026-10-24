@@ -340,6 +340,9 @@ HTML;
 		);
 	}
 
+	/**
+	 * @param array<string, mixed> $attributes Block attributes.
+	 */
 	#[DataProvider('block_serialization_dataprovider')]
 	public function test_block_serialization_unicode_characters( array $attributes, string $expected ): void {
 		$block = get_comment_delimited_block_content( 'namespace/blockname', $attributes, null );
@@ -353,6 +356,9 @@ HTML;
 		$this->assertSame( $expected, $post->post_content );
 	}
 
+	/**
+	 * @return array<string, array{array<string, mixed>, string}>
+	 */
 	public static function block_serialization_dataprovider(): array {
 		return [
 			'unicode' => [

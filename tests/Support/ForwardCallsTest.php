@@ -50,6 +50,13 @@ class ForwardCallsTest extends TestCase {
 	}
 }
 
+/**
+ * @method mixed forwardedTwo( mixed ...$parameters )
+ * @method mixed forwardedBase( mixed ...$parameters )
+ * @method mixed missingMethod( mixed ...$parameters )
+ * @method mixed this1_shouldWork_too( mixed ...$parameters )
+ * @method mixed baseError( mixed ...$parameters )
+ */
 class Forward_CallsOne {
 
 	use Forward_Calls;

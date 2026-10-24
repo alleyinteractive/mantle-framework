@@ -267,6 +267,8 @@ class StrTest extends TestCase {
 
 	/**
 	 * @dataProvider strContainsProvider
+	 *
+	 * @param string|iterable<string> $needles
 	 */
 	#[DataProvider( 'strContainsProvider' )]
 	public function testStrContains( string $haystack, string|iterable $needles, bool $expected, bool $ignoreCase = false ): void {
@@ -275,6 +277,8 @@ class StrTest extends TestCase {
 
 	/**
 	 * @dataProvider strContainsAllProvider
+	 *
+	 * @param iterable<string> $needles
 	 */
 	#[DataProvider( 'strContainsAllProvider' )]
 	public function testStrContainsAll( string $haystack, iterable $needles, bool $expected, bool $ignoreCase = false ): void {
@@ -935,6 +939,9 @@ class StrTest extends TestCase {
 		$this->assertSame( $expected, Str::transliterate( $value ) );
 	}
 
+	/**
+	 * @return array<int, array{0: bool|string, 1: array<int, null>|string}>
+	 */
 	public static function specialCharacterProvider(): array {
 		return [
 			[ 'ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ', 'abcdefghijklmnopqrstuvwxyz' ],

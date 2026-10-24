@@ -152,6 +152,9 @@ class AssetManagerTest extends TestCase {
 		$this->assertScriptLoadsAsync( 'example-async-defer' );
 	}
 
+	/**
+	 * @return array<string, array{\Closure(Asset): Asset}>
+	 */
 	public static function provide_async_and_defer(): array {
 		return [
 			'async then defer' => [ fn ( Asset $asset ) => $asset->async()->defer() ],

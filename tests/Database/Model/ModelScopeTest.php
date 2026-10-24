@@ -59,6 +59,7 @@ class ModelScopeTest extends FrameworkTestCase {
 	 * Get a random post ID, ensures the post ID is not the last in the set.
 	 *
 	 * @todo Replace with a model factory.
+	 * @param array<mixed> $args Unused.
 	 * @return integer
 	 */
 	protected function get_random_post_id( $args = [] ): int {
@@ -79,6 +80,9 @@ class ModelScopeTest extends FrameworkTestCase {
 	}
 }
 
+/**
+ * @method static Post_Query_Builder<static> active()
+ */
 class Testable_Post_For_Scope extends Post {
 	public static $object_name = 'post';
 

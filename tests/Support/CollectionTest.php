@@ -25,6 +25,8 @@ use function Mantle\Support\Helpers\collect;
 class CollectionTest extends FrameworkTestCase {
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFirstReturnsFirstItemInCollection(string $collection ): void
@@ -35,6 +37,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFirstWithCallback(string $collection ): void
@@ -48,6 +52,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFirstWithCallbackAndDefault(string $collection ): void
@@ -61,6 +67,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFirstWithDefaultAndWithoutCallback(string $collection ): void
@@ -72,6 +80,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFirstWhere(string $collection ): void
@@ -89,6 +99,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testLastReturnsLastItemInCollection(string $collection ): void
@@ -99,6 +111,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testLastWithCallback(string $collection ): void
@@ -116,6 +130,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testLastWithCallbackAndDefault(string $collection ): void
@@ -129,6 +145,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testLastWithDefaultAndWithoutCallback(string $collection ): void
@@ -158,6 +176,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testEmptyCollectionIsEmpty(string $collection ): void
@@ -169,6 +189,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testEmptyCollectionIsNotEmpty(string $collection ): void
@@ -181,6 +203,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCollectionIsConstructed(string $collection ): void
@@ -217,6 +241,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSkipMethod(string $collection ): void
@@ -230,6 +256,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSkipUntil(string $collection ): void
@@ -249,6 +277,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSkipWhile(string $collection ): void
@@ -268,6 +298,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGetArrayableItems(string $collection ): void
@@ -301,6 +333,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testToArrayCallsToArrayOnEachItemInCollection(string $collection ): void
@@ -317,6 +351,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testJsonSerializeCallsToArrayOrJsonSerializeOnEachItemInCollection(string $collection ): void
@@ -333,6 +369,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testToJsonEncodesTheJsonSerializeResult(string $collection ): void
@@ -345,6 +383,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCastingToStringJsonEncodesTheToArrayResult(string $collection ): void
@@ -430,6 +470,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCountable(string $collection ): void
@@ -440,6 +482,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCountableByWithoutPredicate(string $collection ): void
@@ -456,6 +500,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCountableByWithPredicate(string $collection ): void
@@ -480,6 +526,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFilter(string $collection ): void
@@ -676,6 +724,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereStrict(string $collection ): void
@@ -690,6 +740,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereInstanceOf(string $collection ): void
@@ -700,6 +752,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereIn(string $collection ): void
@@ -710,6 +764,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereInStrict(string $collection ): void
@@ -720,6 +776,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNotIn(string $collection ): void
@@ -730,6 +788,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNotInStrict(string $collection ): void
@@ -740,6 +800,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testValues(string $collection ): void
@@ -752,6 +814,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testBetween(string $collection ): void
@@ -766,6 +830,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNotBetween(string $collection ): void
@@ -779,6 +845,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFlatten(string $collection ): void
@@ -818,6 +886,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFlattenWithDepth(string $collection ): void
@@ -836,6 +906,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFlattenIgnoresKeys(string $collection ): void
@@ -851,6 +923,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMergeNull(string $collection ): void
@@ -861,6 +935,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMergeArray(string $collection ): void
@@ -871,6 +947,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMergeCollection(string $collection ): void
@@ -881,6 +959,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMergeRecursiveNull(string $collection ): void
@@ -891,6 +971,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMergeRecursiveArray(string $collection ): void
@@ -901,6 +983,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMergeRecursiveCollection(string $collection ): void
@@ -914,6 +998,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testReplaceNull(string $collection ): void
@@ -924,6 +1010,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testReplaceArray(string $collection ): void
@@ -934,6 +1022,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testReplaceCollection(string $collection ): void
@@ -947,6 +1037,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testReplaceRecursiveNull(string $collection ): void
@@ -957,6 +1049,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testReplaceRecursiveArray(string $collection ): void
@@ -967,6 +1061,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testReplaceRecursiveCollection(string $collection ): void
@@ -980,6 +1076,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnionNull(string $collection ): void
@@ -990,6 +1088,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnionArray(string $collection ): void
@@ -1000,6 +1100,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnionCollection(string $collection ): void
@@ -1010,6 +1112,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffCollection(string $collection ): void
@@ -1020,6 +1124,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffUsingWithCollection(string $collection ): void
@@ -1033,6 +1139,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffUsingWithNull(string $collection ): void
@@ -1043,6 +1151,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffNull(string $collection ): void
@@ -1053,6 +1163,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffKeys(string $collection ): void
@@ -1064,6 +1176,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffKeysUsing(string $collection ): void
@@ -1078,6 +1192,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffAssoc(string $collection ): void
@@ -1089,6 +1205,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffAssocUsing(string $collection ): void
@@ -1103,6 +1221,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDuplicates(string $collection ): void
@@ -1126,6 +1246,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDuplicatesWithKey(string $collection ): void
@@ -1137,6 +1259,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDuplicatesWithCallback(string $collection ): void
@@ -1150,6 +1274,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDuplicatesWithStrict(string $collection ): void
@@ -1173,6 +1299,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testEach(string $collection ): void
@@ -1197,6 +1325,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testEachSpread(string $collection ): void
@@ -1233,6 +1363,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testIntersectNull(string $collection ): void
@@ -1243,6 +1375,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testIntersectCollection(string $collection ): void
@@ -1253,6 +1387,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testIntersectByKeysNull(string $collection ): void
@@ -1263,6 +1399,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testIntersectByKeys(string $collection ): void
@@ -1273,6 +1411,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnique(string $collection ): void
@@ -1286,6 +1426,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUniqueWithCallback(string $collection ): void
@@ -1322,6 +1464,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUniqueStrict(string $collection ): void
@@ -1355,6 +1499,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCollapse(string $collection ): void
@@ -1365,6 +1511,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCollapseWithNestedCollections(string $collection ): void
@@ -1375,6 +1523,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testJoin(string $collection ): void
@@ -1392,6 +1542,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCrossJoin(string $collection ): void
@@ -1425,6 +1577,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSort(string $collection ): void
@@ -1447,6 +1601,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortDesc(string $collection ): void
@@ -1469,6 +1625,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortWithCallback(string $collection ): void
@@ -1486,6 +1644,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortBy(string $collection ): void
@@ -1507,6 +1667,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortByString(string $collection ): void
@@ -1524,6 +1686,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortByAlwaysReturnsAssoc(string $collection ): void
@@ -1545,6 +1709,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortKeys(string $collection ): void
@@ -1556,6 +1722,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortKeysDesc(string $collection ): void
@@ -1567,6 +1735,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testReverse(string $collection ): void
@@ -1584,6 +1754,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFlip(string $collection ): void
@@ -1594,6 +1766,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testChunk(string $collection ): void
@@ -1610,6 +1784,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testChunkWhenGivenZeroAsSize(string $collection ): void
@@ -1624,6 +1800,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testChunkWhenGivenLessThanZero(string $collection ): void
@@ -1687,6 +1865,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testExceptSelf(string $collection ): void
@@ -1697,6 +1877,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPluckWithArrayAndObjectValues(string $collection ): void
@@ -1708,6 +1890,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPluckWithArrayAccessValues(string $collection ): void
@@ -1723,6 +1907,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testHas(string $collection ): void
@@ -1736,6 +1922,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testImplode(string $collection ): void
@@ -1751,6 +1939,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testImplodeStringable(string $collection ): void
@@ -1772,6 +1962,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testImplodeStr(string $collection ): void
@@ -1788,6 +1980,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTake(string $collection ): void
@@ -1850,6 +2044,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testRandomOnEmptyCollection(string $collection ): void
@@ -1867,6 +2063,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTakeLast(string $collection ): void
@@ -1878,6 +2076,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTakeUntilUsingValue(string $collection ): void
@@ -1891,6 +2091,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTakeUntilUsingCallback(string $collection ): void
@@ -1906,6 +2108,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTakeUntilReturnsAllItemsForUnmetValue(string $collection ): void
@@ -1925,6 +2129,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTakeUntilCanBeProxied(string $collection ): void
@@ -1944,6 +2150,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTakeWhileUsingValue(string $collection ): void
@@ -1957,6 +2165,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTakeWhileUsingCallback(string $collection ): void
@@ -1972,6 +2182,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTakeWhileReturnsNoItemsForUnmetValue(string $collection ): void
@@ -1991,6 +2203,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTakeWhileCanBeProxied(string $collection ): void
@@ -2050,6 +2264,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMakeMethod(string $collection ): void
@@ -2060,6 +2276,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMakeMethodFromNull(string $collection ): void
@@ -2073,6 +2291,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMakeMethodFromCollection(string $collection ): void
@@ -2084,6 +2304,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMakeMethodFromArray(string $collection ): void
@@ -2094,6 +2316,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWrapWithScalar(string $collection ): void
@@ -2104,6 +2328,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWrapWithArray(string $collection ): void
@@ -2114,6 +2340,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWrapWithArrayable(string $collection ): void
@@ -2124,6 +2352,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWrapWithJsonable(string $collection ): void
@@ -2134,6 +2364,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWrapWithJsonSerialize(string $collection ): void
@@ -2175,6 +2407,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnwrapCollectionWithArray(string $collection ): void
@@ -2184,6 +2418,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnwrapCollectionWithScalar(string $collection ): void
@@ -2193,6 +2429,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTimesMethod(string $collection ): void
@@ -2219,6 +2457,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testConstructMakeFromObject(string $collection ): void
@@ -2231,6 +2471,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testConstructMethod(string $collection ): void
@@ -2241,6 +2483,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testConstructMethodFromNull(string $collection ): void
@@ -2254,6 +2498,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testConstructMethodFromCollection(string $collection ): void
@@ -2265,6 +2511,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testConstructMethodFromArray(string $collection ): void
@@ -2275,6 +2523,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testConstructMethodFromObject(string $collection ): void
@@ -2307,6 +2557,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGetPluckValueWithAccessors(string $collection ): void
@@ -2320,6 +2572,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMap(string $collection ): void
@@ -2333,6 +2587,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapSpread(string $collection ): void
@@ -2358,6 +2614,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFlatMap(string $collection ): void
@@ -2374,6 +2632,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapToDictionary(string $collection ): void
@@ -2408,6 +2668,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapToDictionaryWithNumericKeys(string $collection ): void
@@ -2423,6 +2685,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapToGroups(string $collection ): void
@@ -2445,6 +2709,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapToGroupsWithNumericKeys(string $collection ): void
@@ -2460,6 +2726,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapWithKeys(string $collection ): void
@@ -2480,6 +2748,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapWithKeysIntegerKeys(string $collection ): void
@@ -2500,6 +2770,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapWithKeysMultipleRows(string $collection ): void
@@ -2527,6 +2799,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapWithKeysCallbackKey(string $collection ): void
@@ -2547,6 +2821,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapInto(string $collection ): void
@@ -2597,6 +2873,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testNth(string $collection ): void
@@ -2618,6 +2896,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapWithKeysOverwritingKeys(string $collection ): void
@@ -2650,6 +2930,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByAttribute(string $collection ): void
@@ -2665,6 +2947,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByCallable(string $collection ): void
@@ -2690,6 +2974,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByAttributePreservingKeys(string $collection ): void
@@ -2708,6 +2994,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByClosureWhereItemsHaveSingleGroup(string $collection ): void
@@ -2723,6 +3011,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByClosureWhereItemsHaveSingleGroupPreservingKeys(string $collection ): void
@@ -2743,6 +3033,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByClosureWhereItemsHaveMultipleGroups(string $collection ): void
@@ -2776,6 +3068,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByClosureWhereItemsHaveMultipleGroupsPreservingKeys(string $collection ): void
@@ -2855,6 +3149,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testKeyByAttribute(string $collection ): void
@@ -2872,6 +3168,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testKeyByClosure(string $collection ): void
@@ -2891,6 +3189,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testKeyByObject(string $collection ): void
@@ -3014,6 +3314,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testContainsStrict(string $collection ): void
@@ -3063,6 +3365,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testContainsWithOperator(string $collection ): void
@@ -3077,6 +3381,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGettingSumFromCollection(string $collection ): void
@@ -3092,6 +3398,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCanSumValuesWithoutACallback(string $collection ): void
@@ -3102,6 +3410,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGettingSumFromEmptyCollection(string $collection ): void
@@ -3112,6 +3422,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testValueRetrieverAcceptsDotNotation(string $collection ): void
@@ -3147,6 +3459,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testRejectRemovesElementsPassingTruthTest(string $collection ): void
@@ -3178,6 +3492,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testRejectWithoutAnArgumentRemovesTruthyValues(string $collection ): void
@@ -3202,6 +3518,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSearchReturnsIndexOfFirstFoundItem(string $collection ): void
@@ -3221,6 +3539,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSearchInStrictMode(string $collection ): void
@@ -3237,6 +3557,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSearchReturnsFalseWhenItemIsNotFound(string $collection ): void
@@ -3253,6 +3575,9 @@ class CollectionTest extends FrameworkTestCase {
 		}));
 	}
 
+	/**
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
 	#[DataProvider('collectionClassProvider')]
 	public function testBeforeReturnsItemBeforeTheGivenItem(string $collection): void
 	{
@@ -3270,6 +3595,9 @@ class CollectionTest extends FrameworkTestCase {
 		}));
 	}
 
+	/**
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
 	#[DataProvider('collectionClassProvider')]
 	public function testBeforeInStrictMode(string $collection): void
 	{
@@ -3283,6 +3611,9 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([], $c->before('', true));
 	}
 
+	/**
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
 	#[DataProvider('collectionClassProvider')]
 	public function testBeforeReturnsNullWhenItemIsNotFound(string $collection): void
 	{
@@ -3298,6 +3629,9 @@ class CollectionTest extends FrameworkTestCase {
 		}));
 	}
 
+	/**
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
 	#[DataProvider('collectionClassProvider')]
 	public function testBeforeReturnsNullWhenItemOnTheFirstitem(string $collection): void
 	{
@@ -3312,6 +3646,9 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertNull($c->before('bar'));
 	}
 
+	/**
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
 	#[DataProvider('collectionClassProvider')]
 	public function testAfterReturnsItemAfterTheGivenItem(string $collection): void
 	{
@@ -3332,6 +3669,9 @@ class CollectionTest extends FrameworkTestCase {
 		}));
 	}
 
+	/**
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
 	#[DataProvider('collectionClassProvider')]
 	public function testAfterInStrictMode(string $collection): void
 	{
@@ -3345,6 +3685,9 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame('', $c->after([], true));
 	}
 
+	/**
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
 	#[DataProvider('collectionClassProvider')]
 	public function testAfterReturnsNullWhenItemIsNotFound(string $collection): void
 	{
@@ -3360,6 +3703,9 @@ class CollectionTest extends FrameworkTestCase {
 		}));
 	}
 
+	/**
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
 	#[DataProvider('collectionClassProvider')]
 	public function testAfterReturnsNullWhenItemOnTheLastItem(string $collection): void
 	{
@@ -3376,6 +3722,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testKeys(string $collection ): void
@@ -3386,6 +3734,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPaginate(string $collection ): void
@@ -3459,6 +3809,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testZip(string $collection ): void
@@ -3491,6 +3843,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPadPadsArrayWithValue(string $collection ): void
@@ -3514,6 +3868,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGettingMaxItemsFromCollection(string $collection ): void
@@ -3538,6 +3894,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGettingMinItemsFromCollection(string $collection ): void
@@ -3572,6 +3930,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testOnly(string $collection ): void
@@ -3594,6 +3954,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testOnlyChildren(string $collection ): void
@@ -3650,6 +4012,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGettingAvgItemsFromCollection(string $collection ): void
@@ -3681,6 +4045,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testJsonSerialize(string $collection ): void
@@ -3702,6 +4068,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCombineWithArray(string $collection ): void
@@ -3720,6 +4088,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCombineWithCollection(string $collection ): void
@@ -3739,6 +4109,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testConcatWithArray(string $collection ): void
@@ -3768,6 +4140,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testConcatWithCollection(string $collection ): void
@@ -3799,6 +4173,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testReduce(string $collection ): void
@@ -3811,6 +4187,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testRandomThrowsAnExceptionUsingAmountBiggerThanCollectionSize(string $collection ): void
@@ -3823,6 +4201,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPipe(string $collection ): void
@@ -3836,6 +4216,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMedianValueWithArrayCollection(string $collection ): void
@@ -3847,6 +4229,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMedianValueByKey(string $collection ): void
@@ -3862,6 +4246,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMedianOnCollectionWithNull(string $collection ): void
@@ -3877,6 +4263,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testEvenMedianCollection(string $collection ): void
@@ -3890,6 +4278,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMedianOutOfOrderCollection(string $collection ): void
@@ -3904,6 +4294,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMedianOnEmptyCollectionReturnsNull(string $collection ): void
@@ -3914,6 +4306,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testModeOnNullCollection(string $collection ): void
@@ -3924,6 +4318,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMode(string $collection ): void
@@ -3934,6 +4330,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testModeValueByKey(string $collection ): void
@@ -3949,6 +4347,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWithMultipleModeValues(string $collection ): void
@@ -3959,6 +4359,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSliceOffset(string $collection ): void
@@ -3969,6 +4371,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSliceNegativeOffset(string $collection ): void
@@ -3979,6 +4383,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSliceOffsetAndLength(string $collection ): void
@@ -3989,6 +4395,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSliceOffsetAndNegativeLength(string $collection ): void
@@ -3999,6 +4407,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSliceNegativeOffsetAndLength(string $collection ): void
@@ -4009,6 +4419,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSliceNegativeOffsetAndNegativeLength(string $collection ): void
@@ -4019,6 +4431,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCollectionFromTraversable(string $collection ): void
@@ -4029,6 +4443,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCollectionFromTraversableWithKeys(string $collection ): void
@@ -4039,6 +4455,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitCollectionWithADivisibleCount(string $collection ): void
@@ -4064,6 +4482,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitCollectionWithAnUndivisableCount(string $collection ): void
@@ -4080,6 +4500,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitCollectionWithCountLessThenDivisor(string $collection ): void
@@ -4096,6 +4518,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitCollectionIntoThreeWithCountOfFour(string $collection ): void
@@ -4112,6 +4536,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitCollectionIntoThreeWithCountOfFive(string $collection ): void
@@ -4128,6 +4554,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitCollectionIntoSixWithCountOfTen(string $collection ): void
@@ -4144,6 +4572,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitEmptyCollection(string $collection ): void
@@ -4160,6 +4590,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testHigherOrderCollectionGroupBy(string $collection ): void
@@ -4184,6 +4616,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testHigherOrderCollectionMap(string $collection ): void
@@ -4202,6 +4636,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testHigherOrderCollectionMapFromArrays(string $collection ): void
@@ -4220,6 +4656,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPartition(string $collection ): void
@@ -4236,6 +4674,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPartitionCallbackWithKey(string $collection ): void
@@ -4252,6 +4692,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPartitionByKey(string $collection ): void
@@ -4268,6 +4710,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPartitionWithOperators(string $collection ): void
@@ -4306,6 +4750,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPartitionPreservesKeys(string $collection ): void
@@ -4322,6 +4768,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPartitionEmptyCollection(string $collection ): void
@@ -4352,6 +4800,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTap(string $collection ): void
@@ -4369,6 +4819,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhen(string $collection ): void
@@ -4392,6 +4844,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhenDefault(string $collection ): void
@@ -4409,6 +4863,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhenEmpty(string $collection ): void
@@ -4432,6 +4888,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhenEmptyDefault(string $collection ): void
@@ -4449,6 +4907,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhenNotEmpty(string $collection ): void
@@ -4472,6 +4932,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhenNotEmptyDefault(string $collection ): void
@@ -4489,6 +4951,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnless(string $collection ): void
@@ -4512,6 +4976,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnlessDefault(string $collection ): void
@@ -4529,6 +4995,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnlessEmpty(string $collection ): void
@@ -4552,6 +5020,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnlessEmptyDefault(string $collection ): void
@@ -4569,6 +5039,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnlessNotEmpty(string $collection ): void
@@ -4592,6 +5064,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnlessNotEmptyDefault(string $collection ): void
@@ -4609,6 +5083,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testHasReturnsValidResults(string $collection ): void
@@ -4634,6 +5110,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testItThrowsExceptionWhenTryingToAccessNoProxyProperty(string $collection ): void
@@ -4646,6 +5124,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGetWithNullReturnsNull(string $collection ): void
@@ -4656,6 +5136,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNull(string $collection ): void
@@ -4677,6 +5159,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNullWithoutKey(string $collection ): void
@@ -4689,6 +5173,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNotNull(string $collection ): void
@@ -4713,6 +5199,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNotNullWithoutKey(string $collection ): void
@@ -4730,6 +5218,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCollect(string $collection ): void
@@ -4750,6 +5240,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function test_from_wp_query(string $collection ): void {
@@ -4770,6 +5262,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function test_from_empty_wp_query(string $collection ): void {
@@ -4780,6 +5274,8 @@ class CollectionTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
 	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function test_from_fallback(string $collection ): void {
@@ -4821,6 +5317,9 @@ class TestSupportCollectionHigherOrderItem {
 }
 
 class TestAccessorEloquentTestStub {
+	/**
+	 * @var array<string, mixed>
+	 */
 	protected array $attributes = [];
 
 	public function __construct($attributes)
@@ -4856,6 +5355,9 @@ class TestAccessorEloquentTestStub {
 }
 
 class TestArrayAccessImplementation implements ArrayAccess {
+	/**
+	 * @var array<array-key, mixed>
+	 */
 	private array $arr;
 
 	public function __construct($arr)

@@ -64,6 +64,7 @@ class PostQueryRelationshipsTest extends FrameworkTestCase {
 	/**
 	 * Get a random post ID, ensures the post ID is not the last in the set.
 	 *
+	 * @param array<string, mixed> $args Arguments for the posts.
 	 * @return integer
 	 */
 	protected function get_random_post_id( $args = [] ): int {
@@ -74,6 +75,7 @@ class PostQueryRelationshipsTest extends FrameworkTestCase {
 }
 
 class Testable_Post extends Post {
+	/** @use Relationships<static> */
 	use Relationships;
 	public static $object_name = 'post';
 
@@ -87,6 +89,7 @@ class Testable_Post extends Post {
 }
 
 class Testable_Sponsor extends Post {
+	/** @use Relationships<static> */
 	use Relationships;
 
 	public static $object_name = 'sponsor';
@@ -101,6 +104,7 @@ class Testable_Sponsor extends Post {
 }
 
 class Testable_Tag_Relationships extends Term {
+	/** @use Relationships<static> */
 	use Relationships;
 
 	public static $object_name = 'post_tag';

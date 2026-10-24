@@ -71,4 +71,8 @@ class DatabaseQueryBuilderTest extends FrameworkTestCase {
 	}
 }
 
+/**
+ * @property int|null $id
+ * @property string $name
+ */
 class TestableDatabaseModel extends Database_Table_Model {}

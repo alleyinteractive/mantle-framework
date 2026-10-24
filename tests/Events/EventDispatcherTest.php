@@ -268,6 +268,9 @@ class Example_Event {
 class Example_Void_Listener {
 	public static ?int $seen = null;
 
+	/**
+	 * @param mixed $event Event.
+	 */
 	public function handle( $event ): void {
 		static::$seen = is_object( $event ) ? spl_object_id( $event ) : null;
 	}

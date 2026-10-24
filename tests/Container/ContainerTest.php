@@ -656,6 +656,10 @@ class ContainerMixedPrimitiveStub {
 	public mixed $last;
 	public ContainerConcreteStub $stub;
 
+	/**
+	 * @param mixed $first Unresolvable parameter.
+	 * @param mixed $last  Unresolvable parameter.
+	 */
 	public function __construct( $first, ContainerConcreteStub $stub, $last ) {
 		$this->stub  = $stub;
 		$this->last  = $last;
@@ -682,6 +686,9 @@ class ContainerInjectVariableStubWithInterfaceImplementation implements IContain
 }
 
 class ContainerVariadicPrimitiveStub {
+	/**
+	 * @var array<int|string, string>
+	 */
 	public array $names;
 
 	public function __construct( string ...$names ) {
@@ -690,6 +697,9 @@ class ContainerVariadicPrimitiveStub {
 }
 
 class ContainerVariadicClassStub {
+	/**
+	 * @var array<int|string, ContainerConcreteStub>
+	 */
 	public array $stubs;
 
 	public function __construct( ContainerConcreteStub ...$stubs ) {

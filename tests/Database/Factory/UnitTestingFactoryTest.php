@@ -523,6 +523,9 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		);
 	}
 
+	/**
+	 * @return array<string, array{callable}>
+	 */
 	public static function dataprovider_factory(): array {
 		return [
 			'example' => [ fn () => static::factory()->post->create_and_get() ],
@@ -743,6 +746,9 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		static::factory()->post->scheduled( Carbon::now()->subDay() )->create_and_get();
 	}
 
+	/**
+	 * @return array<string, array{string}>
+	 */
 	public static function slug_id_dataprovider(): array {
 		return [
 			'term_id' => [ 'term_id' ],

@@ -763,6 +763,9 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->get( $path );
 	}
 
+	/**
+	 * @return array<string, array{string, string}>
+	 */
 	public static function invalid_request_provider(): array {
 		return [
 			'wp-login.php' => [ '/wp-login.php', 'Requests to [/wp-login.php] are not supported.' ],
@@ -781,6 +784,9 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->assertSame( 'https://subdomain.' . WP_TESTS_DOMAIN, home_url() );
 	}
 
+	/**
+	 * @return array<string, array{string}>
+	 */
 	public static function core_template_hook_data_provider(): array {
 		return [
 			'template_redirect' => [ 'template_redirect' ],
@@ -788,6 +794,9 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		];
 	}
 
+	/**
+	 * @return array<string, array<mixed>>
+	 */
 	public static function dataprovider_run_multiple_requests(): array {
 		return [
 			'first'  => [],
@@ -798,6 +807,9 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 }
 
 class JsonSerializableMixedResourcesStub implements JsonSerializable {
+	/**
+	 * @return array<int|string, mixed>
+	 */
 	public function jsonSerialize(): array {
 		return [
 			'foo'          => 'bar',
