@@ -24,7 +24,7 @@ class NullableUserObjectsTest extends FrameworkTestCase {
 	 * Test that `get_user_object()` returns a user object.
 	 */
 	public function test_user_object_returns_user(): void {
-		$known_id = self::factory()->user->create();
+		$known_id = static::factory()->user->create();
 
 		$this->assertIsInt( $known_id );
 
@@ -48,7 +48,7 @@ class NullableUserObjectsTest extends FrameworkTestCase {
 	 * Test that `get_user_object_by()` returns a user object.
 	 */
 	public function test_user_object_by_returns_user(): void {
-		$known_user = self::factory()->user->create_and_get();
+		$known_user = static::factory()->user->create_and_get();
 
 		$found = get_user_object_by( 'email', $known_user->user_email );
 

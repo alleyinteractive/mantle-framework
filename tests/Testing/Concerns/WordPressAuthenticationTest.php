@@ -19,7 +19,7 @@ class WordPressAuthenticationTest extends FrameworkTestCase {
 	}
 
 	public function test_acting_as_user(): void {
-		$user = $this->acting_as( $this->factory()->user->create_and_get( [ 'role' => 'administrator' ] ) );
+		$user = $this->acting_as( static::factory()->user->create_and_get( [ 'role' => 'administrator' ] ) );
 
 		$this->assertAuthenticated();
 		$this->assertAuthenticated( $user );
@@ -27,7 +27,7 @@ class WordPressAuthenticationTest extends FrameworkTestCase {
 	}
 
 	public function test_acting_as_user_id(): void {
-		$user = $this->acting_as( $this->factory()->user->create( [ 'role' => 'administrator' ] ) );
+		$user = $this->acting_as( static::factory()->user->create( [ 'role' => 'administrator' ] ) );
 
 		$this->assertAuthenticated();
 		$this->assertAuthenticated( $user );
