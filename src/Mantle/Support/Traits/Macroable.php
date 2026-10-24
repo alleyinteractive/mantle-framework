@@ -28,6 +28,7 @@ trait Macroable {
 	 *
 	 * @param string          $name
 	 * @param object|callable $macro
+	 * @param-closure-this static $macro
 	 */
 	public static function macro( $name, $macro ): void {
 		static::$macros[ $name ] = $macro;

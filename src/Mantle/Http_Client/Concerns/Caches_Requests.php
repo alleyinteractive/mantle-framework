@@ -29,7 +29,7 @@ trait Caches_Requests {
 	 *
 	 * @param int|DateTimeInterface|Closure $ttl Time to live for the cache.
 	 * @param string|null                   $key Cache key to use.
-	 * @phpstan-param int|DateTimeInterface|(Closure(Pending_Request $request, Response $response): int|DateTimeInterface) $ttl
+	 * @phpstan-param int|DateTimeInterface|(Closure(Pending_Request $request, Response $response): (int|DateTimeInterface)) $ttl
 	 */
 	public function cache( int|DateTimeInterface|Closure $ttl = 3600, ?string $key = null ): static {
 		return $this
@@ -47,8 +47,8 @@ trait Caches_Requests {
 	 * @param int|\DateInterval|\DateTimeInterface|Closure $expire Time to consider a cached response expired.
 	 * @param string|null                                  $key Cache key to use.
 	 *
-	 * @phpstan-param int|DateTimeInterface|(Closure(Pending_Request $request, Response $response): int|DateTimeInterface) $stale
-	 * @phpstan-param int|DateTimeInterface|(Closure(Pending_Request $request, Response $response): int|DateTimeInterface) $expire
+	 * @phpstan-param int|\DateInterval|DateTimeInterface|(Closure(Pending_Request $request, Response $response): (int|\DateInterval|DateTimeInterface)) $stale
+	 * @phpstan-param int|\DateInterval|DateTimeInterface|(Closure(Pending_Request $request, Response $response): (int|\DateInterval|DateTimeInterface)) $expire
 	 */
 	public function cache_flexible( int|\DateInterval|\DateTimeInterface|Closure $stale, int|\DateInterval|\DateTimeInterface|Closure $expire, ?string $key = null ): static {
 		return $this

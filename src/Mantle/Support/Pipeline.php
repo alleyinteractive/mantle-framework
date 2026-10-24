@@ -58,7 +58,7 @@ class Pipeline implements PipelineContract {
 	/**
 	 * Set the array of pipes.
 	 *
-	 * @param  array<callable>|callable|string|null $pipes
+	 * @param  array<callable|object|string>|callable|string|null $pipes
 	 */
 	public function through( array|callable|string|null $pipes ): static {
 		$this->pipes = is_array( $pipes ) ? $pipes : func_get_args();

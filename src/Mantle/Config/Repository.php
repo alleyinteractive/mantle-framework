@@ -23,7 +23,7 @@ class Repository implements ArrayAccess, Config_Contract {
 	/**
 	 * Constructor.
 	 *
-	 * @param array<string, array<mixed>> $items Configuration items for the repository.
+	 * @param array<string, mixed> $items Configuration items for the repository.
 	 */
 	public function __construct( protected array $items = [] ) {
 	}
