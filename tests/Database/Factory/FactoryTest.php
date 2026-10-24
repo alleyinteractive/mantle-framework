@@ -229,7 +229,7 @@ class FactoryTest extends FrameworkTestCase {
 			fn () => $this->with_meta( [ 'custom_meta_key' => 'custom_meta_value' ] ),
 		);
 
-		$post_id = Testable_Post::factory()->__call( 'with_custom_meta', [] )->create();
+		$post_id = Testable_Post::factory()->with_custom_meta()->create(); // @phpstan-ignore method.notFound (macro registered at runtime)
 
 		$this->assertSame( 'custom_meta_value', get_post_meta( $post_id, 'custom_meta_key', true ) );
 	}

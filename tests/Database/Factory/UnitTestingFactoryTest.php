@@ -581,12 +581,12 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		register_post_type( 'events' );
 		register_taxonomy( 'event-category', 'events' );
 
-		$event = static::factory()->__get( 'events' )->create_and_get();
+		$event = static::factory()->events->create_and_get(); // @phpstan-ignore property.notFound (dynamic factory via __get)
 
 		$this->assertInstanceOf( \WP_Post::class, $event );
 		$this->assertSame( 'events', get_post_type( $event ) );
 
-		$term = static::factory()->__get( 'event-category' )->create_and_get();
+		$term = static::factory()->{'event-category'}->create_and_get(); // @phpstan-ignore property.notFound (dynamic factory via __get)
 
 		$this->assertInstanceOf( \WP_Term::class, $term );
 		$taxonomy = get_taxonomy( $term->taxonomy );
@@ -598,7 +598,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	public function test_dynamic_factory_unknown(): void {
 		$this->expectException( \InvalidArgumentException::class );
 
-		static::factory()->__get( 'unknown' )->create_and_get();
+		static::factory()->unknown->create_and_get(); // @phpstan-ignore property.notFound (dynamic factory via __get)
 	}
 
 	public function test_dynamic_factory_conflict(): void {
@@ -608,7 +608,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		$this->expectException( \RuntimeException::class );
 		$this->expectExceptionMessage( 'Error creating dynamic factory for conflict. Both post type and taxonomy exist.' );
 
-		static::factory()->__get( 'conflict' )->create_and_get();
+		static::factory()->conflict->create_and_get(); // @phpstan-ignore property.notFound (dynamic factory via __get)
 	}
 
 	public function test_pass_factory_as_meta_argument(): void {
