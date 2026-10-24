@@ -7,10 +7,7 @@ use Mantle\Database\Model\User;
 use Mantle\Testing\FrameworkTestCase;
 
 class UserObjectTest extends FrameworkTestCase {
-	/**
-	 * @var Factory
-	 */
-	protected static $faker;
+	protected static \Faker\Generator $faker;
 
 	public static function setUpBeforeClass(): void {
 		parent::setUpBeforeClass();
@@ -34,17 +31,17 @@ class UserObjectTest extends FrameworkTestCase {
 		$object = User::find( $user_id );
 		$user = get_user_by( 'ID', $user_id );
 
-		$this->assertEquals( $user_id, $object->id() );
-		$this->assertEquals( $user->user_login, $object->slug() );
-		$this->assertEquals( $user->display_name, $object->name() );
-		$this->assertEquals( $user->user_email, $object->get( 'email' ) );
-		$this->assertEquals( $user->user_email, $object->email );
-		$this->assertEquals( $user->user_email, $object->user_email );
+		$this->assertSame( $user_id, $object->id() );
+		$this->assertSame( $user->user_login, $object->slug() );
+		$this->assertSame( $user->display_name, $object->name() );
+		$this->assertSame( $user->user_email, $object->get( 'email' ) );
+		$this->assertSame( $user->user_email, $object->email );
+		$this->assertSame( $user->user_email, $object->user_email );
 
 		// Test that you can get the WordPress object.
 		$core_object = $object->core_object();
 		$this->assertInstanceOf( \WP_User::class, $core_object );
-		$this->assertEquals( $object->id(), $user_id );
+		$this->assertSame( $object->id(), $user_id );
 	}
 
 	public function test_create_user() {
@@ -64,7 +61,7 @@ class UserObjectTest extends FrameworkTestCase {
 		// Get the created user by email.
 		$user_by_email = get_user_by( 'email', $email );
 		$this->assertInstanceOf( \WP_User::class, $user_by_email );
-		$this->assertEquals( $user->id(), $user_by_email->ID );
+		$this->assertSame( $user->id(), $user_by_email->ID );
 	}
 
 	public function test_updating_user() {
@@ -78,7 +75,7 @@ class UserObjectTest extends FrameworkTestCase {
 		// Get the created user by the updated email.
 		$user_by_email = get_user_by( 'email', $email );
 		$this->assertInstanceOf( \WP_User::class, $user_by_email );
-		$this->assertEquals( $user_id, $user_by_email->ID );
+		$this->assertSame( $user_id, $user_by_email->ID );
 	}
 
 	public function test_deleting_user() {

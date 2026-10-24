@@ -48,6 +48,16 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 		$this->skip_for_phpunit_version( '10.0.0', '<', 'Global preservation is not supported in this PHPUnit version.' );
 	}
 
+	public function test_roles_restored_between_tests_first_run(): void {
+		add_role( 'qa_role', 'QA', [ 'read' => true ] );
+
+		$this->assertNotNull( get_role( 'qa_role' ) );
+	}
+
+	public function test_roles_restored_between_tests_second_run(): void {
+		$this->assertNull( get_role( 'qa_role' ) );
+	}
+
 	/**
 	 * Ensure that meta keys registered in one test are still registered in
 	 * another.
@@ -118,6 +128,29 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 
 		// Post type registered in setUpBeforeClass() should persist.
 		$this->assertTrue( post_type_exists( 'persistent_post_type' ) );
+	}
+
+	/**
+	 * Ensure that post type features (title, editor, etc.) are restored
+	 * alongside the post type itself when a test unregisters it.
+	 *
+	 * Previously, $wp_post_types was preserved between tests but
+	 * $_wp_post_type_features was not. A test that called
+	 * unregister_post_type() would leave the features global empty for the
+	 * next test, causing post_type_supports() to return false even though
+	 * the post type itself was restored.
+	 *
+	 * @dataProvider dataprovider_twice
+	 */
+	#[DataProvider( 'dataprovider_twice' )]
+	public function test_post_type_features_preserved_between_tests(): void {
+		$this->assertTrue( post_type_exists( 'persistent_post_type' ) );
+		$this->assertTrue( post_type_supports( 'persistent_post_type', 'title' ) );
+		$this->assertTrue( post_type_supports( 'persistent_post_type', 'editor' ) );
+
+		// Unregister the post type. The next iteration of this test must
+		// still see it with its features intact, restored from the snapshot.
+		unregister_post_type( 'persistent_post_type' );
 	}
 
 	/**

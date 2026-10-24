@@ -28,6 +28,6 @@ class ResetServerTest extends FrameworkTestCase {
 	}
 
 	public function test_modify_server_request_uri() {
-		$this->assertEquals( WP_TESTS_DOMAIN, $_SERVER['HTTP_HOST'] );
+		$this->assertSame( WP_TESTS_DOMAIN, $_SERVER['HTTP_HOST'] );
 	}
 }

@@ -1,0 +1,412 @@
+<?php
+/**
+ * Abstract Block class
+ *
+ * @package Mantle
+ */
+
+namespace Mantle\Blocks;
+
+use InvalidArgumentException;
+use Mantle\Contracts\Block as Block_Contract;
+use Mantle\Facade\View_Loader;
+use Mantle\Http\View\View;
+use Mantle\Http\View\Factory as View_Factory;
+use Mantle\Support\Str;
+use Throwable;
+
+/**
+ * Abstract class that handles the majority of Gutenberg Block
+ * registration.
+ */
+abstract class Block implements Block_Contract {
+
+	/**
+	 * The block attributes.
+	 *
+	 * @var mixed[]
+	 */
+	protected array $attributes = [];
+
+	/**
+	 * A custom override value for the block's Editor script location.
+	 */
+	protected string $editor_script = '';
+
+	/**
+	 * A custom override value for the block's Editor script asset file location.
+	 */
+	protected string $editor_script_asset = '';
+
+	/**
+	 * A custom override value for the block's Editor script dependencies.
+	 */
+	protected array $editor_script_dependencies = [];
+
+	/**
+	 * Editor script version, read from the asset file when empty.
+	 */
+	protected string $editor_script_version = '';
+
+	/**
+	 * A custom override value for the block's Editor script handle.
+	 */
+	protected string $editor_script_handle = '';
+
+	/**
+	 * A custom override value for the block's Editor style location.
+	 */
+	protected string $editor_style = '';
+
+	/**
+	 * A custom override value for the block's Editor style handle.
+	 */
+	protected string $editor_style_handle = '';
+
+	/**
+	 * The block's entry file without the extension.
+	 *
+	 * Generally this is going to be an index file (e.g. index.js, index.jsx)
+	 */
+	protected string $entry_filename = 'index';
+
+	/**
+	 * A custom override value for the block's Frontend script location.
+	 */
+	protected string $frontend_script = '';
+
+	/**
+	 * A custom override value for the block's Frontend script handle.
+	 */
+	protected string $frontend_script_handle = '';
+
+	/**
+	 * A custom override value for the block's Frontend style location.
+	 */
+	protected string $frontend_style = '';
+
+	/**
+	 * A custom override value for the block's Frontend style handle.
+	 */
+	protected string $frontend_style_handle = '';
+
+	/**
+	 * Whether the block is a dynamic block or not.
+	 * Default is true.
+	 */
+	protected bool $is_dynamic = true;
+
+	/**
+	 * The name of the block.
+	 */
+	protected string $name = '';
+
+	/**
+	 * The namespace of the block.
+	 */
+	protected string $namespace = '';
+
+	/**
+	 * Post types that support this block.
+	 *
+	 * Defaults to [ 'all' ], which is all registered post types.
+	 *
+	 * @var string[]
+	 */
+	protected array $post_types = [ 'all' ];
+
+	/**
+	 * Executed by the Block Service Provider to handle registering the block
+	 * with Mantle and WordPress.
+	 */
+	public function register(): void {
+
+		if ( ! $this->should_register() ) {
+			return;
+		}
+
+		add_action(
+			'enqueue_block_editor_assets',
+			function (): void {
+				$this->register_editor_assets();
+				$this->register_frontend_assets();
+			}
+		);
+
+		add_action(
+			'init',
+			function (): void {
+				$args = wp_parse_args(
+					[
+						'attributes'      => $this->get_attributes(),
+						'editor_script'   => $this->get_editor_script_handle(),
+						'render_callback' => $this->is_dynamic ? fn ( array $attributes, string $content ) => $this->render( $attributes, $content ) : null,
+						'editor_style'    => $this->get_editor_style_handle(),
+					]
+				);
+
+				// Register the block.
+				register_block_type(
+					$this->get_block_name(),
+					$args
+				);
+			}
+		);
+	}
+
+	/**
+	 * Whether or not a view was found for the block.
+	 *
+	 * @param string $name The name of the view to attempt to locate.
+	 */
+	protected function block_view_exists( $name ): bool {
+		try {
+			View_Loader::find( $name );
+		} catch ( InvalidArgumentException ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * A helper function for formatting script handles correctly.
+	 *
+	 * @param string $type The type of handle being formatted.
+	 */
+	protected function format_handle( string $type ): string {
+		$name = Str::replace( '/', '-', $this->get_block_name() );
+		return sprintf( '%1$s-%2$s', $name, $type );
+	}
+
+	/**
+	 * Returns the blocks attributes array.
+	 */
+	protected function get_attributes(): array {
+		return $this->attributes;
+	}
+
+	/**
+	 * Get the block assets object from the block's generated asset file.
+	 *
+	 * Supports the PHP asset file emitted by @wordpress/scripts and the older
+	 * JSON format.
+	 */
+	protected function get_block_assets(): object {
+		$base = \trailingslashit( base_path( (string) app( 'config' )->get( 'assets.path', 'build' ) ) ) . "blocks/{$this->name}/{$this->entry_filename}";
+
+		try {
+			if ( is_readable( "{$base}.asset.php" ) ) {
+				$assets = include "{$base}.asset.php"; // phpcs:ignore
+
+				return is_array( $assets ) ? (object) $assets : new \stdClass();
+			}
+
+			if ( is_readable( "{$base}.asset.json" ) ) {
+				$assets = \json_decode( (string) file_get_contents( "{$base}.asset.json" ) ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+
+				return is_object( $assets ) ? $assets : new \stdClass();
+			}
+		} catch ( Throwable ) {
+			return new \stdClass();
+		}
+
+		return new \stdClass();
+	}
+
+	/**
+	 * Gets the block name with the proper namespace and block name.
+	 * e.g. `namespace/name` if a namespace is defined, or simply
+	 * `name` if a namespace is not defined.
+	 */
+	protected function get_block_name(): string {
+		return sprintf( '%1$s/%2$s', $this->get_namespace(), $this->name );
+	}
+
+	/**
+	 * Get the editor scripts array of dependencies.
+	 */
+	protected function get_editor_script_dependencies(): array {
+		if (
+			is_array( $this->editor_script_dependencies )
+			&& ! empty( $this->editor_script_dependencies )
+		) {
+			return $this->editor_script_dependencies;
+		}
+
+		$assets = $this->get_block_assets();
+
+		if ( empty( $assets->dependencies ) ) {
+			return [];
+		}
+
+		return $assets->dependencies;
+	}
+
+	/**
+	 * Resolve the built editor script URL for the block, if the asset exists.
+	 */
+	protected function get_default_editor_script_url(): string {
+		try {
+			return (string) ( asset_loader( "/blocks/{$this->name}/{$this->entry_filename}.js" ) ?? '' );
+		} catch ( Throwable ) {
+			return '';
+		}
+	}
+
+	/**
+	 * Get the version value from the Editor script's asset file.
+	 */
+	protected function get_editor_script_version(): string {
+		if ( '' !== $this->editor_script_version ) {
+			return $this->editor_script_version;
+		}
+
+		$assets = $this->get_block_assets();
+
+		return (string) ( $assets->version ?? \sha1( (string) \time() ) );
+	}
+
+	/**
+	 * Get the editor script handle. Use override if provided, otherwise generate
+	 * a handle.
+	 */
+	protected function get_editor_script_handle(): string {
+		return $this->editor_script_handle ?: $this->format_handle( 'editor-script' );
+	}
+
+
+	/**
+	 * Get the editor style handle. Use override if provided, otherwise generate
+	 * a handle.
+	 */
+	protected function get_editor_style_handle(): string {
+		return $this->editor_style_handle ?: $this->format_handle( 'editor-style' );
+	}
+
+	/**
+	 * Get the frontend script handle. Use override if provided, otherwise generate
+	 * a handle.
+	 */
+	protected function get_frontend_script_handle(): string {
+		return $this->frontend_script_handle ?: $this->format_handle( 'frontend-script' );
+	}
+
+	/**
+	 * Get the frontend style handle. Use override if provided, otherwise generate
+	 * a handle.
+	 */
+	protected function get_frontend_style_handle(): string {
+		return $this->frontend_style_handle ?: $this->format_handle( 'frontend-style' );
+	}
+
+	/**
+	 * Return the namespace for the block. Generate one if necessary.
+	 */
+	protected function get_namespace(): string {
+		return $this->namespace ?: Str::lower( app( 'config' )->get( 'app.namespace', 'app' ) );
+	}
+
+	/**
+	 * Handle registering the Block Editor assets.
+	 */
+	protected function register_editor_assets(): void {
+		asset()
+			->script(
+				$this->get_editor_script_handle(),
+				$this->editor_script ?: $this->get_default_editor_script_url()
+			)
+			->dependencies( $this->get_editor_script_dependencies() )
+			->version( $this->get_editor_script_version() )
+			->only_block_editor();
+
+		if ( ! empty( $this->editor_style ) ) {
+			asset()
+				->style( $this->get_editor_style_handle(), $this->editor_style )
+				->only_block_editor();
+		}
+	}
+
+	/**
+	 * Handle registering the block's frontend assets.
+	 */
+	protected function register_frontend_assets(): void {
+		if ( ! empty( $this->frontend_script ) ) {
+			asset()
+				->script( $this->get_frontend_script_handle(), $this->frontend_script )
+				->only_frontend();
+		}
+
+		if ( ! empty( $this->frontend_style ) ) {
+			asset()
+				->style( $this->get_frontend_style_handle(), $this->frontend_style )
+				->only_frontend();
+		}
+	}
+
+	/**
+	 * Default render function for dynamic blocks.
+	 *
+	 * @param array  $attributes The attributes for this block.
+	 * @param string $content   The inner content for this block. Used when using InnerBlocks.
+	 * @return View The content for the block.
+	 */
+	protected function render( array $attributes, string $content ): View|string {
+		$templates = [
+			$this->get_block_name(),
+			"blocks/{$this->get_block_name()}",
+		];
+
+		$found = false;
+		foreach ( $templates as $template ) {
+			if ( $this->block_view_exists( $template ) ) {
+				$found = true;
+				break;
+			}
+		}
+
+		if ( ! $found ) {
+			return '';
+		}
+
+		/**
+		 * Filter the block attributes before passing them to the template part.
+		 *
+		 * @param array $attributes the block attributes.
+		 */
+		$attributes = apply_filters( "{$this->get_block_name()}_attributes", $attributes ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
+
+		/**
+		 * Execute an action before a block renders. Has access to the
+		 * filtered block attributes.
+		 *
+		 * @param array $attributes The filtered block attributes.
+		 * @param string $contents The contents of the block.
+		 */
+		do_action( "{$this->get_block_name()}_pre_render", $attributes, $content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
+
+		return app( View_Factory::class )->make(
+			$template,
+			[
+				'attributes' => $attributes,
+				'content'    => $content,
+			]
+		);
+	}
+
+	/**
+	 * Helper function to determine if this block should be registered.
+	 *
+	 * @return boolean True if this block should be registered for the current post type, false otherwise.
+	 */
+	protected function should_register() {
+		$should_register = in_array( 'all', $this->post_types, true ) || in_array( get_post_type(), $this->post_types, true );
+
+		/**
+		 * Allow blocks to be disabled programmatically.
+		 *
+		 * @param bool $should_register Whether or not the block should be registered on this post type.
+		 */
+		return apply_filters( "{$this->get_block_name()}_should_register", $should_register ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
+	}
+}

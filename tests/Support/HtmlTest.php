@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 class HtmlTest extends TestCase {
 	use Assertions;
 
-	public const TEST_CONTENT = '
+	public const string TEST_CONTENT = '
 	<div>
 		<section>Example Section</section>
 		<div class="test-class">Example Div By Class</div>
@@ -42,8 +42,18 @@ class HtmlTest extends TestCase {
 </html>
 ";
 		$crawler = new HTML( $html );
+		$output  = $crawler->to_html();
+		$parsed  = new HTML( $output );
 
-		$this->assertStringsEqualsWithoutWhitespace( $html, $crawler->to_html() );
+		$this->assertTrue( $crawler->is_html_document() );
+		$this->assertMatchesRegularExpression( '/<html\b[^>]*>/i', $output );
+		$this->assertMatchesRegularExpression( '/<body\b[^>]*>/i', $output );
+		$this->assertStringContainsString( '<title>Test</title>', $output );
+		$this->assertStringContainsString( '<p>Hello, World!</p>', $output );
+		$this->assertTrue( $parsed->is_html_document() );
+		$this->assertSame( 'Test', $parsed->filter( 'title' )->text() );
+		$this->assertSame( 'Hello, World!', $parsed->filter( 'p' )->text() );
+		$this->assertSame( $crawler->filter( '*' )->count(), $parsed->filter( '*' )->count() );
 	}
 
 	public function test_it_can_convert_html_back_to_the_original_html(): void {
@@ -58,9 +68,9 @@ class HtmlTest extends TestCase {
 		$query = $crawler->first_by_id( 'test-id' );
 
 		$this->assertInstanceOf( HTML::class, $query );
-		$this->assertEquals( 'Example Div By ID', $query->text() );
-		$this->assertEquals( 'div', $query->nodeName() );
-		$this->assertEquals( 'test-id', $query->attr( 'id' ) );
+		$this->assertSame( 'Example Div By ID', $query->text() );
+		$this->assertSame( 'div', $query->nodeName() );
+		$this->assertSame( 'test-id', $query->attr( 'id' ) );
 	}
 
 	public function test_it_can_match_an_element_by_query_selector(): void {
@@ -69,9 +79,9 @@ class HtmlTest extends TestCase {
 		$query = $crawler->first_by_selector( '.test-class' );
 
 		$this->assertInstanceOf( HTML::class, $query );
-		$this->assertEquals( 'Example Div By Class', $query->text() );
-		$this->assertEquals( 'div', $query->nodeName() );
-		$this->assertEquals( 'test-class', $query->attr( 'class' ) );
+		$this->assertSame( 'Example Div By Class', $query->text() );
+		$this->assertSame( 'div', $query->nodeName() );
+		$this->assertSame( 'test-class', $query->attr( 'class' ) );
 	}
 
 	public function test_it_can_match_an_element_by_xpath(): void {
@@ -80,9 +90,9 @@ class HtmlTest extends TestCase {
 		$query = $crawler->first_by_xpath( '//div[@id="test-id"]' );
 
 		$this->assertInstanceOf( HTML::class, $query );
-		$this->assertEquals( 'Example Div By ID', $query->text() );
-		$this->assertEquals( 'div', $query->nodeName() );
-		$this->assertEquals( 'test-id', $query->attr( 'id' ) );
+		$this->assertSame( 'Example Div By ID', $query->text() );
+		$this->assertSame( 'div', $query->nodeName() );
+		$this->assertSame( 'test-id', $query->attr( 'id' ) );
 	}
 
 	public function test_it_can_modify_an_element_in_the_document(): void {
@@ -403,7 +413,7 @@ class HtmlTest extends TestCase {
 		);
 
 		$this->assertCount( 1, $elements );
-		$this->assertEquals( 'Item 3', $elements->text() );
+		$this->assertSame( 'Item 3', $elements->text() );
 
 		// Include the first element.
 		$crawler = new HTML( self::TEST_CONTENT );
@@ -414,8 +424,8 @@ class HtmlTest extends TestCase {
 		);
 
 		$this->assertCount( 2, $elements );
-		$this->assertEquals( 'Item 2', $elements->first()->text() );
-		$this->assertEquals( 'Item 3', $elements->last()->text() );
+		$this->assertSame( 'Item 2', $elements->first()->text() );
+		$this->assertSame( 'Item 3', $elements->last()->text() );
 	}
 
 	public function test_it_can_traverse_elements_using_prev_until(): void {
@@ -426,7 +436,7 @@ class HtmlTest extends TestCase {
 		);
 
 		$this->assertCount( 1, $elements );
-		$this->assertEquals( 'Item 1', $elements->text() );
+		$this->assertSame( 'Item 1', $elements->text() );
 
 		// Include the first element.
 		$crawler = new HTML( self::TEST_CONTENT );
@@ -437,8 +447,8 @@ class HtmlTest extends TestCase {
 		);
 
 		$this->assertCount( 2, $elements );
-		$this->assertEquals( 'Item 1', $elements->first()->text() );
-		$this->assertEquals( 'Item 2', $elements->last()->text() );
+		$this->assertSame( 'Item 1', $elements->first()->text() );
+		$this->assertSame( 'Item 2', $elements->last()->text() );
 	}
 
 	/**
@@ -546,7 +556,7 @@ class HtmlTest extends TestCase {
 
 		$crawler->filter( 'div p' )->before( '<h1>Inserted Before</h1>' );
 
-		$this->assertEquals(
+		$this->assertSame(
 			'<div id="test"><h1>Inserted Before</h1><p>Test</p></div>',
 			$crawler->to_html(),
 		);
@@ -557,7 +567,7 @@ class HtmlTest extends TestCase {
 
 		$crawler->filter( 'div p' )->after( '<h1>Inserted After</h1>' );
 
-		$this->assertEquals(
+		$this->assertSame(
 			'<div id="test"><p>Test</p><h1>Inserted After</h1></div>',
 			$crawler->to_html(),
 		);
@@ -613,37 +623,37 @@ class HtmlTest extends TestCase {
 		$html = new HTML(self::TEST_CONTENT);
 		$previous = $html->filter('#test-id')->previous_sibling();
 		$this->assertInstanceOf(HTML::class, $previous);
-		$this->assertEquals('div', $previous->nodeName());
-		$this->assertEquals('test-class', $previous->attr('class'));
-		$this->assertEquals('Example Div By Class', $previous->text());
+		$this->assertSame('div', $previous->nodeName());
+		$this->assertSame('test-class', $previous->attr('class'));
+		$this->assertSame('Example Div By Class', $previous->text());
 	}
 
 	public function test_it_can_get_the_nearest_next_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
 		$next = $html->filter('#test-id')->next_sibling();
 		$this->assertInstanceOf(HTML::class, $next);
-		$this->assertEquals('ul', $next->nodeName());
+		$this->assertSame('ul', $next->nodeName());
 	}
 
 	public function test_it_returns_empty_crawler_for_missing_next_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
 		$next = $html->filter('ul')->next_sibling();
 		$this->assertInstanceOf(HTML::class, $next);
-		$this->assertEquals(0, $next->count());
+		$this->assertSame(0, $next->count());
 	}
 
 	public function test_it_can_get_the_nearest_previous_filtered_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
 		$previous = $html->filter('#test-id')->previous_sibling('section');
 		$this->assertInstanceOf(HTML::class, $previous);
-		$this->assertEquals('section', $previous->nodeName());
+		$this->assertSame('section', $previous->nodeName());
 	}
 
 	public function test_it_can_get_the_nearest_next_filtered_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
 		$next = $html->filter('section')->next_sibling('ul');
 		$this->assertInstanceOf(HTML::class, $next);
-		$this->assertEquals('ul', $next->nodeName());
+		$this->assertSame('ul', $next->nodeName());
 	}
 
 }

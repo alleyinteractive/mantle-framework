@@ -23,10 +23,8 @@ class WorkerTest extends MockeryTestCase {
 
 	/**
 	 * Application instance.
-	 *
-	 * @var Application
 	 */
-	protected $app;
+	protected Application $app;
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -81,7 +79,7 @@ class WorkerTest extends MockeryTestCase {
 		$this->app['queue.worker']->run( 2 );
 
 		$this->assertCount( 6, $events_fired );
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				Events\Run_Start::class,
 				Events\Job_Processing::class,
@@ -111,7 +109,7 @@ class WorkerTest extends MockeryTestCase {
 }
 
 class Testable_Provider implements Provider {
-	protected $jobs = [];
+	protected array $jobs = [];
 
 	/**
 	 * Push a job to the queue.

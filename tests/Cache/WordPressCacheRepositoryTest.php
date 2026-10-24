@@ -8,33 +8,76 @@ use Mantle\Testing\FrameworkTestCase;
 class WordPressCacheRepositoryTest extends FrameworkTestCase {
 	public function test_cache() {
 		$this->assertFalse( Cache::has( 'cache-key' ) );
-		$this->assertEquals( 'default', Cache::get( 'cache-key', 'default' ) );
+		$this->assertSame( 'default', Cache::get( 'cache-key', 'default' ) );
 		$this->assertTrue( Cache::put( 'cache-key', 'cache-value' ) );
-		$this->assertEquals( 'cache-value', Cache::get( 'cache-key', 'default' ) );
+		$this->assertSame( 'cache-value', Cache::get( 'cache-key', 'default' ) );
 
 		$this->assertNull( Cache::get( 'sear-key' ) );
 		Cache::sear( 'sear-key', fn () => 'sear-value' );
-		$this->assertEquals( 'sear-value', Cache::get( 'sear-key' ) );
+		$this->assertSame( 'sear-value', Cache::get( 'sear-key' ) );
 
 		$this->assertNull( Cache::get( 'remember-key' ) );
-		Cache::remember( 'remember-key', 3600, fn () => 'remember-value' );
-		$this->assertEquals( 'remember-value', Cache::get( 'remember-key' ) );
+		// remember() must return the computed value on a cache miss, then the cached value thereafter.
+		$this->assertSame( 'remember-value', Cache::remember( 'remember-key', 3600, fn () => 'remember-value' ) );
+		$this->assertSame( 'remember-value', Cache::get( 'remember-key' ) );
+		$this->assertSame( 'remember-value', Cache::remember( 'remember-key', 3600, fn () => 'different-value' ) );
+
+		$this->assertNull( Cache::get( 'remember-forever-key' ) );
+		$this->assertSame( 'forever-value', Cache::remember_forever( 'remember-forever-key', fn () => 'forever-value' ) );
+		$this->assertSame( 'forever-value', Cache::get( 'remember-forever-key' ) );
+		$this->assertSame( 'forever-value', Cache::remember_forever( 'remember-forever-key', fn () => 'different-value' ) );
 
 		$this->assertEmpty( Cache::get( 'pull-key' ) );
 		Cache::put( 'pull-key', 'pull-value' );
-		$this->assertEquals( 'pull-value', Cache::pull( 'pull-key' ) );
+		$this->assertSame( 'pull-value', Cache::pull( 'pull-key' ) );
 		$this->assertEmpty( Cache::get( 'pull-key' ) );
+		// pull() returns the default when the key is absent.
+		$this->assertSame( 'pull-default', Cache::pull( 'pull-missing-key', 'pull-default' ) );
 	}
 
 	public function test_multiple() {
 		$keys = [ 'key1', 'key2' ];
-		$this->assertEquals( [ 'key1' => null, 'key2' => null ], Cache::get_multiple( $keys ) );
+		$this->assertSame( [ 'key1' => null, 'key2' => null ], Cache::get_multiple( $keys ) );
 
 		$this->assertTrue( Cache::set_multiple( [ 'key1' => 'value1', 'key2' => 'value2' ] ) );
-		$this->assertEquals( [ 'key1' => 'value1', 'key2' => 'value2' ], Cache::get_multiple( $keys ) );
+		$this->assertSame( [ 'key1' => 'value1', 'key2' => 'value2' ], Cache::get_multiple( $keys ) );
 
 		$this->assertTrue( Cache::delete_multiple( $keys ) );
-		$this->assertEquals( [ 'key1' => null, 'key2' => null ], Cache::get_multiple( $keys ) );
+		$this->assertSame( [ 'key1' => null, 'key2' => null ], Cache::get_multiple( $keys ) );
+	}
+
+	public function test_multiple_default() {
+		$keys = [ 'key1', 'key2' ];
+
+		$this->assertSame( [ 'key1' => 'default', 'key2' => 'default' ], Cache::get_multiple( $keys, 'default' ) );
+
+		Cache::set( 'key1', 'value1' );
+
+		$this->assertSame( [ 'key1' => 'value1', 'key2' => 'default' ], Cache::get_multiple( $keys, 'default' ) );
+	}
+
+	public function test_multiple_psr_alias_default() {
+		Cache::set( 'key1', 'value1' );
+
+		$this->assertSame(
+			[ 'key1' => 'value1', 'key2' => 'default' ],
+			Cache::getMultiple( [ 'key1', 'key2' ], 'default' ),
+		);
+	}
+
+	public function test_multiple_unwraps_flexible_value() {
+		Cache::flexible(
+			key: 'flexible-key',
+			stale: now()->addHour(),
+			expire: now()->addHours( 2 ),
+			callback: fn () => 'flexible-value',
+		);
+
+		$this->assertInstanceOf( SWR_Storage::class, wp_cache_get( 'flexible-key', '' ) );
+		$this->assertSame(
+			[ 'flexible-key' => 'flexible-value', 'missing-key' => 'default' ],
+			Cache::get_multiple( [ 'flexible-key', 'missing-key' ], 'default' ),
+		);
 	}
 
 	public function test_increment_decrement() {
@@ -43,10 +86,10 @@ class WordPressCacheRepositoryTest extends FrameworkTestCase {
 		$this->assertFalse( Cache::increment( 'increment' ) );
 
 		Cache::set( 'increment', 0 );
-		$this->assertEquals( 1, Cache::increment( 'increment' ) );
-		$this->assertEquals( 2, Cache::increment( 'increment' ) );
-		$this->assertEquals( 1, Cache::decrement( 'increment' ) );
-		$this->assertEquals( 0, Cache::decrement( 'increment' ) );
+		$this->assertSame( 1, Cache::increment( 'increment' ) );
+		$this->assertSame( 2, Cache::increment( 'increment' ) );
+		$this->assertSame( 1, Cache::decrement( 'increment' ) );
+		$this->assertSame( 0, Cache::decrement( 'increment' ) );
 	}
 
 	public function test_flexible_fresh() {
@@ -63,7 +106,7 @@ class WordPressCacheRepositoryTest extends FrameworkTestCase {
 		);
 
 		$this->assertTrue( $_SERVER['__CALLED'] );
-		$this->assertEquals( 'flexible-value', $fresh );
+		$this->assertSame( 'flexible-value', $fresh );
 	}
 
 	public function test_flexible_stale_valid() {
@@ -90,7 +133,7 @@ class WordPressCacheRepositoryTest extends FrameworkTestCase {
 		);
 
 		$this->assertFalse( $_SERVER['__CALLED'] );
-		$this->assertEquals( 'original-value', $stale );
+		$this->assertSame( 'original-value', $stale );
 
 		// Ensure it wasn't scheduled for refresh.
 		$this->app->terminate();
@@ -123,13 +166,13 @@ class WordPressCacheRepositoryTest extends FrameworkTestCase {
 		);
 
 		$this->assertFalse( $_SERVER['__CALLED'] );
-		$this->assertEquals( 'original-value', $stale );
+		$this->assertSame( 'original-value', $stale );
 
 		// Ensure it was scheduled for refresh.
 		$this->app->terminate();
 
 		$this->assertTrue( $_SERVER['__CALLED'] );
-		$this->assertEquals( 'updated-value', Cache::flexible(
+		$this->assertSame( 'updated-value', Cache::flexible(
 			key: 'flexible-key',
 			stale: now()->subHour(),
 			expire: now()->addHours( 2 ),
@@ -151,7 +194,7 @@ class WordPressCacheRepositoryTest extends FrameworkTestCase {
 			HOUR_IN_SECONDS,
 		);
 
-		$this->assertEquals( 'original-value', Cache::get( 'flexible-key' ) );
+		$this->assertSame( 'original-value', Cache::get( 'flexible-key' ) );
 	}
 
 	public function test_tags() {
@@ -159,22 +202,57 @@ class WordPressCacheRepositoryTest extends FrameworkTestCase {
 
 		$tags->set( 'key1', 'value1' );
 
-		$this->assertEquals( 'value1', $tags->get( 'key1' ) );
+		$this->assertSame( 'value1', $tags->get( 'key1' ) );
 
 		// Check the underlying object cache.
-		$this->assertEquals( 'value1', wp_cache_get( 'key1', 'prefix' ) );
+		$this->assertSame( 'value1', wp_cache_get( 'key1', 'prefix' ) );
+	}
+
+	public function test_tags_clear_does_not_flush_everything() {
+		Cache::put( 'untagged-key', 'untagged' );
+		Cache::tags( 'tag-a' )->put( 'tagged-key', 'tagged' );
+
+		$this->assertEquals( 'tagged', Cache::tags( 'tag-a' )->get( 'tagged-key' ) );
+
+		Cache::tags( 'tag-a' )->clear();
+
+		$this->assertEquals( 'untagged', Cache::get( 'untagged-key' ) );
+		$this->assertNull( Cache::tags( 'tag-a' )->get( 'tagged-key' ) );
+	}
+
+	public function test_cached_false_is_a_hit() {
+		Cache::put( 'false-key', false );
+
+		$this->assertTrue( Cache::has( 'false-key' ) );
+		$this->assertFalse( Cache::get( 'false-key', 'default' ) );
+
+		$calls = 0;
+
+		$this->assertFalse(
+			Cache::remember(
+				'false-key',
+				60,
+				function () use ( &$calls ) {
+					$calls++;
+					return true;
+				}
+			)
+		);
+		$this->assertSame( 0, $calls );
+		$this->assertFalse( Cache::add( 'false-key', 'other' ) );
+		$this->assertEquals( [ 'missing-key' => 'd', 'false-key' => false ], (array) Cache::get_multiple( [ 'missing-key', 'false-key' ], 'd' ) );
 	}
 
 	public function test_cache_helper() {
 		$key = 'cache-helper-' . wp_rand();
 		$this->assertNull( cache( $key ) );
 		$this->assertTrue( cache( [ $key => 'cache-value' ], 3600 ) );
-		$this->assertEquals( 'cache-value', cache( $key ) );
+		$this->assertSame( 'cache-value', cache( $key ) );
 
 		cache()->remember( 'remember-key', 3600, function() {
 			return 'cache-value';
 		} );
 
-		$this->assertEquals( 'cache-value', cache( 'remember-key' ) );
+		$this->assertSame( 'cache-value', cache( 'remember-key' ) );
 	}
 }

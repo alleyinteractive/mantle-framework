@@ -4,28 +4,28 @@ parameters:
 			message: '#^Method Mantle\\Database\\Model\\Relations\\Has_One_Or_Many\:\:build_dictionary\(\) should return array\<int, array\<int, TModel of Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model \= Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model\>\> but returns array\<int, list\<\(TModel of Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model \= Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model\)\|null\>\>\.$#'
 			identifier: return.type
 			count: 1
-			path: src/mantle/database/model/relations/class-has-one-or-many.php
+			path: src/Mantle/Database/Model/Relations/Has_One_Or_Many.php
 
 		-
 			message: '#^Method Mantle\\Database\\Model\\Relations\\Has_One_Or_Many\:\:save\(\) should return TModel of Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model \= Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model but returns \(TModel of Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model \= Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model\)\|null\.$#'
 			identifier: return.type
 			count: 1
-			path: src/mantle/database/model/relations/class-has-one-or-many.php
+			path: src/Mantle/Database/Model/Relations/Has_One_Or_Many.php
 
 		-
 			message: '#^Parameter \#1 \$attribute of method Mantle\\Database\\Model\\Model\<TParent of Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model \= Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model\>\:\:get\(\) expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 2
-			path: src/mantle/database/model/relations/class-has-one-or-many.php
+			path: src/Mantle/Database/Model/Relations/Has_One_Or_Many.php
 
 		-
 			message: '#^Parameter \#1 \$attribute of method Mantle\\Database\\Query\\Builder\<TModel of Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model \= Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model\>\:\:whereIn\(\) expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 2
-			path: src/mantle/database/model/relations/class-has-one-or-many.php
+			path: src/Mantle/Database/Model/Relations/Has_One_Or_Many.php
 
 		-
 			message: '#^Parameter \#1 \$value of method Mantle\\Support\\Collection\<int,TModel of Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model \= Mantle\\Contracts\\Database\\Core_Object&Mantle\\Contracts\\Database\\Model_Meta&Mantle\\Contracts\\Database\\Updatable&Mantle\\Database\\Model\\Model\>\:\:pluck\(\) expects array\<string\>\|int\|string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1
-			path: src/mantle/database/model/relations/class-has-one-or-many.php
+			path: src/Mantle/Database/Model/Relations/Has_One_Or_Many.php

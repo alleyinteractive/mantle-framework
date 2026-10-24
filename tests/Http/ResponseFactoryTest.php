@@ -7,6 +7,7 @@
 
 namespace Mantle\Tests\Console;
 
+use Mantle\Filesystem\Filesystem;
 use Mantle\Http\Request;
 
 class ResponseFactoryTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
@@ -15,6 +16,10 @@ class ResponseFactoryTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		parent::setUp();
 
 		app()->instance( 'request', new Request() );
+
+		if ( ! app()->bound( 'files' ) ) {
+			app()->instance( 'files', new Filesystem() );
+		}
 	}
 
 	public function tearDown(): void {
@@ -24,18 +29,18 @@ class ResponseFactoryTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 	public function test_raw_response() {
 		$response = response()->make( "I'm a teapot", 418 );
-		$this->assertEquals( "I'm a teapot", $response->getContent() );
+		$this->assertSame( "I'm a teapot", $response->getContent() );
 	}
 
 	public function test_raw_response_through_helper() {
 		$response = response( "I'm a teapot", 418 );
-		$this->assertEquals( "I'm a teapot", $response->getContent() );
+		$this->assertSame( "I'm a teapot", $response->getContent() );
 	}
 
 	public function test_json_response() {
 		$response = response()->json( [ 'response' => 'test' ] );
-		$this->assertEquals( '{"response":"test"}', $response->getContent() );
-		$this->assertEquals( 'application/json', $response->headers->get( 'Content-Type' ) );
+		$this->assertSame( '{"response":"test"}', $response->getContent() );
+		$this->assertSame( 'application/json', $response->headers->get( 'Content-Type' ) );
 	}
 
 	public function test_no_content_response() {

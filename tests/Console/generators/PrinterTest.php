@@ -8,13 +8,10 @@ use PHP_CodeSniffer\Runner;
 use PHPUnit\Framework\TestCase;
 
 class PrinterTest extends TestCase {
-	protected static $temp_dir;
-	protected static $argv;
+	protected static string $temp_dir;
+	protected static array $argv;
 
-	/**
-	 * @var Filesystem
-	 */
-	protected static $filesystem;
+	protected static Filesystem $filesystem;
 
 	public static function setUpBeforeClass(): void {
 		// Store argv for restoring after we're done.
@@ -116,6 +113,6 @@ class PrinterTest extends TestCase {
 			dump( $code );
 		}
 
-		$this->assertEquals( 0, $exit_code, 'phpcs exit code should be 0 for no errors.' );
+		$this->assertSame( 0, $exit_code, 'phpcs exit code should be 0 for no errors.' );
 	}
 }
