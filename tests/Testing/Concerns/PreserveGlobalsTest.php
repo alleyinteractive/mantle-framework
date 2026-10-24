@@ -163,8 +163,16 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 		global $wp_rewrite;
 
 		$this->assertNotEmpty( $wp_rewrite->extra_permastructs, 'Expected current globals to have extra_permastructs.' );
-		$this->assertNotEmpty( self::$current_class_globals['wp_rewrite']->extra_permastructs, 'Expected current class globals to have extra_permastructs.' );
-		$this->assertNotEmpty( self::$original_globals['wp_rewrite']->extra_permastructs, 'Expected original globals to have extra_permastructs.' );
+		$current_class_globals = self::$current_class_globals;
+		$original_globals      = self::$original_globals;
+
+		$this->assertIsArray( $current_class_globals );
+		$this->assertArrayHasKey( 'wp_rewrite', $current_class_globals );
+		$this->assertIsArray( $original_globals );
+		$this->assertArrayHasKey( 'wp_rewrite', $original_globals );
+
+		$this->assertNotEmpty( $current_class_globals['wp_rewrite']->extra_permastructs, 'Expected current class globals to have extra_permastructs.' );
+		$this->assertNotEmpty( $original_globals['wp_rewrite']->extra_permastructs, 'Expected original globals to have extra_permastructs.' );
 	}
 
 	/**
@@ -195,7 +203,8 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 	#[DataProvider( 'dataprovider_twice' )]
 	public function test_rewrite_tags_are_isolated_between_tests(): void {
 		// Test against the raw backed up globals to ensure that the test is valid early on.
-		$this->assertArrayHasKey( 'wp_rewrite', static::$current_class_globals ?: [] );
+		$this->assertIsArray( static::$current_class_globals );
+		$this->assertArrayHasKey( 'wp_rewrite', static::$current_class_globals );
 		$this->assertNotContains( 'temporary-tag=', static::$current_class_globals['wp_rewrite']->queryreplace );
 
 		global $wp_rewrite, $wp;
@@ -289,6 +298,9 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 	/**
 	 * Data provider that can be used to test that a data provider can be called
 	 * multiple times without issue.
+	 */
+	/**
+	 * @return array<string, array<mixed>>
 	 */
 	public static function dataprovider_twice(): array {
 		return [

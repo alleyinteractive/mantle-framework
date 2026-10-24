@@ -20,8 +20,8 @@ class UrlGeneratorTest extends FrameworkTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		$this->router = $this->app['router'];
-		$this->url    = $this->app['url'];
+		$this->router = app()['router'];
+		$this->url    = app()['url'];
 
 		$request = new Request( [], [], [], [], [], [
 			'SERVER_NAME' => wp_parse_url( home_url(), PHP_URL_HOST ),
@@ -31,7 +31,7 @@ class UrlGeneratorTest extends FrameworkTestCase {
 		$this->url->set_request( $request );
 	}
 
-	public function test_home_url_check() {
+	public function test_home_url_check(): void {
 		// Ensure that home_url() generates the correct URL for asserting against.
 		$this->assertStringEndsNotWith( '/', home_url( '/no/trailing/slash' ) );
 		$this->assertStringEndsWith( '/', home_url( '/no/trailing/slash/' ) );
@@ -39,13 +39,19 @@ class UrlGeneratorTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider urlGenerationProvider
+	 *
+	 * @param string                      $expected Expected path.
+	 * @param array<int|string, mixed>    $args Arguments for the URL generator.
 	 */
 	#[DataProvider( 'urlGenerationProvider' )]
-	public function test_basic_generation( $expected, $args ) {
+	public function test_basic_generation( string $expected, array $args ): void {
 		$this->assertSame( home_url( $expected ), $this->url->to( ...$args ) );
 	}
 
-	public static function urlGenerationProvider() {
+	/**
+	 * @return array<string, array{string, array<int|string, mixed>}>
+	 */
+	public static function urlGenerationProvider(): array {
 		return [
 			'/'                              => [ '/', [ '/' ] ],
 			'/foo'                           => [ '/foo', [ '/foo' ] ],
@@ -62,9 +68,8 @@ class UrlGeneratorTest extends FrameworkTestCase {
 		];
 	}
 
-	public function test_route_generation() {
-		/** @var \Mantle\Http\Routing\Router $router */
-		$router = $this->app['router'];
+	public function test_route_generation(): void {
+		$router = $this->router;
 
 		$router->get( '/foo/bar', fn () => 'hello' )->name( 'get' );
 		$router->get( '/trailing/slash/', fn () => 'hello' )->name( 'trailing-slash' );

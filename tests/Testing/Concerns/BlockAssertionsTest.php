@@ -36,7 +36,7 @@ class BlockAssertionsTest extends FrameworkTestCase {
 		] );
 	}
 
-	public function test_string_has_content() {
+	public function test_string_has_content(): void {
 		$this->assertStringHasBlock( $this->post->post_content, 'core/paragraph' );
 		$this->assertStringHasBlock( $this->post->post_content, 'core/heading' );
 		$this->assertStringHasBlock( $this->post->post_content, 'core/heading', [ 'level' => 3 ] );
@@ -44,7 +44,7 @@ class BlockAssertionsTest extends FrameworkTestCase {
 		$this->assertStringNotHasBlock( $this->post->post_content, 'core/heading', [ 'level' => 5 ] );
 	}
 
-	public function test_post_has_content() {
+	public function test_post_has_content(): void {
 		$this->assertPostHasBlock( $this->post, 'core/paragraph' );
 		$this->assertPostHasBlock( $this->post, 'core/heading' );
 		$this->assertPostHasBlock( $this->post, 'core/heading', [ 'level' => 3 ] );

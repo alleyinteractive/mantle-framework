@@ -28,7 +28,7 @@ use function Mantle\Testing\mock_http_response;
 class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 	use Prevent_Remote_Requests;
 
-	public function test_fake_request_no_arguments() {
+	public function test_fake_request_no_arguments(): void {
 		$this->fake_request();
 
 		$response = wp_remote_get( 'https://example.com/' );
@@ -36,7 +36,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertEmpty( wp_remote_retrieve_body( $response ) );
 	}
 
-	public function test_fake_request_catch_all() {
+	public function test_fake_request_catch_all(): void {
 		$this->fake_request( $this->mock_response()->with_status( 201 )->with_json( [ 'name' => 'John Doe' ] ) );
 
 		$response = wp_remote_get( 'https://example.com/' );
@@ -45,7 +45,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertSame( 'John Doe', json_decode( wp_remote_retrieve_body( $response ) )->name );
 	}
 
-	public function test_fake_request() {
+	public function test_fake_request(): void {
 		$this->fake_request( 'https://testing.com/*' )
 			->with_response_code( 404 )
 			->with_body( 'test body' );
@@ -68,7 +68,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertSame( 'example body', wp_remote_retrieve_body( $response ) );
 	}
 
-	public function test_fake_request_with_method() {
+	public function test_fake_request_with_method(): void {
 		$this->fake_request( 'https://example.org/api/v1/users', method: 'POST' )
 			->with_status( 201 )
 			->with_json( [ 'name' => 'John Doe' ] );
@@ -128,7 +128,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertSame( 'value-2', $response->json( 'example' ) );
 	}
 
-	public function test_fake_all_requests() {
+	public function test_fake_all_requests(): void {
 		$this->fake_request()
 			->with_response_code( 206 )
 			->with_body( 'another fake body' );
@@ -138,14 +138,14 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertSame( 206, wp_remote_retrieve_response_code( $response ) );
 	}
 
-	public function test_fake_request_double_response_invalid_argument() {
+	public function test_fake_request_double_response_invalid_argument(): void {
 		$this->expectException( InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'Response object passed twice, only one response object should be passed.' );
 
 		$this->fake_request( $this->mock_response(), $this->mock_response() );
 	}
 
-	public function test_fake_callback() {
+	public function test_fake_callback(): void {
 		$this->fake_request(
 			function() {
 				$this->assertIsString( func_get_arg( 0 ) );
@@ -162,7 +162,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertSame( 123, wp_remote_retrieve_response_code( $response ) );
 	}
 
-	public function test_fake_array_of_urls() {
+	public function test_fake_array_of_urls(): void {
 		$this->fake_request(
 			[
 				'https://github.com/*'  => Mock_Http_Response::create()->with_body( 'github' ),
@@ -177,14 +177,14 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertSame( 'twitter', wp_remote_retrieve_body( $response ) );
 	}
 
-	public function test_fake_json_response() {
+	public function test_fake_json_response(): void {
 		$this->fake_request()->with_json( [ 1, 2, 3 ] );
 
 		$response = wp_remote_get( 'https://github.com/' );
 		$this->assertSame( [ 1, 2, 3 ], json_decode( wp_remote_retrieve_body( $response ) ) );
 	}
 
-	public function test_permanent_redirect_response() {
+	public function test_permanent_redirect_response(): void {
 		$this->fake_request()->with_redirect( 'https://wordpress.org/', 308 );
 
 		$response = wp_remote_get( 'https://drupal.org/' );
@@ -196,7 +196,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertSame( 308, wp_remote_retrieve_response_code( $response ) );
 	}
 
-	public function test_redirect_response() {
+	public function test_redirect_response(): void {
 		$this->fake_request()->with_redirect( 'https://wordpress.org/' );
 
 		$response = wp_remote_get( 'https://drupal.org/' );
@@ -208,7 +208,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertSame( 301, wp_remote_retrieve_response_code( $response ) );
 	}
 
-	public function test_redirect_response_temporary() {
+	public function test_redirect_response_temporary(): void {
 		$this->fake_request()->with_temporary_redirect( 'https://wordpress.org/' );
 
 		$response = wp_remote_get( 'https://drupal.org/' );
@@ -220,7 +220,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertSame( 302, wp_remote_retrieve_response_code( $response ) );
 	}
 
-	public function test_error_response() {
+	public function test_error_response(): void {
 		$this->fake_request(
 			function() {
 				return new \WP_Error( 'http-error', 'Error!' );
@@ -234,7 +234,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertRequestNotSent( 'https://anothersite.com/' );
 	}
 
-	public function test_sequence() {
+	public function test_sequence(): void {
 		$this->fake_request(
 			Mock_Http_Sequence::create()
 				->push_status( 200 )
@@ -249,7 +249,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertSame( 500, $http->get( 'https://example.com/sequence/' )->status() );
 	}
 
-	public function test_sequence_array() {
+	public function test_sequence_array(): void {
 		$this->fake_request(
 			[
 				'github.com/*' => Mock_Http_Sequence::create()
@@ -271,7 +271,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertSame( 403, $http->get( 'https://alley.co/test/' )->status() );
 	}
 
-	public function test_sequence_exception_empty() {
+	public function test_sequence_exception_empty(): void {
 		$this->expectException( RuntimeException::class );
 		$this->expectExceptionMessage( 'No more responses in sequence.' );
 
@@ -288,7 +288,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertSame( 500, $http->get( 'https://example.com/sequence/' )->status() );
 	}
 
-	public function test_sequence_fallback_empty() {
+	public function test_sequence_fallback_empty(): void {
 		$this->fake_request(
 			Mock_Http_Sequence::create()
 				->push_status( 200 )
@@ -306,7 +306,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertSame( 202, $http->get( 'https://example.com/sequence/' )->status() );
 	}
 
-	public function test_prevent_stray_requests() {
+	public function test_prevent_stray_requests(): void {
 		$this->prevent_stray_requests(
 			Mock_Http_Response::create()->with_status( 201 ),
 		);
@@ -315,7 +315,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertRequestSent();
 	}
 
-	public function test_prevent_stray_requests_callback() {
+	public function test_prevent_stray_requests_callback(): void {
 		$this->prevent_stray_requests(
 			fn () => Mock_Http_Response::create()->with_status( 400 ),
 		);
@@ -324,7 +324,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertRequestSent();
 	}
 
-	public function test_prevent_stray_requests_no_fallback() {
+	public function test_prevent_stray_requests_no_fallback(): void {
 		$this->expectException( RuntimeException::class );
 		$this->expectExceptionMessage( 'Attempted request to [https://example.org/path/] without a matching fake.' );
 
@@ -334,7 +334,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 	}
 
 	// Note: This test will require a working internet connection and alley.com to be up.
-	public function test_prevent_stray_requests_but_ignore_some() {
+	public function test_prevent_stray_requests_but_ignore_some(): void {
 		$this->prevent_stray_requests();
 
 		$this->ignore_stray_request( 'https://alley.com/*' );
@@ -354,13 +354,13 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		Http::get( 'https://example.com/' );
 	}
 
-	public function test_prevent_remote_requests_trait() {
+	public function test_prevent_remote_requests_trait(): void {
 		$this->assertTrue( $this->is_preventing_stray_requests() );
 
 		wp_remote_get( 'https://example.com/' );
 	}
 
-	public function test_file_as_response() {
+	public function test_file_as_response(): void {
 		$this->fake_request(
 			fn() => Mock_Http_Response::create()->with_file( MANTLE_PHPUNIT_FIXTURES_PATH . '/images/alley.jpg' )
 		);
@@ -374,7 +374,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertSame( 'image/jpeg', $response->header( 'Content-Type' ) );
 	}
 
-	public function test_streamed_response() {
+	public function test_streamed_response(): void {
 		$this->fake_request(
 			fn() => Mock_Http_Response::create()->with_file( MANTLE_PHPUNIT_FIXTURES_PATH . '/images/alley.jpg' )
 		);
@@ -386,7 +386,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertSame( 'image/jpeg', $response->header( 'Content-Type' ) );
 	}
 
-	public function test_fake_request_with_file() {
+	public function test_fake_request_with_file(): void {
 		$file = __DIR__ . '/../../../src/Mantle/Testing/data/images/wordpress-gsoc-flyer.pdf';
 
 		$this->fake_request( 'https://example.org/images/file.pdf' )->with_file( $file );
@@ -402,7 +402,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertSame( file_get_contents( $file ), $response->body() );
 	}
 
-	public function test_fake_request_with_image() {
+	public function test_fake_request_with_image(): void {
 		$this->fake_request( 'https://example.org/images/alley.jpg' )->with_image();
 
 		$response = Http::get( 'https://example.org/images/alley.jpg' );
@@ -414,7 +414,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		$this->assertTrue( $response->is_file() );
 	}
 
-	public function test_unknown_file_as_response() {
+	public function test_unknown_file_as_response(): void {
 		$this->expectException( InvalidArgumentException::class );
 
 		$this->fake_request(
@@ -422,7 +422,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_unknown_return_value_from_callback() {
+	public function test_unknown_return_value_from_callback(): void {
 		$this->fake_request(
 			fn () => new DateTime(),
 		);

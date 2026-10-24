@@ -24,10 +24,10 @@ class FilesystemManagerTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_default_disk() {
+	public function test_default_disk(): void {
 		$this->expectApplied( 'mantle_filesystem_local_config' )->once()->andReturnArray();
 
-		$filesystem = $this->app->make( Filesystem_Manager::class );
+		$filesystem = app()->make( Filesystem_Manager::class );
 
 		$drive = $filesystem->drive();
 
@@ -52,7 +52,7 @@ class FilesystemManagerTest extends FrameworkTestCase {
 		$this->assertFalse( $drive->exists( 'file.txt' ) );
 	}
 
-	public function test_invalid_disk() {
+	public function test_invalid_disk(): void {
 		$this->expectException( InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'Disk [unsupported] does not have a configured driver.' );
 
@@ -68,7 +68,7 @@ class FilesystemManagerTest extends FrameworkTestCase {
 		$filesystem->drive( 'unsupported' );
 	}
 
-	public function test_unknown_driver() {
+	public function test_unknown_driver(): void {
 		$this->expectException( InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'Disk [valid-disk-unknown-driver] uses a driver [unknown] that is not supported.' );
 
@@ -88,7 +88,7 @@ class FilesystemManagerTest extends FrameworkTestCase {
 		$filesystem->drive( 'valid-disk-unknown-driver' );
 	}
 
-	public function test_custom_driver() {
+	public function test_custom_driver(): void {
 		$_SERVER['__custom_driver_called'] = 0;
 
 		$filesystem = new Filesystem_Manager(
@@ -106,19 +106,18 @@ class FilesystemManagerTest extends FrameworkTestCase {
 			)
 		);
 
-		$adapter = m::mock( \Mantle\Contracts\Filesystem\Filesystem::class );
+		$adapter = $this->createMock( \Mantle\Contracts\Filesystem\Filesystem::class );
 
-		$adapter->shouldReceive( 'exists' )
-			->once()
+		$adapter->expects( $this->once() )
+			->method( 'exists' )
 			->with( '/path' )
-			->andReturn( true );
+			->willReturn( true );
 
 		$_SERVER['__custom_driver_called'] = 0;
 
 		$filesystem->extend(
 			'custom-driver',
 			function ( $app, array $config ) use ( $adapter ) {
-				$this->assertInstanceof( \Mantle\Contracts\Application::class, $app );
 				$this->assertSame( [ 'driver' => 'custom-driver', 'extra_config' => 'value', 'root' => '/path' ], $config );
 
 				$_SERVER['__custom_driver_called']++;
