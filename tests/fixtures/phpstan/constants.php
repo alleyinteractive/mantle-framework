@@ -5,6 +5,7 @@
 
 define( 'WP_TESTS_DOMAIN', 'example.org' );
 define( 'WPINC', 'wp-includes' );
+define( 'DIR_TESTDATA', '/tmp/wordpress-tests-lib/data' );
 
 /**
  * Mirrors tests/Testkit/fixtures/global-functions.php.
