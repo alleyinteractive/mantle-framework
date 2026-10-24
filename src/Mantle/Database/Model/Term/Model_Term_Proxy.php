@@ -14,8 +14,10 @@ use RuntimeException;
 /**
  * Allow term to be retrieve as an attribute on the object.
  *
- * @property Term[] $category Categories for the model.
- * @property Term[] $post_tag Tags for the model.
+ * @property-read Term[] $category Categories for the model.
+ * @property-write Term[]|\WP_Term[]|int[] $category Categories for the model.
+ * @property-read Term[] $post_tag Tags for the model.
+ * @property-write Term[]|\WP_Term[]|int[] $post_tag Tags for the model.
  */
 class Model_Term_Proxy {
 	/**

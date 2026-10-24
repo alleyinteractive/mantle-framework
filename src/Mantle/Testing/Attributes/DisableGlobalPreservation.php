@@ -14,5 +14,5 @@ use Attribute;
  *
  * @see \Mantle\Testing\Concerns\Preserves_Globals
  */
-#[Attribute( Attribute::TARGET_CLASS )]
+#[Attribute( Attribute::TARGET_CLASS | Attribute::TARGET_METHOD )]
 class DisableGlobalPreservation {}

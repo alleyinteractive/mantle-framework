@@ -24,6 +24,9 @@ use function Mantle\Support\Helpers\collect;
  * @extends \Mantle\Database\Query\Builder<TModel>
  *
  * @method \Mantle\Database\Query\Post_Query_Builder<TModel> anyStatus()
+ * @method \Mantle\Database\Query\Post_Query_Builder<TModel> orderByPostIn( string $order )
+ * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereAuthor( int $author )
+ * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereAuthorName( string $name )
  * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereId( int $id )
  * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereName( string $name )
  * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereSlug( string $slug )

@@ -490,7 +490,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Call the given Closure / class@method and inject its dependencies.
 	 *
 	 * @param  callable|string $callback Callback to execute.
-	 * @param  string[]        $parameters Parameters to pass.
+	 * @param  array<mixed>    $parameters Parameters to pass.
 	 * @param  string|null     $default_method Default method.
 	 *
 	 * @throws \InvalidArgumentException Throw for invalid arguments.
