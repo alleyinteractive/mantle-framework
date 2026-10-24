@@ -636,7 +636,7 @@ class Test_Response implements ResponseContract {
 	/**
 	 * Assert that a given object is equivalent to the global queried object.
 	 *
-	 * @param object $object Expected object.
+	 * @param object|null $object Expected object.
 	 */
 	public function assertQueriedObject( mixed $object ): static {
 		TestCase::assertQueriedObject( $object );
@@ -647,7 +647,7 @@ class Test_Response implements ResponseContract {
 	/**
 	 * Assert that a given object is not equivalent to the global queried object.
 	 *
-	 * @param object $object Expected object.
+	 * @param object|null $object Expected object.
 	 */
 	public function assertNotQueriedObject( mixed $object ): static {
 		TestCase::assertNotQueriedObject( $object );
