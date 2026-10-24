@@ -108,7 +108,6 @@ parameters:
 			- tests/Console/hook-usage
 
 			# Tests that still need to be fixed. Removed one group at a time.
-			- tests/Support/CollectionTest.php
 
 			- tests/Support/ArrTest.php
 			- tests/Support/EnvironmentTest.php
