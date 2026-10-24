@@ -107,9 +107,6 @@ parameters:
 			- tests/template-parts
 			- tests/Console/hook-usage
 
-			# Tests that still need to be fixed. Removed one group at a time.
-
-
 
 services:
 	-
