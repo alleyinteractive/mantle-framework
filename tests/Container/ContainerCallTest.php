@@ -169,7 +169,6 @@ class ContainerCallTest extends TestCase {
 			[ 'bar' => 'taylor' ]
 		);
 
-		$this->assertInstanceOf( Closure::class, $result );
 		$result = $result();
 
 		$this->assertInstanceOf( stdClass::class, $result[0] );
@@ -207,15 +206,26 @@ class ContainerCallTest extends TestCase {
 
 class ContainerTestCallStub {
 
-	public function work() {
+	/**
+	 * @return array<int, mixed>
+	 */
+	public function work(): array {
 		return func_get_args();
 	}
 
-	public function inject( ContainerCallConcreteStub $stub, $default = 'taylor' ) {
+	/**
+	 * @return array<int, mixed>
+	 */
+	public function inject( ContainerCallConcreteStub $stub, string $default = 'taylor' ): array {
 		return func_get_args();
 	}
 
-	public function unresolvable( $foo, $bar ) {
+	/**
+	 * @param  mixed $foo Unresolvable parameter.
+	 * @param  mixed $bar Unresolvable parameter.
+	 * @return array<int, mixed>
+	 */
+	public function unresolvable( $foo, $bar ): array {
 		return func_get_args();
 	}
 }
@@ -224,20 +234,29 @@ class ContainerCallConcreteStub {
 
 }
 
-function containerTestInject( ContainerCallConcreteStub $stub, $default = 'taylor' ) {
+/**
+ * @return array<int, mixed>
+ */
+function containerTestInject( ContainerCallConcreteStub $stub, string $default = 'taylor' ): array {
 	return func_get_args();
 }
 
 class ContainerStaticMethodStub {
 
-	public static function inject( ContainerCallConcreteStub $stub, $default = 'taylor' ) {
+	/**
+	 * @return array<int, mixed>
+	 */
+	public static function inject( ContainerCallConcreteStub $stub, string $default = 'taylor' ): array {
 		return func_get_args();
 	}
 }
 
 class ContainerCallCallableStub {
 
-	public function __invoke( ContainerCallConcreteStub $stub, $default = 'jeffrey' ) {
+	/**
+	 * @return array<int, mixed>
+	 */
+	public function __invoke( ContainerCallConcreteStub $stub, string $default = 'jeffrey' ): array {
 		return func_get_args();
 	}
 }

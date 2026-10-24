@@ -15,6 +15,9 @@ class HelpersCacheTest extends TestCase {
 		$this->assertSame( $expected, normalize_cache_ttl( value( $value ) ) );
 	}
 
+	/**
+	 * @return array<string, array{0: int, 1: mixed}>
+	 */
 	public static function normalize_cache_ttl_dataprovider(): array {
 		return [
 			'null'                => [ 0, null ],

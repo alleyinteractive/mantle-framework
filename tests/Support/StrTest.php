@@ -7,7 +7,6 @@ use Mantle\Support\Str;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Ramsey\Uuid\UuidInterface;
 use ReflectionClass;
 
 class StrTest extends TestCase {
@@ -88,21 +87,11 @@ class StrTest extends TestCase {
 		$this->assertTrue( Str::starts_with( 'jason', collect( [ 'day', 'jas' ] ) ) );
 		$this->assertFalse( Str::starts_with( 'jason', 'day' ) );
 		$this->assertFalse( Str::starts_with( 'jason', [ 'day' ] ) );
-		$this->assertFalse( Str::starts_with( 'jason', null ) );
-		$this->assertFalse( Str::starts_with( 'jason', [ null ] ) );
-		$this->assertFalse( Str::starts_with( '0123', [ null ] ) );
-		$this->assertTrue( Str::starts_with( '0123', 0 ) );
 		$this->assertFalse( Str::starts_with( 'jason', 'J' ) );
 		$this->assertFalse( Str::starts_with( 'jason', '' ) );
 		$this->assertFalse( Str::starts_with( '', '' ) );
 		$this->assertFalse( Str::starts_with( '7', ' 7' ) );
 		$this->assertTrue( Str::starts_with( '7a', '7' ) );
-		$this->assertTrue( Str::starts_with( '7a', 7 ) );
-		$this->assertTrue( Str::starts_with( '7.12a', 7.12 ) );
-		$this->assertFalse( Str::starts_with( '7.12a', 7.13 ) );
-		$this->assertTrue( Str::starts_with( 7.123, '7' ) );
-		$this->assertTrue( Str::starts_with( 7.123, '7.12' ) );
-		$this->assertFalse( Str::starts_with( 7.123, '7.13' ) );
 		// Test for multibyte string support
 		$this->assertTrue( Str::starts_with( 'Jönköping', 'Jö' ) );
 		$this->assertTrue( Str::starts_with( 'Malmö', 'Malmö' ) );
@@ -123,17 +112,9 @@ class StrTest extends TestCase {
 		$this->assertFalse( Str::ends_with( 'jason', [ 'no' ] ) );
 		$this->assertFalse( Str::ends_with( 'jason', '' ) );
 		$this->assertFalse( Str::ends_with( '', '' ) );
-		$this->assertFalse( Str::ends_with( 'jason', [ null ] ) );
-		$this->assertFalse( Str::ends_with( 'jason', null ) );
 		$this->assertFalse( Str::ends_with( 'jason', 'N' ) );
 		$this->assertFalse( Str::ends_with( '7', ' 7' ) );
 		$this->assertTrue( Str::ends_with( 'a7', '7' ) );
-		$this->assertTrue( Str::ends_with( 'a7', 7 ) );
-		$this->assertTrue( Str::ends_with( 'a7.12', 7.12 ) );
-		$this->assertFalse( Str::ends_with( 'a7.12', 7.13 ) );
-		$this->assertTrue( Str::ends_with( 0.27, '7' ) );
-		$this->assertTrue( Str::ends_with( 0.27, '0.27' ) );
-		$this->assertFalse( Str::ends_with( 0.27, '8' ) );
 		// Test for multibyte string support
 		$this->assertTrue( Str::ends_with( 'Jönköping', 'öping' ) );
 		$this->assertTrue( Str::ends_with( 'Malmö', 'mö' ) );
@@ -223,8 +204,6 @@ class StrTest extends TestCase {
 		$this->assertSame( 'hannah', Str::before( 'hannah', 'xxxx' ) );
 		$this->assertSame( 'hannah', Str::before( 'hannah', '' ) );
 		$this->assertSame( 'han', Str::before( 'han0nah', '0' ) );
-		$this->assertSame( 'han', Str::before( 'han0nah', 0 ) );
-		$this->assertSame( 'han', Str::before( 'han2nah', 2 ) );
 	}
 
 	public function testStrBeforeLast(): void {
@@ -235,8 +214,6 @@ class StrTest extends TestCase {
 		$this->assertSame( 'yvette', Str::before_last( 'yvette', 'xxxx' ) );
 		$this->assertSame( 'yvette', Str::before_last( 'yvette', '' ) );
 		$this->assertSame( 'yv0et', Str::before_last( 'yv0et0te', '0' ) );
-		$this->assertSame( 'yv0et', Str::before_last( 'yv0et0te', 0 ) );
-		$this->assertSame( 'yv2et', Str::before_last( 'yv2et2te', 2 ) );
 	}
 
 	public function testStrBetween(): void {
@@ -274,8 +251,6 @@ class StrTest extends TestCase {
 		$this->assertSame( 'hannah', Str::after( 'hannah', 'xxxx' ) );
 		$this->assertSame( 'hannah', Str::after( 'hannah', '' ) );
 		$this->assertSame( 'nah', Str::after( 'han0nah', '0' ) );
-		$this->assertSame( 'nah', Str::after( 'han0nah', 0 ) );
-		$this->assertSame( 'nah', Str::after( 'han2nah', 2 ) );
 	}
 
 	public function testStrAfterLast(): void {
@@ -286,24 +261,26 @@ class StrTest extends TestCase {
 		$this->assertSame( 'yvette', Str::after_last( 'yvette', 'xxxx' ) );
 		$this->assertSame( 'yvette', Str::after_last( 'yvette', '' ) );
 		$this->assertSame( 'te', Str::after_last( 'yv0et0te', '0' ) );
-		$this->assertSame( 'te', Str::after_last( 'yv0et0te', 0 ) );
-		$this->assertSame( 'te', Str::after_last( 'yv2et2te', 2 ) );
 		$this->assertSame( 'foo', Str::after_last( '----foo', '---' ) );
 	}
 
 	/**
 	 * @dataProvider strContainsProvider
+	 *
+	 * @param string|iterable<string> $needles
 	 */
 	#[DataProvider( 'strContainsProvider' )]
-	public function testStrContains( $haystack, $needles, $expected, $ignoreCase = false ): void {
+	public function testStrContains( string $haystack, string|iterable $needles, bool $expected, bool $ignoreCase = false ): void {
 		$this->assertSame( $expected, Str::contains( $haystack, $needles, $ignoreCase ) );
 	}
 
 	/**
 	 * @dataProvider strContainsAllProvider
+	 *
+	 * @param iterable<string> $needles
 	 */
 	#[DataProvider( 'strContainsAllProvider' )]
-	public function testStrContainsAll( $haystack, $needles, $expected, $ignoreCase = false ): void {
+	public function testStrContainsAll( string $haystack, iterable $needles, bool $expected, bool $ignoreCase = false ): void {
 		$this->assertSame( $expected, Str::contains_all( $haystack, $needles, $ignoreCase ) );
 	}
 
@@ -384,8 +361,6 @@ class StrTest extends TestCase {
 		$this->assertFalse( Str::is( [ 'a*', 'b*' ], 'f/' ) );
 
 		// numeric values and patterns
-		$this->assertFalse( Str::is( [ 'a*', 'b*' ], 123 ) );
-		$this->assertTrue( Str::is( [ '*2*', 'b*' ], 11211 ) );
 
 		$this->assertTrue( Str::is( '*/foo', 'blah/baz/foo' ) );
 
@@ -398,16 +373,13 @@ class StrTest extends TestCase {
 		// empty patterns
 		$this->assertFalse( Str::is( [], 'test' ) );
 
-		$this->assertFalse( Str::is( '', 0 ) );
-		$this->assertFalse( Str::is( [ null ], 0 ) );
-		$this->assertTrue( Str::is( [ null ], null ) );
 	}
 
 	/**
 	 * @dataProvider validUuidList
 	 */
 	#[DataProvider( 'validUuidList' )]
-	public function testIsUuidWithValidUuid( $uuid ): void {
+	public function testIsUuidWithValidUuid( string $uuid ): void {
 		$this->assertTrue( Str::is_uuid( $uuid ) );
 	}
 
@@ -415,7 +387,7 @@ class StrTest extends TestCase {
 	 * @dataProvider invalidUuidList
 	 */
 	#[DataProvider( 'invalidUuidList' )]
-	public function testIsUuidWithInvalidUuid( $uuid ): void {
+	public function testIsUuidWithInvalidUuid( string $uuid ): void {
 		$this->assertFalse( Str::is_uuid( $uuid ) );
 	}
 
@@ -432,8 +404,6 @@ class StrTest extends TestCase {
 		$this->assertFalse( Str::is_json( '{first: "John"}' ) );
 		$this->assertFalse( Str::is_json( '[{first: "John"}, {first: "Jane"}]' ) );
 		$this->assertFalse( Str::is_json( '' ) );
-		$this->assertFalse( Str::is_json( null ) );
-		$this->assertFalse( Str::is_json( [] ) );
 	}
 
 	public function testIsMatch(): void {
@@ -490,7 +460,6 @@ class StrTest extends TestCase {
 		$this->assertSame( 16, strlen( Str::random() ) );
 		$randomInteger = random_int( 1, 100 );
 		$this->assertSame( $randomInteger, strlen( Str::random( $randomInteger ) ) );
-		$this->assertIsString( Str::random() );
 	}
 
 	/** @test */
@@ -531,11 +500,17 @@ class StrTest extends TestCase {
 			]
 		);
 
-		$this->assertSame( 'x', Str::random() );
-		$this->assertSame( 16, mb_strlen( Str::random() ) );
-		$this->assertSame( 'y', Str::random() );
-		$this->assertSame( 'z', Str::random() );
-		$this->assertSame( 16, mb_strlen( Str::random() ) );
+		$first  = Str::random();
+		$second = Str::random();
+		$third  = Str::random();
+		$fourth = Str::random();
+		$fifth  = Str::random();
+
+		$this->assertSame( 'x', $first );
+		$this->assertSame( 16, mb_strlen( $second ) );
+		$this->assertSame( 'y', $third );
+		$this->assertSame( 'z', $fourth );
+		$this->assertSame( 16, mb_strlen( $fifth ) );
 		$this->assertSame( 16, mb_strlen( Str::random() ) );
 
 		Str::create_random_strings_normally();
@@ -603,7 +578,6 @@ class StrTest extends TestCase {
 		$this->assertSame( 'foo foobar', Str::replace_first( 'bar', '', 'foobar foobar' ) );
 		$this->assertSame( 'foobar foobar', Str::replace_first( 'xxx', 'yyy', 'foobar foobar' ) );
 		$this->assertSame( 'foobar foobar', Str::replace_first( '', 'yyy', 'foobar foobar' ) );
-		$this->assertSame( '1', Str::replace_first( 0, '1', '0' ) );
 		// Test for multibyte string support
 		$this->assertSame( 'Jxxxnköping Malmö', Str::replace_first( 'ö', 'xxx', 'Jönköping Malmö' ) );
 		$this->assertSame( 'Jönköping Malmö', Str::replace_first( '', 'yyy', 'Jönköping Malmö' ) );
@@ -821,13 +795,11 @@ class StrTest extends TestCase {
 	}
 
 	public function testUuid(): void {
-		$this->assertInstanceOf( UuidInterface::class, Str::uuid() );
-		$this->assertIsString( (string) Str::uuid() );
+		$this->assertTrue( Str::is_uuid( (string) Str::uuid() ) );
 	}
 
 	public function testAsciiNull(): void {
 		$this->assertSame( '', Str::ascii( null ) );
-		$this->assertTrue( Str::is_ascii( null ) );
 		$this->assertSame( '', Str::slug( null ) );
 	}
 
@@ -889,7 +861,10 @@ class StrTest extends TestCase {
 		// $this->assertSame( 3, Str::word_count( 'МАМА МЫЛА РАМУ', 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ' ) );
 	}
 
-	public static function validUuidList() {
+	/**
+	 * @return array<int, array{0: string}>
+	 */
+	public static function validUuidList(): array {
 		return [
 			[ 'a0a2a2d2-0b87-4a18-83f2-2529882be2de' ],
 			[ '145a1e72-d11d-11e8-a8d5-f2801f1b9fd1' ],
@@ -904,7 +879,10 @@ class StrTest extends TestCase {
 		];
 	}
 
-	public static function invalidUuidList() {
+	/**
+	 * @return array<int, array{0: string}>
+	 */
+	public static function invalidUuidList(): array {
 		return [
 			[ 'not a valid uuid so we can test this' ],
 			[ 'zf6f8cb0-c57d-11e1-9b21-0800200c9a66' ],
@@ -919,7 +897,10 @@ class StrTest extends TestCase {
 		];
 	}
 
-	public static function strContainsProvider() {
+	/**
+	 * @return array<int, array{0: string, 1: string|iterable<string>, 2: bool, 3?: bool}>
+	 */
+	public static function strContainsProvider(): array {
 		return [
 			[ 'Taylor', 'ylo', true, true ],
 			[ 'Taylor', 'ylo', true, false ],
@@ -937,7 +918,10 @@ class StrTest extends TestCase {
 		];
 	}
 
-	public static function strContainsAllProvider() {
+	/**
+	 * @return array<int, array{0: string, 1: array<string>, 2: bool, 3: bool}>
+	 */
+	public static function strContainsAllProvider(): array {
 		return [
 			[ 'Taylor Otwell', [ 'taylor', 'otwell' ], false, false ],
 			[ 'Taylor Otwell', [ 'taylor', 'otwell' ], true, true ],
@@ -971,6 +955,9 @@ class StrTest extends TestCase {
 		$this->assertSame( $expected, Str::transliterate( $value ) );
 	}
 
+	/**
+	 * @return array<int, array{0: bool|string, 1: array<int, null>|string}>
+	 */
 	public static function specialCharacterProvider(): array {
 		return [
 			[ 'ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ', 'abcdefghijklmnopqrstuvwxyz' ],
@@ -1000,13 +987,208 @@ class StrTest extends TestCase {
 	public function testPasswordCreation(): void {
 		$this->assertTrue( strlen( Str::password() ) === 32 );
 	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'starts_with_loose_arguments_provider' )]
+	public function testStartsWithLooseArguments( bool $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::starts_with( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: bool, 1: array<int, mixed>}>
+	 */
+	public static function starts_with_loose_arguments_provider(): array {
+		return [
+			[ false, [ 'jason', null ] ],
+			[ false, [ 'jason', [ null ] ] ],
+			[ false, [ '0123', [ null ] ] ],
+			[ true, [ '0123', 0 ] ],
+			[ true, [ '7a', 7 ] ],
+			[ true, [ '7.12a', 7.12 ] ],
+			[ false, [ '7.12a', 7.13 ] ],
+			[ true, [ 7.123, '7' ] ],
+			[ true, [ 7.123, '7.12' ] ],
+			[ false, [ 7.123, '7.13' ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'ends_with_loose_arguments_provider' )]
+	public function testEndsWithLooseArguments( bool $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::ends_with( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: bool, 1: array<int, mixed>}>
+	 */
+	public static function ends_with_loose_arguments_provider(): array {
+		return [
+			[ false, [ 'jason', [ null ] ] ],
+			[ false, [ 'jason', null ] ],
+			[ true, [ 'a7', 7 ] ],
+			[ true, [ 'a7.12', 7.12 ] ],
+			[ false, [ 'a7.12', 7.13 ] ],
+			[ true, [ 0.27, '7' ] ],
+			[ true, [ 0.27, '0.27' ] ],
+			[ false, [ 0.27, '8' ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'before_loose_arguments_provider' )]
+	public function testBeforeLooseArguments( mixed $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::before( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: mixed, 1: array<int, mixed>}>
+	 */
+	public static function before_loose_arguments_provider(): array {
+		return [
+			[ 'han', [ 'han0nah', 0 ] ],
+			[ 'han', [ 'han2nah', 2 ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'before_last_loose_arguments_provider' )]
+	public function testBeforeLastLooseArguments( mixed $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::before_last( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: mixed, 1: array<int, mixed>}>
+	 */
+	public static function before_last_loose_arguments_provider(): array {
+		return [
+			[ 'yv0et', [ 'yv0et0te', 0 ] ],
+			[ 'yv2et', [ 'yv2et2te', 2 ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'after_loose_arguments_provider' )]
+	public function testAfterLooseArguments( mixed $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::after( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: mixed, 1: array<int, mixed>}>
+	 */
+	public static function after_loose_arguments_provider(): array {
+		return [
+			[ 'nah', [ 'han0nah', 0 ] ],
+			[ 'nah', [ 'han2nah', 2 ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'after_last_loose_arguments_provider' )]
+	public function testAfterLastLooseArguments( mixed $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::after_last( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: mixed, 1: array<int, mixed>}>
+	 */
+	public static function after_last_loose_arguments_provider(): array {
+		return [
+			[ 'te', [ 'yv0et0te', 0 ] ],
+			[ 'te', [ 'yv2et2te', 2 ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'is_loose_arguments_provider' )]
+	public function testIsLooseArguments( bool $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::is( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: bool, 1: array<int, mixed>}>
+	 */
+	public static function is_loose_arguments_provider(): array {
+		return [
+			[ false, [ [ 'a*', 'b*' ], 123 ] ],
+			[ true, [ [ '*2*', 'b*' ], 11211 ] ],
+			[ false, [ '', 0 ] ],
+			[ false, [ [ null ], 0 ] ],
+			[ true, [ [ null ], null ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'is_json_loose_arguments_provider' )]
+	public function testIsJsonLooseArguments( bool $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::is_json( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: bool, 1: array<int, mixed>}>
+	 */
+	public static function is_json_loose_arguments_provider(): array {
+		return [
+			[ false, [ null ] ],
+			[ false, [ [] ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'replace_first_loose_arguments_provider' )]
+	public function testReplaceFirstLooseArguments( mixed $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::replace_first( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: mixed, 1: array<int, mixed>}>
+	 */
+	public static function replace_first_loose_arguments_provider(): array {
+		return [
+			[ '1', [ 0, '1', '0' ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'is_ascii_loose_arguments_provider' )]
+	public function testIsAsciiLooseArguments( bool $expected, array $arguments ): void {
+		$this->assertSame( $expected, Str::is_ascii( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: bool, 1: array<int, mixed>}>
+	 */
+	public static function is_ascii_loose_arguments_provider(): array {
+		return [
+			[ true, [ null ] ],
+		];
+	}
 }
 
 class StringableObjectStub {
 
 	private string $value;
 
-	public function __construct( $value ) {
+	public function __construct( string $value ) {
 		$this->value = $value;
 	}
 

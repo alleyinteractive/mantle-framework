@@ -76,7 +76,11 @@ class HelpersTest extends TestCase {
 
 	public function test_logger_helpers(): void {
 		logger( 'This is a helper debug message.' );
-		logger()->warning( 'This is a warning.' );
+		$logger = logger();
+
+		$this->assertNotNull( $logger );
+
+		$logger->warning( 'This is a warning.' );
 
 		$this->assertTrue( $this->handler->hasRecord( 'This is a helper debug message.', 'debug' ) );
 		$this->assertTrue( $this->handler->hasRecord( 'This is a warning.', 'warning' ) );
@@ -84,14 +88,19 @@ class HelpersTest extends TestCase {
 
 	/**
 	 * @dataProvider classname_provider
+	 *
+	 * @param array<mixed> $input Class name arguments.
 	 */
 	#[DataProvider('classname_provider')]
-	public function test_classname( $input, string $expected ): void {
+	public function test_classname( array $input, string $expected ): void {
 		$this->assertSame( $expected, classname( $input ) );
 		$this->assertSame( $expected, classname( ...$input ) );
 	}
 
-	public static function classname_provider() {
+	/**
+	 * @return array<string, array{0: array<mixed>, 1: string}>
+	 */
+	public static function classname_provider(): array {
 		return [
 			'single' => [
 				[

@@ -3,8 +3,8 @@
 namespace Mantle\Tests\Support;
 
 use Carbon\Carbon;
-use Mantle\Support\Collection;
 use Mantle\Support\Stringable;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/StrTest.php';
@@ -12,10 +12,9 @@ require_once __DIR__ . '/StrTest.php';
 class StringableTest extends TestCase {
 
 	/**
-	 * @param  string $string
-	 * @return \Mantle\Support\Stringable
+	 * @param  mixed $string
 	 */
-	protected function stringable( $string = '' ) {
+	protected function stringable( mixed $string = '' ): Stringable {
 		return new Stringable( $string );
 	}
 
@@ -772,17 +771,10 @@ class StringableTest extends TestCase {
 		$this->assertTrue( $this->stringable( 'jason' )->startsWith( collect( [ 'day', 'jas' ] ) ) );
 		$this->assertFalse( $this->stringable( 'jason' )->startsWith( 'day' ) );
 		$this->assertFalse( $this->stringable( 'jason' )->startsWith( [ 'day' ] ) );
-		$this->assertFalse( $this->stringable( 'jason' )->startsWith( null ) );
-		$this->assertFalse( $this->stringable( 'jason' )->startsWith( [ null ] ) );
-		$this->assertFalse( $this->stringable( '0123' )->startsWith( [ null ] ) );
-		$this->assertTrue( $this->stringable( '0123' )->startsWith( 0 ) );
 		$this->assertFalse( $this->stringable( 'jason' )->startsWith( 'J' ) );
 		$this->assertFalse( $this->stringable( 'jason' )->startsWith( '' ) );
 		$this->assertFalse( $this->stringable( '7' )->startsWith( ' 7' ) );
 		$this->assertTrue( $this->stringable( '7a' )->startsWith( '7' ) );
-		$this->assertTrue( $this->stringable( '7a' )->startsWith( 7 ) );
-		$this->assertTrue( $this->stringable( '7.12a' )->startsWith( 7.12 ) );
-		$this->assertFalse( $this->stringable( '7.12a' )->startsWith( 7.13 ) );
 		$this->assertTrue( $this->stringable( 7.123 )->startsWith( '7' ) );
 		$this->assertTrue( $this->stringable( 7.123 )->startsWith( '7.12' ) );
 		$this->assertFalse( $this->stringable( 7.123 )->startsWith( '7.13' ) );
@@ -831,8 +823,6 @@ class StringableTest extends TestCase {
 		$this->assertSame( 'hannah', (string) $this->stringable( 'hannah' )->before( 'xxxx' ) );
 		$this->assertSame( 'hannah', (string) $this->stringable( 'hannah' )->before( '' ) );
 		$this->assertSame( 'han', (string) $this->stringable( 'han0nah' )->before( '0' ) );
-		$this->assertSame( 'han', (string) $this->stringable( 'han0nah' )->before( 0 ) );
-		$this->assertSame( 'han', (string) $this->stringable( 'han2nah' )->before( 2 ) );
 	}
 
 	public function testBeforeLast(): void {
@@ -843,8 +833,6 @@ class StringableTest extends TestCase {
 		$this->assertSame( 'yvette', (string) $this->stringable( 'yvette' )->before_last( 'xxxx' ) );
 		$this->assertSame( 'yvette', (string) $this->stringable( 'yvette' )->before_last( '' ) );
 		$this->assertSame( 'yv0et', (string) $this->stringable( 'yv0et0te' )->before_last( '0' ) );
-		$this->assertSame( 'yv0et', (string) $this->stringable( 'yv0et0te' )->before_last( 0 ) );
-		$this->assertSame( 'yv2et', (string) $this->stringable( 'yv2et2te' )->before_last( 2 ) );
 	}
 
 	public function testBetween(): void {
@@ -882,8 +870,6 @@ class StringableTest extends TestCase {
 		$this->assertSame( 'hannah', (string) $this->stringable( 'hannah' )->after( 'xxxx' ) );
 		$this->assertSame( 'hannah', (string) $this->stringable( 'hannah' )->after( '' ) );
 		$this->assertSame( 'nah', (string) $this->stringable( 'han0nah' )->after( '0' ) );
-		$this->assertSame( 'nah', (string) $this->stringable( 'han0nah' )->after( 0 ) );
-		$this->assertSame( 'nah', (string) $this->stringable( 'han2nah' )->after( 2 ) );
 	}
 
 	public function testAfterLast(): void {
@@ -894,8 +880,6 @@ class StringableTest extends TestCase {
 		$this->assertSame( 'yvette', (string) $this->stringable( 'yvette' )->after_last( 'xxxx' ) );
 		$this->assertSame( 'yvette', (string) $this->stringable( 'yvette' )->after_last( '' ) );
 		$this->assertSame( 'te', (string) $this->stringable( 'yv0et0te' )->after_last( '0' ) );
-		$this->assertSame( 'te', (string) $this->stringable( 'yv0et0te' )->after_last( 0 ) );
-		$this->assertSame( 'te', (string) $this->stringable( 'yv2et2te' )->after_last( 2 ) );
 		$this->assertSame( 'foo', (string) $this->stringable( '----foo' )->after_last( '---' ) );
 	}
 
@@ -1251,8 +1235,6 @@ class StringableTest extends TestCase {
 	}
 
 	public function testExplode(): void {
-		$this->assertInstanceOf( Collection::class, $this->stringable( 'Foo Bar Baz' )->explode( ' ' ) );
-
 		$this->assertSame( '["Foo","Bar","Baz"]', (string) $this->stringable( 'Foo Bar Baz' )->explode( ' ' ) );
 
 		// with limit
@@ -1263,7 +1245,6 @@ class StringableTest extends TestCase {
 	public function testChunk(): void {
 		$chunks = $this->stringable( 'foobarbaz' )->split( 3 );
 
-		$this->assertInstanceOf( Collection::class, $chunks );
 		$this->assertSame( [ 'foo', 'bar', 'baz' ], $chunks->all() );
 	}
 
@@ -1294,7 +1275,6 @@ class StringableTest extends TestCase {
 			return 'bar';
 		};
 
-		$this->assertInstanceOf( Stringable::class, $this->stringable( 'foo' )->pipe( $callback ) );
 		$this->assertSame( 'bar', (string) $this->stringable( 'foo' )->pipe( $callback ) );
 	}
 
@@ -1407,12 +1387,14 @@ class StringableTest extends TestCase {
 	public function testToDate(): void {
 		$current = Carbon::create( 2020, 1, 1, 16, 30, 25 );
 
+		$this->assertNotNull( $current );
+
 		$this->assertEquals( $current, $this->stringable( '20-01-01 16:30:25' )->to_date() );
 		$this->assertEquals( $current, $this->stringable( '1577896225' )->to_date( 'U' ) );
 		$this->assertEquals( $current, $this->stringable( '20-01-01 13:30:25' )->to_date( null, 'America/Santiago' ) );
 
-		$this->assertTrue( $this->stringable( '2020-01-01' )->to_date()->isSameDay( $current ) );
-		$this->assertTrue( $this->stringable( '16:30:25' )->to_date()->isSameSecond( '16:30:25' ) );
+		$this->assertTrue( $this->stringable( '2020-01-01' )->to_date()?->isSameDay( $current ) );
+		$this->assertTrue( $this->stringable( '16:30:25' )->to_date()?->isSameSecond( '16:30:25' ) );
 	}
 
 	public function testToDateThrowsException(): void {
@@ -1427,5 +1409,100 @@ class StringableTest extends TestCase {
 		$this->assertSame( 't', $str[4] );
 		$this->assertTrue( isset( $str[2] ) );
 		$this->assertFalse( isset( $str[10] ) );
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'startsWith_loose_arguments_provider' )]
+	public function testStartsWithLooseArguments( bool $expected, mixed $string, array $arguments ): void {
+		$this->assertSame( $expected, $this->stringable( $string )->startsWith( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: bool, 1: mixed, 2: array<int, mixed>}>
+	 */
+	public static function startsWith_loose_arguments_provider(): array {
+		return [
+			[ false, 'jason', [ null ] ],
+			[ false, 'jason', [ [ null ] ] ],
+			[ false, '0123', [ [ null ] ] ],
+			[ true, '0123', [ 0 ] ],
+			[ true, '7a', [ 7 ] ],
+			[ true, '7.12a', [ 7.12 ] ],
+			[ false, '7.12a', [ 7.13 ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'before_loose_arguments_provider' )]
+	public function testBeforeLooseArguments( mixed $expected, mixed $string, array $arguments ): void {
+		$this->assertSame( $expected, (string) $this->stringable( $string )->before( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: mixed, 1: mixed, 2: array<int, mixed>}>
+	 */
+	public static function before_loose_arguments_provider(): array {
+		return [
+			[ 'han', 'han0nah', [ 0 ] ],
+			[ 'han', 'han2nah', [ 2 ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'before_last_loose_arguments_provider' )]
+	public function testBeforeLastLooseArguments( mixed $expected, mixed $string, array $arguments ): void {
+		$this->assertSame( $expected, (string) $this->stringable( $string )->before_last( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: mixed, 1: mixed, 2: array<int, mixed>}>
+	 */
+	public static function before_last_loose_arguments_provider(): array {
+		return [
+			[ 'yv0et', 'yv0et0te', [ 0 ] ],
+			[ 'yv2et', 'yv2et2te', [ 2 ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'after_loose_arguments_provider' )]
+	public function testAfterLooseArguments( mixed $expected, mixed $string, array $arguments ): void {
+		$this->assertSame( $expected, (string) $this->stringable( $string )->after( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: mixed, 1: mixed, 2: array<int, mixed>}>
+	 */
+	public static function after_loose_arguments_provider(): array {
+		return [
+			[ 'nah', 'han0nah', [ 0 ] ],
+			[ 'nah', 'han2nah', [ 2 ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'after_last_loose_arguments_provider' )]
+	public function testAfterLastLooseArguments( mixed $expected, mixed $string, array $arguments ): void {
+		$this->assertSame( $expected, (string) $this->stringable( $string )->after_last( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: mixed, 1: mixed, 2: array<int, mixed>}>
+	 */
+	public static function after_last_loose_arguments_provider(): array {
+		return [
+			[ 'te', 'yv0et0te', [ 0 ] ],
+			[ 'te', 'yv2et2te', [ 2 ] ],
+		];
 	}
 }

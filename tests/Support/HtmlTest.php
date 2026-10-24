@@ -2,7 +2,6 @@
 
 namespace Mantle\Tests\Support;
 
-use DOMElement;
 use DOMNode;
 use Mantle\Support\HTML;
 use Mantle\Testing\Concerns\Assertions;
@@ -53,7 +52,7 @@ class HtmlTest extends TestCase {
 		$this->assertTrue( $parsed->is_html_document() );
 		$this->assertSame( 'Test', $parsed->filter( 'title' )->text() );
 		$this->assertSame( 'Hello, World!', $parsed->filter( 'p' )->text() );
-		$this->assertSame( $crawler->filter( '*' )->count(), $parsed->filter( '*' )->count() );
+		$this->assertCount( $crawler->filter( '*' )->count(), $parsed->filter( '*' ) );
 	}
 
 	public function test_it_can_convert_html_back_to_the_original_html(): void {
@@ -67,7 +66,6 @@ class HtmlTest extends TestCase {
 
 		$query = $crawler->first_by_id( 'test-id' );
 
-		$this->assertInstanceOf( HTML::class, $query );
 		$this->assertSame( 'Example Div By ID', $query->text() );
 		$this->assertSame( 'div', $query->nodeName() );
 		$this->assertSame( 'test-id', $query->attr( 'id' ) );
@@ -78,7 +76,6 @@ class HtmlTest extends TestCase {
 
 		$query = $crawler->first_by_selector( '.test-class' );
 
-		$this->assertInstanceOf( HTML::class, $query );
 		$this->assertSame( 'Example Div By Class', $query->text() );
 		$this->assertSame( 'div', $query->nodeName() );
 		$this->assertSame( 'test-class', $query->attr( 'class' ) );
@@ -89,7 +86,6 @@ class HtmlTest extends TestCase {
 
 		$query = $crawler->first_by_xpath( '//div[@id="test-id"]' );
 
-		$this->assertInstanceOf( HTML::class, $query );
 		$this->assertSame( 'Example Div By ID', $query->text() );
 		$this->assertSame( 'div', $query->nodeName() );
 		$this->assertSame( 'test-id', $query->attr( 'id' ) );
@@ -206,7 +202,7 @@ class HtmlTest extends TestCase {
 		$crawler = new HTML( self::TEST_CONTENT );
 
 		$crawler->filter( '.test-class' )->modify(
-			function ( HTML $element ): DOMElement {
+			function ( HTML $element ): ?DOMNode {
 				// Create a new DOMElement to replace the existing one.
 				$crawler = new HTML( '<span class="replaced-class">Replaced Element</span>' );
 
@@ -300,6 +296,9 @@ class HtmlTest extends TestCase {
 		);
 	}
 
+	/**
+	 * @return array<string, array{0: string|HTML|DOMNode|null}>
+	 */
 	public static function wrap_data_provider(): array {
 		$html = '<div class="ul-wrapper"></div>';
 
@@ -379,6 +378,9 @@ class HtmlTest extends TestCase {
 		);
 	}
 
+	/**
+	 * @return array<string, array{0: string|HTML|DOMNode|null}>
+	 */
 	public static function inner_wrap_data_provider(): array {
 		$html = '<span class="li-wrapper"></span>';
 
@@ -462,6 +464,9 @@ class HtmlTest extends TestCase {
 		$this->assertStringsEqualsWithoutWhitespace( $expected, $crawler->to_html() );
 	}
 
+	/**
+	 * @return array<string, array{0: string, 1: string, 2: string}>
+	 */
 	public static function append_dataprovider(): array {
 		$base = '
 		<div>
@@ -512,6 +517,9 @@ class HtmlTest extends TestCase {
 		$this->assertStringsEqualsWithoutWhitespace( $expected, $crawler->to_html() );
 	}
 
+	/**
+	 * @return array<string, array{0: string, 1: string, 2: string}>
+	 */
 	public static function prepend_dataprovider(): array {
 		$base = '
 		<div>
@@ -583,7 +591,6 @@ class HtmlTest extends TestCase {
 	public function test_it_can_get_the_nearest_previous_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
 		$previous = $html->filter('#test-id')->previous_sibling();
-		$this->assertInstanceOf(HTML::class, $previous);
 		$this->assertSame('div', $previous->nodeName());
 		$this->assertSame('test-class', $previous->attr('class'));
 		$this->assertSame('Example Div By Class', $previous->text());
@@ -592,28 +599,24 @@ class HtmlTest extends TestCase {
 	public function test_it_can_get_the_nearest_next_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
 		$next = $html->filter('#test-id')->next_sibling();
-		$this->assertInstanceOf(HTML::class, $next);
 		$this->assertSame('ul', $next->nodeName());
 	}
 
 	public function test_it_returns_empty_crawler_for_missing_next_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
 		$next = $html->filter('ul')->next_sibling();
-		$this->assertInstanceOf(HTML::class, $next);
-		$this->assertSame(0, $next->count());
+		$this->assertCount( 0, $next );
 	}
 
 	public function test_it_can_get_the_nearest_previous_filtered_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
 		$previous = $html->filter('#test-id')->previous_sibling('section');
-		$this->assertInstanceOf(HTML::class, $previous);
 		$this->assertSame('section', $previous->nodeName());
 	}
 
 	public function test_it_can_get_the_nearest_next_filtered_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
 		$next = $html->filter('section')->next_sibling('ul');
-		$this->assertInstanceOf(HTML::class, $next);
 		$this->assertSame('ul', $next->nodeName());
 	}
 

@@ -179,7 +179,10 @@ class HelpersGeneralTest extends TestCase {
 		} ) );
 	}
 
-	public static function providesPregReplaceArrayData() {
+	/**
+	 * @return array<int, array{0: string, 1: array<string>, 2: string, 3: string}>
+	 */
+	public static function providesPregReplaceArrayData(): array {
 		$pointerArray = [ 'Taylor', 'Otwell' ];
 
 		next( $pointerArray );
@@ -202,9 +205,13 @@ class HelpersGeneralTest extends TestCase {
 		];
 	}
 
-	/** @dataProvider providesPregReplaceArrayData */
+	/**
+	 * @dataProvider providesPregReplaceArrayData
+	 *
+	 * @param array<string> $replacements Replacements.
+	 */
 	#[DataProvider( 'providesPregReplaceArrayData' )]
-	public function testPregReplaceArray( $pattern, $replacements, $subject, $expectedOutput ): void {
+	public function testPregReplaceArray( string $pattern, array $replacements, string $subject, string $expectedOutput ): void {
 		$this->assertSame(
 			$expectedOutput,
 			preg_replace_array( $pattern, $replacements, $subject )

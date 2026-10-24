@@ -39,7 +39,6 @@ class ContainerTest extends TestCase {
 
 		$container2 = Container::get_instance();
 
-		$this->assertInstanceOf( Container::class, $container2 );
 		$this->assertNotSame( $container, $container2 );
 	}
 
@@ -645,7 +644,7 @@ class ContainerDefaultValueStub {
 	public ContainerConcreteStub $stub;
 	public mixed $default;
 
-	public function __construct( ContainerConcreteStub $stub, $default = 'taylor' ) {
+	public function __construct( ContainerConcreteStub $stub, mixed $default = 'taylor' ) {
 		$this->stub    = $stub;
 		$this->default = $default;
 	}
@@ -657,6 +656,10 @@ class ContainerMixedPrimitiveStub {
 	public mixed $last;
 	public ContainerConcreteStub $stub;
 
+	/**
+	 * @param mixed $first Unresolvable parameter.
+	 * @param mixed $last  Unresolvable parameter.
+	 */
 	public function __construct( $first, ContainerConcreteStub $stub, $last ) {
 		$this->stub  = $stub;
 		$this->last  = $last;
@@ -668,7 +671,7 @@ class ContainerInjectVariableStub {
 
 	public mixed $something;
 
-	public function __construct( ContainerConcreteStub $concrete, $something ) {
+	public function __construct( public ContainerConcreteStub $concrete, mixed $something ) {
 		$this->something = $something;
 	}
 }
@@ -677,12 +680,15 @@ class ContainerInjectVariableStubWithInterfaceImplementation implements IContain
 
 	public mixed $something;
 
-	public function __construct( ContainerConcreteStub $concrete, $something ) {
+	public function __construct( public ContainerConcreteStub $concrete, mixed $something ) {
 		$this->something = $something;
 	}
 }
 
 class ContainerVariadicPrimitiveStub {
+	/**
+	 * @var array<int|string, string>
+	 */
 	public array $names;
 
 	public function __construct( string ...$names ) {
@@ -691,6 +697,9 @@ class ContainerVariadicPrimitiveStub {
 }
 
 class ContainerVariadicClassStub {
+	/**
+	 * @var array<int|string, ContainerConcreteStub>
+	 */
 	public array $stubs;
 
 	public function __construct( ContainerConcreteStub ...$stubs ) {

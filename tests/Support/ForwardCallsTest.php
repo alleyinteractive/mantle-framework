@@ -50,15 +50,26 @@ class ForwardCallsTest extends TestCase {
 	}
 }
 
+/**
+ * @method mixed forwardedTwo( mixed ...$parameters )
+ * @method mixed forwardedBase( mixed ...$parameters )
+ * @method mixed missingMethod( mixed ...$parameters )
+ * @method mixed this1_shouldWork_too( mixed ...$parameters )
+ * @method mixed baseError( mixed ...$parameters )
+ */
 class Forward_CallsOne {
 
 	use Forward_Calls;
 
-	public function __call( $method, $parameters ) {
+	/**
+	 * @param string       $method Method name.
+	 * @param array<mixed> $parameters Method parameters.
+	 */
+	public function __call( string $method, array $parameters ): mixed {
 		return $this->forward_call_to( new Forward_CallsTwo(), $method, $parameters );
 	}
 
-	public function throwTestException( $method ): void {
+	public function throwTestException( string $method ): void {
 		static::throw_bad_method_call_exception( $method );
 	}
 }
@@ -67,22 +78,36 @@ class Forward_CallsTwo {
 
 	use Forward_Calls;
 
-	public function __call( $method, $parameters ) {
+	/**
+	 * @param string       $method Method name.
+	 * @param array<mixed> $parameters Method parameters.
+	 */
+	public function __call( string $method, array $parameters ): mixed {
 		return $this->forward_call_to( new Forward_CallsBase(), $method, $parameters );
 	}
 
-	public function forwardedTwo( ...$parameters ) {
+	/**
+	 * @param mixed ...$parameters Parameters.
+	 * @return array<int|string, mixed>
+	 */
+	public function forwardedTwo( mixed ...$parameters ): array {
 		return $parameters;
 	}
 }
 
 class Forward_CallsBase {
 
-	public function forwardedBase( ...$parameters ) {
+	private string $missing_method = 'missingMethod';
+
+	/**
+	 * @param mixed ...$parameters Parameters.
+	 * @return array<int|string, mixed>
+	 */
+	public function forwardedBase( mixed ...$parameters ): array {
 		return $parameters;
 	}
 
-	public function baseError() {
-		return $this->missingMethod();
+	public function baseError(): mixed {
+		return $this->{$this->missing_method}();
 	}
 }

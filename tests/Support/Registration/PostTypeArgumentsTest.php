@@ -302,7 +302,7 @@ class PostTypeArgumentsTest extends TestCase {
 		$this->assertSame(
 			[ 'arbitrary' => 'test-arbitrary' ],
 			Post_Type_Arguments::make()
-				->arbitrary( 'test-arbitrary' )
+				->__call( 'arbitrary', [ 'test-arbitrary' ] )
 				->to_array()
 		);
 	}
