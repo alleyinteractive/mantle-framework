@@ -390,6 +390,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 
 			$count += count( $results );
 
+			$this->assertInstanceOf( Collection::class, $this->opaque( $results ) );
 			if ( $page <= 10 ) {
 				$this->assertCount( 10, $results );
 			} else {
@@ -634,6 +635,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->get();
 
 		$this->assertCount( 10, $query );
+		$this->assertInstanceOf( \Mantle\Database\Query\Collection::class, $this->opaque( $query ) );
 		$this->assertSame( 25, $query->found_rows() );
 
 		$models = $query->models();
@@ -651,6 +653,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->get();
 
 		$this->assertCount( 10, $query );
+		$this->assertInstanceOf( \Mantle\Database\Query\Collection::class, $this->opaque( $query ) );
 		$this->assertNull( $query->found_rows() );
 	}
 

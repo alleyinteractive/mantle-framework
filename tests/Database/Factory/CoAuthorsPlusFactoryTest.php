@@ -4,6 +4,8 @@ namespace Mantle\Tests\Database\Factory;
 
 use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
+use stdClass;
+use WP_Post;
 
 /**
  * @group factory
@@ -21,6 +23,7 @@ class CoAuthorsPlusFactoryTest extends FrameworkTestCase {
 	public function test_create_guest_author(): void {
 		$author = static::factory()->cap_guest_author->create_and_get();
 
+		$this->assertInstanceOf( stdClass::class, $this->opaque( $author ) );
 		$this->assertNotEmpty( $author->display_name );
 		$this->assertNotEmpty( get_post_meta( $author->ID, 'cap-first_name', true ) );
 		$this->assertNotEmpty( get_post_meta( $author->ID, 'cap-last_name', true ) );
@@ -31,6 +34,7 @@ class CoAuthorsPlusFactoryTest extends FrameworkTestCase {
 			'display_name' => 'John Doe',
 		] );
 
+		$this->assertInstanceOf( stdClass::class, $this->opaque( $author ) );
 		$this->assertSame( 'John Doe', $author->display_name );
 		$this->assertSame( 'cap-john-doe', $author->user_login );
 		$this->assertSame( 'John', get_post_meta( $author->ID, 'cap-first_name', true ) );
@@ -41,6 +45,7 @@ class CoAuthorsPlusFactoryTest extends FrameworkTestCase {
 		$user   = static::factory()->user->create_and_get();
 		$author = static::factory()->cap_guest_author->with_linked_user( $user->ID )->create_and_get();
 
+		$this->assertInstanceOf( stdClass::class, $this->opaque( $author ) );
 		$this->assertSame( $user->user_login, get_post_meta( $author->ID, 'cap-user_login', true ) );
 
 		$this->assertSame(
@@ -69,6 +74,7 @@ class CoAuthorsPlusFactoryTest extends FrameworkTestCase {
 		$author_2 = static::factory()->cap_guest_author->create_and_get();
 		$post   = static::factory()->post->with_cap_authors( $author->ID, $author_2 )->create_and_get();
 
+		$this->assertInstanceOf( WP_Post::class, $this->opaque( $post ) );
 		$guest_authors = get_coauthors( $post->ID );
 
 		$this->assertCount( 2, $guest_authors );
@@ -109,5 +115,12 @@ class CoAuthorsPlusFactoryTest extends FrameworkTestCase {
 			[ 'Array Author', 'Existing Author Object' ],
 			collect( $guest_authors )->pluck( 'display_name' )->sort()->values()->all(),
 		);
+	}
+
+	/**
+	 * Hide a value's static type so assertions on it are not flagged as always true.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }

@@ -88,7 +88,7 @@ class BelongsToOneOrManyTest extends FrameworkTestCase {
 		static::factory()->tag->create_many( 10 );
 
 		$this->assertNotNull( $tag->related_tag, 'Term should have related relationship.' );
-		$this->assertSame( $related->get( 'id' ), $tag->related_tag->id );
+		$this->assertSame( $related->get( 'id' ), $tag->related_tag->get( 'id' ) );
 	}
 }
 

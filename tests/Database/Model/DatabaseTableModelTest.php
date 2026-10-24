@@ -45,6 +45,7 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 			'name' => 'John Doe',
 		] );
 
+		$this->assertInstanceOf( TestableDatabaseModel::class, $this->opaque( $item ) );
 		$this->assertNotNull( $item->id );
 		$this->assertGreaterThan( 0, $item->id );
 
@@ -121,6 +122,7 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 
 		$this->assertSame( [ 'key' => 'value' ], $item->json_data );
 
+		$this->assertInstanceOf( TestableDatabaseModel::class, $this->opaque( $item ) );
 		$this->assertDatabaseHas( TestableDatabaseModel::get_table_name(), [
 			'id' => $item->id,
 			'json_data' => json_encode( [ 'key' => 'value' ] ),
@@ -137,6 +139,7 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 
 		$item->save();
 
+		$this->assertInstanceOf( TestableDatabaseModel::class, $this->opaque( $item ) );
 		$this->assertDatabaseHas( TestableDatabaseModel::get_table_name(), [
 			'id' => $item->id,
 			'boolean_value' => 1,
@@ -154,6 +157,7 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 
 		$item->save();
 
+		$this->assertInstanceOf( TestableDatabaseModel::class, $this->opaque( $item ) );
 		$this->assertDatabaseHas( TestableDatabaseModel::get_table_name(), [
 			'id' => $item->id,
 			'float_value' => '123.456',
@@ -170,6 +174,7 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 
 		$item->save();
 
+		$this->assertInstanceOf( TestableDatabaseModelWithEnum::class, $this->opaque( $item ) );
 		$this->assertDatabaseHas( TestableDatabaseModelWithEnum::get_table_name(), [
 			'id' => $item->id,
 			'example_enum' => ExampleEnum::VALUE_TWO->value,
@@ -200,6 +205,7 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 
 		$item->save();
 
+		$this->assertInstanceOf( TestableDatabaseModelWithEnum::class, $this->opaque( $item ) );
 		$this->assertDatabaseHas( TestableDatabaseModelWithEnum::get_table_name(), [
 			'id' => $item->id,
 			'example_enum' => ExampleEnum::VALUE_ONE->value,
@@ -213,6 +219,13 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 			'name' => 'Test Item',
 			'example_enum' => 'invalid_value',
 		] );
+	}
+
+	/**
+	 * Hide a value's static type so assertions on it are not flagged as always true.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }
 

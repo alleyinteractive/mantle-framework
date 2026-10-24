@@ -4,9 +4,11 @@ namespace Mantle\Tests\Database\Model;
 use Carbon\Carbon;
 use Mantle\Contracts\Database\Registrable;
 use Mantle\Database\Model\Attachment;
+use Mantle\Database\Model\Dates\Model_Date_Proxy;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\Post;
 use Mantle\Database\Model\Registration\Register_Post_Type;
+use Mantle\Database\Model\Term;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Utils;
@@ -311,6 +313,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$dynamic_model = Post::for( 'foo_post_type' );
 
 		$this->assertEmpty( Post::find( $post_id ) );
+		$this->assertInstanceOf( Post::class, $this->opaque( $dynamic_model ) );
 
 		$found = $dynamic_model->find( $post_id );
 
@@ -407,6 +410,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$post->save();
 
 		$this->assertPostHasTerm( $post, $category );
+		$this->assertInstanceOf( Term::class, $this->opaque( $post->terms->category[0] ) );
 
 		$this->assertSame(
 			$category->term_id,
@@ -513,6 +517,12 @@ class PostObjectTest extends FrameworkTestCase {
 	public function test_dates_attribute(): void {
 		$post = static::factory()->post->as_models()->create_and_get();
 
+		$this->assertInstanceOf( Model_Date_Proxy::class, $this->opaque( $post->dates ) );
+		$this->assertInstanceOf( Carbon::class, $this->opaque( $post->dates->created ) );
+		$this->assertInstanceOf( Carbon::class, $this->opaque( $post->dates->created_utc ) );
+		$this->assertInstanceOf( Carbon::class, $this->opaque( $post->dates->modified ) );
+		$this->assertInstanceOf( Carbon::class, $this->opaque( $post->dates->modified_utc ) );
+
 		// Test that the dates are the same as the post object.
 		$this->assertSame( $post->post_date, $post->dates->created->toDateTimeString() );
 		$this->assertSame( $post->post_date_gmt, $post->dates->created_utc->toDateTimeString() );
@@ -540,6 +550,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$attachment_id = static::factory()->attachment->with_image()->create();
 
 		$this->assertIsInt( $attachment_id );
+		$this->assertInstanceOf( Post::class, $this->opaque( $post ) );
 
 		$post->thumbnail()->save( $attachment_id );
 
@@ -563,6 +574,13 @@ class PostObjectTest extends FrameworkTestCase {
 		$post_ids = static::factory()->post->create_many( 11, $args );
 		array_pop( $post_ids );
 		return $post_ids[ array_rand( $post_ids ) ];
+	}
+
+	/**
+	 * Hide a value's static type so assertions on it are not flagged as always true.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }
 

@@ -6,6 +6,7 @@ use Mantle\Database\Factory;
 use Mantle\Database\Factory\Post_Factory;
 use Mantle\Database\Model;
 use Mantle\Database\Model\Post;
+use Mantle\Support\Collection;
 use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -18,10 +19,10 @@ class FactoryTest extends FrameworkTestCase {
 	public function test_create_basic_model(): void {
 		$factory = Post::factory();
 
+		$this->assertInstanceOf( Factory\Post_Factory::class, $this->opaque( $factory ) );
 		$post = $factory->create_and_get();
 
-		$this->assertSame( Factory\Post_Factory::class, $factory::class );
-		$this->assertSame( Post::class, $post::class );
+		$this->assertInstanceOf( Post::class, $this->opaque( $post ) );
 	}
 
 	public function test_definition_runs_once_per_create(): void {
@@ -41,22 +42,29 @@ class FactoryTest extends FrameworkTestCase {
 	public function test_create_many(): void {
 		$factory = Post::factory();
 
+		$this->assertInstanceOf( Factory\Post_Factory::class, $this->opaque( $factory ) );
 		$post_ids = $factory->create_many( 5 );
 
 		$this->assertCount( 5, $post_ids );
+		$this->assertIsArray( $this->opaque( $post_ids ) );
+
+		$this->assertContainsOnlyInt( $this->opaque( $post_ids ) );
 	}
 
 	public function test_collect_many(): void {
 		$factory = Post::factory();
 
+		$this->assertInstanceOf( Factory\Post_Factory::class, $this->opaque( $factory ) );
 		$posts = $factory->collect_many( 5 );
 
 		$this->assertCount( 5, $posts );
+		$this->assertInstanceOf( Collection::class, $this->opaque( $posts ) );
 	}
 
 	public function test_create_many_and_get(): void {
 		$factory = Post::factory();
 
+		$this->assertInstanceOf( Factory\Post_Factory::class, $this->opaque( $factory ) );
 		$posts = $factory->create_many_and_get( 5 );
 
 		$this->assertCount( 5, $posts );
@@ -66,17 +74,21 @@ class FactoryTest extends FrameworkTestCase {
 	public function test_collect_many_and_get(): void {
 		$factory = Post::factory();
 
+		$this->assertInstanceOf( Factory\Post_Factory::class, $this->opaque( $factory ) );
 		$posts = $factory->collect_many_and_get( 5 );
 
 		$this->assertCount( 5, $posts );
+		$this->assertInstanceOf( Collection::class, $this->opaque( $posts ) );
 		$this->assertContainsOnlyInstancesOf( Post::class, $posts->all() );
 	}
 
 	public function test_create_model_with_custom_factory(): void {
 		$factory = Testable_Post_With_Factory::factory();
 
+		$this->assertInstanceOf( Testable_Post_Factory::class, $this->opaque( $factory ) );
 		$post = $factory->create_and_get();
 
+		$this->assertInstanceOf( Testable_Post_With_Factory::class, $this->opaque( $post ) );
 		// Ensure that the post's definition was used.
 		$this->assertSame( 'Title from the custom factory', $post->post_title );
 	}
@@ -84,8 +96,10 @@ class FactoryTest extends FrameworkTestCase {
 	public function test_create_model_with_custom_factory_string(): void {
 		$factory = Testable_Post_With_Factory_String::factory();
 
+		$this->assertInstanceOf( Testable_Post_Factory::class, $this->opaque( $factory ) );
 		$post = $factory->create_and_get();
 
+		$this->assertInstanceOf( Testable_Post_With_Factory_String::class, $this->opaque( $post ) );
 		// Ensure that the post's definition was used.
 		$this->assertSame( 'Title from the custom factory', $post->post_title );
 	}
@@ -102,6 +116,7 @@ class FactoryTest extends FrameworkTestCase {
 			[ 'post_content' => 'Content for the unique title' ]
 		);
 
+		$this->assertInstanceOf( Testable_Post::class, $this->opaque( $post ) );
 		$this->assertSame( 'Unique Title', $post->post_title );
 		$this->assertSame( 'Content for the unique title', $post->post_content );
 
@@ -196,6 +211,7 @@ class FactoryTest extends FrameworkTestCase {
 			->create_and_get()
 			->all();
 
+		$this->assertIsArray( $this->opaque( $posts ) );
 		$this->assertCount( 3, $posts );
 
 		$first = $posts[0] ?? null;
@@ -228,6 +244,7 @@ class FactoryTest extends FrameworkTestCase {
 
 		$post = Testable_Custom_Post_Type::factory()->create_and_get();
 
+		$this->assertInstanceOf( Testable_Custom_Post_Type::class, $this->opaque( $post ) );
 		$this->assertSame( 'custom_post_type', $post->post_type );
 		$this->assertNotEmpty( $post->title );
 		$this->assertNotEmpty( $post->content );
@@ -244,6 +261,7 @@ class FactoryTest extends FrameworkTestCase {
 
 		$post = Testable_Custom_Taxonomy::factory()->create_and_get();
 
+		$this->assertInstanceOf( Testable_Custom_Taxonomy::class, $this->opaque( $post ) );
 		$this->assertSame( 'custom_taxonomy', $post->taxonomy );
 		$this->assertNotEmpty( $post->name );
 	}
@@ -262,6 +280,13 @@ class FactoryTest extends FrameworkTestCase {
 		] );
 
 		$this->assertSame( 'Count', $post->post_title );
+	}
+
+	/**
+	 * Hide a value's static type so assertions on it are not flagged as always true.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }
 

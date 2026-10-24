@@ -101,6 +101,7 @@ class ModelTest extends FrameworkTestCase {
 		);
 
 		$this->assertSame( $existing, $post->id() );
+		$this->assertSame( $existing, $post->id );
 		$this->assertSame( 'Original Title', $post->title );
 
 		$post_to_create = Testable_Post_For_Appending::first_or_new(
@@ -108,7 +109,9 @@ class ModelTest extends FrameworkTestCase {
 			[ 'title' => 'New title' ],
 		);
 
+		$this->assertInstanceOf( Testable_Post_For_Appending::class, $this->opaque( $post_to_create ) );
 		$this->assertNull( $post_to_create->get( 'id' ) );
+		$this->assertNull( $this->opaque( $post_to_create->id ) );
 		$this->assertFalse( $post_to_create->exists );
 		$this->assertSame( 'New title', $post_to_create->title );
 	}
@@ -124,6 +127,7 @@ class ModelTest extends FrameworkTestCase {
 		);
 
 		$this->assertSame( $existing, $post->id() );
+		$this->assertSame( $existing, $post->id );
 		$this->assertSame( 'Original Title test_first_or_create', $post->title );
 
 		$post_to_create = Testable_Post_For_Appending::first_or_create(
@@ -131,6 +135,8 @@ class ModelTest extends FrameworkTestCase {
 			[ 'title' => 'New title test_first_or_create' ],
 		);
 
+		$this->assertInstanceOf( Testable_Post_For_Appending::class, $this->opaque( $post_to_create ) );
+		$this->assertNotNull( $this->opaque( $post_to_create->id ) );
 		$this->assertTrue( $post_to_create->exists );
 		$this->assertSame( 'New title test_first_or_create', $post_to_create->title );
 	}
@@ -163,6 +169,7 @@ class ModelTest extends FrameworkTestCase {
 		);
 
 		$this->assertSame( $existing, $post->id() );
+		$this->assertSame( $existing, $post->id );
 		$this->assertSame( 'Updated title test_update_or_create', $post->title );
 
 		$post_to_create = Testable_Post_For_Appending::update_or_create(
@@ -170,8 +177,17 @@ class ModelTest extends FrameworkTestCase {
 			[ 'title' => 'New title test_update_or_create' ],
 		);
 
+		$this->assertInstanceOf( Testable_Post_For_Appending::class, $this->opaque( $post_to_create ) );
+		$this->assertNotNull( $this->opaque( $post_to_create->id ) );
 		$this->assertTrue( $post_to_create->exists );
 		$this->assertSame( 'New title test_update_or_create', $post_to_create->title );
+	}
+
+	/**
+	 * Hide a value's static type so assertions on it are not flagged as always true.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }
 

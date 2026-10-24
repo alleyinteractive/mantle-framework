@@ -32,6 +32,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	}
 
 	public function test_post_factory(): void {
+		$this->assertInstanceOf( \WP_Post::class, $this->opaque( static::factory()->post->create_and_get() ) );
 
 		$post_ids = static::factory()->post->create_many(
 			10,
@@ -43,6 +44,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 
 		$this->assertCount( 10, $post_ids );
 		foreach ( $post_ids as $post_id ) {
+			$this->assertIsInt( $this->opaque( $post_id ) );
 		}
 
 		$this->assertSame( 'draft', get_post_status( array_shift( $post_ids ) ) );
@@ -140,6 +142,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 
 		$blog = static::factory()->blog->subdomain()->create_and_get();
 
+		$this->assertInstanceOf( \WP_Site::class, $this->opaque( $blog ) );
 		$this->assertTrue( Str::is( '*.example.org', $blog->domain ) );
 		$this->assertSame( '/', $blog->path );
 	}
@@ -193,8 +196,8 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 		$post = static::factory()->post->as_models()->create_and_get();
 		$term = static::factory()->term->with_model( Testable_Post_Tag::class )->as_models()->create_and_get();
 
-		$this->assertSame( Post::class, $post::class );
-		$this->assertSame( Testable_Post_Tag::class, $term::class );
+		$this->assertInstanceOf( Post::class, $this->opaque( $post ) );
+		$this->assertInstanceOf( Testable_Post_Tag::class, $this->opaque( $term ) );
 	}
 
 	public function test_factory_middleware(): void {
@@ -681,6 +684,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 				]
 			);
 
+		$this->assertInstanceOf( \WP_Term::class, $this->opaque( $term ) );
 		$this->assertSame( '1', get_term_meta( $term->term_id, 'custom_featured_show', true ) );
 		$this->assertSame( [ 'Line 1', 'Line 2' ], get_term_meta( $term->term_id, 'hero_description', false ) );
 	}
@@ -796,6 +800,13 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 			'term_id' => [ 'term_id' ],
 			'slug'    => [ 'slug' ],
 		];
+	}
+
+	/**
+	 * Hide a value's static type so assertions on it are not flagged as always true.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }
 

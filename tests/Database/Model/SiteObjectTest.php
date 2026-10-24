@@ -15,6 +15,7 @@ class SiteObjectTest extends FrameworkTestCase {
 
 		$site    = Site::find_or_fail( $site_id );
 
+		$this->assertInstanceOf( Site::class, $this->opaque( $site ) );
 		$this->assertSame( $site_id, $site->id() );
 
 		$blogname = \get_blog_option( $site_id, 'blogname' );
@@ -32,5 +33,12 @@ class SiteObjectTest extends FrameworkTestCase {
 		$core_object = $site->core_object();
 		$this->assertInstanceOf( \WP_Site::class, $core_object );
 		$this->assertSame( $site->id(), (int) $core_object->blog_id );
+	}
+
+	/**
+	 * Hide a value's static type so assertions on it are not flagged as always true.
+	 */
+	private function opaque( mixed $value ): mixed {
+		return $value;
 	}
 }
