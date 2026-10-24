@@ -359,7 +359,7 @@ class ContainerTest extends TestCase {
 		$this->expectExceptionMessage( 'Target class [Foo\Bar\Baz\DummyClass] does not exist.' );
 
 		$container = new Container();
-		$container->build( 'Foo\Bar\Baz\DummyClass' );
+		$container->build( 'Foo\Bar\Baz\DummyClass' ); // @phpstan-ignore argument.type (nonexistent class name passed on purpose; build() expects a resolvable class-string)
 	}
 
 	public function testforget_instanceForgetsInstance(): void {

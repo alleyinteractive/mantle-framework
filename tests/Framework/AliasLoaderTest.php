@@ -56,10 +56,10 @@ class AliasLoaderTest extends TestCase {
 
 		$loader->load( 'some_alias_foo_bar' );
 
-		$this->assertInstanceOf( FoundationAlias_LoaderStub::class, new \some_alias_foo_bar() );
+		$this->assertInstanceOf( FoundationAlias_LoaderStub::class, new \some_alias_foo_bar() ); // @phpstan-ignore class.notFound (class some_alias_foo_bar is declared by Alias_Loader::load on the lines above)
 
-		$result2 = $loader->load( 'bar' );
-		$this->assertNull( $result2 );
+		$result2 = $loader->load( 'bar' ); // @phpstan-ignore method.void (load() is void on purpose; the test asserts it yields null)
+		$this->assertNull( $result2 ); // @phpstan-ignore method.alreadyNarrowedType (load() is void so null is known; the test asserts it on purpose)
 	}
 
 	public function testAliasMethodRegistersLoadableAlias(): void {
@@ -70,7 +70,7 @@ class AliasLoaderTest extends TestCase {
 
 		$loader->load( 'some_alias_from_alias_method' );
 
-		$this->assertInstanceOf( FoundationAlias_LoaderStub::class, new \some_alias_from_alias_method() );
+		$this->assertInstanceOf( FoundationAlias_LoaderStub::class, new \some_alias_from_alias_method() ); // @phpstan-ignore class.notFound (class some_alias_from_alias_method is declared by Alias_Loader::load on the lines above)
 	}
 
 	public function testSetAlias(): void {
@@ -79,7 +79,7 @@ class AliasLoaderTest extends TestCase {
 
 		$loader->load( 'some_alias_foo' );
 
-		$fooObj = new \some_alias_foo();
+		$fooObj = new \some_alias_foo(); // @phpstan-ignore class.notFound (class some_alias_foo is declared by Alias_Loader::load on the line above)
 		$this->assertInstanceOf( FoundationAlias_LoaderStub::class, $fooObj );
 	}
 }

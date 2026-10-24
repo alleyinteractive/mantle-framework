@@ -2291,7 +2291,7 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([], $data->all());
 
 		$data = $collection::make();
-		$this->assertSame([], $data->all());
+		$this->assertSame([], $data->all()); // @phpstan-ignore method.alreadyNarrowedType (make() without arguments is inferred as an empty collection, so all() is known to be [])
 	}
 
 	/**
@@ -3465,7 +3465,7 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$c = new Collection([]);
 		$value = $c->pull(0, 'foo');
-		$this->assertSame('foo', $value);
+		$this->assertSame('foo', $value); // @phpstan-ignore method.alreadyNarrowedType (pull() on an empty collection is inferred to return the 'foo' default)
 	}
 
 	/**
@@ -5130,7 +5130,8 @@ class CollectionTest extends FrameworkTestCase {
 		$data = new $collection;
 		$this->expectException(Exception::class);
 		$this->expectExceptionMessage('Property [foo] does not exist on this collection instance.');
-		$data->foo;
+
+		$data->foo; // @phpstan-ignore property.notFound (foo is not a defined or HigherOrderProxy property; the exception is the point), expr.resultUnused (property read only to trigger the exception)
 	}
 
 	/**
@@ -5142,7 +5143,7 @@ class CollectionTest extends FrameworkTestCase {
 	public function testGetWithNullReturnsNull(string $collection ): void
 	{
 		$data = new $collection([1, 2, 3]);
-		$this->assertNull($data->get(null));
+		$this->assertNull($data->get(null)); // @phpstan-ignore argument.type (null passed on purpose; get() key parameter is not nullable)
 	}
 
 	/**

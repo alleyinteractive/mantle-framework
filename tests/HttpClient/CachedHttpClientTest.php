@@ -127,7 +127,7 @@ class CachedHttpClientTest extends FrameworkTestCase {
 	public function test_it_throws_an_exception_when_passing_an_invalid_ttl_callback(): void {
 		$this->expectException( \InvalidArgumentException::class );
 
-		$this->client = Factory::create()->cache( fn () => 'string' );
+		$this->client = Factory::create()->cache( fn () => 'string' ); // @phpstan-ignore argument.type (callback returns string on purpose; cache() expects an int-returning TTL callback)
 
 		$this->fake_request( mock_http_response()->with_json( [ 'example' => 'value' ] ) );
 

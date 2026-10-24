@@ -49,10 +49,10 @@ class FactoryTest extends FrameworkTestCase {
 
 		$this->assertCount( 5, $post_ids );
 
-		if ( method_exists( $this, 'assertContainsOnlyInt' ) ) {
-			$this->assertContainsOnlyInt( $post_ids );
+		if ( method_exists( $this, 'assertContainsOnlyInt' ) ) { // @phpstan-ignore function.alreadyNarrowedType (guard keeps lowest PHPUnit working; assertContainsOnlyInt is missing before 11.x and assertContainsOnly is removed in newer versions)
+			$this->assertContainsOnlyInt( $post_ids ); // @phpstan-ignore method.alreadyNarrowedType (guard keeps lowest PHPUnit working; assertContainsOnlyInt is missing before 11.x and assertContainsOnly is removed in newer versions)
 		} else {
-			$this->assertContainsOnly( 'int', $post_ids );
+			$this->assertContainsOnly( 'int', $post_ids ); // @phpstan-ignore method.notFound (guard keeps lowest PHPUnit working; assertContainsOnlyInt is missing before 11.x and assertContainsOnly is removed in newer versions)
 		}
 	}
 
@@ -183,7 +183,7 @@ class FactoryTest extends FrameworkTestCase {
 
 		$this->expectException( \InvalidArgumentException::class );
 
-		Factory\Factory::default_factory_name( $class::class ); // @phpstan-ignore-line
+		Factory\Factory::default_factory_name( $class::class ); // @phpstan-ignore argument.type (anonymous class passed on purpose; parameter expects a Model class-string)
 	}
 
 	public function test_create_multiple_fluently(): void {
@@ -192,10 +192,10 @@ class FactoryTest extends FrameworkTestCase {
 		$this->assertIsArray( $post_ids );
 		$this->assertCount( 3, $post_ids );
 
-		if ( method_exists( $this, 'assertContainsOnlyInt' ) ) {
+		if ( method_exists( $this, 'assertContainsOnlyInt' ) ) { // @phpstan-ignore function.alreadyNarrowedType (guard keeps lowest PHPUnit working; assertContainsOnlyInt is missing before 11.x and assertContainsOnly is removed in newer versions)
 			$this->assertContainsOnlyInt( $post_ids );
 		} else {
-			$this->assertContainsOnly( 'int', $post_ids );
+			$this->assertContainsOnly( 'int', $post_ids ); // @phpstan-ignore method.notFound (guard keeps lowest PHPUnit working; assertContainsOnlyInt is missing before 11.x and assertContainsOnly is removed in newer versions)
 		}
 
 		$posts = Testable_Post::factory()->count( 12 )->create_and_get()->all();
@@ -236,7 +236,7 @@ class FactoryTest extends FrameworkTestCase {
 			fn () => $this->with_meta( [ 'custom_meta_key' => 'custom_meta_value' ] ),
 		);
 
-		$post_id = Testable_Post::factory()->with_custom_meta()->create();
+		$post_id = Testable_Post::factory()->with_custom_meta()->create(); // @phpstan-ignore method.notFound (macro with_custom_meta is registered on Post_Factory at the top of this test)
 
 		$this->assertSame( 'custom_meta_value', get_post_meta( $post_id, 'custom_meta_key', true ) );
 	}

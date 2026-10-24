@@ -43,7 +43,7 @@ class InteractsWithHooksTest extends FrameworkTestCase {
 			->once()
 			->andReturn( true );
 
-		add_action( 'hook_to_add', '__return_true' );
+		add_action( 'hook_to_add', '__return_true' ); // @phpstan-ignore return.void (__return_true returns a value; add_action expects a void callback on purpose)
 
 		$this->expectAdded( 'filter_to_add', '__return_true' );
 

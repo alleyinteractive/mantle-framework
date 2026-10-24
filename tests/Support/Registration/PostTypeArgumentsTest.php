@@ -302,7 +302,7 @@ class PostTypeArgumentsTest extends TestCase {
 		$this->assertSame(
 			[ 'arbitrary' => 'test-arbitrary' ],
 			Post_Type_Arguments::make()
-				->arbitrary( 'test-arbitrary' )
+				->arbitrary( 'test-arbitrary' ) // @phpstan-ignore method.notFound (arbitrary argument "arbitrary" stored by Post_Type_Arguments::__call)
 				->to_array()
 		);
 	}
