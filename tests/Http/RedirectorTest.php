@@ -11,16 +11,26 @@ use Mantle\Http\Request;
 use Mantle\Http\Routing\Redirector;
 use Mantle\Http\Routing\Url_Generator;
 use Mockery as m;
+use Mockery\MockInterface;
 use Symfony\Component\HttpFoundation\HeaderBag;
 
 class RedirectorTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
+	/**
+	 * @var Request&MockInterface
+	 */
 	protected Request $request;
 
+	/**
+	 * @var Url_Generator&MockInterface
+	 */
 	protected Url_Generator $url;
 
 	protected Redirector $redirect;
 
+	/**
+	 * @var HeaderBag&MockInterface
+	 */
 	protected HeaderBag $headers;
 
 	public function setUp(): void {
