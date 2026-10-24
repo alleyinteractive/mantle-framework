@@ -42,7 +42,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		$this->assertSame( $post->id, $another_post->post->id );
 	}
 
-	public function test_eager_loading_relationships_has_one() {
+	public function test_eager_loading_relationships_has_one(): void {
 		Utils::delete_all_posts();
 
 		$related_post_ids = [];
@@ -85,7 +85,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		$this->assertSame( -1, $post->posts_relationship()->get_query()->get_query_args()['posts_per_page'] );
 	}
 
-	public function test_eager_loading_relationships_has_many() {
+	public function test_eager_loading_relationships_has_many(): void {
 		Utils::delete_all_posts();
 
 		$related_post_ids = [];
@@ -127,7 +127,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_eager_loading_relationships_belongs_to() {
+	public function test_eager_loading_relationships_belongs_to(): void {
 		$related_post_ids = [];
 		$posts = collect()
 			->pad(10, null)
@@ -160,7 +160,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_eager_loading_post_to_term() {
+	public function test_eager_loading_post_to_term(): void {
 		$posts = [];
 		$tags  = [];
 
@@ -183,7 +183,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_eager_loading_term_to_post() {
+	public function test_eager_loading_term_to_post(): void {
 		$tags  = [];
 		$posts = [];
 
@@ -220,7 +220,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_eager_loading_term_to_term_has_one() {
+	public function test_eager_loading_term_to_term_has_one(): void {
 		$tags = [];
 		$categories = [];
 
@@ -250,7 +250,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_eager_loading_term_to_term_belongs_to() {
+	public function test_eager_loading_term_to_term_belongs_to(): void {
 		$categories = [];
 		$tags = [];
 
@@ -280,7 +280,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_eager_loading_term_to_term_belongs_to_many() {
+	public function test_eager_loading_term_to_term_belongs_to_many(): void {
 		$categories = [];
 		$tags = [];
 

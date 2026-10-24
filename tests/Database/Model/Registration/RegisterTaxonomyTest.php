@@ -18,7 +18,7 @@ class RegisterTaxonomyTest extends FrameworkTestCase {
 		m::close();
 	}
 
-	public function test_register_taxonomy() {
+	public function test_register_taxonomy(): void {
 		$taxonomy = 'test-taxonomy';
 
 		$this->assertFalse( taxonomy_exists( $taxonomy ) );
@@ -39,7 +39,7 @@ class RegisterTaxonomyTest extends FrameworkTestCase {
 		$this->assertTrue( taxonomy_exists( $taxonomy ) );
 	}
 
-	public function test_invalid_taxonomy() {
+	public function test_invalid_taxonomy(): void {
 		$taxonomy = 'category';
 
 		$this->expectException( Model_Exception::class );

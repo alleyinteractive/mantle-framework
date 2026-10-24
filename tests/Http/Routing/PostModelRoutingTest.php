@@ -20,7 +20,7 @@ class PostModelRoutingTest extends FrameworkTestCase {
 		add_filter( 'deprecated_file_trigger_error', '__return_false' );
 	}
 
-	public function test_post_type() {
+	public function test_post_type(): void {
 		Testable_Post_Model::boot_if_not_booted();
 
 		Route::middleware( [ Substitute_Bindings::class, Wrap_Template::class ] )->group( function () {
@@ -42,7 +42,7 @@ class PostModelRoutingTest extends FrameworkTestCase {
 			->assertQueryTrue( 'is_singular', 'is_single' );
 	}
 
-	public function test_custom_post_type() {
+	public function test_custom_post_type(): void {
 		Testable_Custom_Post_Model::register_object();
 
 		Route::model( Testable_Custom_Post_Model::class, Testable_Custom_Post_Model_Controller::class );
@@ -82,7 +82,7 @@ class Testable_Post_Model extends Post {
 }
 
 class Testable_Post_Model_Controller extends Controller {
-	public function show( string $year, string $month, string $date, Testable_Post_Model $post ) {
+	public function show( string $year, string $month, string $date, Testable_Post_Model $post ): string {
 		return $post->slug();
 	}
 }
@@ -105,7 +105,7 @@ class Testable_Custom_Post_Model_Controller extends Controller {
 		return [ Testable_Custom_Post_Model::first()->id() ];
 	}
 
-	public function show( $slug ) {
+	public function show( string $slug ): string {
 		return $slug;
 	}
 }

@@ -26,7 +26,7 @@ class GeneratorCommandTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->command = new Test_Generator_Public( $this->app );
 	}
 
-	public function test_generated_namespace() {
+	public function test_generated_namespace(): void {
 		$this->assertSame( 'App\Provider', $this->command->get_namespace( 'Class_Name' ) );
 		$this->assertSame( 'App\Provider\Sub\Namespace', $this->command->get_namespace( 'Sub\Namespace\Class_Name' ) );
 
@@ -36,7 +36,7 @@ class GeneratorCommandTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( 'Example\Namespace\To_Use\Provider\Sub\Namespace', $this->command->get_namespace( 'Sub\Namespace\Class_Name' ) );
 	}
 
-	public function test_generated_class() {
+	public function test_generated_class(): void {
 		$this->assertSame( 'Class_Name', $this->command->get_class_name( 'Class_Name' ) );
 		$this->assertSame( 'Class_Name', $this->command->get_class_name( 'Sub\Namespace\Class_Name' ) );
 
@@ -46,7 +46,7 @@ class GeneratorCommandTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( 'Class_Name', $this->command->get_class_name( 'Sub\Namespace\Class_Name' ) );
 	}
 
-	public function test_folder_path() {
+	public function test_folder_path(): void {
 		$expected_app_path = __DIR__ . '/app/provider';
 		$this->assertSame( $expected_app_path, $this->command->get_folder_path( 'Class_Name' ) );
 		$this->assertSame( $expected_app_path . '/sub/namespace', $this->command->get_folder_path( 'Sub\Namespace\Class_Name' ) );
@@ -57,7 +57,7 @@ class GeneratorCommandTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( $expected_app_path . '/sub/namespace', $this->command->get_folder_path( 'Sub\Namespace\Class_Name' ) );
 	}
 
-	public function test_file_path() {
+	public function test_file_path(): void {
 		$expected_app_path = __DIR__ . '/app/provider';
 		$this->assertSame( $expected_app_path . '/class-example-name.php', $this->command->get_file_path( 'Example_Name' ) );
 		$this->assertSame( $expected_app_path . '/sub/namespace/class-example-name.php', $this->command->get_file_path( 'Sub\Namespace\Example_Name' ) );
@@ -75,7 +75,7 @@ class GeneratorCommandTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 class Test_Generator_Public extends Stub_Generator_Command {
 	protected $type = 'Provider';
 
-	public function __construct( $app ) {
+	public function __construct( Application $app ) {
 		$this->container = $app;
 	}
 

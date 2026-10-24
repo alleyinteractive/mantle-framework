@@ -68,7 +68,7 @@ class UriTest extends FrameworkTestCase {
 		$this->assertSame( get_permalink( $post ), (string) Uri::current() );
 	}
 
-	public function test_path_segments() {
+	public function test_path_segments(): void {
 		$uri = Uri::of( 'https://mantle.alley.com' );
 
 		$this->assertSame( [], $uri->path_segments()->to_array() );

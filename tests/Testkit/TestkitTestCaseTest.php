@@ -12,7 +12,7 @@ class TestkitTestCaseTest extends TestCase {
 		$this->assertInstanceOf( \Mantle\Contracts\Application::class, $this->create_application() );
 	}
 
-	public function test_make_request() {
+	public function test_make_request(): void {
 		$this->get( '/' )->assertOk();
 		$this->get( '/unknown/' )->assertNotFound();
 	}
@@ -26,12 +26,12 @@ class TestkitTestCaseTest extends TestCase {
 	/**
 	 * Verifies that trait methods for {$trait}_setUpBeforeClass are called.
 	 */
-	public function test_trait_setup_process() {
+	public function test_trait_setup_process(): void {
 		$this->assertNotEmpty( static::$overloaded_methods );
 		$this->assertContains( 'setUpBeforeClass', static::$overloaded_methods );
 	}
 
-	public function test_router_not_registered() {
+	public function test_router_not_registered(): void {
 		$this->assertTrue( empty( $this->app['router'] ) );
 	}
 }

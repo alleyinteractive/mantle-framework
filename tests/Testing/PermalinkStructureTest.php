@@ -13,7 +13,7 @@ class PermalinkStructureTest extends FrameworkTestCase {
 		update_option( 'timezone_string', 'America/New_York' );
 	}
 
-	public function test_default_permalink_structure() {
+	public function test_default_permalink_structure(): void {
 		$this->assertSame(
 			Utils::DEFAULT_PERMALINK_STRUCTURE,
 			get_option( 'permalink_structure' ),
@@ -35,7 +35,7 @@ class PermalinkStructureTest extends FrameworkTestCase {
 			->assertQueryTrue( 'is_single', 'is_singular' );
 	}
 
-	public function test_custom_permalink_structure() {
+	public function test_custom_permalink_structure(): void {
 		$this->set_permalink_structure( '/blog/%year%/%postname%/' );
 
 		$this->assertSame(
@@ -59,7 +59,7 @@ class PermalinkStructureTest extends FrameworkTestCase {
 			->assertQueryTrue( 'is_single', 'is_singular' );
 	}
 
-	public function test_no_permalinks() {
+	public function test_no_permalinks(): void {
 		$this->set_permalink_structure( '' );
 
 		$this->assertEmpty( get_option( 'permalink_structure' ) );

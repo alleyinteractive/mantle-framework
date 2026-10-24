@@ -57,7 +57,7 @@ class HelpersTest extends TestCase {
 		Facade::set_facade_application( $this->app );
 	}
 
-	public function test_is_hosted_env() {
+	public function test_is_hosted_env(): void {
 		$this->app->set_environment( 'production' );
 
 		$this->assertTrue( is_hosted_env() );
@@ -69,12 +69,12 @@ class HelpersTest extends TestCase {
 		$this->assertTrue( is_local_env() );
 	}
 
-	public function test_info_helpers() {
+	public function test_info_helpers(): void {
 		info( 'This is a helper test message.' );
 		$this->assertTrue( $this->handler->hasRecord( 'This is a helper test message.', 'info' ) );
 	}
 
-	public function test_logger_helpers() {
+	public function test_logger_helpers(): void {
 		logger( 'This is a helper debug message.' );
 		logger()->warning( 'This is a warning.' );
 
@@ -86,7 +86,7 @@ class HelpersTest extends TestCase {
 	 * @dataProvider classname_provider
 	 */
 	#[DataProvider('classname_provider')]
-	public function test_classname( $input, string $expected ) {
+	public function test_classname( array $input, string $expected ): void {
 		$this->assertSame( $expected, classname( $input ) );
 		$this->assertSame( $expected, classname( ...$input ) );
 	}

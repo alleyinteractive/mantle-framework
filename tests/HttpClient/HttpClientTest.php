@@ -32,7 +32,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->prevent_stray_requests();
 	}
 
-	public function test_make_post_request() {
+	public function test_make_post_request(): void {
 		$this->fake_request( fn () => Mock_Http_Response::create()
 			->with_status( 200 )
 			->with_header( 'Example-Header', 'Example-Value' )
@@ -54,7 +54,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertSame( 'value', $response['example'] );
 	}
 
-	public function test_make_get_request() {
+	public function test_make_get_request(): void {
 		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 200 ) );
 
 		$response = $this->http_factory->get( 'https://example.com/' );
@@ -62,7 +62,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertTrue( $response->ok() );
 	}
 
-	public function test_make_get_request_with_query() {
+	public function test_make_get_request_with_query(): void {
 		$this->fake_request();
 
 		$this->http_factory->get( 'https://example.com/', [ 'example' => 'value' ] );
@@ -73,7 +73,7 @@ class HttpClientTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_delete_request() {
+	public function test_delete_request(): void {
 		$this->fake_request();
 
 		$this->http_factory->delete( 'https://example.com/delete/' );
@@ -86,7 +86,7 @@ class HttpClientTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_make_request_enum() {
+	public function test_make_request_enum(): void {
 		$this->fake_request();
 
 		$this->http_factory->method( Http_Method::PUT )->url( 'https://example.com/' )->send();
@@ -99,7 +99,7 @@ class HttpClientTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_make_request_with_cookies() {
+	public function test_make_request_with_cookies(): void {
 		$cookie = new \WP_Http_Cookie( [
 			'name' => 'example',
 			'value' => 'value',
@@ -116,7 +116,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertSame( 'value', $response->cookie( 'example' )->value );
 	}
 
-	public function test_make_request_with_json() {
+	public function test_make_request_with_json(): void {
 		$this->fake_request( fn () => Mock_Http_Response::create()
 			->with_status( 200 )
 			->with_json( [ 'example' => 'value' ] )
@@ -161,7 +161,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertSame( 123, $response->mixed_json( 'example' )->int() );
 	}
 
-	public function test_make_request_with_basic_auth() {
+	public function test_make_request_with_basic_auth(): void {
 		$this->fake_request();
 
 		$this->http_factory
@@ -175,7 +175,7 @@ class HttpClientTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_make_request_with_token() {
+	public function test_make_request_with_token(): void {
 		$this->fake_request();
 
 		$this->http_factory
@@ -189,7 +189,7 @@ class HttpClientTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_nothing_sent() {
+	public function test_nothing_sent(): void {
 		$this->assertNoRequestSent();
 
 		$this->fake_request();
@@ -199,11 +199,11 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertRequestSent();
 	}
 
-	public function test_make_request_with_files() {
+	public function test_make_request_with_files(): void {
 		$this->markTestSkipped( 'Not implemented yet.' );
 	}
 
-	public function test_http_client_with_base_url() {
+	public function test_http_client_with_base_url(): void {
 		$this->fake_request();
 
 		$rest_client = Http::base_url( 'https://example.com' );
@@ -213,7 +213,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertRequestSent( 'https://example.com/wp-json/wp/v2/posts/' );
 	}
 
-	public function test_http_client_base_url_with_empty_request_path() {
+	public function test_http_client_base_url_with_empty_request_path(): void {
 		$this->fake_request();
 
 		$rest_client = Http::base_url( 'https://example.com/api' );
@@ -223,7 +223,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertRequestSent( 'https://example.com/api' );
 	}
 
-	public function test_json_scalar_body() {
+	public function test_json_scalar_body(): void {
 		$this->fake_request( fn () => Mock_Http_Response::create()->with_body( '123' )->with_header( 'Content-Type', 'application/json' ) );
 
 		$response = Http::get( 'https://example.com/scalar' );
@@ -232,7 +232,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertSame( 123, $response->json() );
 	}
 
-	public function test_with_user_agent() {
+	public function test_with_user_agent(): void {
 		$this->fake_request();
 
 		Http::with_user_agent( 'MantleBot/1.0' )->get( 'https://example.com/user-agent/' );
@@ -240,7 +240,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertRequestSent( fn ( Request $request ) => 'MantleBot/1.0' === $request->get( 'user-agent' ) );
 	}
 
-	public function test_send_keeps_url_set_before_base_url_send() {
+	public function test_send_keeps_url_set_before_base_url_send(): void {
 		$this->fake_request();
 
 		Http::base_url( 'https://example.com' )->url( '/keep-me/' )->send();
@@ -248,7 +248,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertRequestSent( 'https://example.com/keep-me/' );
 	}
 
-	public function test_repeated_header_replaces_previous_value() {
+	public function test_repeated_header_replaces_previous_value(): void {
 		$this->fake_request();
 
 		Http::with_token( 'first' )->with_token( 'second' )->get( 'https://example.com/token/' );
@@ -256,7 +256,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertRequestSent( fn ( Request $request ) => 'Bearer second' === $request->header( 'Authorization' ) );
 	}
 
-	public function test_base_url_slash_normalization() {
+	public function test_base_url_slash_normalization(): void {
 		$this->fake_request();
 
 		Http::base_url( 'https://example.com/api/' )->get( '/users' );
@@ -362,7 +362,7 @@ class HttpClientTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_facade_request() {
+	public function test_facade_request(): void {
 		$this->fake_request();
 
 		Http::get( 'https://example.com/facade/' );
@@ -370,7 +370,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertRequestSent( 'https://example.com/facade/' );
 	}
 
-	public function test_no_exception_thrown_by_default() {
+	public function test_no_exception_thrown_by_default(): void {
 		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 500 ) );
 
 		$response = $this->http_factory->get( 'https://example.com/' );
@@ -378,7 +378,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertInstanceOf( Response::class, $response );
 	}
 
-	public function test_no_exception_thrown_if_muted() {
+	public function test_no_exception_thrown_if_muted(): void {
 		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 500 ) );
 
 		$response = $this->http_factory
@@ -388,7 +388,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertInstanceOf( Response::class, $response );
 	}
 
-	public function test_exception_thrown_on_failure() {
+	public function test_exception_thrown_on_failure(): void {
 		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 500 ) );
 
 		$this->expectException( Http_Client_Exception::class );
@@ -398,7 +398,7 @@ class HttpClientTest extends FrameworkTestCase {
 			->get( 'https://example.com/' );
 	}
 
-	public function test_retry_exception_on_error() {
+	public function test_retry_exception_on_error(): void {
 		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 500 ) );
 
 		$this->http_factory
@@ -408,7 +408,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertRequestSent( 'https://example.com/retry/', 5 );
 	}
 
-	public function test_retry_exception_on_error_with_exception() {
+	public function test_retry_exception_on_error_with_exception(): void {
 		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 500 ) );
 
 		$this->expectException( Http_Client_Exception::class );
@@ -421,7 +421,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertRequestSent( 'https://example.com/retry/', 5 );
 	}
 
-	public function test_middleware_request() {
+	public function test_middleware_request(): void {
 		$this->fake_request();
 
 		$this->http_factory
@@ -435,7 +435,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertRequestSent( 'https://example.com/middleware/?modified=true' );
 	}
 
-	public function test_middleware_response() {
+	public function test_middleware_response(): void {
 		$this->fake_request( fn () => Mock_Http_Response::create()
 			->with_header( 'test-header', 'origin-value' )
 			->with_body( 'example-body' )
@@ -461,7 +461,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertSame( 'example-body', $response->body() );
 	}
 
-	public function test_wp_error_response() {
+	public function test_wp_error_response(): void {
 		$error = new \WP_Error( 'http_request_failed', 'An error occurred.' );
 
 		$this->fake_request( fn () => $error );
@@ -476,7 +476,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertSame( 'An error occurred.', $response->body() );
 	}
 
-	public function test_invalid_json() {
+	public function test_invalid_json(): void {
 		$this->fake_request( fn () => Mock_Http_Response::create()
 			->with_header( 'content-type', 'application/json' )
 			->with_body( 'text-body' )
@@ -488,7 +488,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertNull( $response->json() );
 	}
 
-	public function test_timeout() {
+	public function test_timeout(): void {
 		$this->fake_request();
 
 		$this->http_factory
@@ -501,7 +501,7 @@ class HttpClientTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_xml_response() {
+	public function test_xml_response(): void {
 		$this->fake_request( fn () => Mock_Http_Response::create()
 			->with_header( 'content-type', 'application/xml' )
 			->with_body(
@@ -538,7 +538,7 @@ EOF
 		$this->assertSame( 'Another point!', (string) ( $response->xml( '/slideshow/slide[@type="specific"]/point' )[0] ?? '' ) );
 	}
 
-	public function test_pool_requests() {
+	public function test_pool_requests(): void {
 		$this->fake_request( [
 			'https://example.com/async/' => Mock_Http_Response::create()->with_status( 200 ),
 			'https://example.com/second-async/' => Mock_Http_Response::create()->with_status( 402 ),
@@ -553,7 +553,7 @@ EOF
 		$this->assertSame( 402, $response[1]->status() );
 	}
 
-	public function test_pool_requests_legacy() {
+	public function test_pool_requests_legacy(): void {
 		$this->fake_request( [
 			'https://example.com/async/' => Mock_Http_Response::create()->with_status( 200 ),
 			'https://example.com/second-async/' => Mock_Http_Response::create()->with_status( 402 ),
@@ -568,7 +568,7 @@ EOF
 		$this->assertSame( 402, $response[1]->status() );
 	}
 
-	public function test_pool_requests_name() {
+	public function test_pool_requests_name(): void {
 		$this->fake_request( [
 			'https://example.com/async/' => Mock_Http_Response::create()->with_status( 200 ),
 			'https://example.com/second-async/' => Mock_Http_Response::create()->with_status( 402 ),
@@ -593,7 +593,7 @@ EOF
 		);
 	}
 
-	public function test_pool_forward_base_url() {
+	public function test_pool_forward_base_url(): void {
 		$this->fake_request( [
 			'https://github.com/endpoint-a/' => Mock_Http_Response::create()->with_status( 200 ),
 			'https://github.com/endpoint-b/' => Mock_Http_Response::create()->with_status( 404 ),
@@ -622,7 +622,7 @@ EOF
 		);
 	}
 
-	public function test_conditionable_when_request() {
+	public function test_conditionable_when_request(): void {
 		$request = $this->http_factory
 			->with_header( 'X-Foo', 'Bar' )
 			->when( true, fn ( Pending_Request $request ) => $request->with_header( 'X-Foo', 'Baz', true ) );
@@ -642,7 +642,7 @@ EOF
 		$this->assertSame( 'Bar', $request->header( 'X-Foo' ) );
 	}
 
-	public function test_conditionable_unless_request() {
+	public function test_conditionable_unless_request(): void {
 		$request = $this->http_factory
 			->with_header( 'X-Foo', 'Bar' )
 			->unless( false, fn ( Pending_Request $request ) => $request->with_header( 'X-Foo', 'Baz', true ) );
@@ -662,14 +662,14 @@ EOF
 		$this->assertSame( 'Bar', $request->header( 'X-Foo' ) );
 	}
 
-	public function test_headers_as_form() {
+	public function test_headers_as_form(): void {
 		$request = $this->http_factory
 			->as_form();
 
 		$this->assertSame( 'application/x-www-form-urlencoded', $request->header( 'Content-Type' ) );
 	}
 
-	public function test_helper_function() {
+	public function test_helper_function(): void {
 		$this->fake_request();
 
 		http_client()->get( 'https://example.com/' );

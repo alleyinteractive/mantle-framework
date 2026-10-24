@@ -6,7 +6,7 @@ use Mantle\Database\Model\Post;
 use Mantle\Testing\FrameworkTestCase;
 
 class PermalinkGeneratorTest extends FrameworkTestCase {
-	public function test_generate_permalink() {
+	public function test_generate_permalink(): void {
 		$post  = static::factory()->post->create_and_get();
 		$model = Testable_Post_Generator::find( $post->ID );
 
@@ -16,7 +16,7 @@ class PermalinkGeneratorTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_generate_permalink_alias() {
+	public function test_generate_permalink_alias(): void {
 		$post  = static::factory()->post->create_and_get();
 		$model = Testable_Post_Alias::find( $post->ID );
 

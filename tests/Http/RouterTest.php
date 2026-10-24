@@ -12,7 +12,7 @@ use Mantle\Testing\FrameworkTestCase;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 class RouterTest extends FrameworkTestCase {
-	public function test_basic_dispatching() {
+	public function test_basic_dispatching(): void {
 		$router = $this->get_router();
 		$router->get(
 			'foo/bar',
@@ -118,7 +118,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertSame( 'closure', $router->dispatch( Request::create( 'foo/bar', 'GET' ) )->getContent() );
 	}
 
-	public function testClosureMiddleware() {
+	public function testClosureMiddleware(): void {
 			$router     = $this->get_router();
 			$middleware = function ( $request, $next ) {
 					return 'caught';
@@ -135,7 +135,7 @@ class RouterTest extends FrameworkTestCase {
 			$this->assertSame( 'caught', $router->dispatch( Request::create( 'foo/bar', 'GET' ) )->getContent() );
 	}
 
-	public function test_route_binding() {
+	public function test_route_binding(): void {
 			$router = $this->get_router();
 			$router->bind(
 				'name',
@@ -156,7 +156,7 @@ class RouterTest extends FrameworkTestCase {
 			$this->assertSame( 'TAYLOR', $router->dispatch( Request::create( 'foo/taylor', 'GET' ) )->getContent() );
 	}
 
-	public function test_model_binding() {
+	public function test_model_binding(): void {
 		$router = $this->get_router();
 		$router->get(
 			'foo/{bar}',
@@ -171,7 +171,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertSame( 'TAYLOR', $router->dispatch( Request::create( 'foo/taylor', 'GET' ) )->getContent() );
 	}
 
-	public function test_implicit_bindings() {
+	public function test_implicit_bindings(): void {
 		$router = $this->get_router();
 
 		$router->get(
@@ -206,7 +206,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertSame( 'first_name-last_name', $router->dispatch( Request::create( 'names/first_name/last_name', 'GET' ) )->getContent() );
 	}
 
-	public function test_route_typehint_non_model() {
+	public function test_route_typehint_non_model(): void {
 		$router = $this->get_router();
 
 		$router->get(
@@ -226,7 +226,7 @@ class RouterTest extends FrameworkTestCase {
 
 	// Ensure that a route with multiple variables and a single type-hinted one
 	// works properly.
-	public function test_implicit_binding_multiple_variables() {
+	public function test_implicit_binding_multiple_variables(): void {
 		$router = $this->get_router();
 
 		$router->get(
@@ -246,7 +246,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertSame( $post->post_title, $router->dispatch( Request::create( 'year/month/day/' . $post->post_name, 'GET' ) )->getContent() );
 	}
 
-	public function test_route_name_url() {
+	public function test_route_name_url(): void {
 		$router = $this->get_router();
 		$router->get(
 			'/example-route-url',
@@ -261,7 +261,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertSame( home_url( '/example-route-url' ), route( 'test_route_name_url' ) );
 	}
 
-	public function test_fluent_routing() {
+	public function test_fluent_routing(): void {
 		$router = $this->get_router();
 
 		$router->get( '/test_fluent_routing' )
@@ -281,7 +281,7 @@ class RouterTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_middleware_group_registration() {
+	public function test_middleware_group_registration(): void {
 		$router = $this->get_router();
 
 		$router->middleware( Testable_Middleware_Router::class )->group(
@@ -295,7 +295,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertSame( '/example-route-with-middleware', $_SERVER['__middleware'] );
 	}
 
-	public function test_without_middleware_registration() {
+	public function test_without_middleware_registration(): void {
 		$_SERVER['__middleware'] = $_SERVER['closure_middleware'] = null;
 
 		$router = $this->get_router();
@@ -319,7 +319,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertTrue( $_SERVER['closure_middleware'] );
 	}
 
-	public function test_without_middleware_all() {
+	public function test_without_middleware_all(): void {
 		$_SERVER['__middleware'] = $_SERVER['closure_middleware'] = null;
 
 		$router = $this->get_router();
@@ -343,7 +343,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertEmpty( $_SERVER['closure_middleware'] );
 	}
 
-	public function test_route_prefix() {
+	public function test_route_prefix(): void {
 		$router = $this->get_router();
 
 		$router->prefix( 'example-prefix' )->group(
@@ -359,7 +359,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertStringEndsWith( '/example-prefix/example-route-prefix', route( 'example-route' ) );
 	}
 
-	public function test_route_name_prefix() {
+	public function test_route_name_prefix(): void {
 		$router = $this->get_router();
 
 		$router->name( 'example-prefix.' )->group(
@@ -375,7 +375,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertStringEndsWith( '/example-route-prefix', route( 'example-prefix.example-route' ) );
 	}
 
-	public function test_registrar_prefix_applies_without_group() {
+	public function test_registrar_prefix_applies_without_group(): void {
 		$router = $this->get_router();
 
 		$route = $router->prefix( 'direct-prefix' )->get( '/example', fn () => 'prefixed' );
@@ -384,7 +384,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertSame( 'prefixed', $router->dispatch( Request::create( 'direct-prefix/example', 'GET' ) )->getContent() );
 	}
 
-	public function test_registrar_where_applies_without_group() {
+	public function test_registrar_where_applies_without_group(): void {
 		$router = $this->get_router();
 
 		$router->where( [ 'id' => '\d+' ] )->get( '/where-direct/{id}', fn ( $id ) => "id-{$id}" );
@@ -396,7 +396,7 @@ class RouterTest extends FrameworkTestCase {
 		$router->dispatch( Request::create( 'where-direct/abc', 'GET' ) );
 	}
 
-	public function test_registrar_where_applies_in_group() {
+	public function test_registrar_where_applies_in_group(): void {
 		$router = $this->get_router();
 
 		$router->where( [ 'id' => '\d+' ] )->group(
@@ -410,7 +410,7 @@ class RouterTest extends FrameworkTestCase {
 		$router->dispatch( Request::create( 'where-group/abc', 'GET' ) );
 	}
 
-	public function test_registrar_domain_applies_without_group() {
+	public function test_registrar_domain_applies_without_group(): void {
 		$router = $this->get_router();
 
 		$router->domain( 'api.example.org' )->get( '/domain-direct', fn () => 'domain' );
@@ -422,7 +422,7 @@ class RouterTest extends FrameworkTestCase {
 		$router->dispatch( Request::create( 'http://other.example.org/domain-direct', 'GET' ) );
 	}
 
-	public function test_registrar_name_applies_without_group() {
+	public function test_registrar_name_applies_without_group(): void {
 		$router = $this->get_router();
 
 		$router->name( 'direct-name' )->get( '/direct-named-route', fn () => 'named' );
@@ -434,7 +434,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertStringEndsWith( '/direct-as-route', route( 'direct-as' ) );
 	}
 
-	public function test_registrar_name_is_prefixed_by_group_name() {
+	public function test_registrar_name_is_prefixed_by_group_name(): void {
 		$router = $this->get_router();
 
 		$router->name( 'admin.' )->group(
@@ -446,7 +446,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertStringEndsWith( '/admin-dashboard', route( 'admin.dashboard' ) );
 	}
 
-	public function test_registrar_name_prefix_combines_with_route_name() {
+	public function test_registrar_name_prefix_combines_with_route_name(): void {
 		$router = $this->get_router();
 
 		$router->name( 'posts.' )->get( '/posts-index', fn () => 'index' )->name( 'index' );
@@ -456,7 +456,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertStringEndsWith( '/posts-index', route( 'posts.index' ) );
 	}
 
-	public function test_registrar_name_prefix_allows_multiple_unnamed_routes() {
+	public function test_registrar_name_prefix_allows_multiple_unnamed_routes(): void {
 		$router = $this->get_router();
 
 		$router->name( 'posts.' )->get( '/posts-a', fn () => 'a' );
@@ -466,7 +466,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertSame( 'b', $router->dispatch( Request::create( 'posts-b', 'GET' ) )->getContent() );
 	}
 
-	public function test_registrar_middleware_applies_once_without_group() {
+	public function test_registrar_middleware_applies_once_without_group(): void {
 		$router = $this->get_router();
 
 		$route = $router->middleware( Testable_Middleware_Router::class )->get( '/direct-middleware', fn () => 'middleware' );
@@ -474,7 +474,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertSame( [ Testable_Middleware_Router::class ], $route->middleware() );
 	}
 
-	public function test_can_middleware_checks_every_ability() {
+	public function test_can_middleware_checks_every_ability(): void {
 		$this->acting_as( 'author' );
 
 		\Mantle\Facade\Route::get( '/can-multi', fn () => 'ok' )->middleware( 'can:edit_posts,manage_options' );
@@ -484,7 +484,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->get( '/can-single' )->assertOk();
 	}
 
-	public function test_interface_typed_dependency_is_injected() {
+	public function test_interface_typed_dependency_is_injected(): void {
 		$router = $this->get_router();
 
 		$router->get(
@@ -495,7 +495,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertSame( 'ok', $router->dispatch( Request::create( 'iface', 'GET' ) )->getContent() );
 	}
 
-	public function test_nested_route_name_prefix() {
+	public function test_nested_route_name_prefix(): void {
 		$router = $this->get_router();
 
 		$router->name( 'admin.' )->group(
@@ -509,7 +509,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertStringEndsWith( '/nested-named-route', route( 'admin.users.index' ) );
 	}
 
-	public function test_falsy_route_responses() {
+	public function test_falsy_route_responses(): void {
 		$router = $this->get_router();
 
 		$router->get( 'empty-array', fn () => [] );
@@ -522,7 +522,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertSame( '0', $router->dispatch( Request::create( 'zero-string', 'GET' ) )->getContent() );
 	}
 
-	public function test_implicit_binding_does_not_resolve_private_post() {
+	public function test_implicit_binding_does_not_resolve_private_post(): void {
 		$router = $this->get_router();
 
 		$router->get(
@@ -540,7 +540,7 @@ class RouterTest extends FrameworkTestCase {
 		$router->dispatch( Request::create( 'bound/' . $post->post_name, 'GET' ) );
 	}
 
-	public function test_implicit_binding_resolves_private_post_for_authorized_user() {
+	public function test_implicit_binding_resolves_private_post_for_authorized_user(): void {
 		$this->acting_as( 'administrator' );
 
 		$router = $this->get_router();
@@ -603,11 +603,11 @@ class Routing_Test_User_Model extends Post {
 		return $this;
 	}
 
-	public function first() {
+	public function first(): static {
 		return $this;
 	}
 
-	public function firstOrFail() {
+	public function firstOrFail(): static {
 		return $this;
 	}
 }
@@ -617,7 +617,7 @@ class Routing_Test_Post_Model extends Post {
 }
 
 class Testable_Middleware_Router {
-	public function handle( Request $request, $next ): mixed {
+	public function handle( Request $request, callable $next ): mixed {
 		$_SERVER['__middleware'] = $request->getPathInfo();
 
 		return $next( $request );

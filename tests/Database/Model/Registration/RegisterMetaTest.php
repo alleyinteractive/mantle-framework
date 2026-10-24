@@ -7,7 +7,7 @@ use Mantle\Database\Model\Registration\Register_Meta;
 use Mantle\Testing\FrameworkTestCase;
 
 class RegisterMetaTest extends FrameworkTestCase {
-	public function test_register_meta() {
+	public function test_register_meta(): void {
 		$this->expectApplied( 'mantle_register_meta_default_args' )->once()->andReturn(
 			[
 				'object_subtype' => 'post',
@@ -34,7 +34,7 @@ class Testable_Post_Model_Meta extends Post implements Registrable_Meta {
 
 	public static $object_name = 'post';
 
-	protected static function boot() {
+	protected static function boot(): void {
 		static::register_meta( 'test_meta' );
 	}
 }

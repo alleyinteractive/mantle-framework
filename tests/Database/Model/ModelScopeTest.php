@@ -10,7 +10,7 @@ use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Testing\FrameworkTestCase;
 
 class ModelScopeTest extends FrameworkTestCase {
-	public function test_local_scope() {
+	public function test_local_scope(): void {
 		$post_id = $this->get_random_post_id();
 
 		$this->assertEmpty( Testable_Post_For_Scope::active()->get()->to_array() );
@@ -21,7 +21,7 @@ class ModelScopeTest extends FrameworkTestCase {
 		$this->assertSame( $post_id, Testable_Post_For_Scope::active()->first()->id() );
 	}
 
-	public function test_multiple_local_scopes() {
+	public function test_multiple_local_scopes(): void {
 		$post_id = $this->get_random_post_id();
 
 		$this->assertEmpty( Testable_Post_For_Scope::active()->ofType( 'type-to-check' )->get()->to_array() );
@@ -37,7 +37,7 @@ class ModelScopeTest extends FrameworkTestCase {
 		$this->assertSame( $post_id, Testable_Post_For_Scope::active()->ofType( 'type-to-check' )->first()->id() );
 	}
 
-	public function test_global_scope() {
+	public function test_global_scope(): void {
 		$post_id = $this->get_random_post_id();
 
 		$this->assertEmpty( Testable_Post_For_Scope_Global_Scope::first() );
@@ -46,7 +46,7 @@ class ModelScopeTest extends FrameworkTestCase {
 		$this->assertSame( $post_id, Testable_Post_For_Scope_Global_Scope::first()->id() );
 	}
 
-	public function test_global_scope_class() {
+	public function test_global_scope_class(): void {
 		$post_id = $this->get_random_post_id();
 
 		$this->assertEmpty( Testable_Post_For_Scope_Global_Scope_Class::first() );
@@ -93,7 +93,7 @@ class Testable_Post_For_Scope extends Post {
 
 class Testable_Post_For_Scope_Global_Scope extends Testable_Post_For_Scope {
 
-	protected static function boot() {
+	protected static function boot(): void {
 		parent::boot();
 
 		static::add_global_scope(
@@ -107,7 +107,7 @@ class Testable_Post_For_Scope_Global_Scope extends Testable_Post_For_Scope {
 
 class Testable_Post_For_Scope_Global_Scope_Class extends Testable_Post_For_Scope {
 
-	protected static function boot() {
+	protected static function boot(): void {
 		parent::boot();
 
 		static::add_global_scope( new Test_Scope() );

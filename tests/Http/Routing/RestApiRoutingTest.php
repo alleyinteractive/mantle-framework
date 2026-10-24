@@ -95,7 +95,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 			->assertContent( json_encode( 'example-post' ) );
 	}
 
-	public function test_controller_route() {
+	public function test_controller_route(): void {
 		// Registering a group of routes from controller methods.
 		Route::rest_api(
 			'namespace/v1',
@@ -184,7 +184,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 		$this->get( rest_url( '/namespace-b/v1/same-path' ) )->assertOk()->assertContent( json_encode( 'b' ) );
 	}
 
-	public function test_middleware_class_route() {
+	public function test_middleware_class_route(): void {
 		Route::middleware( Testable_Before_Middleware::class )
 			->rest_api(
 				'namespace/v1',
@@ -236,7 +236,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 			->assertContent( json_encode( 'middleware-response' ) );
 	}
 
-	public function test_group_route() {
+	public function test_group_route(): void {
 		Route::middleware( Testable_Before_Middleware::class )->group(
 			function() {
 				Route::rest_api(
@@ -256,27 +256,27 @@ class RestApiRoutingTest extends FrameworkTestCase {
 }
 
 class Testable_Before_Middleware {
-	public function handle( $request, Closure $next ) {
+	public function handle( mixed $request, Closure $next ): string {
 		return 'middleware-response';
 	}
 }
 
 class Testable_Rest_Api_Controller extends Controller {
-	public function index() {
+	public function index(): string {
 		return 'index-response';
 	}
 
-	public function show() {
+	public function show(): string {
 		return 'show-response';
 	}
 }
 
 class Testable_Invokable_Rest_Api_Controller extends Controller {
-	public function __invoke() {
+	public function __invoke(): string {
 		return 'invoke-response';
 	}
 }
 
-function testable_function_name() {
+function testable_function_name(): string {
 	return 'function-response';
 }

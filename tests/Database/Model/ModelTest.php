@@ -17,7 +17,7 @@ class ModelTest extends FrameworkTestCase {
 		$_SERVER['__boot_model_trait_to_test'] = 0;
 		$_SERVER['__initialize_model_trait_to_test'] = 0;
 	}
-	public function test_boot_methods() {
+	public function test_boot_methods(): void {
 
 		$this->assertSame( 0, $_SERVER['__testable_model_boot'] );
 		$this->assertSame( 0, $_SERVER['__initialize_model_trait_to_test'] );
@@ -90,7 +90,7 @@ class ModelTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_first_or_new() {
+	public function test_first_or_new(): void {
 		$existing = static::factory()->post->create( [
 			'title' => 'Original Title',
 		] );
@@ -114,7 +114,7 @@ class ModelTest extends FrameworkTestCase {
 		$this->assertSame( 'New title', $post_to_create->title );
 	}
 
-	public function test_first_or_create() {
+	public function test_first_or_create(): void {
 		$existing = static::factory()->post->create( [
 			'title' => 'Original Title test_first_or_create',
 		] );
@@ -138,7 +138,7 @@ class ModelTest extends FrameworkTestCase {
 		$this->assertSame( 'New title test_first_or_create', $post_to_create->title );
 	}
 
-	public function test_update_or_create_by_post_title() {
+	public function test_update_or_create_by_post_title(): void {
 		$existing = static::factory()->post->create( [ 'title' => 'Original title' ] );
 
 		$post = Testable_Post_For_Appending::update_or_create(
@@ -155,7 +155,7 @@ class ModelTest extends FrameworkTestCase {
 		$this->assertEquals( $post->id, $found->id );
 	}
 
-	public function test_update_or_create() {
+	public function test_update_or_create(): void {
 		$existing = static::factory()->post->create( [
 			'title' => 'Original Title test_update_or_create',
 		] );
@@ -185,7 +185,7 @@ class Testable_Model extends Model {
 
 	public static function find( mixed $object ): ?static { }
 
-	public static function boot() {
+	public static function boot(): void {
 		$_SERVER['__testable_model_boot']++;
 	}
 }
@@ -204,11 +204,11 @@ class Testable_Post_For_Appending extends Post {
 	}
 }
 trait Model_Trait_To_Test {
-	public static function boot_model_trait_to_test() {
+	public static function boot_model_trait_to_test(): void {
 		$_SERVER['__boot_model_trait_to_test']++;
 	}
 
-	public static function initialize_model_trait_to_test() {
+	public static function initialize_model_trait_to_test(): void {
 		$_SERVER['__initialize_model_trait_to_test']++;
 	}
 }

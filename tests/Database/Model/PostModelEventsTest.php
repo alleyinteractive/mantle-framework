@@ -21,7 +21,7 @@ class PostModelEventsTest extends FrameworkTestCase {
 		unregister_post_type( 'test-post-type' );
 	}
 
-	public function test_closure_event() {
+	public function test_closure_event(): void {
 		$_SERVER['__test_creating_event_fired'] = false;
 		$_SERVER['__test_created_event_fired'] = false;
 
@@ -82,7 +82,7 @@ class PostModelEventsTest extends FrameworkTestCase {
 	/**
 	 * Ensure that the model events are fired even if not interfacing with a model directly.
 	 */
-	public function test_non_model_event() {
+	public function test_non_model_event(): void {
 		$_SERVER['__test_non_model_created_event_fired'] = false;
 		$_SERVER['__test_non_model_updated_event_fired'] = false;
 		$_SERVER['__test_non_model_deleted_event_fired'] = false;
@@ -115,7 +115,7 @@ class PostModelEventsTest extends FrameworkTestCase {
 		$this->assertTrue( $_SERVER['__test_non_model_updated_event_fired'] < $_SERVER['__test_non_model_deleted_event_fired'] );
 	}
 
-	public function test_model_event_via_for() {
+	public function test_model_event_via_for(): void {
 		$_SERVER['__test_model_event_via_for_created_event_fired'] = false;
 		$_SERVER['__test_model_event_via_for_updated_event_fired'] = false;
 		$_SERVER['__test_model_event_via_for_deleted_event_fired'] = false;

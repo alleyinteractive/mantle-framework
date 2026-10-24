@@ -30,7 +30,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		unregister_post_type( Another_Testable_Post::get_object_name() );
 	}
 
-	public function test_post_by_name() {
+	public function test_post_by_name(): void {
 		$post = static::factory()->post->create( [ 'post_name' => 'post-to-find' ] );
 
 		$first = Testable_Post::whereSlug( 'post-to-find' )->first();
@@ -40,7 +40,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $post, $first->id() );
 	}
 
-	public function test_post_by_name_not_found() {
+	public function test_post_by_name_not_found(): void {
 		static::factory()->post->create( [ 'post_name' => 'post-to-not-find' ] );
 
 		$first = Testable_Post::whereSlug( 'post-name-we-are-looking-for' )->first();
@@ -48,7 +48,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertNull( $first );
 	}
 
-	public function test_post_by_name_override() {
+	public function test_post_by_name_override(): void {
 		static::factory()->post->create( [ 'post_name' => 'post-to-find' ] );
 
 		$b = Testable_Post::whereSlug( 'post-name-we-are-looking-for' )
@@ -61,7 +61,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( 'post-to-find', $first->slug() );
 	}
 
-	public function test_post__in() {
+	public function test_post__in(): void {
 		$post_ids = static::factory()->post->create_ordered_set( 10 );
 
 		// Shuffle to get a random order
@@ -80,7 +80,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_where_array() {
+	public function test_where_array(): void {
 		$post = static::factory()->post->create_and_get( [ 'post_name' => 'another-post-to-find' ] );
 		$result = Builder::create( Testable_Post::class )
 			->where(
@@ -93,7 +93,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $post->ID, $result->id() );
 	}
 
-	public function test_post_meta() {
+	public function test_post_meta(): void {
 		$post_id = $this->get_random_post_id();
 		update_post_meta( $post_id, 'meta-key', 'the-meta-value' );
 
@@ -104,7 +104,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $post_id, $first->id() );
 	}
 
-	public function test_post_meta_or() {
+	public function test_post_meta_or(): void {
 		$post_id = $this->get_random_post_id();
 		update_post_meta( $post_id, 'meta-key', 'the-meta-value' );
 
@@ -116,7 +116,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $post_id, $first->id() );
 	}
 
-	public function test_post_meta_and() {
+	public function test_post_meta_and(): void {
 		$post_id = $this->get_random_post_id();
 		update_post_meta( $post_id, 'meta-key', 'the-meta-value' );
 		update_post_meta( $post_id, 'another-meta-key', 'another-meta-value' );
@@ -140,7 +140,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $post_id, $first->id() );
 	}
 
-	public function test_term_query() {
+	public function test_term_query(): void {
 		$post_id = $this->get_random_post_id();
 		$term = static::factory()->term->create_and_get();
 		wp_set_object_terms( $post_id, $term->term_id, $term->taxonomy, true );
@@ -152,7 +152,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $post_id, $first->id() );
 	}
 
-	public function test_term_or_query() {
+	public function test_term_or_query(): void {
 		$post_id = $this->get_random_post_id();
 		$term_other = static::factory()->term->create();
 		$term = static::factory()->term->create_and_get();
@@ -166,7 +166,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $post_id, $first->id() );
 	}
 
-	public function test_term_and_query() {
+	public function test_term_and_query(): void {
 		$post_id = $this->get_random_post_id();
 		$term_other = static::factory()->term->create();
 		$term = static::factory()->term->create();
@@ -191,7 +191,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $post_id, $first->id() );
 	}
 
-	public function test_term_query_from_term_model() {
+	public function test_term_query_from_term_model(): void {
 		$post_id = $this->get_random_post_id();
 		$term_other = static::factory()->term->create();
 		$term = Testable_Post_Tag::find( static::factory()->term->create() );
@@ -206,7 +206,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $post_id, $first->id() );
 	}
 
-	public function test_query_by_author() {
+	public function test_query_by_author(): void {
 		$user_id = static::factory()->user->create();
 		$post_id = $this->get_random_post_id();
 		wp_update_post(
@@ -229,7 +229,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $post_id, $first->id() );
 	}
 
-	public function test_query_by_author_name() {
+	public function test_query_by_author_name(): void {
 		$user = static::factory()->user->create_and_get();
 		$post_id = $this->get_random_post_id();
 		wp_update_post(
@@ -246,7 +246,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $post_id, $first->id() );
 	}
 
-	public function test_query_with_multiple() {
+	public function test_query_with_multiple(): void {
 		Utils::delete_all_data();
 
 		$post_a = static::factory()->post->create( [ 'post_date' => Carbon::now()->subWeek()->subHour()->toDateTimeString() ] );
@@ -283,7 +283,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $post_b, $get[0]->id() );
 	}
 
-	public function test_delete_posts() {
+	public function test_delete_posts(): void {
 		Utils::delete_all_data();
 
 		static::factory()->post->create_many( 10 );
@@ -308,7 +308,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_query_clauses() {
+	public function test_query_clauses(): void {
 		$applied_count = 0;
 		$post_id       = $this->get_random_post_id();
 
@@ -332,7 +332,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( 1, $applied_count ); // The clauses should only be applied once.
 	}
 
-	public function test_chunk() {
+	public function test_chunk(): void {
 		static::factory()->post->create_many( 101 );
 
 		$last_page = null;
@@ -370,7 +370,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( 101, $count );
 	}
 
-	public function test_chunk_short_circuit() {
+	public function test_chunk_short_circuit(): void {
 		static::factory()->post->create_many( 101 );
 
 		$count = 0;
@@ -385,7 +385,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( 10, $count );
 	}
 
-	public function test_chunk_by_id() {
+	public function test_chunk_by_id(): void {
 		$post_ids = static::factory()->post->create_many( 105 );
 
 		$last_page = null;
@@ -424,7 +424,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertNull( get_post( collect( $post_ids )->last() ) );
 	}
 
-	public function test_each() {
+	public function test_each(): void {
 		$post_ids = static::factory()->post->create_many( 100 );
 
 		$ids = new Collection();
@@ -436,7 +436,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertEquals( collect( $post_ids )->sort()->values(), $ids->sort()->values() );
 	}
 
-	public function test_each_by_id() {
+	public function test_each_by_id(): void {
 		$post_ids = static::factory()->post->create_many( 100 );
 
 		$ids = new Collection();
@@ -452,7 +452,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertNull( get_post( collect( $post_ids )->last() ) );
 	}
 
-	public function test_map() {
+	public function test_map(): void {
 		$post_ids = static::factory()->post->create_many( 100 );
 
 		$ids = Testable_Post::map( function ( Testable_Post $post ) {
@@ -467,7 +467,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_where_raw() {
+	public function test_where_raw(): void {
 		$post_id = static::get_random_post_id();
 
 		$result = Testable_Post::query()
@@ -477,7 +477,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $result->id(), $post_id );
 	}
 
-	public function test_where_raw_like() {
+	public function test_where_raw_like(): void {
 		$post_id = static::get_random_post_id();
 
 		$result = Testable_Post::query()
@@ -498,7 +498,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $result->id(), $post_id );
 	}
 
-	public function test_where_in_raw() {
+	public function test_where_in_raw(): void {
 		$post_ids = static::factory()->post->create_many( 10 );
 
 		// Shuffle to get a random order
@@ -520,7 +520,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_where_raw_or() {
+	public function test_where_raw_or(): void {
 		$post_id = static::get_random_post_id();
 
 		$result = Testable_Post::whereRaw( 'ID', 'unknown' )
@@ -530,7 +530,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $result->id(), $post_id );
 	}
 
-	public function test_multiple_order_by_query_args() {
+	public function test_multiple_order_by_query_args(): void {
 		$args = Testable_Post::query()
 			->orderBy( 'post_title', 'asc' )
 			->orderBy( 'post_date', 'desc' )
@@ -539,7 +539,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertEquals( [ 'post_title' => 'ASC', 'post_date' => 'DESC' ], $args['orderby'] );
 	}
 
-	public function test_multiple_order_by() {
+	public function test_multiple_order_by(): void {
 		$b     = static::factory()->post->create( [ 'post_title' => 'B', 'post_date' => '2020-01-05 00:00:00' ] );
 		$a_old = static::factory()->post->create( [ 'post_title' => 'A', 'post_date' => '2020-01-01 00:00:00' ] );
 		$a_new = static::factory()->post->create( [ 'post_title' => 'A', 'post_date' => '2020-01-03 00:00:00' ] );
@@ -554,7 +554,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertEquals( [ $a_new, $a_old, $b ], $ids );
 	}
 
-	public function test_count_does_not_modify_query() {
+	public function test_count_does_not_modify_query(): void {
 		static::factory()->post->create_many( 3 );
 
 		$query = Testable_Post::query()->take( 2 );
@@ -565,7 +565,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertCount( 2, $query->get() );
 	}
 
-	public function test_count() {
+	public function test_count(): void {
 		static::factory()->post->create_many( 14, [ 'post_status' => 'draft' ] );
 		static::factory()->post->create_many( 17, [ 'post_status' => 'publish' ] );
 
@@ -578,7 +578,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( 1, Testable_Post::whereIn( 'id', [ $post_id ] )->count() );
 	}
 
-	public function test_found_rows() {
+	public function test_found_rows(): void {
 		static::factory()->post->create_many( 25 );
 
 		$query = Testable_Post::query()
@@ -595,7 +595,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( 1, $models->count() );
 	}
 
-	public function test_no_found_rows_true() {
+	public function test_no_found_rows_true(): void {
 		static::factory()->post->create_many( 10 );
 
 		$query = Testable_Post::query()
@@ -608,7 +608,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$this->assertNull( $query->found_rows() );
 	}
 
-	public function test_post_by_date() {
+	public function test_post_by_date(): void {
 		$old_date = Carbon::now( wp_timezone() )->subMonth();
 		$now      = Carbon::now( wp_timezone() );
 
@@ -646,7 +646,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_post_by_modified_date() {
+	public function test_post_by_modified_date(): void {
 		$old_date = Carbon::now( wp_timezone() )->subMonth();
 		$now      = Carbon::now( wp_timezone() );
 
@@ -681,7 +681,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 	 * @dataProvider date_comparison_provider
 	 */
 	#[DataProvider( 'date_comparison_provider' )]
-	public function test_date_comparisons( int $expected, string $method, array $args ) {
+	public function test_date_comparisons( int $expected, string $method, array $args ): void {
 		$start = static::date_comparison_start();
 
 		static::factory()->post->create_ordered_set( 20, [], $start->clone() );
@@ -741,7 +741,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		return $post_ids[ array_rand( $post_ids ) ];
 	}
 
-	public function test_query_by_enum() {
+	public function test_query_by_enum(): void {
 		$post = static::factory()->post
 			->with_meta( [
 				'example-meta' => Testable_Meta_Values::Meta_Value_A,

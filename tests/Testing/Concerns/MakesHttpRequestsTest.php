@@ -81,7 +81,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->assertEmpty( wp_scripts()->get_data( 'jquery-core', 'data' ) );
 	}
 
-	public function test_method_not_allowed() {
+	public function test_method_not_allowed(): void {
 		Route::get( '/only-get', fn () => 'only get' );
 
 		$this->get( '/only-get' )->assertOk();
@@ -89,14 +89,14 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
-	public function test_get_home() {
+	public function test_get_home(): void {
 		$this->get( home_url( '/' ) )
 			->assertOk();
 		$this->assertQueryTrue( 'is_home', 'is_front_page' );
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
-	public function test_get_singular() {
+	public function test_get_singular(): void {
 		$post_id = static::factory()->post->create();
 		$this->get( get_permalink( $post_id ) . '?test=asda' )
 			->assertOk()
@@ -187,7 +187,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertContent( json_encode( [ 'test' => 'value' ] ) );
 	}
 
-	public function test_fluent() {
+	public function test_fluent(): void {
 		$_SERVER['__request_headers'] = [];
 
 		add_action(
@@ -214,7 +214,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
-	public function test_get_term() {
+	public function test_get_term(): void {
 		$category_id = static::factory()->category->create();
 
 		$this
@@ -225,7 +225,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
-	public function test_wordpress_404() {
+	public function test_wordpress_404(): void {
 		$this
 			->get( '/not-found/should-404/' )
 			->assertNotFound();
@@ -254,7 +254,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	 * Test checking against a Mantle route.
 	 */
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
-	public function test_get_mantle_route() {
+	public function test_get_mantle_route(): void {
 		$_SERVER['__route_run'] = false;
 
 		// Ensure routing is enabled.
@@ -277,7 +277,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
-	public function test_get_mantle_route_404() {
+	public function test_get_mantle_route_404(): void {
 		// Ensure routing is enabled.
 		$this->assertNotNull( $this->app->get_provider( Routing_Service_Provider::class ) );
 
@@ -295,7 +295,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
-	public function test_post_mantle_route() {
+	public function test_post_mantle_route(): void {
 		// Ensure routing is enabled.
 		$this->assertNotNull( $this->app->get_provider( Routing_Service_Provider::class ) );
 
@@ -323,7 +323,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
-	public function test_rest_api_route() {
+	public function test_rest_api_route(): void {
 		$this->expectApplied( 'rest_dispatch_request' )->once()->andReturnNull();
 
 		$post_id = static::factory()->post->create( [ 'post_title' => 'Example Post Title' ] );
@@ -355,7 +355,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
-	public function test_rest_api_route_headers() {
+	public function test_rest_api_route_headers(): void {
 		$this->ignoreIncorrectUsage();
 
 		register_rest_route(
@@ -376,7 +376,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
-	public function test_rest_api_route_error() {
+	public function test_rest_api_route_error(): void {
 		$this->get( rest_url( '/an/unknown/route' ) )
 			->assertStatus( 404 )
 			->assertNotFound();
@@ -445,7 +445,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
-	public function test_post_json_wordpress_route() {
+	public function test_post_json_wordpress_route(): void {
 		$this->ignoreIncorrectUsage();
 
 		register_rest_route(
@@ -463,7 +463,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
-	public function test_assert_json_structure() {
+	public function test_assert_json_structure(): void {
 		$response = Test_Response::from_base_response(
 			new Response( new JsonSerializableMixedResourcesStub() )
 		);
@@ -488,7 +488,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
-	public function test_callbacks() {
+	public function test_callbacks(): void {
 		$_SERVER['__callback_before'] = false;
 		$_SERVER['__callback_after']  = false;
 
@@ -501,11 +501,11 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->assertInstanceOf( Test_Response::class, $_SERVER['__callback_after'] );
 	}
 
-	public function test_match_snapshot() {
+	public function test_match_snapshot(): void {
 		$this->assertMatchesSnapshot( [ 1, 2, 3 ] );
 	}
 
-	public function test_match_snapshot_http() {
+	public function test_match_snapshot_http(): void {
 		Route::get( '/example/', fn () => 'example' );
 
 		$this->get( '/example' )
@@ -513,7 +513,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertMatchesSnapshotContent();
 	}
 
-	public function test_match_snapshot_http_partial() {
+	public function test_match_snapshot_http_partial(): void {
 		$random = wp_rand();
 
 		Route::get( '/example/', fn () => <<<HTML
@@ -547,7 +547,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			] );
 	}
 
-	public function test_match_snapshot_no_selectors_matched() {
+	public function test_match_snapshot_no_selectors_matched(): void {
 		$this->expectException( AssertionFailedError::class );
 
 		Route::get( '/example/', fn () => 'example' );
@@ -560,7 +560,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
-	public function test_wp_is_rest_endpoint() {
+	public function test_wp_is_rest_endpoint(): void {
 		$this->ignoreIncorrectUsage();
 
 		if ( ! function_exists( 'wp_is_rest_endpoint' ) ) {
@@ -591,7 +591,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->assertFalse( wp_is_rest_endpoint() );
 	}
 
-	public function test_match_snapshot_rest() {
+	public function test_match_snapshot_rest(): void {
 		$this->ignoreIncorrectUsage();
 
 		register_rest_route(
@@ -624,14 +624,14 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
-	public function test_url_scheme_http_by_default() {
+	public function test_url_scheme_http_by_default(): void {
 		$this->get( '/' )->assertOk();
 
 		$this->assertEmpty( $_SERVER['HTTPS'] ?? '' );
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
-	public function test_url_scheme_https_opt_in() {
+	public function test_url_scheme_https_opt_in(): void {
 		$this->get( '/' )->assertOk();
 
 		$this->assertEmpty( $_SERVER['HTTPS'] ?? '' );
@@ -643,7 +643,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
-	public function test_url_scheme_https_by_home_url() {
+	public function test_url_scheme_https_by_home_url(): void {
 		putenv( 'MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST=1' );
 
 		$home_url = get_option( 'home' );
@@ -662,7 +662,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 	#[Group( 'experimental' )]
 	#[Group( 'experiment-testing-url-host' )]
-	public function test_experimental_default_url_host() {
+	public function test_experimental_default_url_host(): void {
 		$this->get( '/' )->assertOk();
 
 		$this->assertSame( 'http://' . WP_TESTS_DOMAIN, home_url() );
@@ -678,7 +678,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	#[Group( 'experimental' )]
 	#[Group( 'experiment-testing-url-host' )]
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
-	public function test_experimental_redirect_to() {
+	public function test_experimental_redirect_to(): void {
 		$this->setup_experiment_testing_url_host();
 
 		$this->app['router']->get(
@@ -774,7 +774,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		];
 	}
 
-	protected function setup_experiment_testing_url_host() {
+	protected function setup_experiment_testing_url_host(): void {
 		putenv( 'MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST=1' );
 
 		update_option( 'home', 'https://subdomain.' . WP_TESTS_DOMAIN );

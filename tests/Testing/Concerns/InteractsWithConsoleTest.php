@@ -22,7 +22,7 @@ class InteractsWithConsoleTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_list_command() {
+	public function test_list_command(): void {
 		$this->command( 'wp mantle list' )
 			->assertOutputContains( 'Available commands' )
 			->assertOutputNotContains( 'Available nonsense' )
@@ -43,7 +43,7 @@ class InteractsWithConsoleTest extends FrameworkTestCase {
 			->assertFailed();
 	}
 
-	public function test_closure_command() {
+	public function test_closure_command(): void {
 		Console::command( 'hello-world', fn () => $this->info( 'Hello World' ) )
 			->describe( 'Command description' );
 
@@ -54,7 +54,7 @@ class InteractsWithConsoleTest extends FrameworkTestCase {
 		$this->command( 'wp mantle list' )->assertOutputContains( 'Command description' );
 	}
 
-	public function test_closure_command_input() {
+	public function test_closure_command_input(): void {
 		Console::command( 'hello {name}', function ( $name ) {
 			$this->info( "Hello {$name}" );
 		} );
@@ -68,7 +68,7 @@ class InteractsWithConsoleTest extends FrameworkTestCase {
 		$command = new class() extends Command {
 			protected $signature = 'test:class-command';
 
-			public function __invoke() {
+			public function __invoke(): void {
 				$this->info( 'Hello World' );
 			}
 		};
@@ -80,7 +80,7 @@ class InteractsWithConsoleTest extends FrameworkTestCase {
 			->assertOk();
 	}
 
-	public function test_wp_cli_command() {
+	public function test_wp_cli_command(): void {
 		$this->markTestSkipped( 'WP-CLI commands are not supported yet.' );
 	}
 }

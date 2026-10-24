@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\Group;
  */
 #[Group( 'queue' )]
 class QueueManagerTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
-	public function test_default_connection() {
+	public function test_default_connection(): void {
 		$provider = m::mock( Provider::class );
 
 		$config = new Repository(
@@ -33,7 +33,7 @@ class QueueManagerTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertInstanceOf( get_class( $provider ), $manager->get_provider() );
 	}
 
-	public function test_another_connection() {
+	public function test_another_connection(): void {
 		$provider   = m::mock( Provider::class );
 		$provider_b = m::mock( Provider::class );
 

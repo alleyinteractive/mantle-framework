@@ -354,7 +354,7 @@ class HookableAttributeTest extends FrameworkTestCase {
 			use Hookable;
 
 			#[Action( 'example_action' )]
-			private function example_action( mixed $args ): void {
+			protected function example_action( mixed $args ): void {
 				$_SERVER['__hook_fired'] = $args;
 			}
 		};
@@ -375,7 +375,7 @@ class HookableAttributeTest extends FrameworkTestCase {
 			use Hookable;
 
 			#[Action( 'example_action' )]
-			private function example_action( mixed $args ): void {
+			protected function example_action( mixed $args ): void {
 				$_SERVER['__hook_fired'] = $args;
 			}
 		};

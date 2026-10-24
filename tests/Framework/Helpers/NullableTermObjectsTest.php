@@ -18,7 +18,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_term_object()` returns a term object.
 	 */
-	public function test_term_object_returns_term() {
+	public function test_term_object_returns_term(): void {
 		$known_id = self::factory()->term->create();
 
 		$found_object = get_term_object( $known_id );
@@ -31,7 +31,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_term_object()` returns a term object given a taxonomy.
 	 */
-	public function test_term_object_with_taxonomy_returns_term() {
+	public function test_term_object_with_taxonomy_returns_term(): void {
 		$known_term = self::factory()->term->create_and_get();
 
 		$found_object = get_term_object( $known_term->term_id, $known_term->taxonomy );
@@ -44,7 +44,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_term_object()` honors the requested filter.
 	 */
-	public function test_term_object_returns_filtered_term() {
+	public function test_term_object_returns_filtered_term(): void {
 		$slug = 'test-term';
 
 		$known_id = self::factory()->term->create(
@@ -72,7 +72,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_term_object()` returns null when `get_term()` returns errors.
 	 */
-	public function test_term_object_returns_null_not_error() {
+	public function test_term_object_returns_null_not_error(): void {
 		$invalid = 0;
 
 		$this->assertWPError( \get_term( $invalid ) );
@@ -83,7 +83,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_term_object_by()` returns a term object.
 	 */
-	public function test_term_object_by_returns_term() {
+	public function test_term_object_by_returns_term(): void {
 		$known_term = self::factory()->term->create_and_get();
 
 		$found_object = get_term_object_by( 'slug', $known_term->slug, $known_term->taxonomy );
@@ -96,7 +96,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_term_object_by()` honors the requested filter.
 	 */
-	public function test_term_object_by_returns_filtered_term() {
+	public function test_term_object_by_returns_filtered_term(): void {
 		$known_term = self::factory()->term->create_and_get(
 			[
 				// 'slug' => $this->data1,
@@ -134,7 +134,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_term_object_by()` returns null when there is no term.
 	 */
-	public function test_term_object_by_returns_null() {
+	public function test_term_object_by_returns_null(): void {
 		$valid = self::factory()->term->create_and_get();
 
 		$found_object = get_term_object_by( 'slug', '', $valid->taxonomy );

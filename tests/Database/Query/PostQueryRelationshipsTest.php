@@ -25,7 +25,7 @@ class PostQueryRelationshipsTest extends FrameworkTestCase {
 		unregister_post_type( Testable_Sponsor::get_object_name() );
 	}
 
-	public function test_relationship_has() {
+	public function test_relationship_has(): void {
 		$post_a     = $this->get_random_post_id();
 		$sponsor_id = $this->get_random_post_id( [ 'post_type' => 'sponsor' ] );
 
@@ -36,7 +36,7 @@ class PostQueryRelationshipsTest extends FrameworkTestCase {
 		$this->assertSame( $post_a, $first->id() );
 	}
 
-	public function test_relationship_has_compare() {
+	public function test_relationship_has_compare(): void {
 		$post_a     = $this->get_random_post_id();
 		$sponsor_id = $this->get_random_post_id( [ 'post_type' => 'sponsor' ] );
 
@@ -50,7 +50,7 @@ class PostQueryRelationshipsTest extends FrameworkTestCase {
 		$this->assertSame( $post_a, $expected->id() );
 	}
 
-	public function test_relationship_doesnt_have() {
+	public function test_relationship_doesnt_have(): void {
 		$post_a     = $this->get_random_post_id();
 		$sponsor_id = $this->get_random_post_id( [ 'post_type' => 'sponsor' ] );
 
