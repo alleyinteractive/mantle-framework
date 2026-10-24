@@ -6,11 +6,10 @@ use Mantle\Facade\Route;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\FrameworkTestCase;
 
-
 class PaginatorTest extends FrameworkTestCase {
 	use Refresh_Database;
 
-	public function test_simple_paginate_url_query_string() {
+	public function test_simple_paginate_url_query_string(): void {
 		$paginator = Post::simple_paginate( 20 )->path( '/test-path/' );
 
 		$this->assertSame( '/test-path/', $paginator->url( 1 ) );
@@ -18,7 +17,7 @@ class PaginatorTest extends FrameworkTestCase {
 		$this->assertSame( '/test-path/', $paginator->url( -1 ) );
 	}
 
-	public function test_simple_paginate_url_path() {
+	public function test_simple_paginate_url_path(): void {
 		$paginator = Post::simple_paginate( 20 )
 			->path( '/test-path/' )
 			->use_path();
@@ -28,17 +27,17 @@ class PaginatorTest extends FrameworkTestCase {
 		$this->assertSame( '/test-path/', $paginator->url( -1 ) );
 	}
 
-	public function test_simple_paginate_url_append() {
+	public function test_simple_paginate_url_append(): void {
 		$paginator = Post::simple_paginate()->append( 'key', 'value' );
 		$this->assertSame( '/?page=2&key=value', $paginator->url( 2 ) );
 	}
 
-	public function test_simple_paginate_url_append_path() {
+	public function test_simple_paginate_url_append_path(): void {
 		$paginator = Post::simple_paginate()->append( 'key', 'value' )->use_path();
 		$this->assertSame( '/page/2/?key=value', $paginator->url( 2 ) );
 	}
 
-	public function test_paginate_query_string() {
+	public function test_paginate_query_string(): void {
 		$post_ids = array_reverse( static::factory()->post->create_many( 100 ) );
 
 		for ( $i = 1; $i <= 3; $i++ ) {
@@ -68,7 +67,7 @@ class PaginatorTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_paginate_path() {
+	public function test_paginate_path(): void {
 		$post_ids = array_reverse( static::factory()->post->create_many( 100 ) );
 
 		for ( $i = 1; $i <= 3; $i++ ) {
@@ -96,7 +95,7 @@ class PaginatorTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_simple_paginate_has_more() {
+	public function test_simple_paginate_has_more(): void {
 		$this->assertFalse( Post::simple_paginate( 2 )->has_more() );
 		$this->assertNull( Post::simple_paginate( 2 )->next_url() );
 
@@ -109,7 +108,7 @@ class PaginatorTest extends FrameworkTestCase {
 		$this->assertFalse( Post::simple_paginate( 3 )->has_more() );
 	}
 
-	public function test_paginate_render() {
+	public function test_paginate_render(): void {
 		static::factory()->post->create_many( 5 );
 
 		for ( $i = 1; $i <= 3; $i++ ) {
@@ -137,7 +136,7 @@ class PaginatorTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_paginate_render_length() {
+	public function test_paginate_render_length(): void {
 		static::factory()->post->create_many( 7 );
 
 		$max_pages = 4;
@@ -167,10 +166,7 @@ class PaginatorTest extends FrameworkTestCase {
 				$this->assertStringContainsString( '<li class="disabled" aria-disabled="true"><span>&rsaquo;</span></li>', $render );
 			} else {
 				$this->assertTrue( $paginator->has_more() );
-
-				if ( $paginator->has_more() ) {
-					$this->assertStringContainsString( '<li><a href="' . $paginator->next_url() . '" rel="next">&rsaquo;</a></li>', $render );
-				}
+				$this->assertStringContainsString( '<li><a href="' . $paginator->next_url() . '" rel="next">&rsaquo;</a></li>', $render );
 			}
 
 			// On page one the previous link should be disabled.
@@ -186,7 +182,7 @@ class PaginatorTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_paginate_response() {
+	public function test_paginate_response(): void {
 		$post_ids = static::factory()->post->create_many( 100 );
 
 		Route::get( '/test-paginate', function() {

@@ -4,11 +4,10 @@ namespace Mantle\Tests\Database\Model;
 use Mantle\Database\Model\Comment;
 use Mantle\Testing\FrameworkTestCase;
 
-
 class CommentObjectTest extends FrameworkTestCase {
-	public function test_comment_object() {
-		$comment = $this->factory->comment->create_and_get();
-		$object  = Comment::find( $comment );
+	public function test_comment_object(): void {
+		$comment = static::factory()->comment->create_and_get();
+		$object  = Comment::find_or_fail( $comment );
 
 		$this->assertSame( $object->id(), (int) $comment->comment_ID );
 		$this->assertSame( $object->name(), $comment->comment_author );
@@ -24,11 +23,13 @@ class CommentObjectTest extends FrameworkTestCase {
 		$this->assertSame( $object->id(), (int) $core_object->comment_ID );
 	}
 
-	public function test_comment_object_parent() {
-		$parent_id  = $this->factory->comment->create();
-		$comment_id = $this->factory->comment->create( [ 'comment_parent' => $parent_id ] );
+	public function test_comment_object_parent(): void {
+		$parent_id  = static::factory()->comment->create();
+		$comment_id = static::factory()->comment->create( [ 'comment_parent' => $parent_id ] );
 
-		$object = Comment::find( $comment_id );
+		$this->assertIsInt( $comment_id );
+
+		$object = Comment::find_or_fail( $comment_id );
 
 		$parent_object = $object->parent();
 
@@ -36,28 +37,31 @@ class CommentObjectTest extends FrameworkTestCase {
 		$this->assertSame( $parent_object->id(), $parent_id );
 	}
 
-	public function test_comment_save_update() {
-		$comment = $this->factory->comment->create_and_get();
-		$object  = Comment::find( $comment );
+	public function test_comment_save_update(): void {
+		$comment = static::factory()->comment->create_and_get();
+		$object  = Comment::find_or_fail( $comment );
 
 		$this->assertTrue( $object->save( [ 'comment_content' => 'Updated content' ] ) );
 
 		$this->assertEquals( $comment->comment_ID, $object->id() );
-		$this->assertEquals( 'Updated content', \get_comment( $comment->comment_ID )->comment_content );
+		$updated = \get_comment( $comment->comment_ID );
+
+		$this->assertInstanceOf( \WP_Comment::class, $updated );
+		$this->assertEquals( 'Updated content', $updated->comment_content );
 
 		// Saving again without any changes should not throw.
 		$this->assertTrue( $object->save() );
 		$this->assertEquals( $comment->comment_ID, $object->id() );
 	}
 
-	public function test_comment_meta() {
-		$comment   = $this->factory->comment->create_and_get( [ 'taxonomy' => 'category' ] );
-		$object = Comment::find( $comment );
+	public function test_comment_meta(): void {
+		$comment   = static::factory()->comment->create_and_get( [ 'taxonomy' => 'category' ] );
+		$object = Comment::find_or_fail( $comment );
 
-		$this->assertEmpty( \get_comment_meta( $comment->comment_ID, 'meta_value_to_set', true ) );
+		$this->assertEmpty( \get_comment_meta( $object->id(), 'meta_value_to_set', true ) );
 
 		$object->set_meta( 'meta_key_to_set', 'meta_value_to_set' );
 		$this->assertSame( 'meta_value_to_set', $object->get_meta( 'meta_key_to_set' ) );
-		$this->assertSame( 'meta_value_to_set', \get_comment_meta( $comment->comment_ID, 'meta_key_to_set', true ) );
+		$this->assertSame( 'meta_value_to_set', \get_comment_meta( $object->id(), 'meta_key_to_set', true ) );
 	}
 }

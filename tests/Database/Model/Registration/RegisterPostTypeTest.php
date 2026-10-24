@@ -19,9 +19,9 @@ class RegisterPostTypeTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->rest_api_init = isset( $GLOBALS['wp_filter']['rest_api_init'] )
-			? clone $GLOBALS['wp_filter']['rest_api_init']
-			: null;
+		$rest_api_init = $GLOBALS['wp_filter']['rest_api_init'] ?? null;
+
+		$this->rest_api_init = $rest_api_init instanceof \WP_Hook ? clone $rest_api_init : null;
 
 		remove_all_actions( 'init' );
 
@@ -59,6 +59,7 @@ class RegisterPostTypeTest extends FrameworkTestCase {
 		// Check the arguments.
 		$object = get_post_type_object( Testable_Registration_Post_Type_Fluent::$object_name );
 
+		$this->assertInstanceOf( \WP_Post_Type::class, $object );
 		$this->assertFalse( $object->show_in_menu );
 		$this->assertSame( 'Testable Post Types', $object->label );
 	}
@@ -78,7 +79,7 @@ class RegisterPostTypeTest extends FrameworkTestCase {
 		$this->assertTrue( post_type_exists( $post_type ) );
 	}
 
-	public function test_invalid_register_post_type() {
+	public function test_invalid_register_post_type(): void {
 		$post_type = 'post';
 
 		$this->expectException( Model_Exception::class );
@@ -101,8 +102,9 @@ class RegisterPostTypeTest extends FrameworkTestCase {
 		$this->assertTrue( post_type_exists( $post_type ) );
 	}
 
-	public function test_field_registration() {
-		$this->assertNull( Registered_REST_Field::get_instance( 'post', 'testable-field' ) );
+	public function test_field_registration(): void {
+		$field = Registered_REST_Field::get_instance( 'post', 'testable-field' );
+		$this->assertNull( $field );
 
 		// Invoke a new instance of the model which will allow it to boot.
 		new Testable_Post_Type_With_Fields();
@@ -158,6 +160,9 @@ class Testable_Post_Type_With_Fields extends Post implements Registrable_Fields 
 
 	public static $object_name = 'post';
 
+	/**
+	 * @return array<string, mixed>
+	 */
 	public static function get_registration_args(): array {
 		return array(
 			'public'       => true,
@@ -165,7 +170,7 @@ class Testable_Post_Type_With_Fields extends Post implements Registrable_Fields 
 		);
 	}
 
-	public static function boot() {
+	public static function boot(): void {
 		parent::boot();
 
 		static::register_field( 'testable-field', __NAMESPACE__ . '\testable_get_callback' )
@@ -174,10 +179,10 @@ class Testable_Post_Type_With_Fields extends Post implements Registrable_Fields 
 	}
 }
 
-function testable_get_callback() {
+function testable_get_callback(): string {
 	return $_SERVER['__testable_get_callback'] ?? 'testable_get_callback';
 }
 
-function testable_update_callback() {
+function testable_update_callback(): string {
 	return $_SERVER['__testable_update_callback'] ?? 'testable_update_callback';
 }

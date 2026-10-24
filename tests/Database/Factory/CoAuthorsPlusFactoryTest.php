@@ -4,8 +4,6 @@ namespace Mantle\Tests\Database\Factory;
 
 use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
-use stdClass;
-use WP_Post;
 
 /**
  * @group factory
@@ -23,7 +21,6 @@ class CoAuthorsPlusFactoryTest extends FrameworkTestCase {
 	public function test_create_guest_author(): void {
 		$author = static::factory()->cap_guest_author->create_and_get();
 
-		$this->assertInstanceOf( stdClass::class, $author );
 		$this->assertNotEmpty( $author->display_name );
 		$this->assertNotEmpty( get_post_meta( $author->ID, 'cap-first_name', true ) );
 		$this->assertNotEmpty( get_post_meta( $author->ID, 'cap-last_name', true ) );
@@ -34,7 +31,6 @@ class CoAuthorsPlusFactoryTest extends FrameworkTestCase {
 			'display_name' => 'John Doe',
 		] );
 
-		$this->assertInstanceOf( stdClass::class, $author );
 		$this->assertSame( 'John Doe', $author->display_name );
 		$this->assertSame( 'cap-john-doe', $author->user_login );
 		$this->assertSame( 'John', get_post_meta( $author->ID, 'cap-first_name', true ) );
@@ -45,7 +41,6 @@ class CoAuthorsPlusFactoryTest extends FrameworkTestCase {
 		$user   = static::factory()->user->create_and_get();
 		$author = static::factory()->cap_guest_author->with_linked_user( $user->ID )->create_and_get();
 
-		$this->assertInstanceOf( stdClass::class, $author );
 		$this->assertSame( $user->user_login, get_post_meta( $author->ID, 'cap-user_login', true ) );
 
 		$this->assertSame(
@@ -73,8 +68,6 @@ class CoAuthorsPlusFactoryTest extends FrameworkTestCase {
 		$author   = static::factory()->cap_guest_author->create_and_get();
 		$author_2 = static::factory()->cap_guest_author->create_and_get();
 		$post   = static::factory()->post->with_cap_authors( $author->ID, $author_2 )->create_and_get();
-
-		$this->assertInstanceOf( WP_Post::class, $post );
 
 		$guest_authors = get_coauthors( $post->ID );
 
