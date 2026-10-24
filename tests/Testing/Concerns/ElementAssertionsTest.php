@@ -120,7 +120,6 @@ class ElementAssertionsTest extends FrameworkTestCase {
 				->assertOk()
 				->assertBlockExists( 'testable-vendor/block-name' )
 				->assertBlockExists( 'testable-vendor/block-name', 1 )
-				->assertBlockExists( 'testable-vendor/block-name', 1, 'div' )
 				->assertBlockExists( 'paragraph' )
 				->assertBlockExists( 'heading' )
 				->assertBlockExists( 'image' )

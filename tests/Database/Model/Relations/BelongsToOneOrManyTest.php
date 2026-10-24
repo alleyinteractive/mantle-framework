@@ -108,7 +108,6 @@ class Testable_Post extends Post {
 	}
 }
 
-
 class Testable_Sponsor extends Post {
 	use Relationships;
 

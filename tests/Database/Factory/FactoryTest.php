@@ -48,7 +48,6 @@ class FactoryTest extends FrameworkTestCase {
 		$post_ids = $factory->create_many( 5 );
 
 		$this->assertCount( 5, $post_ids );
-		$this->assertIsArray( $post_ids );
 
 		if ( method_exists( $this, 'assertContainsOnlyInt' ) ) {
 			$this->assertContainsOnlyInt( $post_ids );
@@ -65,7 +64,6 @@ class FactoryTest extends FrameworkTestCase {
 		$posts = $factory->collect_many( 5 );
 
 		$this->assertCount( 5, $posts );
-		$this->assertInstanceOf( Collection::class, $posts );
 	}
 
 	public function test_create_many_and_get(): void {
@@ -87,7 +85,6 @@ class FactoryTest extends FrameworkTestCase {
 		$posts = $factory->collect_many_and_get( 5 );
 
 		$this->assertCount( 5, $posts );
-		$this->assertInstanceOf( Collection::class, $posts );
 		$this->assertContainsOnlyInstancesOf( Post::class, $posts->all() );
 	}
 

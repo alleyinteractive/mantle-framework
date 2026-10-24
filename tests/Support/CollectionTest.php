@@ -4741,7 +4741,6 @@ class CollectionTest extends FrameworkTestCase {
 		])->collect();
 
 		$this->assertInstanceOf(Collection::class, $data);
-
 		$this->assertSame([
 			'a' => 1,
 			'b' => 2,

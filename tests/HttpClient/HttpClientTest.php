@@ -722,7 +722,6 @@ EOF
 			$this->assertEmpty( $feed->data );
 		} );
 
-		$this->assertInstanceOf( \SimplePie::class, $feed );
 		$this->assertTrue( $options_callback );
 		$this->assertSame( 'Alley', $feed->get_title() );
 		$this->assertNotEmpty( $feed->get_items() );
@@ -751,7 +750,6 @@ EOF
 
 		$feed = $request->feed();
 
-		$this->assertInstanceOf( \SimplePie::class, $feed );
 		$this->assertTrue( $feed->error() !== null );
 	}
 }

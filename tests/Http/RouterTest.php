@@ -179,8 +179,6 @@ class RouterTest extends FrameworkTestCase {
 			array(
 				'middleware' => Substitute_Bindings::class,
 				'callback'   => function ( Routing_Test_User_Model $bar ) {
-					$this->assertInstanceOf( Routing_Test_User_Model::class, $bar );
-
 					return $bar->get( 'route_key' );
 				},
 			)
@@ -191,9 +189,6 @@ class RouterTest extends FrameworkTestCase {
 			array(
 				'middleware' => Substitute_Bindings::class,
 				'callback'   => function ( Routing_Test_User_Model $two, Routing_Test_User_Model $three ) {
-					$this->assertInstanceOf( Routing_Test_User_Model::class, $two );
-					$this->assertInstanceOf( Routing_Test_User_Model::class, $three );
-
 					return $two->get( 'route_key' ) . '-' . $three->get( 'route_key' );
 				},
 			)
@@ -234,8 +229,6 @@ class RouterTest extends FrameworkTestCase {
 			array(
 				'middleware' => Substitute_Bindings::class,
 				'callback'   => function ( $year, $month, $day, Routing_Test_Post_Model $post ) {
-					$this->assertInstanceOf( Routing_Test_Post_Model::class, $post );
-
 					return $post->name();
 				},
 			)

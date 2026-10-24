@@ -108,7 +108,6 @@ class BylineManagerFactoryTest extends FrameworkTestCase {
 
 		$byline_entries = Utils::get_byline_entries_for_post( $post );
 
-
 		$this->assertCount( 2, $byline_entries );
 		$this->assertSame(
 			[ 'John Doe', 'Jane Smith' ],

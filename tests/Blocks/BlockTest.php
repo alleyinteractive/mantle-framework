@@ -12,10 +12,8 @@ class BlockTest extends FrameworkTestCase {
 			protected array $editor_script_dependencies = [ 'wp-blocks' ];
 		};
 
-		$this->assertIsString( invade( $block )->get_editor_script_version() );
+		$this->assertNotEmpty( invade( $block )->get_editor_script_version() );
 
 		invade( $block )->register_editor_assets();
-
-		$this->assertTrue( true );
 	}
 }

@@ -39,7 +39,6 @@ class ContainerTest extends TestCase {
 
 		$container2 = Container::get_instance();
 
-		$this->assertInstanceOf( Container::class, $container2 );
 		$this->assertNotSame( $container, $container2 );
 	}
 

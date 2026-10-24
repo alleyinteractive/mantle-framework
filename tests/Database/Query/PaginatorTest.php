@@ -6,7 +6,6 @@ use Mantle\Facade\Route;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\FrameworkTestCase;
 
-
 class PaginatorTest extends FrameworkTestCase {
 	use Refresh_Database;
 

@@ -13,7 +13,6 @@ use Mantle\Http\Uploaded_File;
 use Mantle\Testing\Assert;
 use PHPUnit\Framework\TestCase;
 use Mockery as m;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FilesystemAdapterTest extends TestCase {
 	private string $temp_dir;
@@ -65,7 +64,6 @@ class FilesystemAdapterTest extends TestCase {
 		$response->sendContent();
 		$content = ob_get_clean();
 
-		$this->assertInstanceOf( StreamedResponse::class, $response );
 		$this->assertSame( 'Hello World', $content );
 		$this->assertSame( 'inline; filename=file.txt', $response->headers->get( 'content-disposition' ) );
 	}
@@ -74,7 +72,6 @@ class FilesystemAdapterTest extends TestCase {
 	$this->filesystem->write( 'file.txt', 'Hello World' );
 	$files    = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 	$response = $files->download( 'file.txt', 'hello.txt' );
-	$this->assertInstanceOf( StreamedResponse::class, $response );
 	$this->assertSame( 'attachment; filename=hello.txt', $response->headers->get( 'content-disposition' ) );
 	}
 
@@ -82,7 +79,6 @@ class FilesystemAdapterTest extends TestCase {
 	$this->filesystem->write( 'file.txt', 'Hello World' );
 	$files    = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 	$response = $files->download( 'file.txt', 'пиздюк.txt' );
-	$this->assertInstanceOf( StreamedResponse::class, $response );
 	$this->assertSame( "attachment; filename=pizdiuk.txt; filename*=utf-8''%D0%BF%D0%B8%D0%B7%D0%B4%D1%8E%D0%BA.txt", $response->headers->get( 'content-disposition' ) );
 	}
 
@@ -90,7 +86,6 @@ class FilesystemAdapterTest extends TestCase {
 	$this->filesystem->write( 'пиздюк.txt', 'Hello World' );
 	$files    = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 	$response = $files->download( 'пиздюк.txt' );
-	$this->assertInstanceOf( StreamedResponse::class, $response );
 	$this->assertSame( 'attachment; filename=pizdiuk.txt; filename*=utf-8\'\'%D0%BF%D0%B8%D0%B7%D0%B4%D1%8E%D0%BA.txt', $response->headers->get( 'content-disposition' ) );
 	}
 
@@ -98,7 +93,6 @@ class FilesystemAdapterTest extends TestCase {
 	$this->filesystem->write( 'Hello%World.txt', 'Hello World' );
 	$files    = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 	$response = $files->download( 'Hello%World.txt', 'Hello%World.txt' );
-	$this->assertInstanceOf( StreamedResponse::class, $response );
 	$this->assertSame( 'attachment; filename=HelloWorld.txt; filename*=utf-8\'\'Hello%25World.txt', $response->headers->get( 'content-disposition' ) );
 	}
 

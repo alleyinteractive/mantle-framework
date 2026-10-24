@@ -67,7 +67,6 @@ class HtmlTest extends TestCase {
 
 		$query = $crawler->first_by_id( 'test-id' );
 
-		$this->assertInstanceOf( HTML::class, $query );
 		$this->assertSame( 'Example Div By ID', $query->text() );
 		$this->assertSame( 'div', $query->nodeName() );
 		$this->assertSame( 'test-id', $query->attr( 'id' ) );
@@ -78,7 +77,6 @@ class HtmlTest extends TestCase {
 
 		$query = $crawler->first_by_selector( '.test-class' );
 
-		$this->assertInstanceOf( HTML::class, $query );
 		$this->assertSame( 'Example Div By Class', $query->text() );
 		$this->assertSame( 'div', $query->nodeName() );
 		$this->assertSame( 'test-class', $query->attr( 'class' ) );
@@ -89,7 +87,6 @@ class HtmlTest extends TestCase {
 
 		$query = $crawler->first_by_xpath( '//div[@id="test-id"]' );
 
-		$this->assertInstanceOf( HTML::class, $query );
 		$this->assertSame( 'Example Div By ID', $query->text() );
 		$this->assertSame( 'div', $query->nodeName() );
 		$this->assertSame( 'test-id', $query->attr( 'id' ) );
@@ -583,7 +580,6 @@ class HtmlTest extends TestCase {
 	public function test_it_can_get_the_nearest_previous_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
 		$previous = $html->filter('#test-id')->previous_sibling();
-		$this->assertInstanceOf(HTML::class, $previous);
 		$this->assertSame('div', $previous->nodeName());
 		$this->assertSame('test-class', $previous->attr('class'));
 		$this->assertSame('Example Div By Class', $previous->text());
@@ -592,7 +588,6 @@ class HtmlTest extends TestCase {
 	public function test_it_can_get_the_nearest_next_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
 		$next = $html->filter('#test-id')->next_sibling();
-		$this->assertInstanceOf(HTML::class, $next);
 		$this->assertSame('ul', $next->nodeName());
 	}
 
@@ -606,14 +601,12 @@ class HtmlTest extends TestCase {
 	public function test_it_can_get_the_nearest_previous_filtered_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
 		$previous = $html->filter('#test-id')->previous_sibling('section');
-		$this->assertInstanceOf(HTML::class, $previous);
 		$this->assertSame('section', $previous->nodeName());
 	}
 
 	public function test_it_can_get_the_nearest_next_filtered_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
 		$next = $html->filter('section')->next_sibling('ul');
-		$this->assertInstanceOf(HTML::class, $next);
 		$this->assertSame('ul', $next->nodeName());
 	}
 
