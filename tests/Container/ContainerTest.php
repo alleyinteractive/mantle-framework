@@ -367,15 +367,7 @@ class ContainerTest extends TestCase {
 		$this->expectExceptionMessage( 'Target class [Foo\Bar\Baz\DummyClass] does not exist.' );
 
 		$container = new Container();
-		// The class is intentionally nonexistent; pass it as an untyped value.
-		$this->build_with( $container, 'Foo\Bar\Baz\DummyClass' );
-	}
-
-	/**
-	 * Build a concrete that PHPStan would otherwise reject, to test the runtime failure.
-	 */
-	private function build_with( Container $container, mixed $concrete ): mixed {
-		return $container->build( $concrete );
+		$container->build( 'Foo\Bar\Baz\DummyClass' ); // @phpstan-ignore argument.type (nonexistent class on purpose)
 	}
 
 	public function testforget_instanceForgetsInstance(): void {
