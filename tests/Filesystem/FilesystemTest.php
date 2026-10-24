@@ -197,7 +197,7 @@ class FilesystemTest extends TestCase {
 				return $files->get( $temp_dir . '/foo.txt' );
 			}
 		);
-		$this->assertSame( 'Hello World', $files->__call( 'getFoo', [] ) );
+		$this->assertSame( 'Hello World', $files->getFoo() ); // @phpstan-ignore method.notFound (macro registered at runtime)
 	}
 
 	public function testFilesMethod(): void {

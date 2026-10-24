@@ -36,20 +36,13 @@ class IncorrectUsageTest extends FrameworkTestCase {
 		_doing_it_wrong( 'expected_incorrect_usage', 'This is a test', '1.0.0' );
 	}
 
-	/**
-	 * An invalid cache key, typed as mixed so PHPStan doesn't flag the call on purpose.
-	 */
-	protected function invalid_cache_key(): mixed {
-		return false;
-	}
-
 	public function test_ignore_by_prefix(): void {
 		$this->ignoreIncorrectUsage( 'wp_*' );
 		$this->ignoreIncorrectUsage( 'WP_*' );
 		$this->setExpectedIncorrectUsage( 'expected_incorrect_usage' );
 
 		// Throws a deprecation notice because of the invalid cache key.
-		wp_cache_set( $this->invalid_cache_key(), 'data' );
+		wp_cache_set( false, 'data' ); // @phpstan-ignore argument.type (invalid cache key on purpose)
 		_doing_it_wrong( 'wp_prefix_test', 'This is a test', '1.0.0' );
 		_doing_it_wrong( 'expected_incorrect_usage', 'This is a test', '1.0.0' );
 	}

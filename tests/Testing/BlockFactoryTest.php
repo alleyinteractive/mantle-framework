@@ -268,7 +268,7 @@ HTML;
 		$this->expectException( \InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'Unknown block factory method: unknown_method' );
 
-		block_factory()->__call( 'unknown_method', [] );
+		block_factory()->unknown_method(); // @phpstan-ignore method.notFound (resolved through __call)
 	}
 
 	public function test_it_can_generate_a_preset(): void {
@@ -312,10 +312,10 @@ HTML;
 
 		$this->assertStringStartsWith(
 			'<!-- wp:heading {"level":2} -->',
-			block_factory()->__call( 'test', [] ),
+			block_factory()->test(), // @phpstan-ignore method.notFound (resolved through __call)
 		);
 
-		$preset_test2 = block_factory()->__call( 'test2', [] );
+		$preset_test2 = block_factory()->test2(); // @phpstan-ignore method.notFound (resolved through __call)
 
 		$this->assertStringStartsWith(
 			'<!-- wp:heading {"level":2} -->',
@@ -326,7 +326,7 @@ HTML;
 
 		$this->assertSame(
 			'<!-- wp:namespace/multititle {"seo":"Attribute on the block"} /-->',
-			block_factory()->__call( 'title_block', [] ),
+			block_factory()->title_block(), // @phpstan-ignore method.notFound (resolved through __call)
 		);
 
 		$this->assertSame(
@@ -336,7 +336,7 @@ HTML;
 
 		$this->assertSame(
 			'<!-- wp:namespace/multititle {"seo":"Title Here"} /-->',
-			block_factory()->__call( 'title_with_arguments', [ 'Title Here' ] ),
+			block_factory()->title_with_arguments( 'Title Here' ), // @phpstan-ignore method.notFound (resolved through __call)
 		);
 	}
 
