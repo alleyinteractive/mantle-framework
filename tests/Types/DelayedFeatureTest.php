@@ -73,7 +73,7 @@ class DelayedFeatureTest extends TestCase {
 	public function test_delayed_feature_boots_with_callable(): void {
 		$delayed = new Delayed_Feature(
 			'init',
-			function() {
+			static function() {
 				$_SERVER['feature_booted'] = true;
 			}
 		);
@@ -94,7 +94,7 @@ class DelayedFeatureTest extends TestCase {
 
 		$delayed_high = new Delayed_Feature(
 			'init',
-			function() {
+			static function() {
 				$_SERVER['execution_order'][] = 'high';
 			},
 			5
@@ -102,7 +102,7 @@ class DelayedFeatureTest extends TestCase {
 
 		$delayed_low = new Delayed_Feature(
 			'init',
-			function() {
+			static function() {
 				$_SERVER['execution_order'][] = 'low';
 			},
 			15
@@ -121,12 +121,12 @@ class DelayedFeatureTest extends TestCase {
 
 		$delayed = new Delayed_Feature(
 			'init',
-			function() {
+			static function() {
 				$_SERVER['execution_order'][] = 'default';
 			}
 		);
 
-		add_action( 'init', function() {
+		add_action( 'init', static function() {
 			$_SERVER['execution_order'][] = 'manual';
 		}, 10 );
 
@@ -161,7 +161,7 @@ class DelayedFeatureTest extends TestCase {
 
 		$delayed = new Delayed_Feature(
 			'example_hook',
-			function() {
+			static function() {
 				$_SERVER['boot_count']++;
 			}
 		);

@@ -71,10 +71,10 @@ class UrlGeneratorTest extends FrameworkTestCase {
 	public function test_route_generation(): void {
 		$router = $this->router;
 
-		$router->get( '/foo/bar', fn () => 'hello' )->name( 'get' );
-		$router->get( '/trailing/slash/', fn () => 'hello' )->name( 'trailing-slash' );
-		$router->post( '/baz/post', fn () => 'hello' )->name( 'post' );
-		$router->get( '/foo/bar/{biz}', fn () => 'hello' )->name( 'get-with-param' );
+		$router->get( '/foo/bar', static fn () => 'hello' )->name( 'get' );
+		$router->get( '/trailing/slash/', static fn () => 'hello' )->name( 'trailing-slash' );
+		$router->post( '/baz/post', static fn () => 'hello' )->name( 'post' );
+		$router->get( '/foo/bar/{biz}', static fn () => 'hello' )->name( 'get-with-param' );
 
 		$router->sync_routes_to_url_generator();
 

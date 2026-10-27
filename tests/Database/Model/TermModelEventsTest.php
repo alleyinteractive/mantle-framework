@@ -32,11 +32,11 @@ class TermModelEventsTest extends FrameworkTestCase {
 		$_SERVER['__test_deleted_event_fired'] = false;
 
 		// Testable_Term_Model_Event::creating( function() { $_SERVER['__test_creating_event_fired'] = microtime( true ); } );
-		Testable_Term_Model_Event::created( function() { $_SERVER['__test_created_event_fired'] = microtime( true ); } );
-		Testable_Term_Model_Event::updating( function() { $_SERVER['__test_updating_event_fired'] = microtime( true ); } );
-		Testable_Term_Model_Event::updated( function() { $_SERVER['__test_updated_event_fired'] = microtime( true ); } );
-		Testable_Term_Model_Event::deleting( function() { $_SERVER['__test_deleting_event_fired'] = microtime( true ); } );
-		Testable_Term_Model_Event::deleted( function() { $_SERVER['__test_deleted_event_fired'] = microtime( true ); } );
+		Testable_Term_Model_Event::created( static function() { $_SERVER['__test_created_event_fired'] = microtime( true ); } );
+		Testable_Term_Model_Event::updating( static function() { $_SERVER['__test_updating_event_fired'] = microtime( true ); } );
+		Testable_Term_Model_Event::updated( static function() { $_SERVER['__test_updated_event_fired'] = microtime( true ); } );
+		Testable_Term_Model_Event::deleting( static function() { $_SERVER['__test_deleting_event_fired'] = microtime( true ); } );
+		Testable_Term_Model_Event::deleted( static function() { $_SERVER['__test_deleted_event_fired'] = microtime( true ); } );
 
 		$model = new Testable_Term_Model_Event(
 			[
@@ -76,9 +76,9 @@ class TermModelEventsTest extends FrameworkTestCase {
 		$_SERVER['__test_non_model_updated_event_fired'] = false;
 		$_SERVER['__test_non_model_deleted_event_fired'] = false;
 
-		Testable_Term_Model_Event::created( function() { $_SERVER['__test_non_model_created_event_fired'] = microtime( true ); } );
-		Testable_Term_Model_Event::updated( function() { $_SERVER['__test_non_model_updated_event_fired'] = microtime( true ); } );
-		Testable_Term_Model_Event::deleted( function() { $_SERVER['__test_non_model_deleted_event_fired'] = microtime( true ); } );
+		Testable_Term_Model_Event::created( static function() { $_SERVER['__test_non_model_created_event_fired'] = microtime( true ); } );
+		Testable_Term_Model_Event::updated( static function() { $_SERVER['__test_non_model_updated_event_fired'] = microtime( true ); } );
+		Testable_Term_Model_Event::deleted( static function() { $_SERVER['__test_non_model_deleted_event_fired'] = microtime( true ); } );
 
 		$insert  = \wp_insert_term( 'Inserted Term', 'category' );
 
@@ -112,9 +112,9 @@ class TermModelEventsTest extends FrameworkTestCase {
 
 		$model = Term::for( 'test-taxonomy' );
 
-		$model->created( fn () => $_SERVER['__test_model_event_via_for_created_event_fired'] = microtime( true ) );
-		$model->updated( fn () => $_SERVER['__test_model_event_via_for_updated_event_fired'] = microtime( true ) );
-		$model->deleted( fn () => $_SERVER['__test_model_event_via_for_deleted_event_fired'] = microtime( true ) );
+		$model->created( static fn () => $_SERVER['__test_model_event_via_for_created_event_fired'] = microtime( true ) );
+		$model->updated( static fn () => $_SERVER['__test_model_event_via_for_updated_event_fired'] = microtime( true ) );
+		$model->deleted( static fn () => $_SERVER['__test_model_event_via_for_deleted_event_fired'] = microtime( true ) );
 
 		$insert  = \wp_insert_term( 'Inserted Term', 'test-taxonomy' );
 

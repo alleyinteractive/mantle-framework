@@ -33,7 +33,7 @@ class CachedHttpClientTest extends FrameworkTestCase {
 
 	public function test_can_create_cached_client(): void {
 		$this->assertTrue(
-			collect( $this->client->get_middleware() )->contains( fn( $middleware ) => $middleware instanceof Cache_Middleware )
+			collect( $this->client->get_middleware() )->contains( static fn( $middleware ) => $middleware instanceof Cache_Middleware )
 		);
 	}
 
@@ -78,7 +78,7 @@ class CachedHttpClientTest extends FrameworkTestCase {
 	public function test_it_can_control_the_cache_ttl(): void {
 		$_SERVER['__ttl_called'] = false;
 
-		$this->client = Factory::create()->cache( function () {
+		$this->client = Factory::create()->cache( static function () {
 			$_SERVER['__ttl_called'] = true;
 
 			return DAY_IN_SECONDS;
@@ -127,7 +127,7 @@ class CachedHttpClientTest extends FrameworkTestCase {
 	public function test_it_throws_an_exception_when_passing_an_invalid_ttl_callback(): void {
 		$this->expectException( \InvalidArgumentException::class );
 
-		$this->client = Factory::create()->cache( fn () => 'string' ); // @phpstan-ignore argument.type (callback returns string on purpose; cache() expects an int-returning TTL callback)
+		$this->client = Factory::create()->cache( static fn () => 'string' ); // @phpstan-ignore argument.type (callback returns string on purpose; cache() expects an int-returning TTL callback)
 
 		$this->fake_request( mock_http_response()->with_json( [ 'example' => 'value' ] ) );
 
@@ -142,7 +142,7 @@ class CachedHttpClientTest extends FrameworkTestCase {
 
 		$i = 0;
 
-		$this->fake_request( function () use ( &$i ) {
+		$this->fake_request( static function () use ( &$i ) {
 			$i++;
 
 			return mock_http_response()->with_json( [ 'request' => $i ] );
@@ -169,7 +169,7 @@ class CachedHttpClientTest extends FrameworkTestCase {
 
 		$i = 0;
 
-		$this->fake_request( function () use ( &$i ) {
+		$this->fake_request( static function () use ( &$i ) {
 			$i++;
 
 			return mock_http_response()->with_json( [ 'request' => $i ] );
@@ -226,7 +226,7 @@ class CachedHttpClientTest extends FrameworkTestCase {
 
 		$i = 0;
 
-		$this->fake_request( function () use ( &$i ) {
+		$this->fake_request( static function () use ( &$i ) {
 			$i++;
 
 			return mock_http_response()->with_json( [ 'request' => $i ] );

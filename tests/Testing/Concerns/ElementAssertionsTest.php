@@ -88,10 +88,10 @@ class ElementAssertionsTest extends FrameworkTestCase {
 
 	public function test_element_callback(): void {
 		$this->response()
-			->assertElement( '//section', fn ( DOMNode $node ) => $node->textContent === 'Example Section' )
-			->assertQuerySelector( 'section', fn ( DOMNode $node ) => $node->textContent === 'Example Section' )
-			->assertElement( '//li', fn ( DOMNode $node ) => $node->textContent === 'Item 2', pass_any: true )
-			->assertQuerySelector( 'li', fn ( DOMNode $node ) => $node->textContent === 'Item 2', pass_any: true );
+			->assertElement( '//section', static fn ( DOMNode $node ) => $node->textContent === 'Example Section' )
+			->assertQuerySelector( 'section', static fn ( DOMNode $node ) => $node->textContent === 'Example Section' )
+			->assertElement( '//li', static fn ( DOMNode $node ) => $node->textContent === 'Item 2', pass_any: true )
+			->assertQuerySelector( 'li', static fn ( DOMNode $node ) => $node->textContent === 'Item 2', pass_any: true );
 	}
 
 	public function test_block_exists(): void {
@@ -99,7 +99,7 @@ class ElementAssertionsTest extends FrameworkTestCase {
 		register_block_type(
 			'testable-vendor/block-name',
 			[
-				'render_callback' => fn ( $attributes ) => '<div ' . get_block_wrapper_attributes( $attributes ) . '>Example Block</div>',
+				'render_callback' => static fn ( $attributes ) => '<div ' . get_block_wrapper_attributes( $attributes ) . '>Example Block</div>',
 			],
 		);
 

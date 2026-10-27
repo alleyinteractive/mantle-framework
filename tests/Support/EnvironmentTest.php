@@ -16,7 +16,7 @@ class EnvironmentTest extends FrameworkTestCase {
 
 		$this->assertSame( 'value-to-compare', Environment::get( 'VARIABLE_TO_CHECK' ) );
 		$this->assertSame( 'fallback', Environment::get( 'UNKNOWN_VARIABLE', 'fallback' ) );
-		$this->assertSame( 'closure-fallback', Environment::get( 'ANOTHER_UNKNOWN_VARIABLE', function() { return 'closure-fallback'; } ) );
+		$this->assertSame( 'closure-fallback', Environment::get( 'ANOTHER_UNKNOWN_VARIABLE', static function() { return 'closure-fallback'; } ) );
 	}
 
 	public function test_defined_constant(): void {

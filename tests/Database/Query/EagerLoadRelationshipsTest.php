@@ -111,7 +111,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		$posts = collect()
 			->pad(10, null)
 			->map(
-				function() use ( &$related_post_ids ) {
+				static function() use ( &$related_post_ids ) {
 					$post = Testable_Post_Eager::find_or_fail( static::factory()->post->create_and_get() );
 
 					for ( $i = 0; $i < 3; $i++ ) {
@@ -151,7 +151,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		$posts = collect()
 			->pad(10, null)
 			->map(
-				function() use ( &$related_post_ids ) {
+				static function() use ( &$related_post_ids ) {
 					// $related_post = Another_Testable_Post_Eager::
 					$related_post = Another_Testable_Post_Eager::find_or_fail( static::factory()->post->create_and_get( [ 'post_type' => 'example-post-eager' ] ) );
 

@@ -80,7 +80,7 @@ class ModelTest extends FrameworkTestCase {
 			$array
 		);
 
-		$post->make_visible_if( function() { return true; }, 'post_title' );
+		$post->make_visible_if( static function() { return true; }, 'post_title' );
 		$array = $post->to_array();
 
 		$this->assertSame(

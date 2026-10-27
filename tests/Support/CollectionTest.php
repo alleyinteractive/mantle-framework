@@ -45,7 +45,7 @@ class CollectionTest extends FrameworkTestCase {
 	public function testFirstWithCallback(string $collection ): void
 	{
 		$data = new $collection(['foo', 'bar', 'baz']);
-		$result = $data->first(function ($value) {
+		$result = $data->first(static function ($value) {
 			return $value === 'bar';
 		});
 		$this->assertSame('bar', $result);
@@ -60,7 +60,7 @@ class CollectionTest extends FrameworkTestCase {
 	public function testFirstWithCallbackAndDefault(string $collection ): void
 	{
 		$data = new $collection(['foo', 'bar']);
-		$result = $data->first(function ($value) {
+		$result = $data->first(static function ($value) {
 			return $value === 'baz';
 		}, 'default');
 		$this->assertSame('default', $result);
@@ -119,11 +119,11 @@ class CollectionTest extends FrameworkTestCase {
 	public function testLastWithCallback(string $collection ): void
 	{
 		$data = new $collection([100, 200, 300]);
-		$result = $data->last(function ($value) {
+		$result = $data->last(static function ($value) {
 			return $value < 250;
 		});
 		$this->assertSame(200, $result);
-		$result = $data->last(function ($value, $key) {
+		$result = $data->last(static function ($value, $key) {
 			return $key < 2;
 		});
 		$this->assertSame(200, $result);
@@ -138,7 +138,7 @@ class CollectionTest extends FrameworkTestCase {
 	public function testLastWithCallbackAndDefault(string $collection ): void
 	{
 		$data = new $collection(['foo', 'bar']);
-		$result = $data->last(function ($value) {
+		$result = $data->last(static function ($value) {
 			return $value === 'baz';
 		}, 'default');
 		$this->assertSame('default', $result);
@@ -269,7 +269,7 @@ class CollectionTest extends FrameworkTestCase {
 
 		$this->assertSame([3, 3, 4, 4], $data->all());
 
-		$data = $data->skip_until(function ($value, $key) {
+		$data = $data->skip_until(static function ($value, $key) {
 			return $value > 3;
 		})->values();
 
@@ -290,7 +290,7 @@ class CollectionTest extends FrameworkTestCase {
 
 		$this->assertSame([2, 2, 3, 3, 4, 4], $data->all());
 
-		$data = $data->skip_while(function ($value, $key) {
+		$data = $data->skip_while(static function ($value, $key) {
 			return $value < 3;
 		})->values();
 
@@ -508,12 +508,12 @@ class CollectionTest extends FrameworkTestCase {
 	public function testCountableByWithPredicate(string $collection ): void
 	{
 		$c = new $collection(['alice', 'aaron', 'bob', 'carla']);
-		$this->assertSame(['a' => 2, 'b' => 1, 'c' => 1], $c->count_by(function ($name) {
+		$this->assertSame(['a' => 2, 'b' => 1, 'c' => 1], $c->count_by(static function ($name) {
 			return substr($name, 0, 1);
 		})->all());
 
 		$c = new $collection([1, 2, 3, 4, 5]);
-		$this->assertEquals([true => 2, false => 3], $c->count_by(function ($i) {
+		$this->assertEquals([true => 2, false => 3], $c->count_by(static function ($i) {
 			return $i % 2 === 0;
 		})->all());
 	}
@@ -535,7 +535,7 @@ class CollectionTest extends FrameworkTestCase {
 	public function testFilter(string $collection ): void
 	{
 		$c = new $collection([['id' => 1, 'name' => 'Hello'], ['id' => 2, 'name' => 'World']]);
-		$this->assertSame([1 => ['id' => 2, 'name' => 'World']], $c->filter(function ($item) {
+		$this->assertSame([1 => ['id' => 2, 'name' => 'World']], $c->filter(static function ($item) {
 			return $item['id'] == 2;
 		})->all());
 
@@ -543,7 +543,7 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['Hello', 'World'], $c->filter()->values()->to_array());
 
 		$c = new $collection(['id' => 1, 'first' => 'Hello', 'second' => 'World']);
-		$this->assertSame(['first' => 'Hello', 'second' => 'World'], $c->filter(function ($item, $key) {
+		$this->assertSame(['first' => 'Hello', 'second' => 'World'], $c->filter(static function ($item, $key) {
 			return $key != 'id';
 		})->all());
 	}
@@ -809,7 +809,7 @@ class CollectionTest extends FrameworkTestCase {
 	public function testValues(string $collection ): void
 	{
 		$c = new $collection([['id' => 1, 'name' => 'Hello'], ['id' => 2, 'name' => 'World']]);
-		$this->assertSame([['id' => 2, 'name' => 'World']], $c->filter(function ($item) {
+		$this->assertSame([['id' => 2, 'name' => 'World']], $c->filter(static function ($item) {
 			return $item['id'] == 2;
 		})->values()->all());
 	}
@@ -1268,7 +1268,7 @@ class CollectionTest extends FrameworkTestCase {
 	public function testDuplicatesWithCallback(string $collection ): void
 	{
 		$items = [['framework' => 'vue'], ['framework' => 'laravel'], ['framework' => 'laravel']];
-		$duplicates = $collection::make($items)->duplicates(function ($item) {
+		$duplicates = $collection::make($items)->duplicates(static function ($item) {
 			return $item['framework'];
 		})->all();
 		$this->assertSame([2 => 'laravel'], $duplicates);
@@ -1310,13 +1310,13 @@ class CollectionTest extends FrameworkTestCase {
 		$c = new $collection($original = [1, 2, 'foo' => 'bar', 'bam' => 'baz']);
 
 		$result = [];
-		$c->each(function ($item, $key) use (&$result) {
+		$c->each(static function ($item, $key) use (&$result) {
 			$result[$key] = $item;
 		});
 		$this->assertSame($original, $result);
 
 		$result = [];
-		$c->each(function ($item, $key) use (&$result) {
+		$c->each(static function ($item, $key) use (&$result) {
 			$result[$key] = $item;
 			if (is_string($key)) {
 				return false;
@@ -1336,13 +1336,13 @@ class CollectionTest extends FrameworkTestCase {
 		$c = new $collection([[1, 'a'], [2, 'b']]);
 
 		$result = [];
-		$c->each_spread(function ($number, $character) use (&$result) {
+		$c->each_spread(static function ($number, $character) use (&$result) {
 			$result[] = [$number, $character];
 		});
 		$this->assertSame($c->all(), $result);
 
 		$result = [];
-		$c->each_spread(function ($number, $character) use (&$result) {
+		$c->each_spread(static function ($number, $character) use (&$result) {
 			$result[] = [$number, $character];
 
 			return false;
@@ -1350,14 +1350,14 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([[1, 'a']], $result);
 
 		$result = [];
-		$c->each_spread(function ($number, $character, $key) use (&$result) {
+		$c->each_spread(static function ($number, $character, $key) use (&$result) {
 			$result[] = [$number, $character, $key];
 		});
 		$this->assertSame([[1, 'a', 0], [2, 'b', 1]], $result);
 
 		$c = new $collection([new Collection([1, 'a']), new Collection([2, 'b'])]);
 		$result = [];
-		$c->each_spread(function ($number, $character, $key) use (&$result) {
+		$c->each_spread(static function ($number, $character, $key) use (&$result) {
 			$result[] = [$number, $character, $key];
 		});
 		$this->assertSame([[1, 'a', 0], [2, 'b', 1]], $result);
@@ -1452,14 +1452,14 @@ class CollectionTest extends FrameworkTestCase {
 			1 => ['id' => 1, 'first' => 'Taylor', 'last' => 'Otwell'],
 			3 => ['id' => 3, 'first' => 'Abigail', 'last' => 'Otwell'],
 			5 => ['id' => 5, 'first' => 'Taylor', 'last' => 'Swift'],
-		], $c->unique(function ($item) {
+		], $c->unique(static function ($item) {
 			return $item['first'].$item['last'];
 		})->all());
 
 		$this->assertSame([
 			1 => ['id' => 1, 'first' => 'Taylor', 'last' => 'Otwell'],
 			2 => ['id' => 2, 'first' => 'Taylor', 'last' => 'Otwell'],
-		], $c->unique(function ($item, $key) {
+		], $c->unique(static function ($item, $key) {
 			return $key % 2;
 		})->all());
 	}
@@ -1633,7 +1633,7 @@ class CollectionTest extends FrameworkTestCase {
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortWithCallback(string $collection ): void
 	{
-		$data = (new $collection([5, 3, 1, 2, 4]))->sort(function ($a, $b) {
+		$data = (new $collection([5, 3, 1, 2, 4]))->sort(static function ($a, $b) {
 			if ($a === $b) {
 				return 0;
 			}
@@ -1653,14 +1653,14 @@ class CollectionTest extends FrameworkTestCase {
 	public function testSortBy(string $collection ): void
 	{
 		$data = new $collection(['taylor', 'dayle']);
-		$data = $data->sort_by(function ($x) {
+		$data = $data->sort_by(static function ($x) {
 			return $x;
 		});
 
 		$this->assertSame(['dayle', 'taylor'], array_values($data->all()));
 
 		$data = new $collection(['dayle', 'taylor']);
-		$data = $data->sort_by_desc(function ($x) {
+		$data = $data->sort_by_desc(static function ($x) {
 			return $x;
 		});
 
@@ -1695,14 +1695,14 @@ class CollectionTest extends FrameworkTestCase {
 	public function testSortByAlwaysReturnsAssoc(string $collection ): void
 	{
 		$data = new $collection(['a' => 'taylor', 'b' => 'dayle']);
-		$data = $data->sort_by(function ($x) {
+		$data = $data->sort_by(static function ($x) {
 			return $x;
 		});
 
 		$this->assertSame(['b' => 'dayle', 'a' => 'taylor'], $data->all());
 
 		$data = new $collection(['taylor', 'dayle']);
-		$data = $data->sort_by(function ($x) {
+		$data = $data->sort_by(static function ($x) {
 			return $x;
 		});
 
@@ -2104,7 +2104,7 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection([1, 2, 3, 4]);
 
-		$data = $data->take_until(function ($item) {
+		$data = $data->take_until(static function ($item) {
 			return $item >= 3;
 		});
 
@@ -2125,7 +2125,7 @@ class CollectionTest extends FrameworkTestCase {
 
 		$this->assertSame($data->to_array(), $actual->to_array());
 
-		$actual = $data->take_until(function ($item) {
+		$actual = $data->take_until(static function ($item) {
 			return $item >= 99;
 		});
 
@@ -2178,7 +2178,7 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection([1, 2, 3, 4]);
 
-		$data = $data->take_while(function ($item) {
+		$data = $data->take_while(static function ($item) {
 			return $item < 3;
 		});
 
@@ -2199,7 +2199,7 @@ class CollectionTest extends FrameworkTestCase {
 
 		$this->assertSame([], $actual->to_array());
 
-		$actual = $data->take_while(function ($item) {
+		$actual = $data->take_while(static function ($item) {
 			return $item == 99;
 		});
 
@@ -2440,15 +2440,15 @@ class CollectionTest extends FrameworkTestCase {
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTimesMethod(string $collection ): void
 	{
-		$two = $collection::times(2, function ($number) {
+		$two = $collection::times(2, static function ($number) {
 			return 'slug-'.$number;
 		});
 
-		$zero = $collection::times(0, function ($number) {
+		$zero = $collection::times(0, static function ($number) {
 			return 'slug-'.$number;
 		});
 
-		$negative = $collection::times(-4, function ($number) {
+		$negative = $collection::times(-4, static function ($number) {
 			return 'slug-'.$number;
 		});
 
@@ -2584,7 +2584,7 @@ class CollectionTest extends FrameworkTestCase {
 	public function testMap(string $collection ): void
 	{
 		$data = new $collection(['first' => 'taylor', 'last' => 'otwell']);
-		$data = $data->map(function ($item, $key) {
+		$data = $data->map(static function ($item, $key) {
 			return $key.'-'.strrev($item);
 		});
 		$this->assertSame(['first' => 'first-rolyat', 'last' => 'last-llewto'], $data->all());
@@ -2600,18 +2600,18 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$c = new $collection([[1, 'a'], [2, 'b']]);
 
-		$result = $c->map_spread(function ($number, $character) {
+		$result = $c->map_spread(static function ($number, $character) {
 			return "{$number}-{$character}";
 		});
 		$this->assertSame(['1-a', '2-b'], $result->all());
 
-		$result = $c->map_spread(function ($number, $character, $key) {
+		$result = $c->map_spread(static function ($number, $character, $key) {
 			return "{$number}-{$character}-{$key}";
 		});
 		$this->assertSame(['1-a-0', '2-b-1'], $result->all());
 
 		$c = new $collection([new Collection([1, 'a']), new Collection([2, 'b'])]);
-		$result = $c->map_spread(function ($number, $character, $key) {
+		$result = $c->map_spread(static function ($number, $character, $key) {
 			return "{$number}-{$character}-{$key}";
 		});
 		$this->assertSame(['1-a-0', '2-b-1'], $result->all());
@@ -2629,7 +2629,7 @@ class CollectionTest extends FrameworkTestCase {
 			['name' => 'taylor', 'hobbies' => ['programming', 'basketball']],
 			['name' => 'adam', 'hobbies' => ['music', 'powerlifting']],
 		]);
-		$data = $data->flat_map(function ($person) {
+		$data = $data->flat_map(static function ($person) {
 			return $person['hobbies'];
 		});
 		$this->assertSame(['programming', 'basketball', 'music', 'powerlifting'], $data->all());
@@ -2650,7 +2650,7 @@ class CollectionTest extends FrameworkTestCase {
 			['id' => 4, 'name' => 'B'],
 		]);
 
-		$groups = $data->map_to_dictionary(function ($item, $key) {
+		$groups = $data->map_to_dictionary(static function ($item, $key) {
 			return [$item['name'] => $item['id']];
 		});
 
@@ -2660,7 +2660,7 @@ class CollectionTest extends FrameworkTestCase {
 	}
 
 	public function testMapToDictionaryReturnFalsy(): void {
-		$groups = ( new Collection([1, 2, 3, 4, 5]) )->map_to_dictionary(function ($item, $key) {
+		$groups = ( new Collection([1, 2, 3, 4, 5]) )->map_to_dictionary(static function ($item, $key) {
 			if (2 === $item) {
 				return null;
 			}
@@ -2681,7 +2681,7 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection([1, 2, 3, 2, 1]);
 
-		$groups = $data->map_to_dictionary(function ($item, $key) {
+		$groups = $data->map_to_dictionary(static function ($item, $key) {
 			return [$item => $key];
 		});
 
@@ -2703,7 +2703,7 @@ class CollectionTest extends FrameworkTestCase {
 			['id' => 4, 'name' => 'B'],
 		]);
 
-		$groups = $data->map_to_groups(function ($item, $key) {
+		$groups = $data->map_to_groups(static function ($item, $key) {
 			return [$item['name'] => $item['id']];
 		});
 
@@ -2722,7 +2722,7 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection([1, 2, 3, 2, 1]);
 
-		$groups = $data->map_to_groups(function ($item, $key) {
+		$groups = $data->map_to_groups(static function ($item, $key) {
 			return [$item => $key];
 		});
 
@@ -2742,7 +2742,7 @@ class CollectionTest extends FrameworkTestCase {
 			['name' => 'Charmander', 'type' => 'Fire', 'idx' => 4],
 			['name' => 'Dragonair', 'type' => 'Dragon', 'idx' => 148],
 		]);
-		$data = $data->map_with_keys(function ($pokemon) {
+		$data = $data->map_with_keys(static function ($pokemon) {
 			return [$pokemon['name'] => $pokemon['type']];
 		});
 		$this->assertSame(
@@ -2764,7 +2764,7 @@ class CollectionTest extends FrameworkTestCase {
 			['id' => 3, 'name' => 'B'],
 			['id' => 2, 'name' => 'C'],
 		]);
-		$data = $data->map_with_keys(function ($item) {
+		$data = $data->map_with_keys(static function ($item) {
 			return [$item['id'] => $item];
 		});
 		$this->assertSame(
@@ -2786,7 +2786,7 @@ class CollectionTest extends FrameworkTestCase {
 			['id' => 2, 'name' => 'B'],
 			['id' => 3, 'name' => 'C'],
 		]);
-		$data = $data->map_with_keys(function ($item) {
+		$data = $data->map_with_keys(static function ($item) {
 			return [$item['id'] => $item['name'], $item['name'] => $item['id']];
 		});
 		$this->assertSame(
@@ -2815,7 +2815,7 @@ class CollectionTest extends FrameworkTestCase {
 			5 => ['id' => 3, 'name' => 'B'],
 			4 => ['id' => 2, 'name' => 'C'],
 		]);
-		$data = $data->map_with_keys(function ($item, $key) {
+		$data = $data->map_with_keys(static function ($item, $key) {
 			return [$key => $item['id']];
 		});
 		$this->assertSame(
@@ -2912,7 +2912,7 @@ class CollectionTest extends FrameworkTestCase {
 			['id' => 2, 'name' => 'B'],
 			['id' => 1, 'name' => 'C'],
 		]);
-		$data = $data->map_with_keys(function ($item) {
+		$data = $data->map_with_keys(static function ($item) {
 			return [$item['id'] => $item['name']];
 		});
 		$this->assertSame(
@@ -2927,7 +2927,7 @@ class CollectionTest extends FrameworkTestCase {
 	public function testTransform(): void
 	{
 		$data = new Collection(['first' => 'taylor', 'last' => 'otwell']);
-		$data->transform(function ($item, $key) {
+		$data->transform(static function ($item, $key) {
 			return $key.'-'.strrev($item);
 		});
 		$this->assertSame(['first' => 'first-rolyat', 'last' => 'last-llewto'], $data->all());
@@ -3013,7 +3013,7 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection([['rating' => 1, 'url' => '1'], ['rating' => 1, 'url' => '1'], ['rating' => 2, 'url' => '2']]);
 
-		$result = $data->group_by(function ($item) {
+		$result = $data->group_by(static function ($item) {
 			return $item['rating'];
 		});
 
@@ -3030,7 +3030,7 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection([10 => ['rating' => 1, 'url' => '1'], 20 => ['rating' => 1, 'url' => '1'], 30 => ['rating' => 2, 'url' => '2']]);
 
-		$result = $data->group_by(function ($item) {
+		$result = $data->group_by(static function ($item) {
 			return $item['rating'];
 		}, true);
 
@@ -3056,7 +3056,7 @@ class CollectionTest extends FrameworkTestCase {
 			['user' => 3, 'roles' => ['Role_1']],
 		]);
 
-		$result = $data->group_by(function ($item) {
+		$result = $data->group_by(static function ($item) {
 			return $item['roles'];
 		});
 
@@ -3091,7 +3091,7 @@ class CollectionTest extends FrameworkTestCase {
 			30 => ['user' => 3, 'roles' => ['Role_1']],
 		]);
 
-		$result = $data->group_by(function ($item) {
+		$result = $data->group_by(static function ($item) {
 			return $item['roles'];
 		}, true);
 
@@ -3171,7 +3171,7 @@ class CollectionTest extends FrameworkTestCase {
 		$result = $data->key_by('rating');
 		$this->assertSame([1 => ['rating' => 1, 'name' => '1'], 2 => ['rating' => 2, 'name' => '2'], 3 => ['rating' => 3, 'name' => '3']], $result->all());
 
-		$result = $data->key_by(function ($item) {
+		$result = $data->key_by(static function ($item) {
 			return $item['rating'] * 2;
 		});
 		$this->assertSame([2 => ['rating' => 1, 'name' => '1'], 4 => ['rating' => 2, 'name' => '2'], 6 => ['rating' => 3, 'name' => '3']], $result->all());
@@ -3189,7 +3189,7 @@ class CollectionTest extends FrameworkTestCase {
 			['firstname' => 'Taylor', 'lastname' => 'Otwell', 'locale' => 'US'],
 			['firstname' => 'Lucas', 'lastname' => 'Michot', 'locale' => 'FR'],
 		]);
-		$result = $data->key_by(function ($item, $key) {
+		$result = $data->key_by(static function ($item, $key) {
 			return strtolower($key.'-'.$item['firstname'].$item['lastname']);
 		});
 		$this->assertSame([
@@ -3210,7 +3210,7 @@ class CollectionTest extends FrameworkTestCase {
 			['firstname' => 'Taylor', 'lastname' => 'Otwell', 'locale' => 'US'],
 			['firstname' => 'Lucas', 'lastname' => 'Michot', 'locale' => 'FR'],
 		]);
-		$result = $data->key_by(function ($item, $key) use ($collection) {
+		$result = $data->key_by(static function ($item, $key) use ($collection) {
 			return new $collection([$key, $item['firstname'], $item['lastname']]);
 		});
 		$this->assertSame([
@@ -3338,10 +3338,10 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertFalse($c->contains_strict(2));
 		$this->assertTrue($c->contains_strict('02'));
 		$this->assertFalse($c->contains_strict(true));
-		$this->assertTrue($c->contains_strict(function ($value) {
+		$this->assertTrue($c->contains_strict(static function ($value) {
 			return $value < 5;
 		}));
-		$this->assertFalse($c->contains_strict(function ($value) {
+		$this->assertFalse($c->contains_strict(static function ($value) {
 			return $value > 5;
 		}));
 
@@ -3402,7 +3402,7 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(100, $c->sum('foo'));
 
 		$c = new $collection([(object) ['foo' => 50], (object) ['foo' => 50]]);
-		$this->assertSame(100, $c->sum(function ($i) {
+		$this->assertSame(100, $c->sum(static function ($i) {
 			return $i->foo;
 		}));
 	}
@@ -3480,7 +3480,7 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['foo'], $c->reject('bar')->values()->all());
 
 		$c = new $collection(['foo', 'bar']);
-		$this->assertSame(['foo'], $c->reject(function ($v) {
+		$this->assertSame(['foo'], $c->reject(static function ($v) {
 			return $v == 'bar';
 		})->values()->all());
 
@@ -3491,12 +3491,12 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['foo', 'bar'], $c->reject('baz')->values()->all());
 
 		$c = new $collection(['foo', 'bar']);
-		$this->assertSame(['foo', 'bar'], $c->reject(function ($v) {
+		$this->assertSame(['foo', 'bar'], $c->reject(static function ($v) {
 			return $v == 'baz';
 		})->values()->all());
 
 		$c = new $collection(['id' => 1, 'primary' => 'foo', 'secondary' => 'bar']);
-		$this->assertSame(['primary' => 'foo', 'secondary' => 'bar'], $c->reject(function ($item, $key) {
+		$this->assertSame(['primary' => 'foo', 'secondary' => 'bar'], $c->reject(static function ($item, $key) {
 			return $key == 'id';
 		})->all());
 	}
@@ -3540,10 +3540,10 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(1, $c->search(2));
 		$this->assertSame(1, $c->search('2'));
 		$this->assertSame('foo', $c->search('bar'));
-		$this->assertSame(4, $c->search(function ($value) {
+		$this->assertSame(4, $c->search(static function ($value) {
 			return $value > 4;
 		}));
-		$this->assertSame('foo', $c->search(function ($value) {
+		$this->assertSame('foo', $c->search(static function ($value) {
 			return ! is_numeric($value);
 		}));
 	}
@@ -3578,10 +3578,10 @@ class CollectionTest extends FrameworkTestCase {
 
 		$this->assertFalse($c->search(6));
 		$this->assertFalse($c->search('foo'));
-		$this->assertFalse($c->search(function ($value) {
+		$this->assertFalse($c->search(static function ($value) {
 			return $value < 1 && is_numeric($value);
 		}));
-		$this->assertFalse($c->search(function ($value) {
+		$this->assertFalse($c->search(static function ($value) {
 			return $value == 'nope';
 		}));
 	}
@@ -3598,10 +3598,10 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(1, $c->before('2'));
 		$this->assertSame(5, $c->before('taylor'));
 		$this->assertSame('taylor', $c->before('laravel'));
-		$this->assertSame(4, $c->before(function ($value) {
+		$this->assertSame(4, $c->before(static function ($value) {
 				return $value > 4;
 		}));
-		$this->assertSame(5, $c->before(function ($value) {
+		$this->assertSame(5, $c->before(static function ($value) {
 				return ! is_numeric($value);
 		}));
 	}
@@ -3632,10 +3632,10 @@ class CollectionTest extends FrameworkTestCase {
 
 		$this->assertNull($c->before(6));
 		$this->assertNull($c->before('foo'));
-		$this->assertNull($c->before(function ($value) {
+		$this->assertNull($c->before(static function ($value) {
 				return $value < 1 && is_numeric($value);
 		}));
-		$this->assertNull($c->before(function ($value) {
+		$this->assertNull($c->before(static function ($value) {
 				return $value === 'nope';
 		}));
 	}
@@ -3649,7 +3649,7 @@ class CollectionTest extends FrameworkTestCase {
 		$c = new $collection([1, 2, 3, 4, 5, 'foo' => 'bar']);
 
 		$this->assertNull($c->before(1));
-		$this->assertNull($c->before(function ($value) {
+		$this->assertNull($c->before(static function ($value) {
 				return $value < 2 && is_numeric($value);
 		}));
 
@@ -3672,10 +3672,10 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame('taylor', $c->after(5));
 		$this->assertSame('laravel', $c->after('taylor'));
 
-		$this->assertSame(4, $c->after(function ($value) {
+		$this->assertSame(4, $c->after(static function ($value) {
 				return $value > 2;
 		}));
-		$this->assertSame('laravel', $c->after(function ($value) {
+		$this->assertSame('laravel', $c->after(static function ($value) {
 				return ! is_numeric($value);
 		}));
 	}
@@ -3706,10 +3706,10 @@ class CollectionTest extends FrameworkTestCase {
 
 		$this->assertNull($c->after(6));
 		$this->assertNull($c->after('foo'));
-		$this->assertNull($c->after(function ($value) {
+		$this->assertNull($c->after(static function ($value) {
 				return $value < 1 && is_numeric($value);
 		}));
-		$this->assertNull($c->after(function ($value) {
+		$this->assertNull($c->after(static function ($value) {
 				return $value === 'nope';
 		}));
 	}
@@ -3723,7 +3723,7 @@ class CollectionTest extends FrameworkTestCase {
 		$c = new $collection([1, 2, 3, 4, 5, 'foo' => 'bar']);
 
 		$this->assertNull($c->after('bar'));
-		$this->assertNull($c->after(function ($value) {
+		$this->assertNull($c->after(static function ($value) {
 				return $value > 4 && ! is_numeric($value);
 		}));
 
@@ -3886,7 +3886,7 @@ class CollectionTest extends FrameworkTestCase {
 	public function testGettingMaxItemsFromCollection(string $collection ): void
 	{
 		$c = new $collection([(object) ['foo' => 10], (object) ['foo' => 20]]);
-		$this->assertSame(20, $c->max(function ($item) {
+		$this->assertSame(20, $c->max(static function ($item) {
 			return $item->foo;
 		}));
 		$this->assertSame(20, $c->max('foo'));
@@ -3912,7 +3912,7 @@ class CollectionTest extends FrameworkTestCase {
 	public function testGettingMinItemsFromCollection(string $collection ): void
 	{
 		$c = new $collection([(object) ['foo' => 10], (object) ['foo' => 20]]);
-		$this->assertSame(10, $c->min(function ($item) {
+		$this->assertSame(10, $c->min(static function ($item) {
 			return $item->foo;
 		}));
 		$this->assertSame(10, $c->min('foo'));
@@ -4030,14 +4030,14 @@ class CollectionTest extends FrameworkTestCase {
 	public function testGettingAvgItemsFromCollection(string $collection ): void
 	{
 		$c = new $collection([(object) ['foo' => 10], (object) ['foo' => 20]]);
-		$this->assertSame(15, $c->avg(function ($item) {
+		$this->assertSame(15, $c->avg(static function ($item) {
 			return $item->foo;
 		}));
 		$this->assertSame(15, $c->avg('foo'));
 		$this->assertSame(15, $c->avg->foo);
 
 		$c = new $collection([(object) ['foo' => 10], (object) ['foo' => 20], (object) ['foo' => null]]);
-		$this->assertSame(15, $c->avg(function ($item) {
+		$this->assertSame(15, $c->avg(static function ($item) {
 			return $item->foo;
 		}));
 		$this->assertSame(15, $c->avg('foo'));
@@ -4191,7 +4191,7 @@ class CollectionTest extends FrameworkTestCase {
 	public function testReduce(string $collection ): void
 	{
 		$data = new $collection([1, 2, 3]);
-		$this->assertSame(6, $data->reduce(function ($carry, $element) {
+		$this->assertSame(6, $data->reduce(static function ($carry, $element) {
 			return $carry += $element;
 		}));
 	}
@@ -4220,7 +4220,7 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection([1, 2, 3]);
 
-		$this->assertSame(6, $data->pipe(function ($data) {
+		$this->assertSame(6, $data->pipe(static function ($data) {
 			return $data->sum();
 		}));
 	}
@@ -4476,7 +4476,7 @@ class CollectionTest extends FrameworkTestCase {
 
 		$this->assertSame(
 			[['a', 'b'], ['c', 'd']],
-			$data->split(2)->map(function (Collection $chunk) {
+			$data->split(2)->map(static function (Collection $chunk) {
 				return $chunk->values()->to_array();
 			})->to_array()
 		);
@@ -4485,7 +4485,7 @@ class CollectionTest extends FrameworkTestCase {
 
 		$this->assertSame(
 			[[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]],
-			$data->split(2)->map(function (Collection $chunk) {
+			$data->split(2)->map(static function (Collection $chunk) {
 				return $chunk->values()->to_array();
 			})->to_array()
 		);
@@ -4503,7 +4503,7 @@ class CollectionTest extends FrameworkTestCase {
 
 		$this->assertSame(
 			[['a', 'b'], ['c']],
-			$data->split(2)->map(function (Collection $chunk) {
+			$data->split(2)->map(static function (Collection $chunk) {
 				return $chunk->values()->to_array();
 			})->to_array()
 		);
@@ -4521,7 +4521,7 @@ class CollectionTest extends FrameworkTestCase {
 
 		$this->assertSame(
 			[['a']],
-			$data->split(2)->map(function (Collection $chunk) {
+			$data->split(2)->map(static function (Collection $chunk) {
 				return $chunk->values()->to_array();
 			})->to_array()
 		);
@@ -4539,7 +4539,7 @@ class CollectionTest extends FrameworkTestCase {
 
 		$this->assertSame(
 			[['a', 'b'], ['c'], ['d']],
-			$data->split(3)->map(function (Collection $chunk) {
+			$data->split(3)->map(static function (Collection $chunk) {
 				return $chunk->values()->to_array();
 			})->to_array()
 		);
@@ -4557,7 +4557,7 @@ class CollectionTest extends FrameworkTestCase {
 
 		$this->assertSame(
 			[['a', 'b'], ['c', 'd'], ['e']],
-			$data->split(3)->map(function (Collection $chunk) {
+			$data->split(3)->map(static function (Collection $chunk) {
 				return $chunk->values()->to_array();
 			})->to_array()
 		);
@@ -4575,7 +4575,7 @@ class CollectionTest extends FrameworkTestCase {
 
 		$this->assertSame(
 			[['a', 'b'], ['c', 'd'], ['e', 'f'], ['g', 'h'], ['i'], ['j']],
-			$data->split(6)->map(function (Collection $chunk) {
+			$data->split(6)->map(static function (Collection $chunk) {
 				return $chunk->values()->to_array();
 			})->to_array()
 		);
@@ -4593,7 +4593,7 @@ class CollectionTest extends FrameworkTestCase {
 
 		$this->assertSame(
 			[],
-			$data->split(2)->map(function (Collection $chunk) {
+			$data->split(2)->map(static function (Collection $chunk) {
 				return $chunk->values()->to_array();
 			})->to_array()
 		);
@@ -4675,7 +4675,7 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection(range(1, 10));
 
-		[$firstPartition, $secondPartition] = $data->partition(function ($i) {
+		[$firstPartition, $secondPartition] = $data->partition(static function ($i) {
 			return $i <= 5;
 		})->all();
 
@@ -4693,7 +4693,7 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection(['zero', 'one', 'two', 'three']);
 
-		[$even, $odd] = $data->partition(function ($item, $index) {
+		[$even, $odd] = $data->partition(static function ($item, $index) {
 			return $index % 2 === 0;
 		})->all();
 
@@ -4787,7 +4787,7 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection;
 
-		$this->assertCount(2, $data->partition(function () {
+		$this->assertCount(2, $data->partition(static function () {
 			return true;
 		}));
 	}
@@ -4820,7 +4820,7 @@ class CollectionTest extends FrameworkTestCase {
 		$data = new $collection([1, 2, 3]);
 
 		$fromTap = [];
-		$data = $data->tap(function ($data) use (&$fromTap) {
+		$data = $data->tap(static function ($data) use (&$fromTap) {
 			$fromTap = $data->slice(0, 1)->to_array();
 		});
 
@@ -4838,7 +4838,7 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->when('adam', function ($data, $newName) {
+		$data = $data->when('adam', static function ($data, $newName) {
 			return $data->concat([$newName]);
 		});
 
@@ -4846,7 +4846,7 @@ class CollectionTest extends FrameworkTestCase {
 
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->when(false, function ($data) {
+		$data = $data->when(false, static function ($data) {
 			return $data->concat(['adam']);
 		});
 
@@ -4863,9 +4863,9 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->when(false, function ($data) {
+		$data = $data->when(false, static function ($data) {
 			return $data->concat(['adam']);
-		}, function ($data) {
+		}, static function ($data) {
 			return $data->concat(['taylor']);
 		});
 
@@ -4882,7 +4882,7 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->when_empty(function ($data) {
+		$data = $data->when_empty(static function ($data) {
 			return $data->concat(['adam']);
 		});
 
@@ -4890,7 +4890,7 @@ class CollectionTest extends FrameworkTestCase {
 
 		$data = new $collection;
 
-		$data = $data->when_empty(function ($data) {
+		$data = $data->when_empty(static function ($data) {
 			return $data->concat(['adam']);
 		});
 
@@ -4907,9 +4907,9 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->when_empty(function ($data) {
+		$data = $data->when_empty(static function ($data) {
 			return $data->concat(['adam']);
-		}, function ($data) {
+		}, static function ($data) {
 			return $data->concat(['taylor']);
 		});
 
@@ -4926,7 +4926,7 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->when_not_empty(function ($data) {
+		$data = $data->when_not_empty(static function ($data) {
 			return $data->concat(['adam']);
 		});
 
@@ -4934,7 +4934,7 @@ class CollectionTest extends FrameworkTestCase {
 
 		$data = new $collection;
 
-		$data = $data->when_not_empty(function ($data) {
+		$data = $data->when_not_empty(static function ($data) {
 			return $data->concat(['adam']);
 		});
 
@@ -4951,9 +4951,9 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->when_not_empty(function ($data) {
+		$data = $data->when_not_empty(static function ($data) {
 			return $data->concat(['adam']);
-		}, function ($data) {
+		}, static function ($data) {
 			return $data->concat(['taylor']);
 		});
 
@@ -4970,7 +4970,7 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->unless(false, function ($data) {
+		$data = $data->unless(false, static function ($data) {
 			return $data->concat(['caleb']);
 		});
 
@@ -4978,7 +4978,7 @@ class CollectionTest extends FrameworkTestCase {
 
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->unless(true, function ($data) {
+		$data = $data->unless(true, static function ($data) {
 			return $data->concat(['caleb']);
 		});
 
@@ -4995,9 +4995,9 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->unless(true, function ($data) {
+		$data = $data->unless(true, static function ($data) {
 			return $data->concat(['caleb']);
-		}, function ($data) {
+		}, static function ($data) {
 			return $data->concat(['taylor']);
 		});
 
@@ -5014,7 +5014,7 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->unless_empty(function ($data) {
+		$data = $data->unless_empty(static function ($data) {
 			return $data->concat(['adam']);
 		});
 
@@ -5022,7 +5022,7 @@ class CollectionTest extends FrameworkTestCase {
 
 		$data = new $collection;
 
-		$data = $data->unless_empty(function ($data) {
+		$data = $data->unless_empty(static function ($data) {
 			return $data->concat(['adam']);
 		});
 
@@ -5039,9 +5039,9 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->unless_empty(function ($data) {
+		$data = $data->unless_empty(static function ($data) {
 			return $data->concat(['adam']);
-		}, function ($data) {
+		}, static function ($data) {
 			return $data->concat(['taylor']);
 		});
 
@@ -5058,7 +5058,7 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->unless_not_empty(function ($data) {
+		$data = $data->unless_not_empty(static function ($data) {
 			return $data->concat(['adam']);
 		});
 
@@ -5066,7 +5066,7 @@ class CollectionTest extends FrameworkTestCase {
 
 		$data = new $collection;
 
-		$data = $data->unless_not_empty(function ($data) {
+		$data = $data->unless_not_empty(static function ($data) {
 			return $data->concat(['adam']);
 		});
 
@@ -5083,9 +5083,9 @@ class CollectionTest extends FrameworkTestCase {
 	{
 		$data = new $collection(['michael', 'tom']);
 
-		$data = $data->unless_not_empty(function ($data) {
+		$data = $data->unless_not_empty(static function ($data) {
 			return $data->concat(['adam']);
-		}, function ($data) {
+		}, static function ($data) {
 			return $data->concat(['taylor']);
 		});
 
@@ -5268,7 +5268,7 @@ class CollectionTest extends FrameworkTestCase {
 		$c = $collection::from( $query );
 
 		$this->assertCount( 5, $c->all() );
-		$this->assertTrue( $c->every( function ( $val, $key ) {
+		$this->assertTrue( $c->every( static function ( $val, $key ) {
 			return $val instanceof Model\Post;
 		} ) );
 	}

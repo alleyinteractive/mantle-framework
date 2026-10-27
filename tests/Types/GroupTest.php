@@ -112,7 +112,7 @@ class ValidatorGroupTest extends TestCase {
 		$_SERVER['feature_booted'] = false;
 
 		$group = new Validator_Group(
-			function() {
+			static function() {
 				$_SERVER['feature_booted'] = true;
 			}
 		);

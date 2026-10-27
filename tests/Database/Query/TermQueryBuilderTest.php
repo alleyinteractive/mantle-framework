@@ -124,7 +124,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 		$first = Testable_Tag::query()
 			->orderBy( 'id', 'asc' )
 			->add_clause(
-				function ( array $clauses ) use ( &$applied_count, $term_id ) {
+				static function ( array $clauses ) use ( &$applied_count, $term_id ) {
 					global $wpdb;
 
 					$applied_count++;
@@ -170,7 +170,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 
 		Testable_Tag::query()->chunk(
 			2,
-			function ( $terms ) use ( &$chunks, &$ids ): void {
+			static function ( $terms ) use ( &$chunks, &$ids ): void {
 				$chunks[] = $terms->count();
 				$ids      = array_merge( $ids, $terms->pluck( 'id' )->all() );
 			},

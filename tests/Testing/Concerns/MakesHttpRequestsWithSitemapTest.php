@@ -96,7 +96,7 @@ class MakesHttpRequestsWithSitemapTest extends FrameworkTestCase {
 	 */
 	public static function dataprovider_run_test_multiple_times(): array {
 		return collect( range( 1, 3 ) )
-			->map_with_keys( fn ( $i ) => [ "run_{$i}" => [ $i ] ] )
+			->map_with_keys( static fn ( $i ) => [ "run_{$i}" => [ $i ] ] )
 			->all();
 	}
 }
