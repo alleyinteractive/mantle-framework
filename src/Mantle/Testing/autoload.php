@@ -44,7 +44,7 @@ if ( ! function_exists( __NAMESPACE__ . '\\install' ) ) {
 	function install( ?callable $callback = null ): Installation_Manager {
 		return tap(
 			manager(),
-			fn ( Installation_Manager $manager ) => $manager->before( $callback ),
+			static fn ( Installation_Manager $manager ) => $manager->before( $callback ),
 		)->install();
 	}
 }
@@ -94,9 +94,9 @@ if ( ! function_exists( __NAMESPACE__ . '\\block_factory' ) ) {
 		if ( ! $container->bound( Generator::class ) ) {
 			$container->singleton(
 				Generator::class,
-				fn () => tap(
+				static fn () => tap(
 					Factory::create(),
-					fn ( Generator $generator ) => $generator->addProvider( new Faker_Provider( $generator ) ),
+					static fn ( Generator $generator ) => $generator->addProvider( new Faker_Provider( $generator ) ),
 				),
 			);
 		}

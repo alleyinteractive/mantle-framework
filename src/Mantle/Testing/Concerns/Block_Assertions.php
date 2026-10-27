@@ -137,7 +137,7 @@ trait Block_Assertions {
 
 		/* phpcs:disable */
 		return collect( $args )->reduce(
-			function ( array $carry, $value, $key ): array {
+			static function ( array $carry, $value, $key ): array {
 				// Allow for passing an argument pair directly.
 				if ( is_array( $value ) && isset( $value['key'], $value['value'] )  ) {
 					$carry[] = $value;

@@ -98,12 +98,12 @@ class Register_Providers implements Bootstrapable {
 		$application_parents = $providers
 			// Filter out all framework providers.
 			->filter(
-				fn ( string $provider ) => ! str_starts_with( $provider, 'Mantle\\' ),
+				static fn ( string $provider ) => ! str_starts_with( $provider, 'Mantle\\' ),
 			)
 			// Map the parent classes for each provider to properly remove duplicates.
 			->map_with_keys(
-				fn ( string $provider ) => [
-					$provider => collect( class_parents( $provider ) ?: [] )->filter( fn ( $parent ) => Base_Service_Provider::class !== $parent )->all(),
+				static fn ( string $provider ) => [
+					$provider => collect( class_parents( $provider ) ?: [] )->filter( static fn ( $parent ) => Base_Service_Provider::class !== $parent )->all(),
 				],
 			)
 			->flatten()

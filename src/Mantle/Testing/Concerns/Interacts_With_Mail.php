@@ -114,7 +114,7 @@ trait Interacts_With_Mail {
 		}
 
 		return collect( $mailer->mock_sent )->filter(
-			fn ( Mail_Message $message ) => match ( true ) {
+			static fn ( Mail_Message $message ) => match ( true ) {
 				is_string( $address_or_callback ) => $message->sent_to( $address_or_callback ),
 				is_callable( $address_or_callback ) => $address_or_callback( $message ),
 				default => true,

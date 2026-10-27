@@ -52,7 +52,7 @@ class Pool {
 	public function results(): array {
 		$results = wp_remote_request(
 			array_map(
-				function ( Pooled_Pending_Request $request ): array {
+				static function ( Pooled_Pending_Request $request ): array {
 					$request->prepare_request();
 
 					return [ $request->url(), $request->get_request_args() ];

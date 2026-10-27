@@ -134,7 +134,7 @@ class Provider implements Provider_Contract {
 		// add_metadata() unslashes objects in place but wp_slash() skips them, so slash the
 		// job's strings once and store it with add_meta(): update_metadata() would unslash twice.
 		// map_deep() also writes in place, so slash a clone to leave the caller's job alone.
-		$object->add_meta( Meta_Key::JOB->value, map_deep( clone $job, fn ( $value ) => is_string( $value ) ? addslashes( $value ) : $value ) );
+		$object->add_meta( Meta_Key::JOB->value, map_deep( clone $job, static fn ( $value ) => is_string( $value ) ? addslashes( $value ) : $value ) );
 
 		// Handle the job being delayed.
 		if ( isset( $job->delay ) ) {
@@ -177,12 +177,12 @@ class Provider implements Provider_Contract {
 			->take( $count * $max_concurrent_batches )
 			->get()
 			// Filter out any jobs that are locked.
-			->filter( fn ( Queue_Record $record ) => ! $record->is_locked() )
+			->filter( static fn ( Queue_Record $record ) => ! $record->is_locked() )
 			->map(
-				fn ( Queue_Record $record ) => tap(
+				static fn ( Queue_Record $record ) => tap(
 					new Queue_Worker_Job( $record ),
 					// Lock the job until the configured timeout or 10 minutes.
-					fn ( Queue_Worker_Job $job ) => $record->set_lock_until( // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
+					static fn ( Queue_Worker_Job $job ) => $record->set_lock_until( // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
 						time() + ( $job->get_job()->timeout ?? 600 )
 					),
 				),

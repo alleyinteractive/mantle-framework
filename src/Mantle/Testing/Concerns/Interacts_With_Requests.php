@@ -388,7 +388,7 @@ trait Interacts_With_Requests {
 			}
 
 			// Check if the stray request should be ignored.
-			if ( $this->ignored_strayed_requests->contains( fn ( string|iterable $ignored_url ) => Str::is( $ignored_url, $url ) ) ) {
+			if ( $this->ignored_strayed_requests->contains( static fn ( string|iterable $ignored_url ) => Str::is( $ignored_url, $url ) ) ) {
 				return null;
 			}
 
@@ -477,7 +477,7 @@ trait Interacts_With_Requests {
 			return collect();
 		}
 
-		return collect( $this->recorded_requests )->filter( fn ( Request $response ) => $callback( $response ) );
+		return collect( $this->recorded_requests )->filter( static fn ( Request $response ) => $callback( $response ) );
 	}
 
 	/**
@@ -535,7 +535,7 @@ trait Interacts_With_Requests {
 		}
 
 		if ( is_string( $url_or_callback ) ) {
-			$url_or_callback = fn ( $request ) => Str::is( $url_or_callback, $request->url() );
+			$url_or_callback = static fn ( $request ) => Str::is( $url_or_callback, $request->url() );
 		}
 
 		$requests = $this->recorded_requests( $url_or_callback )->count();
@@ -563,7 +563,7 @@ trait Interacts_With_Requests {
 		}
 
 		if ( is_string( $url_or_callback ) ) {
-			$url_or_callback = fn ( Request $request ) => Str::is( $url_or_callback, $request->url() );
+			$url_or_callback = static fn ( Request $request ) => Str::is( $url_or_callback, $request->url() );
 		}
 
 		PHPUnit::assertEquals(
@@ -606,7 +606,7 @@ trait Interacts_With_Requests {
 		}
 
 		if ( is_string( $expected ) ) {
-			$expected = fn ( Request $request ) => Str::is( $expected, $request->url() );
+			$expected = static fn ( Request $request ) => Str::is( $expected, $request->url() );
 		}
 
 		PHPUnit::assertTrue(
@@ -629,7 +629,7 @@ trait Interacts_With_Requests {
 		}
 
 		if ( is_string( $expected ) ) {
-			$expected = fn ( Request $request ) => Str::is( $expected, $request->url() );
+			$expected = static fn ( Request $request ) => Str::is( $expected, $request->url() );
 		}
 
 		PHPUnit::assertEquals(

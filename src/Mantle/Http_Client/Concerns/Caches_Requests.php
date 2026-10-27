@@ -33,7 +33,7 @@ trait Caches_Requests {
 	 */
 	public function cache( int|DateTimeInterface|Closure $ttl = 3600, ?string $key = null ): static {
 		return $this
-			->filter_middleware( fn ( callable $middleware ) => ! $middleware instanceof Cache_Middleware )
+			->filter_middleware( static fn ( callable $middleware ) => ! $middleware instanceof Cache_Middleware )
 			->prepend_middleware( new Cache_Middleware( $ttl, $key ) );
 	}
 
@@ -52,7 +52,7 @@ trait Caches_Requests {
 	 */
 	public function cache_flexible( int|\DateInterval|\DateTimeInterface|Closure $stale, int|\DateInterval|\DateTimeInterface|Closure $expire, ?string $key = null ): static {
 		return $this
-			->filter_middleware( fn ( callable $middleware ) => ! $middleware instanceof Cache_Middleware )
+			->filter_middleware( static fn ( callable $middleware ) => ! $middleware instanceof Cache_Middleware )
 			->prepend_middleware( new Cache_Flexible_Middleware( $stale, $expire, $key ) );
 	}
 
@@ -77,7 +77,7 @@ trait Caches_Requests {
 			throw new InvalidArgumentException( 'Cannot purge cache for a request that has no URL. Call url() first.' );
 		}
 
-		$middleware = collect( $this->middleware )->first( fn ( $middleware ) => $middleware instanceof Cache_Middleware );
+		$middleware = collect( $this->middleware )->first( static fn ( $middleware ) => $middleware instanceof Cache_Middleware );
 
 		if ( ! $middleware ) {
 			throw new InvalidArgumentException( 'Cannot purge cache for a request that is not cached. Call cache() first.' );

@@ -105,7 +105,7 @@ class Collection implements ArrayAccess, Enumerable {
 
 		$items = range( 1, $number );
 
-		$callback ??= fn( $value ) => $value;
+		$callback ??= static fn( $value ) => $value;
 
 		return ( new static( $items ) )->map( $callback );
 	}
@@ -140,9 +140,9 @@ class Collection implements ArrayAccess, Enumerable {
 		$callback = $this->value_retriever( $callback );
 
 		$items = $this->map(
-			fn ( $value ) => $callback( $value ),
+			static fn ( $value ) => $callback( $value ),
 		)->filter(
-			fn ( $value ) => ! is_null( $value ),
+			static fn ( $value ) => ! is_null( $value ),
 		);
 
 		$count = $items->count();
@@ -163,7 +163,7 @@ class Collection implements ArrayAccess, Enumerable {
 	public function median( $key = null ) {
 		$values = ( isset( $key ) ? $this->pluck( $key ) : $this )
 			->filter(
-				fn ( $item ) => ! is_null( $item )
+				static fn ( $item ) => ! is_null( $item )
 			)->sort()->values();
 
 
@@ -205,7 +205,7 @@ class Collection implements ArrayAccess, Enumerable {
 		$highest_value = $sorted->last();
 
 		return $sorted->filter(
-			fn ( $value ) => $value == $highest_value // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison, Universal.Operators.StrictComparisons.LooseEqual
+			static fn ( $value ) => $value == $highest_value // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison, Universal.Operators.StrictComparisons.LooseEqual
 		)->sort()->keys()->all();
 	}
 
@@ -249,7 +249,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	public function contains_strict( $key, $value = null ) {
 		if ( func_num_args() === 2 ) {
-			return $this->contains( fn ( $item ) => data_get( $item, $key ) === $value ); // @phpstan-ignore-line argument.type
+			return $this->contains( static fn ( $item ) => data_get( $item, $key ) === $value ); // @phpstan-ignore-line argument.type
 		}
 
 		if ( $this->use_as_callable( $key ) ) {
@@ -901,7 +901,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static<TKey, int>
 	 */
 	public function map_to_integers(): static {
-		return $this->map( fn ( $value ) => (int) $value );
+		return $this->map( static fn ( $value ) => (int) $value );
 	}
 
 	/**
@@ -1009,7 +1009,7 @@ class Collection implements ArrayAccess, Enumerable {
 		$keys = is_array( $keys ) ? $keys : func_get_args();
 
 		return $this->map(
-			fn ( $item ) => Arr::only( (array) $item, $keys ),
+			static fn ( $item ) => Arr::only( (array) $item, $keys ),
 		);
 	}
 
@@ -1272,9 +1272,9 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param  TValue|callable(TValue,TKey): bool $value
 	 */
 	public function skip_until( mixed $value ): static {
-		$callback = $this->use_as_callable( $value ) ? $value : fn( $item ) => $item === $value;
+		$callback = $this->use_as_callable( $value ) ? $value : static fn( $item ) => $item === $value;
 
-		return $this->skip_while( fn( $item, $key ) => ! $callback( $item, $key ) );
+		return $this->skip_while( static fn( $item, $key ) => ! $callback( $item, $key ) );
 	}
 
 	/**
@@ -1283,7 +1283,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @param  TValue|callable(TValue,TKey): bool $value
 	 */
 	public function skip_while( mixed $value ): static {
-		$callback = $this->use_as_callable( $value ) ? $value : fn( $item ) => $item === $value;
+		$callback = $this->use_as_callable( $value ) ? $value : static fn( $item ) => $item === $value;
 
 		$items = [];
 		$skip  = true;
@@ -1579,7 +1579,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static<TKey, TValue>
 	 */
 	public function take_until( $value ): static {
-		$callback = $this->use_as_callable( $value ) ? $value : fn( $item ) => $item === $value;
+		$callback = $this->use_as_callable( $value ) ? $value : static fn( $item ) => $item === $value;
 
 		$items = [];
 
@@ -1601,9 +1601,9 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static<TKey, TValue>
 	 */
 	public function take_while( $value ): static {
-		$callback = $this->use_as_callable( $value ) ? $value : fn( $item ) => $item === $value;
+		$callback = $this->use_as_callable( $value ) ? $value : static fn( $item ) => $item === $value;
 
-		return $this->take_until( fn( $item, $key ) => ! $callback( $item, $key ) );
+		return $this->take_until( static fn( $item, $key ) => ! $callback( $item, $key ) );
 	}
 
 	/**
@@ -1661,7 +1661,7 @@ class Collection implements ArrayAccess, Enumerable {
 
 		$params = array_merge(
 			[
-				fn () => new static( func_get_args() ),
+				static fn () => new static( func_get_args() ),
 				$this->items,
 			],
 			$arrayable_items
@@ -1677,7 +1677,7 @@ class Collection implements ArrayAccess, Enumerable {
 	 * @return static<TKey, string>
 	 */
 	public function trim( string $char_list = "\n\r\t\v\x00" ) {
-		return new static( $this->map( fn ( $item ) => trim( (string) $item, $char_list ) ) ); // @phpstan-ignore-line return.type
+		return new static( $this->map( static fn ( $item ) => trim( (string) $item, $char_list ) ) ); // @phpstan-ignore-line return.type
 	}
 
 	/**

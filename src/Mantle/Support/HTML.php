@@ -232,7 +232,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 	 * @phpstan-param callable(HTML $crawler, int $i): (DOMNode|string|HTML|null) $callback
 	 */
 	public function modify( callable $callback ): static {
-		$this->each( function ( HTML $item, int $index ) use ( $callback ): HTML {
+		$this->each( static function ( HTML $item, int $index ) use ( $callback ): HTML {
 			$result = $callback( $item, $index );
 
 			// If the callback returns null, we can assume the callback modified the
@@ -433,7 +433,7 @@ class HTML extends SymfonyCrawler implements Htmlable {
 	 * @param string $selector CSS selector to match.
 	 */
 	public function remove( string $selector ): static {
-		$this->filter( $selector )->each( function ( HTML $item ): void {
+		$this->filter( $selector )->each( static function ( HTML $item ): void {
 			$node = $item->getNode( 0 );
 
 			if ( $node instanceof \DOMNode && $node->parentNode instanceof \DOMNode ) {

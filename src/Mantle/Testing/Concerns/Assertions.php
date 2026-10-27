@@ -574,7 +574,7 @@ trait Assertions {
 				// Convert an array of enum objects to an array of their values.
 				if ( is_array( $value ) ) {
 					$arguments[ $key ] = array_map(
-						fn ( $item ) => $item instanceof BackedEnum ? $item->value : $item,
+						static fn ( $item ) => $item instanceof BackedEnum ? $item->value : $item,
 						$value,
 					);
 				}
@@ -605,7 +605,7 @@ trait Assertions {
 		$result = (int) $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM {$table} WHERE 1=1 AND " . $arguments->map( // @phpstan-ignore argument.type
-					fn ( $value, $key ) => "{$key} = %s",
+					static fn ( $value, $key ) => "{$key} = %s",
 				)->implode( ' AND ' ),
 				...$arguments->values()->all(),
 			),
@@ -638,7 +638,7 @@ trait Assertions {
 		$result = (int) $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*) FROM {$table} WHERE 1=1 AND " . $arguments->map( // @phpstan-ignore argument.type
-					fn ( $value, $key ) => "{$key} = %s",
+					static fn ( $value, $key ) => "{$key} = %s",
 				)->implode( ' AND ' ),
 				...$arguments->values()->all(),
 			),

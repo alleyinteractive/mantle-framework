@@ -72,7 +72,7 @@ trait Response_Dumper {
 
 		// Request information.
 		$request_headers = $this->compile_data_table(
-			array_map( fn ( array $values ): array => array_map( strval( ... ), $values ), $this->request->headers->all() ),
+			array_map( static fn ( array $values ): array => array_map( strval( ... ), $values ), $this->request->headers->all() ),
 			'Header'
 		);
 
@@ -279,7 +279,7 @@ trait Response_Dumper {
 	 */
 	private function compile_data_table( array $data, string $label = 'Key' ): string {
 		$data = collect( $data )->reduce(
-			function ( $carry, $value, $key ) {
+			static function ( $carry, $value, $key ) {
 				if ( ! is_array( $value ) ) {
 					$value = [ $value ];
 				}

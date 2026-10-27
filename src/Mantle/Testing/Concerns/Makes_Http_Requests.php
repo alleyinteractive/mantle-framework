@@ -569,7 +569,7 @@ trait Makes_Http_Requests {
 	private static function copy_wp_dependencies( \WP_Dependencies $dependencies ): \WP_Dependencies {
 		$copy = clone $dependencies;
 
-		$copy->registered = array_map( fn ( $dependency ) => clone $dependency, $dependencies->registered );
+		$copy->registered = array_map( static fn ( $dependency ) => clone $dependency, $dependencies->registered );
 
 		return $copy;
 	}

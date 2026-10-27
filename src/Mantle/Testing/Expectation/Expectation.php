@@ -237,7 +237,7 @@ class Expectation {
 	 */
 	public function andReturn( mixed ...$values ): static {
 		return $this->returnComparison(
-			function ( $value ) use ( $values ): bool {
+			static function ( $value ) use ( $values ): bool {
 				foreach ( $values as $expected ) {
 					if ( $expected instanceof Closure ) {
 						return (bool) $expected( $value );
@@ -278,14 +278,14 @@ class Expectation {
 	 * Specify that the filter returns a truthy value.
 	 */
 	public function andReturnTruthy(): static {
-		return $this->returnComparison( fn ( $value ) => (bool) $value );
+		return $this->returnComparison( static fn ( $value ) => (bool) $value );
 	}
 
 	/**
 	 * Specify that the filter returns a falsy value.
 	 */
 	public function andReturnFalsy(): static {
-		return $this->returnComparison( fn ( $value ) => ! $value );
+		return $this->returnComparison( static fn ( $value ) => ! $value );
 	}
 
 	/**
@@ -299,21 +299,21 @@ class Expectation {
 	 * Specify that the filter returns an empty value.
 	 */
 	public function andReturnEmpty(): static {
-		return $this->returnComparison( fn ( $value ) => empty( $value ) );
+		return $this->returnComparison( static fn ( $value ) => empty( $value ) );
 	}
 
 	/**
 	 * Specify that the filter returns a non-empty value.
 	 */
 	public function andReturnNotEmpty(): static {
-		return $this->returnComparison( fn ( $value ) => ! empty( $value ) );
+		return $this->returnComparison( static fn ( $value ) => ! empty( $value ) );
 	}
 
 	/**
 	 * Specify that the filter returns an array value.
 	 */
 	public function andReturnArray(): static {
-		return $this->returnComparison( fn ( $value ) => is_array( $value ) );
+		return $this->returnComparison( static fn ( $value ) => is_array( $value ) );
 	}
 
 	/**
@@ -322,21 +322,21 @@ class Expectation {
 	 * @param string $class Class name.
 	 */
 	public function andReturnInstanceOf( string $class ): static {
-		return $this->returnComparison( fn ( $value ) => $value instanceof $class );
+		return $this->returnComparison( static fn ( $value ) => $value instanceof $class );
 	}
 
 	/**
 	 * Specify that the filter returns a string value.
 	 */
 	public function andReturnString(): static {
-		return $this->returnComparison( fn ( $value ) => is_string( $value ) );
+		return $this->returnComparison( static fn ( $value ) => is_string( $value ) );
 	}
 
 	/**
 	 * Specify that the filter returns an integer value.
 	 */
 	public function andReturnInteger(): static {
-		return $this->returnComparison( fn ( $value ) => is_int( $value ) );
+		return $this->returnComparison( static fn ( $value ) => is_int( $value ) );
 	}
 
 	/**

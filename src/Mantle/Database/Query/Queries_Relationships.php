@@ -107,7 +107,7 @@ trait Queries_Relationships {
 		$relation = $this->get_relation( $name );
 
 		$results = Relation::no_constraints(
-			function () use ( $models, $relation ) {
+			static function () use ( $models, $relation ) {
 				if ( ! $relation ) {
 					return Collection::from( [] );
 				}

@@ -99,7 +99,7 @@ class Pipeline implements PipelineContract {
 	 * @return mixed
 	 */
 	public function thenReturn() {
-		return $this->then( fn ( $passable ) => $passable );
+		return $this->then( static fn ( $passable ) => $passable );
 	}
 
 	/**

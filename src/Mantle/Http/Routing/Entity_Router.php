@@ -146,12 +146,12 @@ class Entity_Router implements Entity_Router_Contract {
 			$entity = $route->getOption( 'entity' );
 
 			$queried_object = $parameters
-				->filter( fn ( $value ) => $value instanceof $entity )
+				->filter( static fn ( $value ) => $value instanceof $entity )
 				->pop();
 		} else {
 			// Set the queried object for the non-entity route -- uses the last model parameter passed to the route.
 			$queried_object = $parameters
-				->filter( fn ( $value ) => $value instanceof Model || $value instanceof Core_Object )
+				->filter( static fn ( $value ) => $value instanceof Model || $value instanceof Core_Object )
 				->pop();
 		}
 

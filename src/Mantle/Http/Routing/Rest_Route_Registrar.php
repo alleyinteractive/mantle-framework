@@ -154,7 +154,7 @@ class Rest_Route_Registrar extends Route_Registrar {
 					->send( $request )
 					->through( $this->gather_route_middleware( $middleware ) )
 					->then(
-						fn ( WP_REST_Request $request ) => $callback( $request ),
+						static fn ( WP_REST_Request $request ) => $callback( $request ),
 					)
 			);
 		};

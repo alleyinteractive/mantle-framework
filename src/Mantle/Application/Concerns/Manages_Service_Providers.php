@@ -61,7 +61,7 @@ trait Manages_Service_Providers {
 		// when in isolation mode.
 		if ( $this->is_running_in_console_isolation() ) {
 			$providers = $providers->filter(
-				fn ( string $provider ) => in_array(
+				static fn ( string $provider ) => in_array(
 					Isolated_Service_Provider::class,
 					class_implements( $provider ) ?: [],
 					true,
@@ -79,7 +79,7 @@ trait Manages_Service_Providers {
 	 */
 	public function get_provider( string $name ): ?Service_Provider {
 		return collect( $this->get_providers() )->first(
-			fn ( Service_Provider $provider ) => $provider instanceof $name,
+			static fn ( Service_Provider $provider ) => $provider instanceof $name,
 		);
 	}
 

@@ -103,7 +103,7 @@ class Router implements Router_Contract {
 	 */
 	public function get( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
-			fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'get', $uri, $action ),
+			static fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'get', $uri, $action ),
 		);
 	}
 
@@ -115,7 +115,7 @@ class Router implements Router_Contract {
 	 */
 	public function post( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
-			fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'post', $uri, $action ),
+			static fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'post', $uri, $action ),
 		);
 	}
 
@@ -127,7 +127,7 @@ class Router implements Router_Contract {
 	 */
 	public function put( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
-			fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'put', $uri, $action ),
+			static fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'put', $uri, $action ),
 		);
 	}
 
@@ -139,7 +139,7 @@ class Router implements Router_Contract {
 	 */
 	public function delete( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
-			fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'delete', $uri, $action ),
+			static fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'delete', $uri, $action ),
 		);
 	}
 
@@ -151,7 +151,7 @@ class Router implements Router_Contract {
 	 */
 	public function patch( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
-			fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'patch', $uri, $action ),
+			static fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'patch', $uri, $action ),
 		);
 	}
 
@@ -163,7 +163,7 @@ class Router implements Router_Contract {
 	 */
 	public function options( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
-			fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'options', $uri, $action ),
+			static fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'options', $uri, $action ),
 		);
 	}
 
@@ -175,7 +175,7 @@ class Router implements Router_Contract {
 	 */
 	public function any( string $uri, mixed $action = '' ): Route {
 		return $this->with_registrar(
-			fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'any', $uri, $action ),
+			static fn ( Registrar_Contract $registrar ) => $registrar->register_route( 'any', $uri, $action ),
 		);
 	}
 
@@ -485,7 +485,7 @@ class Router implements Router_Contract {
 			)
 			->flatten()
 			->reject(
-				function ( $name ) use ( $excluded ) {
+				static function ( $name ) use ( $excluded ) {
 					if ( empty( $excluded ) ) {
 						return false;
 					}
@@ -501,7 +501,7 @@ class Router implements Router_Contract {
 					$reflection = new ReflectionClass( $name );
 
 					return collect( $excluded )->contains(
-						fn ( $exclude ) => class_exists( $exclude ) && $reflection->isSubclassOf( $exclude )
+						static fn ( $exclude ) => class_exists( $exclude ) && $reflection->isSubclassOf( $exclude )
 					);
 				}
 			)

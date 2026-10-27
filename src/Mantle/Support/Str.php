@@ -302,15 +302,15 @@ class Str {
 		$start = ltrim( $matches[1] );
 
 		$start = str( mb_substr( $start, max( mb_strlen( $start, 'UTF-8' ) - $radius, 0 ), $radius, 'UTF-8' ) )->ltrim()->unless(
-			fn ( $start_with_radius ) => $start_with_radius->exactly( $start ),
-			fn ( $start_with_radius ) => $start_with_radius->prepend( $omission ),
+			static fn ( $start_with_radius ) => $start_with_radius->exactly( $start ),
+			static fn ( $start_with_radius ) => $start_with_radius->prepend( $omission ),
 		);
 
 		$end = rtrim( $matches[3] );
 
 		$end = str( mb_substr( $end, 0, $radius, 'UTF-8' ) )->rtrim()->unless(
-			fn ( $end_with_radius ) => $end_with_radius->exactly( $end ),
-			fn ( $end_with_radius ) => $end_with_radius->append( $omission ),
+			static fn ( $end_with_radius ) => $end_with_radius->exactly( $end ),
+			static fn ( $end_with_radius ) => $end_with_radius->append( $omission ),
 		);
 
 		return $start->append( $matches[2], $end )->toString();
@@ -698,7 +698,7 @@ class Str {
 	 * @return string
 	 */
 	public static function random( $length = 16 ) {
-		return ( static::$random_string_factory ?? function ( $length ): string {
+		return ( static::$random_string_factory ?? static function ( $length ): string {
 			$string = '';
 
 			while ( ( $len = strlen( $string ) ) < $length ) { // phpcs:ignore WordPress.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition, Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition, Squiz.PHP.DisallowSizeFunctionsInLoops.Found
@@ -733,7 +733,7 @@ class Str {
 	public static function create_random_strings_using_sequence( array $sequence, $when_missing = null ): void {
 		$next = 0;
 
-		$when_missing ??= function ( $length ) use ( &$next ) {
+		$when_missing ??= static function ( $length ) use ( &$next ) {
 			$factory_cache = static::$random_string_factory;
 
 			static::$random_string_factory = null;
@@ -748,7 +748,7 @@ class Str {
 		};
 
 		static::create_random_strings_using(
-			function ( $length ) use ( &$next, $sequence, $when_missing ) {
+			static function ( $length ) use ( &$next, $sequence, $when_missing ) {
 				if ( array_key_exists( $next, $sequence ) ) {
 					return $sequence[ $next++ ];
 				}

@@ -42,7 +42,7 @@ trait With_PSR_4_File {
 
 		$folder = $parts
 			->filter()
-			->map( fn ( string $part ) => str( $part )->studly()->value() )
+			->map( static fn ( string $part ) => str( $part )->studly()->value() )
 			->implode( DIRECTORY_SEPARATOR );
 
 		return str( $this->get_base_path() )
