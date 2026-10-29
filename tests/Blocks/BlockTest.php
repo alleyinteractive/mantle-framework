@@ -3,7 +3,6 @@ namespace Mantle\Tests\Blocks;
 
 use Mantle\Blocks\Block;
 use Mantle\Testing\FrameworkTestCase;
-use ReflectionMethod;
 
 class BlockTest extends FrameworkTestCase {
 	public function test_editor_assets_register_with_dependencies(): void {
@@ -13,11 +12,9 @@ class BlockTest extends FrameworkTestCase {
 			protected array $editor_script_dependencies = [ 'wp-blocks' ];
 		};
 
-		$version = new ReflectionMethod( $block, 'get_editor_script_version' );
-		$this->assertIsString( $version->invoke( $block ) );
+		$this->assertIsString( invade( $block )->get_editor_script_version() );
 
-		$register = new ReflectionMethod( $block, 'register_editor_assets' );
-		$register->invoke( $block );
+		invade( $block )->register_editor_assets();
 
 		$this->assertTrue( true );
 	}
