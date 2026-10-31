@@ -2,7 +2,6 @@
 
 namespace Mantle\Tests\Support;
 
-use DOMElement;
 use DOMNode;
 use Mantle\Support\HTML;
 use Mantle\Testing\Concerns\Assertions;
@@ -53,7 +52,7 @@ class HtmlTest extends TestCase {
 		$this->assertTrue( $parsed->is_html_document() );
 		$this->assertSame( 'Test', $parsed->filter( 'title' )->text() );
 		$this->assertSame( 'Hello, World!', $parsed->filter( 'p' )->text() );
-		$this->assertSame( $crawler->filter( '*' )->count(), $parsed->filter( '*' )->count() );
+		$this->assertCount( $crawler->filter( '*' )->count(), $parsed->filter( '*' ) );
 	}
 
 	public function test_it_can_convert_html_back_to_the_original_html(): void {
@@ -203,7 +202,7 @@ class HtmlTest extends TestCase {
 		$crawler = new HTML( self::TEST_CONTENT );
 
 		$crawler->filter( '.test-class' )->modify(
-			function ( HTML $element ): DOMElement {
+			function ( HTML $element ): ?DOMNode {
 				// Create a new DOMElement to replace the existing one.
 				$crawler = new HTML( '<span class="replaced-class">Replaced Element</span>' );
 
@@ -606,8 +605,7 @@ class HtmlTest extends TestCase {
 	public function test_it_returns_empty_crawler_for_missing_next_sibling(): void {
 		$html = new HTML(self::TEST_CONTENT);
 		$next = $html->filter('ul')->next_sibling();
-		$this->assertInstanceOf(HTML::class, $next);
-		$this->assertSame(0, $next->count());
+		$this->assertCount( 0, $next );
 	}
 
 	public function test_it_can_get_the_nearest_previous_filtered_sibling(): void {
@@ -621,5 +619,6 @@ class HtmlTest extends TestCase {
 		$next = $html->filter('section')->next_sibling('ul');
 		$this->assertSame('ul', $next->nodeName());
 	}
+
 
 }

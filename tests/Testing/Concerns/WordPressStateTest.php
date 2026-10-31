@@ -34,6 +34,10 @@ class WordPressStateTest extends FrameworkTestCase {
 
 		$posts = collect( static::factory()->post->create_ordered_set_and_get( 3 ) );
 
+		$first_post_title = $posts->pluck( 'post_title' )->first();
+
+		$this->assertIsString( $first_post_title );
+
 		$this->set_show_page_on_front( front: $front_page, posts: $posts_page );
 		$this->get( '/' )
 			->assertOk()
@@ -41,7 +45,7 @@ class WordPressStateTest extends FrameworkTestCase {
 			->assertQueriedObject( $front_page )
 			->assertSee( 'Front Page' )
 			// Ensure posts are not shown on the front page.
-			->assertDontSee( $posts->first()->post_title );
+			->assertDontSee( $first_post_title );
 
 		// Ensure the posts page shows the posts.
 		$this->get( get_permalink( $posts_page ) )

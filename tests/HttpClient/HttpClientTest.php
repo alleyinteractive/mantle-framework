@@ -20,6 +20,7 @@ use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Mock_Http_Response;
 
 use function Mantle\Http_Client\http_client;
+use function Mantle\Support\Helpers\with;
 
 class HttpClientTest extends FrameworkTestCase {
 	protected Factory $http_factory;
@@ -57,7 +58,7 @@ class HttpClientTest extends FrameworkTestCase {
 	public function test_make_get_request(): void {
 		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 200 ) );
 
-		$response = $this->http_factory->get( 'https://example.com/' );
+		$response = with( $this->http_factory->get( 'https://example.com/' ) );
 
 		$this->assertTrue( $response->ok() );
 	}
@@ -110,7 +111,7 @@ class HttpClientTest extends FrameworkTestCase {
 			->with_status( 200 )
 		);
 
-		$response = $this->http_factory->get( 'https://example.com/' );
+		$response = with( $this->http_factory->get( 'https://example.com/' ) );
 
 		$this->assertNotEmpty( $response->cookie( 'example' ) );
 		$this->assertSame( 'value', $response->cookie( 'example' )->value );
@@ -373,19 +374,23 @@ class HttpClientTest extends FrameworkTestCase {
 	public function test_no_exception_thrown_by_default(): void {
 		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 500 ) );
 
-		$response = $this->http_factory->get( 'https://example.com/' );
+		$response = with( $this->http_factory->get( 'https://example.com/' ) );
 
 		$this->assertInstanceOf( Response::class, $response );
+		$this->assertSame( 500, $response->status() );
 	}
 
 	public function test_no_exception_thrown_if_muted(): void {
 		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 500 ) );
 
-		$response = $this->http_factory
-			->dont_throw_exception()
-			->get( 'https://example.com/' );
+		$response = with(
+			$this->http_factory
+				->dont_throw_exception()
+				->get( 'https://example.com/' )
+		);
 
 		$this->assertInstanceOf( Response::class, $response );
+		$this->assertSame( 500, $response->status() );
 	}
 
 	public function test_exception_thrown_on_failure(): void {

@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  * Designed to test the application in complete isolation for use outside of a
  * mantle-based application.
  */
-class IsolatedFrameworkTest extends TestCase {
+final class IsolatedFrameworkTest extends TestCase {
 	public Application $app;
 
 	protected function setUp(): void {

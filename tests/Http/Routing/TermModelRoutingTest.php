@@ -34,11 +34,15 @@ class TermModelRoutingTest extends FrameworkTestCase {
 
 		$this->assertSame( home_url( '/custom-category-rewrite/' . $category->slug() ), $term_link );
 
+		$term = get_term( $category->id() );
+
+		$this->assertInstanceOf( \WP_Term::class, $term );
+
 		$this
 			->get( $term_link )
 			->assertOk()
 			->assertSee( $category->slug() )
-			->assertQueriedObject( get_term( $category->id() ) )
+			->assertQueriedObject( $term )
 			->assertQueriedObjectId( $category->id() )
 			->assertQueryTrue( 'is_archive', 'is_category', 'is_tax' );
 	}
@@ -64,7 +68,10 @@ class TermModelRoutingTest extends FrameworkTestCase {
 			Route::model( Testable_Custom_Taxonomy_Model::class, Testable_Custom_Term_Model_Controller::class );
 		} );
 
-		$this->assertTrue( taxonomy_exists( Testable_Custom_Taxonomy_Model::get_object_name() ) );
+		$taxonomy = Testable_Custom_Taxonomy_Model::get_object_name();
+
+		$this->assertIsString( $taxonomy );
+		$this->assertTrue( taxonomy_exists( $taxonomy ) );
 
 		$term = Testable_Custom_Taxonomy_Model::create(
 			[
@@ -82,11 +89,15 @@ class TermModelRoutingTest extends FrameworkTestCase {
 
 		$this->assertSame( home_url( '/test_tax_test/' . $term->slug() . '/' ), $term_link );
 
+		$core_term = get_term( $term->id() );
+
+		$this->assertInstanceOf( \WP_Term::class, $core_term );
+
 		$this
 			->get( $term_link )
 			->assertOk()
 			->assertContent( $term->slug() )
-			->assertQueriedObject( get_term( $term->id() ) )
+			->assertQueriedObject( $core_term )
 			->assertQueriedObjectId( $term->id() )
 			->assertQueryTrue( 'is_archive', 'is_tax' );
 	}

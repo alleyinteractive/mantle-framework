@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 use Mockery as m;
 
 use function Mantle\Support\Helpers\tap;
+use function Mantle\Support\Helpers\with;
 
 class FilesystemManagerTest extends FrameworkTestCase {
 	protected function tearDown(): void {
@@ -106,19 +107,19 @@ class FilesystemManagerTest extends FrameworkTestCase {
 			)
 		);
 
-		$adapter = m::mock( \Mantle\Contracts\Filesystem\Filesystem::class );
+		$adapter = $this->createMock( \Mantle\Contracts\Filesystem\Filesystem::class );
 
-		$adapter->shouldReceive( 'exists' )
-			->once()
+		$adapter->expects( $this->once() )
+			->method( 'exists' )
 			->with( '/path' )
-			->andReturn( true );
+			->willReturn( true );
 
 		$_SERVER['__custom_driver_called'] = 0;
 
 		$filesystem->extend(
 			'custom-driver',
 			function ( $app, array $config ) use ( $adapter ) {
-				$this->assertInstanceof( \Mantle\Contracts\Application::class, $app );
+				$this->assertInstanceOf( \Mantle\Contracts\Application::class, with( $app ) );
 				$this->assertSame( [ 'driver' => 'custom-driver', 'extra_config' => 'value', 'root' => '/path' ], $config );
 
 				$_SERVER['__custom_driver_called']++;

@@ -74,8 +74,8 @@ class RedirectorTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 			'bar',
 			303,
 			[
-				'X-RateLimit-Limit'     => 60,
-				'X-RateLimit-Remaining' => 59,
+				'X-RateLimit-Limit'     => '60',
+				'X-RateLimit-Remaining' => '59',
 			],
 			true
 		);

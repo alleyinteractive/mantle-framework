@@ -13,7 +13,11 @@ class AssetLoaderTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->build_dir = realpath( __DIR__ . '/../fixtures/assets/' );
+		$build_dir = realpath( __DIR__ . '/../fixtures/assets/' );
+
+		$this->assertIsString( $build_dir );
+
+		$this->build_dir = $build_dir;
 
 		$this->loader = new Asset_Loader( $this->build_dir, 'https://example.org/base' );
 
@@ -106,6 +110,6 @@ class AssetLoaderTest extends TestCase {
 		asset()->script( '/unknown.js' )->async();
 
 		// Ensure that no exception was thrown.
-		$this->assertTrue( true );
+		$this->addToAssertionCount( 1 );
 	}
 }

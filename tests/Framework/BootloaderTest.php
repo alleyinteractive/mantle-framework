@@ -44,8 +44,8 @@ class BootloaderTest extends TestCase {
 		$this->assertSame( '/foo/bar', Bootloader::get_instance()->get_base_path() );
 	}
 
-	public function test_it_can_be_used_by_helper() {
-		$this->assertInstanceOf( Bootloader::class, bootloader() );
+	public function test_it_can_be_used_by_helper(): void {
+		$this->assertSame( Bootloader::get_instance(), bootloader() );
 	}
 
 	public function test_it_will_set_instance_on_construct(): void {
@@ -125,7 +125,11 @@ class BootloaderTest extends TestCase {
 
 	public function test_it_can_setup_routing_closure(): void {
 		bootloader()
-			->with_routing( fn () => Route::get( '/example-closure', fn () => 'Hello Closure' ) )
+			->with_routing(
+				function (): void {
+					Route::get( '/example-closure', fn () => 'Hello Closure' );
+				}
+			)
 			->boot();
 
 		$app = app();

@@ -15,7 +15,11 @@ class TermObjectTest extends FrameworkTestCase {
 
 	protected function tearDown(): void {
 		parent::tearDown();
-		unregister_taxonomy( Example_Taxonomy::get_object_name() );
+		$taxonomy = Example_Taxonomy::get_object_name();
+
+		$this->assertNotNull( $taxonomy );
+
+		unregister_taxonomy( $taxonomy );
 	}
 
 	public function test_term_object(): void {
@@ -26,7 +30,7 @@ class TermObjectTest extends FrameworkTestCase {
 		$this->assertSame( $object->name(), $term->name );
 		$this->assertSame( $object->slug(), $term->slug );
 		$this->assertSame( $object->description(), $term->description );
-		$this->assertNull( $object->status );
+		$this->assertNull( $object->get( 'status' ) );
 
 		// Retrieve an attribute straight from the object itself.
 		$this->assertSame( $term->taxonomy, $object->get( 'taxonomy' ) );
@@ -43,7 +47,7 @@ class TermObjectTest extends FrameworkTestCase {
 
 		$this->assertIsInt( $term_id );
 
-		$object = Testable_Category::find( $term_id );
+		$object = Testable_Category::find_or_fail( $term_id );
 
 		$parent_object = $object->parent();
 
@@ -110,7 +114,7 @@ class TermObjectTest extends FrameworkTestCase {
 	public function test_unsaved_term_parent_attribute(): void {
 		$term = new Testable_Tag( [ 'name' => 'Unsaved' ] );
 
-		$this->assertNull( $term->parent );
+		$this->assertNull( $term->get( 'parent' ) );
 		$this->assertNull( $term->parent() );
 	}
 

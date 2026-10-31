@@ -3,6 +3,9 @@ namespace Mantle\Tests\Database\Model\Relations\Has_One;
 
 use Carbon\Carbon;
 use Mantle\Database\Model\Post;
+use Mantle\Database\Model\Relations\Has_Many;
+use Mantle\Database\Model\Relations\Belongs_To_Many;
+use Mantle\Database\Model\Relations\Belongs_To;
 use Mantle\Database\Model\Concerns\Has_Relationships as Relationships;
 use Mantle\Database\Model\Relations\Has_One;
 use Mantle\Database\Model\Relations\Relation;
@@ -49,7 +52,11 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		static::factory()->page->create_many( 10 );
 
 		$this->assertSame( $page->id, $post->page->id );
-		$this->assertSame( $page->id, $post->page()->first()->id );
+
+		$first_page = $post->page()->first();
+
+		$this->assertInstanceOf( Testable_Page::class, $first_page );
+		$this->assertSame( $page->id, $first_page->id );
 
 		// Check the inverse of the relationship (belongs to).
 		$this->assertSame( $post->id, $page->post->id );
@@ -66,7 +73,7 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		for ( $i = 0; $i < 5; $i++ ) {
 			$pages[] = $post->pages()->save(
 				new Testable_Page( [
-					'date'   => $date->subMinute( $i )->toDateTimeString(),
+					'date'   => $date->subMinutes( $i )->toDateTimeString(),
 					'status' => 'publish',
 					'title'  => "Page {$i}",
 				] )
@@ -79,22 +86,25 @@ class HasOneOrManyTest extends FrameworkTestCase {
 
 		// Assert that all pages exist and in the expected order.
 		foreach ( $pages as $i => $page ) {
-			$this->assertSame( $page->id, $post->pages[ $i ]->id );
+			$this->assertSame( $page->id, $post->pages->all()[ $i ]->id );
 
 			// Check the inverse of the relationship (belongs to).
 			$this->assertSame( $post->id, $page->post->id );
 		}
 	}
 
-	public function has_many_post_to_post_saving() {
-		$post    = Testable_Post::find( $this->get_random_post_id() );
-		$sponsor = Testable_Sponsor::find( $this->get_random_post_id( [ 'post_type' => 'sponsor' ] ) );
+	public function has_many_post_to_post_saving(): void {
+		$post    = Testable_Post::find_or_fail( $this->get_random_post_id() );
+		$sponsor = Testable_Sponsor::find_or_fail( $this->get_random_post_id( [ 'post_type' => 'sponsor' ] ) );
 
 		// Save the post to the sponsor.
 		$sponsor->posts()->save( $post );
 
 		// Query the sponsor's post.
-		$this->assertSame( $post->id(), $sponsor->posts()->first()->id() );
+		$sponsor_post = $sponsor->posts()->first();
+
+		$this->assertInstanceOf( Testable_Post::class, $sponsor_post );
+		$this->assertSame( $post->id(), $sponsor_post->id() );
 
 		// Remove the sponsor from the post.
 		$sponsor->posts()->remove( $post );
@@ -116,11 +126,11 @@ class HasOneOrManyTest extends FrameworkTestCase {
 
 	public function test_has_many_post_to_post_modifier(): void {
 		$posts = array_map(
-			[ Testable_Post::class, 'find' ],
+			fn ( int $post_id ) => Testable_Post::find_or_fail( $post_id ),
 			static::factory()->post->create_ordered_set( 50 ),
 		);
 
-		$sponsor = Testable_Sponsor::find( $this->get_random_post_id( [ 'post_type' => 'sponsor' ] ) );
+		$sponsor = Testable_Sponsor::find_or_fail( $this->get_random_post_id( [ 'post_type' => 'sponsor' ] ) );
 
 		// Save the posts to the sponsor.
 		$sponsor->posts()->save( $posts );
@@ -133,11 +143,11 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		$this->assertTrue( taxonomy_exists( Relation::RELATION_TAXONOMY ) );
 
 		$posts = array_map(
-			[ Testable_Post_Using_Term::class, 'find' ],
+			fn ( int $post_id ) => Testable_Post_Using_Term::find_or_fail( $post_id ),
 			static::factory()->post->create_ordered_set( 50 ),
 		);
 
-		$sponsor = Testable_Sponsor_Using_Term::find( $this->get_random_post_id( [ 'post_type' => 'sponsor' ] ) );
+		$sponsor = Testable_Sponsor_Using_Term::find_or_fail( $this->get_random_post_id( [ 'post_type' => 'sponsor' ] ) );
 
 		// Save the posts to the sponsor.
 		$sponsor->posts()->save( $posts );
@@ -146,8 +156,8 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		$this->assertCount( 10, $sponsor->posts_query_modifier()->get() );
 	}
 
-	public function test_has_one_post_to_term() {
-		$post = Testable_Post::find( $this->get_random_post_id() );
+	public function test_has_one_post_to_term(): void {
+		$post = Testable_Post::find_or_fail( $this->get_random_post_id() );
 
 		$tag = Testable_Tag::create(
 			[
@@ -173,8 +183,8 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		$this->assertEmpty( get_the_terms( $post->id(), 'test_taxonomy' ) );
 	}
 
-	public function test_has_many_post_to_term() {
-		$post = Testable_Post::find( $this->get_random_post_id() );
+	public function test_has_many_post_to_term(): void {
+		$post = Testable_Post::find_or_fail( $this->get_random_post_id() );
 		$tags = [];
 
 		for ( $i = 0; $i < 5; $i++ ) {
@@ -185,12 +195,15 @@ class HasOneOrManyTest extends FrameworkTestCase {
 
 		static::factory()->tag->create_many( 10 );
 
-		$this->assertSame( count( $tags ), count( get_the_tags( $post->id ) ) );
-		$this->assertSame( count( $tags ), count( $post->tags ) );
+		$post_tags = get_the_tags( $post->id() );
+
+		$this->assertIsArray( $post_tags );
+		$this->assertCount( count( $tags ), $post_tags );
+		$this->assertCount( count( $tags ), $post->tags );
 
 		// Check they match the expected tags.
 		foreach ( $tags as $i => $tag ) {
-			$this->assertSame( $tag->id, $post->tags[ $i ]->id );
+			$this->assertSame( $tag->id, $post->tags->all()[ $i ]->id );
 		}
 	}
 
@@ -204,11 +217,15 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		] ) );
 
 		$this->assertSame( $post->id, $tag->post->id );
-		$this->assertSame( $tag->id, get_the_tags( $post->id )[0]->term_id );
+
+		$post_tags = get_the_tags( $post->id() );
+
+		$this->assertIsArray( $post_tags );
+		$this->assertSame( $tag->id, $post_tags[0]->term_id );
 
 		$tag->post()->remove( $post );
 
-		$this->assertEmpty( get_the_tags( $post->id ) );
+		$this->assertEmpty( get_the_tags( $post->id() ) );
 	}
 
 	public function test_has_many_term_to_post(): void {
@@ -220,17 +237,17 @@ class HasOneOrManyTest extends FrameworkTestCase {
 
 		for ( $i = 0; $i < 5; $i++ ) {
 			$posts[] = $tag->posts()->save( new Testable_Post( [
-				'date'   => $date->subMinute( $i )->toDateTimeString(),
+				'date'   => $date->subMinutes( $i )->toDateTimeString(),
 				'name'   => "Testable Post {$i}",
 				'status' => 'publish',
 			] ) );
 		}
 
-		$this->assertSame( count( $posts ), count( $tag->posts ) );
+		$this->assertCount( count( $posts ), $tag->posts );
 
 		foreach ( $posts as $i => $post ) {
-			$this->assertTrue( has_tag( $tag->id, $post->id ) );
-			$this->assertSame( $post->id, $tag->posts[ $i ]->id );
+			$this->assertTrue( has_tag( $tag->id, $post->id() ) );
+			$this->assertSame( $post->id, $tag->posts->all()[ $i ]->id );
 		}
 	}
 
@@ -252,8 +269,8 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		static::factory()->post->create_many( 10, [ 'post_type' => 'sponsor' ] );
 
 		// Ensure it wasn't set using the post meta.
-		$this->assertEmpty( $post->meta->testable_sponsor_using_term_id );
-		$this->assertNotEmpty( get_the_terms( $post->id, Relation::RELATION_TAXONOMY ) );
+		$this->assertEmpty( $post->get_meta( 'testable_sponsor_using_term_id' ) );
+		$this->assertNotEmpty( get_the_terms( $post->id(), Relation::RELATION_TAXONOMY ) );
 
 		// Fetch the post through the relationship on the sponsor.
 		$sponsors_post = $sponsor->post()->first();
@@ -263,7 +280,7 @@ class HasOneOrManyTest extends FrameworkTestCase {
 
 		// Delete the relationship and ensure the internal term is removed.
 		$sponsor->post()->remove( $post );
-		$this->assertEmpty( get_the_terms( $post->id, Relation::RELATION_TAXONOMY ) );
+		$this->assertEmpty( get_the_terms( $post->id(), Relation::RELATION_TAXONOMY ) );
 	}
 
 	/**
@@ -291,27 +308,45 @@ class Testable_Post extends Post {
 
 	public static $object_name = 'post';
 
-	public function page() {
+	/**
+	 * @return Has_One<static, Testable_Page>
+	 */
+	public function page(): Has_One {
 		return $this->has_one( Testable_Page::class );
 	}
 
-	public function pages() {
+	/**
+	 * @return Has_Many<static, Testable_Page>
+	 */
+	public function pages(): Has_Many {
 		return $this->has_many( Testable_Page::class );
 	}
 
-	public function tag() {
+	/**
+	 * @return Has_One<static, Testable_Tag>
+	 */
+	public function tag(): Has_One {
 		return $this->has_one( Testable_Tag::class );
 	}
 
-	public function tags() {
+	/**
+	 * @return Has_Many<static, Testable_Tag>
+	 */
+	public function tags(): Has_Many {
 		return $this->has_many( Testable_Tag::class );
 	}
 
-	public function sponsor() {
+	/**
+	 * @return Belongs_To<static, Testable_Sponsor>
+	 */
+	public function sponsor(): Belongs_To {
 		return $this->belongs_to( Testable_Sponsor::class );
 	}
 
-	public function terms() {
+	/**
+	 * @return Has_Many<static, Testable_Term>
+	 */
+	public function terms(): Has_Many {
 		return $this->has_many( Testable_Term::class );
 	}
 }
@@ -325,7 +360,10 @@ class Testable_Page extends Post {
 
 	public static $object_name = 'page';
 
-	public function post() {
+	/**
+	 * @return Belongs_To<static, Testable_Post>
+	 */
+	public function post(): Belongs_To {
 		return $this->belongs_to( Testable_Post::class );
 	}
 }
@@ -340,11 +378,17 @@ class Testable_Tag extends Term {
 
 	public static $object_name = 'post_tag';
 
-	public function post() {
+	/**
+	 * @return Has_One<static, Testable_Post>
+	 */
+	public function post(): Has_One {
 		return $this->has_one( Testable_Post::class );
 	}
 
-	public function posts() {
+	/**
+	 * @return Has_Many<static, Testable_Post>
+	 */
+	public function posts(): Has_Many {
 		return $this->has_many( Testable_Post::class );
 	}
 }
@@ -355,16 +399,29 @@ class Testable_Sponsor extends Post {
 
 	public static $object_name = 'sponsor';
 
-	public function post() {
+	/**
+	 * @return Has_One<static, Testable_Post>
+	 */
+	public function post(): Has_One {
 		return $this->has_one( Testable_Post::class );
 	}
 
-	public function posts() {
+	/**
+	 * @return Has_Many<static, Testable_Post>
+	 */
+	public function posts(): Has_Many {
 		return $this->has_many( Testable_Post::class );
 	}
 
-	public function posts_query_modifier() {
-		return $this->posts()->take( 10 );
+	/**
+	 * @return Has_Many<static, Testable_Post>
+	 */
+	public function posts_query_modifier(): Has_Many {
+		$posts = $this->posts();
+
+		$posts->take( 10 );
+
+		return $posts;
 	}
 }
 
@@ -374,7 +431,10 @@ class Testable_Term extends Term {
 
 	public static $object_name = 'test_taxonomy';
 
-	public function posts() {
+	/**
+	 * @return Has_Many<static, Testable_Post>
+	 */
+	public function posts(): Has_Many {
 		return $this->has_many( Testable_Post::class );
 	}
 }
@@ -385,7 +445,10 @@ class Testable_Tag_Relationships extends Term {
 
 	public static $object_name = 'post_tag';
 
-	public function posts() {
+	/**
+	 * @return Has_Many<static, Testable_Post>
+	 */
+	public function posts(): Has_Many {
 		return $this->has_many( Testable_Post::class );
 	}
 }
@@ -396,7 +459,10 @@ class Testable_Post_Using_Term extends Post {
 
 	public static $object_name = 'post';
 
-	public function sponsor() {
+	/**
+	 * @return Belongs_To<static, Testable_Sponsor_Using_Term>
+	 */
+	public function sponsor(): Belongs_To {
 		return $this->belongs_to( Testable_Sponsor_Using_Term::class )->uses_terms();
 	}
 }
@@ -407,15 +473,28 @@ class Testable_Sponsor_Using_Term extends Post {
 
 	public static $object_name = 'sponsor';
 
-	public function post() {
+	/**
+	 * @return Has_One<static, Testable_Post_Using_Term>
+	 */
+	public function post(): Has_One {
 		return $this->has_one( Testable_Post_Using_Term::class )->uses_terms();
 	}
 
-	public function posts() {
+	/**
+	 * @return Has_Many<static, Testable_Post_Using_Term>
+	 */
+	public function posts(): Has_Many {
 		return $this->has_many( Testable_Post_Using_Term::class )->uses_terms();
 	}
 
-	public function posts_query_modifier() {
-		return $this->posts()->take( 10 );
+	/**
+	 * @return Has_Many<static, Testable_Post_Using_Term>
+	 */
+	public function posts_query_modifier(): Has_Many {
+		$posts = $this->posts();
+
+		$posts->take( 10 );
+
+		return $posts;
 	}
 }

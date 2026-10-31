@@ -2,7 +2,6 @@
 
 namespace Mantle\Tests\Http;
 
-use Mantle\Database\Model\Attachment;
 use Mantle\Http\Uploaded_File;
 use Mantle\Testing\FrameworkTestCase;
 
@@ -17,7 +16,10 @@ class UploadedFileTest extends FrameworkTestCase {
 			true
 		);
 
-		$this->assertSame( 'This is a story about something that happened long ago when your grandfather was a child.', trim( $file->get() ) );
+		$contents = $file->get();
+
+		$this->assertIsString( $contents );
+		$this->assertSame( 'This is a story about something that happened long ago when your grandfather was a child.', trim( $contents ) );
 	}
 
 	public function test_request_file_from_uploaded_file(): void {
@@ -53,8 +55,10 @@ class UploadedFileTest extends FrameworkTestCase {
 
 		$attachment = $file->store_as_attachment( '/', 'test-uploaded-file.txt' );
 
-		$this->assertInstanceOf( Attachment::class, $attachment );
-		$this->assertStringContainsString( '/wp-content/uploads/test-uploaded-file.txt', $attachment->url() );
+		$url = $attachment->url();
+
+		$this->assertIsString( $url );
+		$this->assertStringContainsString( '/wp-content/uploads/test-uploaded-file.txt', $url );
 		$this->assertFileExists( WP_CONTENT_DIR . '/uploads/test-uploaded-file.txt' );
 	}
 }

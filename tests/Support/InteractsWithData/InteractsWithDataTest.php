@@ -23,8 +23,7 @@ class InteractsWithDataTest extends TestCase {
 	public function test_as_stringable(): void {
 		$option = TestableInteractsWithData::create( 'test' );
 
-		$this->assertInstanceOf( \Mantle\Support\Stringable::class, $option->stringable() );
-		$this->assertSame(
+				$this->assertSame(
 			'test',
 			$option->stringable()->value(),
 		);

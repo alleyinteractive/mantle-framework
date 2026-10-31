@@ -80,7 +80,7 @@ class Test_Generator_Public extends Stub_Generator_Command {
 	}
 
 	public function get_file_stub(): string {
-		return file_get_contents( __DIR__ . '/test.stub' );
+		return __DIR__ . '/test.stub';
 	}
 
 	public function get_class_name( string $name ): string {

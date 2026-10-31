@@ -22,12 +22,20 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 
 		Utils::delete_all_data();
 
-		register_post_type( Another_Testable_Post::get_object_name() );
+		$name = Another_Testable_Post::get_object_name();
+
+		$this->assertNotEmpty( $name );
+
+		register_post_type( strtolower( $name ) );
 	}
 
 	protected function tearDown(): void {
 		parent::tearDown();
-		unregister_post_type( Another_Testable_Post::get_object_name() );
+		$name = Another_Testable_Post::get_object_name();
+
+		$this->assertNotNull( $name );
+
+		unregister_post_type( $name );
 	}
 
 	public function test_post_by_name(): void {
@@ -78,7 +86,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 
 		// Ensure the order matches.
 		foreach ( $post_ids as $i => $post_id ) {
-			$this->assertSame( $post_id, $results[ $i ]->id() );
+			$this->assertSame( $post_id, $results->all()[ $i ]->id() );
 		}
 	}
 
@@ -87,7 +95,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$result = Builder::create( Testable_Post::class )
 			->where(
 				[
-					'name' => $post->name,
+					'name' => $post->post_name,
 				]
 			)
 			->first();
@@ -220,7 +228,9 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 	public function test_term_query_from_term_model(): void {
 		$post_id = $this->get_random_post_id();
 		$term_other = static::factory()->term->create();
-		$term = Testable_Post_Tag::find( static::factory()->term->create() );
+
+		$this->assertIsInt( $term_other );
+		$term = Testable_Post_Tag::find_or_fail( static::factory()->term->create_and_get() );
 
 		wp_set_object_terms( $post_id, $term->id(), $term->taxonomy(), true );
 
@@ -310,8 +320,8 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->get();
 
 		$this->assertCount( 2, $get );
-		$this->assertSame( $post_a, $get[0]->id() );
-		$this->assertSame( $post_b, $get[1]->id() );
+		$this->assertSame( $post_a, $get->all()[0]->id() );
+		$this->assertSame( $post_b, $get->all()[1]->id() );
 
 		// Check querying one.
 		$get = Post_Query_Builder::create( [ Testable_Post::class, Another_Testable_Post::class ] )
@@ -319,7 +329,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->get();
 
 		$this->assertCount( 1, $get );
-		$this->assertSame( $post_b, $get[0]->id() );
+		$this->assertSame( $post_b, $get->all()[0]->id() );
 	}
 
 	public function test_delete_posts(): void {
@@ -389,9 +399,9 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			$count += count( $results );
 
 			if ( $page <= 10 ) {
-				$this->assertSame( 10, $results->count() );
+				$this->assertCount( 10, $results );
 			} else {
-				$this->assertSame( 1, $results->count() );
+				$this->assertCount( 1, $results );
 			}
 
 			// Ensure that all the posts are unique from the previous ones.
@@ -438,9 +448,9 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			$count += $results->count();
 
 			if ( $page <= 10 ) {
-				$this->assertSame( 10, $results->count() );
+				$this->assertCount( 10, $results );
 			} else {
-				$this->assertSame( 5, $results->count() );
+				$this->assertCount( 5, $results );
 			}
 
 			// Ensure that all the posts are unique from the previous ones.
@@ -451,7 +461,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			$ids = $ids->merge( $new_ids );
 
 			// Delete all the posts that were returned for true chunk by ID.
-			$results->each->delete( true );
+			$results->each( fn ( Testable_Post $post ) => $post->delete( true ) );
 
 			$last_page = $page;
 		} );
@@ -493,7 +503,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 	public function test_map(): void {
 		$post_ids = static::factory()->post->create_many( 100 );
 
-		$ids = Testable_Post::map( function ( Testable_Post $post ) {
+		$ids = Testable_Post::query()->map( function ( Testable_Post $post ) {
 			return [ 'id' => $post->id() ];
 		} );
 
@@ -631,14 +641,13 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->take( 10 )
 			->get();
 
-		$this->assertInstanceOf( \Mantle\Database\Query\Collection::class, $query );
-		$this->assertSame( 10, $query->count() );
+		$this->assertCount( 10, $query );
 		$this->assertSame( 25, $query->found_rows() );
 
 		$models = $query->models();
 
 		$this->assertNotInstanceOf( \Mantle\Database\Query\Collection::class, $models );
-		$this->assertSame( 1, $models->count() );
+		$this->assertCount( 1, $models );
 	}
 
 	public function test_no_found_rows_true(): void {
@@ -649,8 +658,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			->take( 10 )
 			->get();
 
-		$this->assertInstanceOf( \Mantle\Database\Query\Collection::class, $query );
-		$this->assertSame( 10, $query->count() );
+		$this->assertCount( 10, $query );
 		$this->assertNull( $query->found_rows() );
 	}
 
@@ -668,27 +676,27 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 
 		$this->assertSame(
 			$old_post_id,
-			Testable_Post::whereDate( $old_date )->first()?->id,
+			Testable_Post::whereDate( $old_date )->first()?->id(),
 		);
 
 		$this->assertSame(
 			$now_post_id,
-			Testable_Post::query()->whereDate( $now )->first()?->id,
+			Testable_Post::query()->whereDate( $now )->first()?->id(),
 		);
 
 		$this->assertSame(
 			$old_post_id,
-			Testable_Post::query()->where( 'date', $old_date )->first()?->id,
+			Testable_Post::query()->where( 'date', $old_date )->first()?->id(),
 		);
 
 		$this->assertSame(
 			$now_post_id,
-			Testable_Post::query()->whereDate( $old_date, '!=' )->first()?->id,
+			Testable_Post::query()->whereDate( $old_date, '!=' )->first()?->id(),
 		);
 
 		$this->assertSame(
 			$old_post_id,
-			Testable_Post::query()->whereDate( $now, '!=' )->first()?->id,
+			Testable_Post::query()->whereDate( $now, '!=' )->first()?->id(),
 		);
 	}
 
@@ -708,22 +716,22 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 
 		$this->assertSame(
 			$old_post_id,
-			Testable_Post::query()->whereModifiedDate( $old_date )->first()?->id,
+			Testable_Post::query()->whereModifiedDate( $old_date )->first()?->id(),
 		);
 
 		$this->assertSame(
 			$now_post_id,
-			Testable_Post::query()->whereModifiedDate( $now )->first()?->id,
+			Testable_Post::query()->whereModifiedDate( $now )->first()?->id(),
 		);
 
 		$this->assertSame(
 			$now_post_id,
-			Testable_Post::query()->whereModifiedDate( $old_date, '!=' )->first()?->id,
+			Testable_Post::query()->whereModifiedDate( $old_date, '!=' )->first()?->id(),
 		);
 
 		$this->assertSame(
 			$old_post_id,
-			Testable_Post::query()->whereModifiedDate( $now, '!=' )->first()?->id,
+			Testable_Post::query()->whereModifiedDate( $now, '!=' )->first()?->id(),
 		);
 	}
 
@@ -756,7 +764,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 	 * the query boundaries and producing intermittent failures.
 	 */
 	protected static function date_comparison_start(): Carbon {
-		return Carbon::create( 2020, 1, 1, 0, 0, 0, wp_timezone() );
+		return Carbon::parse( '2020-01-01 00:00:00', wp_timezone() );
 	}
 
 	/**
@@ -823,12 +831,12 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 
 		$this->assertSame(
 			$post->id(),
-			Testable_Post::whereMeta( 'example-meta', Testable_Meta_Values::Meta_Value_A )->first()?->id,
+			Testable_Post::whereMeta( 'example-meta', Testable_Meta_Values::Meta_Value_A )->first()?->id(),
 		);
 
 		$this->assertSame(
 			$post->id(),
-			Testable_Post::whereMeta( Testable_Meta_Values::Meta_Key_A, Testable_Meta_Values::Meta_Value_A )->first()?->id,
+			Testable_Post::whereMeta( Testable_Meta_Values::Meta_Key_A, Testable_Meta_Values::Meta_Value_A )->first()?->id(),
 		);
 	}
 }

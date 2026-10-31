@@ -81,8 +81,8 @@ class DatabaseTableModelTest extends FrameworkTestCase {
 		$second = TestableDatabaseModel::create( [ 'name' => 'Order B' ] );
 		$third  = TestableDatabaseModel::create( [ 'name' => 'Order C' ] );
 
-		$this->assertEquals( $third->id, TestableDatabaseModel::query()->orderBy( 'id', 'desc' )->first()->id );
-		$this->assertEquals( $first->id, TestableDatabaseModel::query()->orderBy( 'id', 'asc' )->first()->id );
+		$this->assertEquals( $third->id, TestableDatabaseModel::query()->orderBy( 'id', 'desc' )->first_or_fail()->id );
+		$this->assertEquals( $first->id, TestableDatabaseModel::query()->orderBy( 'id', 'asc' )->first_or_fail()->id );
 		$this->assertEquals(
 			[ $third->id, $second->id, $first->id ],
 			TestableDatabaseModel::query()->orderBy( 'name', 'desc' )->take( 3 )->get()->pluck( 'id' )->all()

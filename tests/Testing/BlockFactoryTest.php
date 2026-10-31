@@ -345,7 +345,7 @@ HTML;
 	 */
 	#[DataProvider('block_serialization_dataprovider')]
 	public function test_block_serialization_unicode_characters( array $attributes, string $expected ): void {
-		$block = get_comment_delimited_block_content( 'namespace/blockname', $attributes, null );
+		$block = get_comment_delimited_block_content( 'namespace/blockname', $attributes, '' );
 
 		$this->assertSame( $expected, $block );
 

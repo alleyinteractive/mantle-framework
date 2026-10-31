@@ -42,9 +42,9 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 		putenv( 'MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST=' );
 
-		$this->template_redirect = isset( $GLOBALS['wp_filter']['template_redirect'] )
-			? clone $GLOBALS['wp_filter']['template_redirect']
-			: null;
+		$template_redirect = $GLOBALS['wp_filter']['template_redirect'] ?? null;
+
+		$this->template_redirect = $template_redirect instanceof \WP_Hook ? clone $template_redirect : null;
 
 		remove_all_actions( 'template_redirect' );
 
@@ -186,7 +186,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->with_cookie( 'test', 'value' )
 			->get( '/example/' )
 			->assertOk()
-			->assertContent( json_encode( [ 'test' => 'value' ] ) );
+			->assertContent( json_encode( [ 'test' => 'value' ], JSON_THROW_ON_ERROR ) );
 	}
 
 	public function test_fluent(): void {
@@ -205,7 +205,6 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->get( home_url( '/' ) )
 			->assertQueryTrue( 'is_home', 'is_front_page' );
 
-		// @phpstan-ignore-next-line
 		$this->assertNotEmpty( $_SERVER['__request_headers']['X-Test'] ?? null );
 		$this->assertSame( 'test', $_SERVER['__request_headers']['X-Test'] );
 
@@ -416,8 +415,13 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	 * @dataProvider core_template_hook_data_provider
 	 */
 	#[DataProvider( 'core_template_hook_data_provider' )]
-	public function test_redirect_wordpress( string $hook ) {
-		add_action( $hook, fn () => wp_redirect( home_url( '/redirected/' ), 302 ) );
+	public function test_redirect_wordpress( string $hook ): void {
+		add_action(
+			$hook,
+			function (): void {
+				wp_redirect( home_url( '/redirected/' ), 302 );
+			}
+		);
 
 		$this->get( '/' )->assertRedirect( home_url( '/redirected/' ) );
 	}

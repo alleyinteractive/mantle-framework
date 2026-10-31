@@ -2,6 +2,9 @@
 namespace Mantle\Tests\Database\Builder\Post_Query_Relationships;
 
 use Mantle\Database\Model\Post;
+use Mantle\Database\Model\Relations\Has_One;
+use Mantle\Database\Model\Relations\Has_Many;
+use Mantle\Database\Model\Relations\Belongs_To;
 use Mantle\Database\Model\Concerns\Has_Relationships as Relationships;
 use Mantle\Database\Model\Relations\Relation;
 use Mantle\Database\Model\Term;
@@ -13,7 +16,11 @@ class PostQueryRelationshipsTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		Utils::delete_all_posts();
 		parent::setUp();
-		register_post_type( Testable_Sponsor::get_object_name() );
+		$name = Testable_Sponsor::get_object_name();
+
+		$this->assertNotEmpty( $name );
+
+		register_post_type( strtolower( $name ) );
 
 		if ( ! taxonomy_exists( Relation::RELATION_TAXONOMY ) ) {
 			Model_Service_Provider::register_internal_taxonomy();
@@ -22,7 +29,11 @@ class PostQueryRelationshipsTest extends FrameworkTestCase {
 
 	protected function tearDown(): void {
 		parent::tearDown();
-		unregister_post_type( Testable_Sponsor::get_object_name() );
+		$name = Testable_Sponsor::get_object_name();
+
+		$this->assertNotNull( $name );
+
+		unregister_post_type( $name );
 	}
 
 	public function test_relationship_has(): void {
@@ -32,7 +43,9 @@ class PostQueryRelationshipsTest extends FrameworkTestCase {
 		// Associate the post with the sponsor.
 		update_post_meta( $post_a, 'testable_sponsor_id', $sponsor_id );
 
-		$first = Testable_Post::has( 'sponsor' )->first();
+		$first = Testable_Post::query()->has( 'sponsor' )->first();
+
+		$this->assertInstanceOf( Testable_Post::class, $first );
 		$this->assertSame( $post_a, $first->id() );
 	}
 
@@ -43,7 +56,7 @@ class PostQueryRelationshipsTest extends FrameworkTestCase {
 		// Associate the post with the sponsor.
 		update_post_meta( $post_a, 'testable_sponsor_id', $sponsor_id );
 
-		$missing = Testable_Post::has( 'sponsor', 'non-exist' )->first();
+		$missing = Testable_Post::query()->has( 'sponsor', 'non-exist' )->first();
 		$this->assertEmpty( $missing );
 
 		$expected = Testable_Post::has( 'sponsor', $sponsor_id )->first();
@@ -57,7 +70,9 @@ class PostQueryRelationshipsTest extends FrameworkTestCase {
 		// Associate the post with the sponsor.
 		update_post_meta( $post_a, 'testable_sponsor_id', $sponsor_id );
 
-		$first = Testable_Post::doesnt_have( 'sponsor' )->first();
+		$first = Testable_Post::query()->doesnt_have( 'sponsor' )->first();
+
+		$this->assertInstanceOf( Testable_Post::class, $first );
 		$this->assertNotSame( $post_a, $first->id() );
 	}
 
@@ -79,11 +94,17 @@ class Testable_Post extends Post {
 	use Relationships;
 	public static $object_name = 'post';
 
-	public function sponsor() {
+	/**
+	 * @return Belongs_To<static, Testable_Sponsor>
+	 */
+	public function sponsor(): Belongs_To {
 		return $this->belongs_to( Testable_Sponsor::class );
 	}
 
-	public function tags() {
+	/**
+	 * @return Has_Many<static, Testable_Tag_Relationships>
+	 */
+	public function tags(): Has_Many {
 		return $this->has_many( Testable_Tag_Relationships::class );
 	}
 }
@@ -94,11 +115,17 @@ class Testable_Sponsor extends Post {
 
 	public static $object_name = 'sponsor';
 
-	public function post() {
+	/**
+	 * @return Has_One<static, Testable_Post>
+	 */
+	public function post(): Has_One {
 		return $this->has_one( Testable_Post::class );
 	}
 
-	public function posts() {
+	/**
+	 * @return Has_Many<static, Testable_Post>
+	 */
+	public function posts(): Has_Many {
 		return $this->has_many( Testable_Post::class );
 	}
 }
@@ -109,7 +136,10 @@ class Testable_Tag_Relationships extends Term {
 
 	public static $object_name = 'post_tag';
 
-	public function posts() {
+	/**
+	 * @return Has_Many<static, Testable_Post>
+	 */
+	public function posts(): Has_Many {
 		return $this->has_many( Testable_Post::class );
 	}
 }

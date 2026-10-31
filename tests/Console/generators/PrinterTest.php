@@ -22,7 +22,11 @@ class PrinterTest extends TestCase {
 
 		// Ensure PHPCS is loaded.
 		$reflection = new \ReflectionClass(\Composer\Autoload\ClassLoader::class);
-		$vendor_dir = dirname(dirname($reflection->getFileName()));
+		$loader_file = $reflection->getFileName();
+
+		self::assertIsString( $loader_file );
+
+		$vendor_dir = dirname( dirname( $loader_file ) );
 
 		require_once $vendor_dir . '/squizlabs/php_codesniffer/autoload.php';
 

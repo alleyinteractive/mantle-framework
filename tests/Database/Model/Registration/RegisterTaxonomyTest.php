@@ -21,7 +21,8 @@ class RegisterTaxonomyTest extends FrameworkTestCase {
 	public function test_register_taxonomy(): void {
 		$taxonomy = 'test-taxonomy';
 
-		$this->assertFalse( taxonomy_exists( $taxonomy ) );
+		$exists_before = taxonomy_exists( $taxonomy );
+		$this->assertFalse( $exists_before );
 
 		$mock = m::mock( Register_Taxonomy::class );
 		$mock->shouldReceive( 'get_object_name' )->andReturn( $taxonomy );

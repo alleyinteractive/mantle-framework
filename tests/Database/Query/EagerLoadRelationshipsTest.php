@@ -2,6 +2,10 @@
 namespace Mantle\Tests\Database\Builder;
 
 use Mantle\Database\Model\Post;
+use Mantle\Database\Model\Relations\Has_One;
+use Mantle\Database\Model\Relations\Has_Many;
+use Mantle\Database\Model\Relations\Belongs_To_Many;
+use Mantle\Database\Model\Relations\Belongs_To;
 use Mantle\Database\Model\Term;
 use Mantle\Support\Collection;
 use Mantle\Testing\Concerns\Refresh_Database;
@@ -16,17 +20,27 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		Utils::delete_all_data();
-		register_post_type( Another_Testable_Post_Eager::get_object_name() );
+		$name = Another_Testable_Post_Eager::get_object_name();
+
+		$this->assertNotEmpty( $name );
+
+		register_post_type( strtolower( $name ) );
 	}
 
 	protected function tearDown(): void {
 		parent::tearDown();
-		unregister_post_type( Another_Testable_Post_Eager::get_object_name() );
+		$name = Another_Testable_Post_Eager::get_object_name();
+
+		$this->assertNotNull( $name );
+
+		unregister_post_type( $name );
 	}
 
-	public function test_relationship_as_attribute() {
-		$post = Testable_Post_Eager::find( static::factory()->post->create() );
-		$this->assertNull( $post->post_relationship );
+	public function test_relationship_as_attribute(): void {
+		$post = Testable_Post_Eager::find_or_fail( static::factory()->post->create_and_get() );
+		$relationship = $post->post_relationship;
+
+		$this->assertNull( $relationship );
 
 		$another_post = $post->post_relationship()->save( new Another_Testable_Post_Eager(
 			[
@@ -39,7 +53,10 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		static::factory()->post->create_many( 10 );
 		static::factory()->post->create_many( 10, [ 'post_type' => 'example-post-eager' ] );
 
-		$this->assertSame( $another_post->id, $post->post_relationship->id );
+		$relationship = $post->post_relationship;
+
+		$this->assertInstanceOf( Another_Testable_Post_Eager::class, $relationship );
+		$this->assertSame( $another_post->id, $relationship->id );
 		$this->assertSame( $post->id, $another_post->post->id );
 	}
 
@@ -51,7 +68,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 			->pad(10, null)
 			->map(
 				function() use ( &$related_post_ids ) {
-					$post = Testable_Post_Eager::find( static::factory()->post->create() );
+					$post = Testable_Post_Eager::find_or_fail( static::factory()->post->create_and_get() );
 
 					$related_post = $post->post_relationship()->save( new Another_Testable_Post_Eager(
 						[
@@ -81,8 +98,8 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_relationship_query_is_not_limited() {
-		$post = Testable_Post_Eager::find( static::factory()->post->create() );
+	public function test_relationship_query_is_not_limited(): void {
+		$post = Testable_Post_Eager::find_or_fail( static::factory()->post->create_and_get() );
 
 		$this->assertSame( -1, $post->posts_relationship()->get_query()->get_query_args()['posts_per_page'] );
 	}
@@ -95,7 +112,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 			->pad(10, null)
 			->map(
 				function() use ( &$related_post_ids ) {
-					$post = Testable_Post_Eager::find( static::factory()->post->create() );
+					$post = Testable_Post_Eager::find_or_fail( static::factory()->post->create_and_get() );
 
 					for ( $i = 0; $i < 3; $i++ ) {
 						$related_post = $post->posts_relationship()->save( new Another_Testable_Post_Eager(
@@ -136,7 +153,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 			->map(
 				function() use ( &$related_post_ids ) {
 					// $related_post = Another_Testable_Post_Eager::
-					$related_post = Another_Testable_Post_Eager::find( static::factory()->post->create( [ 'post_type' => 'example-post-eager' ] ) );
+					$related_post = Another_Testable_Post_Eager::find_or_fail( static::factory()->post->create_and_get( [ 'post_type' => 'example-post-eager' ] ) );
 
 					$post = $related_post->post()->save( new Testable_Post_Eager(
 						[
@@ -146,7 +163,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 					) );
 
 					// Store the ID for testing later.
-					$related_post_ids[ $related_post->id ] = $post->id;
+					$related_post_ids[ $related_post->id ] = $post->get( 'id' );
 
 					return $post;
 				}
@@ -167,7 +184,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		$tags  = [];
 
 		for ( $i = 0; $i < 10; $i++ ) {
-			$post = $posts[] = Testable_Post_Eager::find( static::factory()->post->create() );
+			$post = $posts[] = Testable_Post_Eager::find_or_fail( static::factory()->post->create_and_get() );
 
 			$tags[ $post->id ] = $post->term_relationship()->save( new Testable_Tag_Eager( [
 				'name' => "Tag {$i}",
@@ -177,7 +194,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		$posts = Testable_Post_Eager::with( 'term_relationship' )->get();
 
 		foreach ( $posts as $i => $post ) {
-			$this->assertSame( $posts[ $i ]->id, $post->id );
+			$this->assertSame( $posts->all()[ $i ]->id, $post->id );
 
 			$this->assertTrue( $post->relation_loaded( 'term_relationship' ) );
 			$this->assertNotNull( $post->term_relationship );
@@ -190,7 +207,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		$posts = [];
 
 		for ( $i = 0; $i < 5; $i++ ) {
-			$tag = $tags[] = Testable_Tag_Eager::find( static::factory()->tag->create() );
+			$tag = $tags[] = Testable_Tag_Eager::find_or_fail( static::factory()->tag->create_and_get() );
 
 			for ( $n = 0; $n < rand( 2, 5 ); $n++ ) {
 				$posts[ $tag->id ][] = $tag->posts()->save(
@@ -206,7 +223,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 
 		$tags = Testable_Tag_Eager::with( 'posts' )->all();
 
-		$this->assertSame( count( $tags ), count( $tags ) );
+		$this->assertCount( count( $tags ), $tags );
 
 		foreach ( $tags as $i => $tag ) {
 			$this->assertTrue( $tag->relation_loaded( 'posts' ) );
@@ -214,7 +231,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 
 			$tag_post_ids = collect( $tag->posts )->pluck( 'id' );
 
-			$this->assertSame( count( $tag_post_ids ), count( $tag->posts ) );
+			$this->assertCount( count( $tag_post_ids ), $tag->posts );
 
 			foreach ( $posts[ $tag->id ] as $post ) {
 				$this->assertNotFalse( $tag_post_ids->search( $post->id, true ) );
@@ -227,7 +244,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 		$categories = [];
 
 		for ( $i = 0; $i < 10; $i++ ) {
-			$tag = $tags[] = Testable_Tag_Eager::find( static::factory()->tag->create() );
+			$tag = $tags[] = Testable_Tag_Eager::find_or_fail( static::factory()->tag->create_and_get() );
 
 			for ( $n = 0; $n < rand( 2, 5 ); $n++ ) {
 				$categories[ $tag->id() ][] = $tag->category()->save(
@@ -238,7 +255,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 
 		$results = Testable_Tag_Eager::with( 'category' )->all();
 
-		$this->assertSame( count( $tags ), count( $results ) );
+		$this->assertCount( count( $tags ), $results );
 
 		foreach ( $results as $result ) {
 			$this->assertTrue( $result->relation_loaded( 'category' ) );
@@ -278,7 +295,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 
 			$this->assertTrue( $result->relation_loaded( 'tag' ) );
 			$this->assertNotNull( $result->tag );
-			$this->assertSame( $tags[ $result->id ]->id, $result->tag->id );
+			$this->assertSame( $tags[ $result->id ]->get( 'id' ), $result->tag->id );
 		}
 	}
 
@@ -314,7 +331,7 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 			$this->assertTrue( $result->relation_loaded( 'tags' ) );
 			$this->assertNotNull( $result->tags );
 
-			$this->assertSame( count( $tags[ $result->id ] ), count( $result->tags ) );
+			$this->assertCount( count( $tags[ $result->id ] ), $result->tags );
 
 			// Assert that the eager loaded terms match the expected.
 			$term_ids = wp_list_pluck( $tags[ $result->id ], 'id' );
@@ -334,15 +351,24 @@ class EagerLoadRelationshipsTest extends FrameworkTestCase {
 class Testable_Post_Eager extends Post {
 	public static $object_name = 'post';
 
-	public function post_relationship() {
+	/**
+	 * @return Has_One<static, Another_Testable_Post_Eager>
+	 */
+	public function post_relationship(): Has_One {
 		return $this->has_one( Another_Testable_Post_Eager::class );
 	}
 
-	public function posts_relationship() {
+	/**
+	 * @return Has_Many<static, Another_Testable_Post_Eager>
+	 */
+	public function posts_relationship(): Has_Many {
 		return $this->has_many( Another_Testable_Post_Eager::class );
 	}
 
-	public function term_relationship() {
+	/**
+	 * @return Has_Many<static, Testable_Tag_Eager>
+	 */
+	public function term_relationship(): Has_Many {
 		return $this->has_many( Testable_Tag_Eager::class );
 	}
 }
@@ -353,7 +379,10 @@ class Testable_Post_Eager extends Post {
 class Another_Testable_Post_Eager extends Post {
 	public static $object_name = 'example-post-eager';
 
-	public function post() {
+	/**
+	 * @return Belongs_To<static, Testable_Post_Eager>
+	 */
+	public function post(): Belongs_To {
 		return $this->belongs_to( Testable_Post_Eager::class );
 	}
 }
@@ -365,11 +394,17 @@ class Another_Testable_Post_Eager extends Post {
 class Testable_Tag_Eager extends Term {
 	public static $object_name = 'post_tag';
 
-	public function category() {
+	/**
+	 * @return Has_Many<static, Testable_Category_Eager>
+	 */
+	public function category(): Has_Many {
 		return $this->has_many( Testable_Category_Eager::class );
 	}
 
-	public function posts() {
+	/**
+	 * @return Has_Many<static, Testable_Post_Eager>
+	 */
+	public function posts(): Has_Many {
 		return $this->has_many( Testable_Post_Eager::class );
 	}
 }
@@ -381,11 +416,17 @@ class Testable_Tag_Eager extends Term {
 class Testable_Category_Eager extends Testable_Tag_Eager {
 	public static $object_name = 'category';
 
-	public function tag() {
+	/**
+	 * @return Belongs_To<static, Testable_Tag_Eager>
+	 */
+	public function tag(): Belongs_To {
 		return $this->belongs_to( Testable_Tag_Eager::class );
 	}
 
-	public function tags() {
+	/**
+	 * @return Belongs_To_Many<static, Testable_Tag_Eager>
+	 */
+	public function tags(): Belongs_To_Many {
 		return $this->belongs_to_many( Testable_Tag_Eager::class );
 	}
 }

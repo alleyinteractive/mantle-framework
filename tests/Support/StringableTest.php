@@ -5,7 +5,10 @@ namespace Mantle\Tests\Support;
 use Carbon\Carbon;
 use Mantle\Support\Collection;
 use Mantle\Support\Stringable;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+
+use function Mantle\Support\Helpers\with;
 
 require_once __DIR__ . '/StrTest.php';
 
@@ -1234,9 +1237,7 @@ class StringableTest extends TestCase {
 		$this->assertSame( '❤MultiByte☆     ', (string) $this->stringable( '❤MultiByte☆' )->pad_right( 16 ) );
 	}
 
-	public function testExplode() {
-		$this->assertInstanceOf( Collection::class, $this->stringable( 'Foo Bar Baz' )->explode( ' ' ) );
-
+	public function testExplode(): void {
 		$this->assertSame( '["Foo","Bar","Baz"]', (string) $this->stringable( 'Foo Bar Baz' )->explode( ' ' ) );
 
 		// with limit
@@ -1244,8 +1245,8 @@ class StringableTest extends TestCase {
 		$this->assertSame( '["Foo","Bar"]', (string) $this->stringable( 'Foo Bar Baz' )->explode( ' ', -1 ) );
 	}
 
-	public function testChunk() {
-		$chunks = $this->stringable( 'foobarbaz' )->split( 3 );
+	public function testChunk(): void {
+		$chunks = with( $this->stringable( 'foobarbaz' )->split( 3 ) );
 
 		$this->assertInstanceOf( Collection::class, $chunks );
 		$this->assertSame( [ 'foo', 'bar', 'baz' ], $chunks->all() );
@@ -1413,4 +1414,100 @@ class StringableTest extends TestCase {
 		$this->assertTrue( isset( $str[2] ) );
 		$this->assertFalse( isset( $str[10] ) );
 	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'startsWith_loose_arguments_provider' )]
+	public function testStartsWithLooseArguments( bool $expected, mixed $string, array $arguments ): void {
+		$this->assertSame( $expected, $this->stringable( $string )->startsWith( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: bool, 1: mixed, 2: array<int, mixed>}>
+	 */
+	public static function startsWith_loose_arguments_provider(): array {
+		return [
+			[ false, 'jason', [ null ] ],
+			[ false, 'jason', [ [ null ] ] ],
+			[ false, '0123', [ [ null ] ] ],
+			[ true, '0123', [ 0 ] ],
+			[ true, '7a', [ 7 ] ],
+			[ true, '7.12a', [ 7.12 ] ],
+			[ false, '7.12a', [ 7.13 ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'before_loose_arguments_provider' )]
+	public function testBeforeLooseArguments( mixed $expected, mixed $string, array $arguments ): void {
+		$this->assertSame( $expected, (string) $this->stringable( $string )->before( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: mixed, 1: mixed, 2: array<int, mixed>}>
+	 */
+	public static function before_loose_arguments_provider(): array {
+		return [
+			[ 'han', 'han0nah', [ 0 ] ],
+			[ 'han', 'han2nah', [ 2 ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'before_last_loose_arguments_provider' )]
+	public function testBeforeLastLooseArguments( mixed $expected, mixed $string, array $arguments ): void {
+		$this->assertSame( $expected, (string) $this->stringable( $string )->before_last( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: mixed, 1: mixed, 2: array<int, mixed>}>
+	 */
+	public static function before_last_loose_arguments_provider(): array {
+		return [
+			[ 'yv0et', 'yv0et0te', [ 0 ] ],
+			[ 'yv2et', 'yv2et2te', [ 2 ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'after_loose_arguments_provider' )]
+	public function testAfterLooseArguments( mixed $expected, mixed $string, array $arguments ): void {
+		$this->assertSame( $expected, (string) $this->stringable( $string )->after( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: mixed, 1: mixed, 2: array<int, mixed>}>
+	 */
+	public static function after_loose_arguments_provider(): array {
+		return [
+			[ 'nah', 'han0nah', [ 0 ] ],
+			[ 'nah', 'han2nah', [ 2 ] ],
+		];
+	}
+
+	/**
+	 * @param array<int, mixed> $arguments Arguments to pass.
+	 */
+	#[DataProvider( 'after_last_loose_arguments_provider' )]
+	public function testAfterLastLooseArguments( mixed $expected, mixed $string, array $arguments ): void {
+		$this->assertSame( $expected, (string) $this->stringable( $string )->after_last( ...$arguments ) );
+	}
+
+	/**
+	 * @return array<int, array{0: mixed, 1: mixed, 2: array<int, mixed>}>
+	 */
+	public static function after_last_loose_arguments_provider(): array {
+		return [
+			[ 'te', 'yv0et0te', [ 0 ] ],
+			[ 'te', 'yv2et2te', [ 2 ] ],
+		];
+	}
+
 }

@@ -166,10 +166,7 @@ class PaginatorTest extends FrameworkTestCase {
 				$this->assertStringContainsString( '<li class="disabled" aria-disabled="true"><span>&rsaquo;</span></li>', $render );
 			} else {
 				$this->assertTrue( $paginator->has_more() );
-
-				if ( $paginator->has_more() ) {
-					$this->assertStringContainsString( '<li><a href="' . $paginator->next_url() . '" rel="next">&rsaquo;</a></li>', $render );
-				}
+				$this->assertStringContainsString( '<li><a href="' . $paginator->next_url() . '" rel="next">&rsaquo;</a></li>', $render );
 			}
 
 			// On page one the previous link should be disabled.

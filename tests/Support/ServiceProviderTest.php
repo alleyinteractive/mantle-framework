@@ -10,7 +10,6 @@ use Mantle\Support\Service_Provider;
 use Mantle\Support\Attributes\Action;
 use Mantle\Support\Attributes\Filter;
 use Mantle\Types\Validator;
-use Mockery as m;
 
 class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	protected function setUp(): void {
@@ -25,23 +24,29 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		Service_Provider::$publish_tags = [];
 	}
 
-	public function test_service_provider_registered() {
-		$service_provider = m::mock( Service_Provider::class )->makePartial();
-		$service_provider->shouldReceive( 'register' )->once();
-		$service_provider->shouldNotReceive( 'boot' );
+	public function test_service_provider_registered(): void {
+		$service_provider = $this->getMockBuilder( Service_Provider::class )
+			->disableOriginalConstructor()
+			->onlyMethods( [ 'register', 'boot' ] )
+			->getMock();
+		$service_provider->expects( $this->once() )->method( 'register' );
+		$service_provider->expects( $this->never() )->method( 'boot' );
 
-		$app = m::mock( Application::class )->makePartial();
+		$app = new Application_Without_Constructor();
 		$app->register( $service_provider );
 
 		$this->assertFalse( $app->is_booted() );
 	}
 
-	public function test_service_provider_booted() {
-		$service_provider = m::mock( Service_Provider::class )->makePartial();
-		$service_provider->shouldReceive( 'register' )->once();
-		$service_provider->shouldReceive( 'boot' )->once();
+	public function test_service_provider_booted(): void {
+		$service_provider = $this->getMockBuilder( Service_Provider::class )
+			->disableOriginalConstructor()
+			->onlyMethods( [ 'register', 'boot' ] )
+			->getMock();
+		$service_provider->expects( $this->once() )->method( 'register' );
+		$service_provider->expects( $this->once() )->method( 'boot' );
 
-		$app = m::mock( Application::class )->makePartial();
+		$app = new Application_Without_Constructor();
 		$app->register( $service_provider );
 
 		$this->assertFalse( $app->is_booted() );
@@ -52,7 +57,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	public function test_hook_method_action(): void {
 		$_SERVER['__hook_fired'] = false;
 
-		$app = m::mock( Application::class )->makePartial();
+		$app = new Application_Without_Constructor();
 		$app->register( Provider_Test_Hook::class );
 		$app->boot();
 
@@ -64,7 +69,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	public function test_hook_method_action_alternative_name(): void {
 		$_SERVER['__hook_fired'] = false;
 
-		$app = m::mock( Application::class )->makePartial();
+		$app = new Application_Without_Constructor();
 		$app->register( Provider_Test_Hook::class );
 		$app->boot();
 
@@ -73,8 +78,8 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertTrue( $_SERVER['__hook_fired'] );
 	}
 
-	public function test_hook_method_filter() {
-		$app = m::mock( Application::class )->makePartial();
+	public function test_hook_method_filter(): void {
+		$app = new Application_Without_Constructor();
 		$app->register( Provider_Test_Hook::class );
 		$app->boot();
 
@@ -83,8 +88,8 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( 15, $value );
 	}
 
-	public function test_hook_attribute() {
-		$app = m::mock( Application::class )->makePartial();
+	public function test_hook_attribute(): void {
+		$app = new Application_Without_Constructor();
 		$app->register( Provider_Test_Hook::class );
 		$app->boot();
 
@@ -93,8 +98,8 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertTrue( $_SERVER['__custom_hook_fired'] ?? false );
 	}
 
-	public function test_filter_attribute() {
-		$app = m::mock( Application::class )->makePartial();
+	public function test_filter_attribute(): void {
+		$app = new Application_Without_Constructor();
 		$app->register( Provider_Test_Hook::class );
 		$app->boot();
 
@@ -103,8 +108,8 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( 50, $value );
 	}
 
-	public function test_hook_attribute_deduplicate() {
-		$app = m::mock( Application::class )->makePartial();
+	public function test_hook_attribute_deduplicate(): void {
+		$app = new Application_Without_Constructor();
 		$app->register( Provider_Test_Hook::class );
 		$app->boot();
 
@@ -116,7 +121,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	public function test_typehint_event(): void {
 		$_SERVER['__custom_event_fired'] = false;
 
-		$app = m::mock( Application::class )->makePartial();
+		$app = new Application_Without_Constructor();
 		$app->register( Provider_Test_Hook::class );
 		$app->boot();
 
@@ -127,8 +132,8 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertInstanceOf( Example_Service_Provider_Event::class, $_SERVER['__custom_event_fired'] );
 	}
 
-	public function test_publishable_service_providers() {
-		$app = m::mock( Application::class )->makePartial();
+	public function test_publishable_service_providers(): void {
+		$app = new Application_Without_Constructor();
 		$app->register( ServiceProviderForTestingOne::class );
 		$app->register( ServiceProviderForTestingTwo::class );
 		$app->boot();
@@ -218,8 +223,8 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		);
 	}
 
-	public function test_publishable_tags() {
-		$app = m::mock( Application::class )->makePartial();
+	public function test_publishable_tags(): void {
+		$app = new Application_Without_Constructor();
 		$app->register( ServiceProviderForTestingOne::class );
 		$app->register( ServiceProviderForTestingTwo::class );
 		$app->boot();
@@ -230,7 +235,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	public function test_call_after_resolving(): void {
 		$_SERVER['__after_resolving'] = false;
 
-		$app = m::mock( Application::class )->makePartial();
+		$app = new Application_Without_Constructor();
 		$app->register(
 			new class ( $app ) extends Service_Provider {
 				public function register(): void {
@@ -258,7 +263,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	public function test_call_after_resolving_already_resolved(): void {
 		$_SERVER['__after_resolving'] = false;
 
-		$app = m::mock( Application::class )->makePartial();
+		$app = new Application_Without_Constructor();
 		$app->register(
 			new class ( $app ) extends Service_Provider {
 				public function register(): void {
@@ -282,7 +287,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	public function test_service_provider_with_passing_validator(): void {
 		$_SERVER['__service_provider_booted'] = false;
 
-		$app = m::mock( Application::class )->makePartial();
+		$app = new Application_Without_Constructor();
 
 		$app->register( PassingValidatorServiceProvider::class );
 
@@ -294,7 +299,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	public function test_service_provider_with_failing_validator(): void {
 		$_SERVER['__service_provider_booted'] = false;
 
-		$app = m::mock( Application::class )->makePartial();
+		$app = new Application_Without_Constructor();
 
 		$app->register( FailingValidatorServiceProvider::class );
 
@@ -302,6 +307,13 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$app->boot();
 		$this->assertFalse( $_SERVER['__service_provider_booted'] );
 	}
+}
+
+/**
+ * Application that skips its constructor, as a partial mock would.
+ */
+class Application_Without_Constructor extends Application {
+	public function __construct() {}
 }
 
 class Provider_Test_Hook extends Service_Provider {

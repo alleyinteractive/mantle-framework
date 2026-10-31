@@ -48,7 +48,10 @@ class UrlGeneratorTest extends FrameworkTestCase {
 		$this->assertSame( home_url( $expected ), $this->url->to( ...$args ) );
 	}
 
-	public static function urlGenerationProvider() {
+	/**
+	 * @return array<string, array{string, array<int|string, mixed>}>
+	 */
+	public static function urlGenerationProvider(): array {
 		return [
 			'/'                              => [ '/', [ '/' ] ],
 			'/foo'                           => [ '/foo', [ '/foo' ] ],
@@ -65,9 +68,8 @@ class UrlGeneratorTest extends FrameworkTestCase {
 		];
 	}
 
-	public function test_route_generation() {
-		/** @var \Mantle\Http\Routing\Router $router */
-		$router = $this->app['router'];
+	public function test_route_generation(): void {
+		$router = $this->router;
 
 		$router->get( '/foo/bar', fn () => 'hello' )->name( 'get' );
 		$router->get( '/trailing/slash/', fn () => 'hello' )->name( 'trailing-slash' );

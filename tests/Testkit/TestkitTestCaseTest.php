@@ -4,12 +4,13 @@ namespace Mantle\Tests\Testkit;
 use Mantle\Tests\Testkit\Concerns\ExampleOverload;
 use Mantle\Testkit\TestCase;
 
+use function Mantle\Support\Helpers\with;
+
 class TestkitTestCaseTest extends TestCase {
 	use ExampleOverload;
 
-	public function test_create_application() {
-		$this->assertInstanceOf( \Mantle\Testkit\Application::class, $this->create_application() );
-		$this->assertInstanceOf( \Mantle\Contracts\Application::class, $this->create_application() );
+	public function test_create_application(): void {
+		$this->assertInstanceOf( \Mantle\Testkit\Application::class, with( $this->create_application() ) );
 	}
 
 	public function test_make_request(): void {
@@ -17,7 +18,9 @@ class TestkitTestCaseTest extends TestCase {
 		$this->get( '/unknown/' )->assertNotFound();
 	}
 
-	public function test_url_generator() {
+	public function test_url_generator(): void {
+		$this->assertNotNull( $this->app );
+
 		$this->assertNotEmpty( $this->app['url'] );
 		$this->assertSame( home_url( '/example/' ), $this->app['url']->to( home_url( '/example/' ) ) );
 		$this->assertSame( home_url( '/example/' ), $this->app['url']->to( '/example/' ) );
