@@ -639,6 +639,9 @@ class HtmlTest extends TestCase {
 			->{$assertion}( ...$classes );
 	}
 
+	/**
+	 * @return array<string, array{0: string, 1: string, 2: string, 3: string[]}>
+	 */
 	public static function class_assertion_failure_provider(): array {
 		return [
 			'has class: class missing' => [ self::TEST_CONTENT, '.test-class', 'assertHasClass', [ 'non-existent-class' ] ],
@@ -662,10 +665,11 @@ class HtmlTest extends TestCase {
 
 		$html->first_by_selector( '.test-class' )
 			->{$assertion}( ...$classes );
-
-		$this->assertTrue( true ); // Reaching this line means the assertion passed.
 	}
 
+	/**
+	 * @return array<string, array{0: string, 1: string[]}>
+	 */
 	public static function deprecated_class_assertion_provider(): array {
 		return [
 			'assertNodeHasClass' => [ 'assertNodeHasClass', [ 'test-class' ] ],
