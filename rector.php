@@ -8,6 +8,7 @@
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodingStyle\Rector\ArrowFunction\ArrowFunctionDelegatingCallToFirstClassCallableRector;
+use Rector\CodeQuality\Rector\If_\ExplicitNullableObjectInstanceRector;
 use Rector\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\Closure\ClosureDelegatingCallToFirstClassCallableRector;
@@ -80,9 +81,11 @@ return RectorConfig::configure()
 		],
 		RemoveUselessReturnTagRector::class => [
 			__DIR__ . '/src/Mantle/Database/Model/Relations',
+			__DIR__ . '/src/Mantle/Support/Reflector.php',
 		],
 		ReturnNullableTypeRector::class => [
 			__DIR__ . '/src/Mantle/Database/Model/Relations',
+			__DIR__ . '/src/Mantle/Support/Reflector.php',
 		],
 		ReturnTypeFromStrictTypedCallRector::class => [
 			__DIR__ . '/src/Mantle/Database/Model/Relations',
@@ -98,6 +101,7 @@ return RectorConfig::configure()
 		StrContainsRector::class,
 		AddArrowFunctionReturnTypeRector::class,
 		EmptyOnNullableObjectToInstanceOfRector::class,
+		ExplicitNullableObjectInstanceRector::class,
 		RemoveExtraParametersRector::class => [
 			__DIR__ . '/src/Mantle/Support/helpers/helpers-general.php',
 		],
