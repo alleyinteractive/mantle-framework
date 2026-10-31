@@ -24,7 +24,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	 * Test that `get_term_object()` returns a term object.
 	 */
 	public function test_term_object_returns_term(): void {
-		$known_id = self::factory()->term->create();
+		$known_id = static::factory()->term->create();
 
 		$this->assertIsInt( $known_id );
 
@@ -39,7 +39,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	 * Test that `get_term_object()` returns a term object given a taxonomy.
 	 */
 	public function test_term_object_with_taxonomy_returns_term(): void {
-		$known_term = self::factory()->term->create_and_get();
+		$known_term = static::factory()->term->create_and_get();
 
 		$found_object = get_term_object( $known_term->term_id, $known_term->taxonomy );
 
@@ -54,7 +54,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	public function test_term_object_returns_filtered_term(): void {
 		$slug = 'test-term';
 
-		$known_id = self::factory()->term->create(
+		$known_id = static::factory()->term->create(
 			[
 				'slug' => $slug,
 			]
@@ -99,7 +99,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	 * Test that `get_term_object_by()` returns a term object.
 	 */
 	public function test_term_object_by_returns_term(): void {
-		$known_term = self::factory()->term->create_and_get();
+		$known_term = static::factory()->term->create_and_get();
 
 		$found_object = get_term_object_by( 'slug', $known_term->slug, $known_term->taxonomy );
 
@@ -112,7 +112,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	 * Test that `get_term_object_by()` honors the requested filter.
 	 */
 	public function test_term_object_by_returns_filtered_term(): void {
-		$known_term = self::factory()->term->create_and_get(
+		$known_term = static::factory()->term->create_and_get(
 			[
 				// 'slug' => $this->data1,
 			]
@@ -152,7 +152,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	 * Test that `get_term_object_by()` returns null when there is no term.
 	 */
 	public function test_term_object_by_returns_null(): void {
-		$valid = self::factory()->term->create_and_get();
+		$valid = static::factory()->term->create_and_get();
 
 		$found_object = get_term_object_by( 'slug', '', $valid->taxonomy );
 

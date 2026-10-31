@@ -23,7 +23,7 @@ class NullablePostObjectsTest extends FrameworkTestCase {
 	 * Test that `get_post_object()` returns a post object.
 	 */
 	public function test_post_object_returns_post(): void {
-		$known_id = self::factory()->post->create();
+		$known_id = static::factory()->post->create();
 
 		$found_object = get_post_object( $known_id );
 
@@ -38,7 +38,7 @@ class NullablePostObjectsTest extends FrameworkTestCase {
 	public function test_post_object_returns_filtered_post(): void {
 		$title = 'Post Title';
 
-		$known_id = self::factory()->post->create(
+		$known_id = static::factory()->post->create(
 			[
 				'post_title' => $title,
 			]
