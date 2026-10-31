@@ -230,7 +230,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	protected function load( ...$paths ): void {
 		$namespace = $this->app->get_namespace();
 
-		$this->commands = collect( $paths ) // @phpstan-ignore-line argument.type
+		$this->commands = collect( $paths )
 			->unique()
 			->filter( static fn ( string $path ) => is_dir( $path ) )
 			->map( fn ( string $path ) => $this->classes_from_path( $path, $namespace . '\Console' ) )

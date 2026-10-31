@@ -26,5 +26,5 @@ function normalize_cache_ttl( int|\DateTimeInterface|\DateInterval|null $ttl ): 
 		$ttl = 0;
 	}
 
-	return max( 0, (int) $ttl );
+	return max( 0, $ttl );
 }
