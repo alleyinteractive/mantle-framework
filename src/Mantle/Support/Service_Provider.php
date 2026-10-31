@@ -95,7 +95,7 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 */
 	public function add_command( array|string|Symfony_Command|Command $command ): Service_Provider {
 		Console_Application::starting(
-			fn ( Console_Application $console ) => $console->resolve_commands( $command )
+			static fn ( Console_Application $console ) => $console->resolve_commands( $command )
 		);
 
 		return $this;
@@ -178,7 +178,7 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	public function load_views_from( string $path, string $alias ): void {
 		$this->call_after_resolving(
 			'view.loader',
-			fn ( \Mantle\Http\View\View_Finder $finder ) => $finder->add_path( $path, $alias ),
+			static fn ( \Mantle\Http\View\View_Finder $finder ) => $finder->add_path( $path, $alias ),
 		);
 	}
 

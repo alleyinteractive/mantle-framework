@@ -148,7 +148,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 		}
 
 		Console_Application::starting(
-			fn ( Console_Application $app ) => $app->resolve( $command )
+			static fn ( Console_Application $app ) => $app->resolve( $command )
 		);
 	}
 
@@ -162,7 +162,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 		$command = new Closure_Command( $signature, $callback );
 
 		Console_Application::starting(
-			fn ( Console_Application $app ) => $app->resolve( $command )
+			static fn ( Console_Application $app ) => $app->resolve( $command )
 		);
 
 		return $command;
@@ -180,7 +180,7 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 		if ( $this->app->is_running_in_console_isolation() ) {
 			$this->app->singleton(
 				'events',
-				fn ( $app ) => new Lightweight_Event_Dispatcher( $app ),
+				static fn ( $app ) => new Lightweight_Event_Dispatcher( $app ),
 			);
 		}
 
@@ -232,11 +232,11 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 
 		$this->commands = collect( $paths ) // @phpstan-ignore-line argument.type
 			->unique()
-			->filter( fn ( string $path ) => is_dir( $path ) )
+			->filter( static fn ( string $path ) => is_dir( $path ) )
 			->map( fn ( string $path ) => $this->classes_from_path( $path, $namespace . '\Console' ) )
 			->flatten()
 			->filter(
-				fn ( string $class ) => class_exists( $class )
+				static fn ( string $class ) => class_exists( $class )
 					&& is_subclass_of( $class, Command::class )
 					&& ( new ReflectionClass( $class ) )->isInstantiable()
 			)

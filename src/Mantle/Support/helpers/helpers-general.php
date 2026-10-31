@@ -204,7 +204,7 @@ function object_get( $object, $key, $default = null ) {
 function preg_replace_array( $pattern, array $replacements, $subject ): ?string {
 	return preg_replace_callback(
 		$pattern,
-		function () use ( &$replacements ): string {
+		static function () use ( &$replacements ): string {
 			return array_shift( $replacements ) ?? '';
 		},
 		$subject
@@ -505,7 +505,7 @@ function event( string|object $event, mixed ...$payload ): mixed {
  */
 function hook_callable( string $hook, callable $callable, int $priority = 10 ): void {
 	if ( ! did_action( $hook ) && ! doing_action( $hook ) ) {
-		\add_action( $hook, fn () => $callable(), $priority );
+		\add_action( $hook, static fn () => $callable(), $priority );
 	} else {
 		$callable();
 	}
@@ -571,7 +571,7 @@ function defer( callable $callback, int $priority = 10 ): void {
 
 	\add_action(
 		'shutdown',
-		function () use ( $callback, &$request_sent ): void {
+		static function () use ( $callback, &$request_sent ): void {
 			if ( ! $request_sent ) {
 				if ( function_exists( 'fastcgi_finish_request' ) ) {
 					fastcgi_finish_request();
@@ -607,7 +607,7 @@ function dump_backtrace( ?int $limit = null, bool $with_arguments = false ): voi
 		$frames = $frames->withArguments();
 	}
 
-	collect( $frames->frames() )->map( fn ( Frame $frame ) => [
+	collect( $frames->frames() )->map( static fn ( Frame $frame ) => [
 		'file'        => $frame->file,
 		'line number' => $frame->lineNumber,
 		'class'       => $frame->class,

@@ -42,7 +42,7 @@ class Factory_Service_Provider extends Service_Provider {
 	protected function register_mantle_factory() {
 		$this->app->singleton(
 			FakerGenerator::class,
-			function ( $app, $parameters ) {
+			static function ( $app, $parameters ) {
 				$locale = config( 'app.faker_locale', Factory::DEFAULT_LOCALE );
 
 				if ( ! isset( static::$fakers[ $locale ] ) ) {

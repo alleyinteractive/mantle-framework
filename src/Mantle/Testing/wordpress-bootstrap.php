@@ -220,13 +220,13 @@ tests_add_filter( 'async_update_translation', '__return_false' );
 tests_add_filter( 'automatic_updater_disabled', '__return_true' );
 
 // Disable VIP's alloptions protections during unit testing.
-tests_add_filter( 'vip_mu_plugins_loaded', function (): void {
+tests_add_filter( 'vip_mu_plugins_loaded', static function (): void {
 	remove_filter( 'pre_wp_load_alloptions', 'Automattic\\VIP\\Core\\OptionsAPI\\pre_wp_load_alloptions_protections', 999 );
 } );
 
 // Disable the object-cache.php drop if the MANTLE_SKIP_LOCAL_OBJECT_CACHE
 // environment variable is set.
-tests_add_filter( 'enable_loading_object_cache_dropin', function ( $enable_object_cache ) {
+tests_add_filter( 'enable_loading_object_cache_dropin', static function ( $enable_object_cache ) {
 	if ( Utils::env_bool( 'MANTLE_SKIP_LOCAL_OBJECT_CACHE', false ) && ! Utils::is_ci() ) {
 		if ( Utils::is_debug_mode() ) {
 			Utils::info( 'Skipping local object cache drop-in.' );

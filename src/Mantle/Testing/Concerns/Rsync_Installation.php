@@ -410,7 +410,7 @@ trait Rsync_Installation {
 	 */
 	public function remove_exclusion( string $exclusion ): static {
 		$this->rsync_exclusions = collect( $this->rsync_exclusions )
-			->filter( fn ( $item ) => $item !== $exclusion )
+			->filter( static fn ( $item ) => $item !== $exclusion )
 			->unique()
 			->values()
 			->all();
@@ -520,7 +520,7 @@ trait Rsync_Installation {
 		$output = Utils::command(
 			[
 				'rsync -aWq',
-				collect( $this->rsync_exclusions )->map( fn ( $exclusion ) => "--exclude '{$exclusion}'" )->implode( ' ' ),
+				collect( $this->rsync_exclusions )->map( static fn ( $exclusion ) => "--exclude '{$exclusion}'" )->implode( ' ' ),
 				'--delete',
 				"{$this->rsync_from} {$this->rsync_to}",
 			],

@@ -165,7 +165,7 @@ class Asset_Loader {
 			->depth( 1 );
 
 		return collect( $finder )
-			->map( fn ( SplFileInfo $file ) => $file->getRealPath() )
+			->map( static fn ( SplFileInfo $file ) => $file->getRealPath() )
 			->values()
 			->all();
 	}

@@ -38,13 +38,13 @@ trait Has_Factory {
 			->with_model( static::class )
 			->when(
 				$factory instanceof Post_Factory,
-				fn ( Post_Factory $factory ) => $factory->with_post_type( static::get_object_name() ), // @phpstan-ignore-line expects
+				static fn ( Post_Factory $factory ) => $factory->with_post_type( static::get_object_name() ), // @phpstan-ignore-line expects
 			)
 			->when(
 				$factory instanceof Term_Factory,
-				fn ( Term_Factory $factory ) => $factory->with_taxonomy( static::get_object_name() ), // @phpstan-ignore-line expects
+				static fn ( Term_Factory $factory ) => $factory->with_taxonomy( static::get_object_name() ), // @phpstan-ignore-line expects
 			)
-			->when( is_array( $state ) || is_callable( $state ), fn ( Factory $factory ) => $factory->state( $state ) ); // @phpstan-ignore-line argument.type
+			->when( is_array( $state ) || is_callable( $state ), static fn ( Factory $factory ) => $factory->state( $state ) ); // @phpstan-ignore-line argument.type
 	}
 
 	/**

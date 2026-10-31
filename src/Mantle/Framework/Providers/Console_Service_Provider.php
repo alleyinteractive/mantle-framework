@@ -36,7 +36,7 @@ class Console_Service_Provider extends Service_Provider implements Isolated_Serv
 		$this->add_command(
 			collect( $this->classes_from_path( __DIR__ . '/../Console', 'Mantle\Framework\Console' ) ) // @phpstan-ignore-line argument.type
 				->filter(
-					fn ( string $class ) => class_exists( $class )
+					static fn ( string $class ) => class_exists( $class )
 					&& is_subclass_of( $class, Command::class )
 					&& ( new ReflectionClass( $class ) )->isInstantiable()
 				)

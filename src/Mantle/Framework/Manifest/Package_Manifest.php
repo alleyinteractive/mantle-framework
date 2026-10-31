@@ -67,7 +67,7 @@ class Package_Manifest {
 	public function config( string $key ): array {
 		return collect( $this->get_manifest() )
 			->flat_map(
-				fn ( $configuration ) => (array) ( $configuration[ $key ] ?? [] )
+				static fn ( $configuration ) => (array) ( $configuration[ $key ] ?? [] )
 			)
 			->filter()
 			->all();
@@ -132,12 +132,12 @@ class Package_Manifest {
 				]
 			)
 			->each(
-				function ( array $configuration ) use ( &$ignore ): void {
+				static function ( array $configuration ) use ( &$ignore ): void {
 					$ignore = array_merge( $ignore, $configuration['dont-discover'] ?? [] );
 				}
 			)
 			->reject(
-				fn ( $configuration, $package ) => in_array( $package, $ignore, true ),
+				static fn ( $configuration, $package ) => in_array( $package, $ignore, true ),
 			)
 			->filter()
 			->all();

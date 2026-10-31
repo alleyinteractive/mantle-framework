@@ -91,7 +91,7 @@ class Events_Manifest {
 		}
 
 		$provider = collect( app()->get_providers() )
-			->filter( fn ( $provider ) => $provider instanceof Event_Service_Provider )
+			->filter( static fn ( $provider ) => $provider instanceof Event_Service_Provider )
 			->pop();
 
 		if ( ! $provider ) {

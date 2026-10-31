@@ -83,7 +83,7 @@ class View_Service_Provider extends Service_Provider {
 	 * @param Engine_Resolver $resolver Engine resolver.
 	 */
 	protected function register_file_engine( Engine_Resolver $resolver ): void {
-		$resolver->register( 'file', fn () => new File_Engine() );
+		$resolver->register( 'file', static fn () => new File_Engine() );
 	}
 
 	/**
@@ -124,7 +124,7 @@ class View_Service_Provider extends Service_Provider {
 	protected function register_factory(): void {
 		$this->app->singleton(
 			'view',
-			function ( \Mantle\Contracts\Application $app ): \Mantle\Http\View\Factory {
+			static function ( \Mantle\Contracts\Application $app ): \Mantle\Http\View\Factory {
 				$factory = new Factory(
 					$app,
 					$app['view.engine.resolver'],

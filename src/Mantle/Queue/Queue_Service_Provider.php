@@ -36,12 +36,12 @@ class Queue_Service_Provider extends Service_Provider {
 
 		$this->app->singleton_if(
 			'queue.worker',
-			fn ( $app ) => new Worker( $app['queue'], $app['events'] ),
+			static fn ( $app ) => new Worker( $app['queue'], $app['events'] ),
 		);
 
 		$this->app->singleton_if(
 			'queue.dispatcher',
-			fn ( $app ) => new Dispatcher( $app ),
+			static fn ( $app ) => new Dispatcher( $app ),
 		);
 
 		// Register queue console commands.

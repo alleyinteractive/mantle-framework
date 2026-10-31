@@ -175,7 +175,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 		return array_values(
 			array_filter(
 				$segments,
-				fn ( string $value ) => '' !== $value
+				static fn ( string $value ) => '' !== $value
 			)
 		);
 	}
@@ -370,7 +370,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 			$parameters = new ParameterBag(
 				array_filter(
 					$parameters,
-					fn ( $parameter ) => ! str_starts_with( (string) $parameter, '_' ),
+					static fn ( $parameter ) => ! str_starts_with( (string) $parameter, '_' ),
 					ARRAY_FILTER_USE_KEY
 				)
 			);

@@ -167,7 +167,7 @@ trait Enumerates_Values {
 	public function contains_strict( $key, $value = null ) {
 		if ( func_num_args() === 2 ) {
 			return $this->contains(
-				fn ( $item ) => data_get( $item, $key ) === $value
+				static fn ( $item ) => data_get( $item, $key ) === $value
 			);
 		}
 
@@ -230,7 +230,7 @@ trait Enumerates_Values {
 	 */
 	public function each_spread( callable $callback ) {
 		return $this->each(
-			function ( $chunk, $key ) use ( $callback ) {
+			static function ( $chunk, $key ) use ( $callback ) {
 				$chunk[] = $key;
 
 				return $callback( ...$chunk );
@@ -289,7 +289,7 @@ trait Enumerates_Values {
 	 */
 	public function map_spread( callable $callback ) {
 		return $this->map(
-			function ( $chunk, $key ) use ( $callback ) {
+			static function ( $chunk, $key ) use ( $callback ) {
 				$chunk[] = $key;
 
 				return $callback( ...$chunk );
@@ -337,7 +337,7 @@ trait Enumerates_Values {
 	 */
 	public function map_into( $class ) {
 		return $this->map(
-			fn ( $value, $key ) => new $class( $value, $key )
+			static fn ( $value, $key ) => new $class( $value, $key )
 		);
 	}
 
@@ -351,11 +351,11 @@ trait Enumerates_Values {
 		$callback = $this->value_retriever( $callback );
 
 		return $this->map(
-			fn ( $value ) => $callback( $value )
+			static fn ( $value ) => $callback( $value )
 		)->filter(
-			fn ( $value ) => ! is_null( $value )
+			static fn ( $value ) => ! is_null( $value )
 		)->reduce(
-			fn ( $result, $value ) => is_null( $result ) || $value < $result ? $value : $result
+			static fn ( $result, $value ) => is_null( $result ) || $value < $result ? $value : $result
 		);
 	}
 
@@ -369,9 +369,9 @@ trait Enumerates_Values {
 		$callback = $this->value_retriever( $callback );
 
 		return $this->filter(
-			fn ( $value ) => ! is_null( $value )
+			static fn ( $value ) => ! is_null( $value )
 		)->reduce(
-			function ( $result, $item ) use ( $callback ) {
+			static function ( $result, $item ) use ( $callback ) {
 				$value = $callback( $item );
 
 				return is_null( $result ) || $value > $result ? $value : $result;
@@ -435,10 +435,10 @@ trait Enumerates_Values {
 	 * @return mixed
 	 */
 	public function sum( $callback = null ) {
-		$callback = is_null( $callback ) ? fn ( $value ) => $value : $this->value_retriever( $callback );
+		$callback = is_null( $callback ) ? static fn ( $value ) => $value : $this->value_retriever( $callback );
 
 		return $this->reduce(
-			fn ( $result, $item ) => $result + $callback( $item ),
+			static fn ( $result, $item ) => $result + $callback( $item ),
 			0
 		);
 	}
@@ -550,7 +550,7 @@ trait Enumerates_Values {
 		$values = $this->get_arrayable_items( $values );
 
 		return $this->filter(
-			fn ( $item ) => in_array( data_get( $item, $key ), $values, $strict ) // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
+			static fn ( $item ) => in_array( data_get( $item, $key ), $values, $strict ) // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 		);
 	}
 
@@ -585,7 +585,7 @@ trait Enumerates_Values {
 	 */
 	public function where_not_between( string $key, mixed $values ) {
 		return $this->filter(
-			fn ( $item ) => data_get( $item, $key ) < reset( $values ) || data_get( $item, $key ) > end( $values )
+			static fn ( $item ) => data_get( $item, $key ) < reset( $values ) || data_get( $item, $key ) > end( $values )
 		);
 	}
 
@@ -601,7 +601,7 @@ trait Enumerates_Values {
 		$values = $this->get_arrayable_items( $values );
 
 		return $this->reject(
-			fn ( $item ) => in_array( data_get( $item, $key ), $values, $strict ) // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
+			static fn ( $item ) => in_array( data_get( $item, $key ), $values, $strict ) // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 		);
 	}
 
@@ -626,7 +626,7 @@ trait Enumerates_Values {
 	 */
 	public function where_instance_of( string|array $type ) {
 		// @phpstan-ignore-next-line return.type
-		return $this->filter( function ( $value ) use ( $type ): bool {
+		return $this->filter( static function ( $value ) use ( $type ): bool {
 			if ( is_array( $type ) ) {
 				foreach ( $type as $class_type ) {
 					if ( $value instanceof $class_type ) {
@@ -675,7 +675,7 @@ trait Enumerates_Values {
 		$use_as_callable = $this->use_as_callable( $callback );
 
 		return $this->filter(
-			fn ( $value, $key ) => $use_as_callable
+			static fn ( $value, $key ) => $use_as_callable
 				? ! $callback( $value, $key )
 				: $value != $callback // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual, WordPress.PHP.StrictComparisons.LooseComparison
 		);
@@ -694,7 +694,7 @@ trait Enumerates_Values {
 		$exists = [];
 
 		return $this->reject(
-			function ( $item, $key ) use ( $callback, $strict, &$exists ) {
+			static function ( $item, $key ) use ( $callback, $strict, &$exists ) {
 				$id = $callback( $item, $key );
 				if ( in_array( $id, $exists, $strict ) ) {
 					return true;
@@ -731,7 +731,7 @@ trait Enumerates_Values {
 	 */
 	public function to_array() {
 		return $this->map(
-			fn ( $value ) => $value instanceof Arrayable ? $value->to_array() : $value,
+			static fn ( $value ) => $value instanceof Arrayable ? $value->to_array() : $value,
 		)->all();
 	}
 
@@ -751,7 +751,7 @@ trait Enumerates_Values {
 	 */
 	public function json_serialize(): mixed { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 		return array_map(
-			fn ( $value ): mixed => match ( true ) {
+			static fn ( $value ): mixed => match ( true ) {
 				$value instanceof JsonSerializable => $value->jsonSerialize(),
 				$value instanceof Jsonable => json_decode( $value->to_json(), true ),
 				$value instanceof Arrayable => $value->to_array(),
@@ -786,11 +786,11 @@ trait Enumerates_Values {
 	 * @return static
 	 */
 	public function count_by( $callback = null ) {
-		$callback ??= fn ( $value ) => $value;
+		$callback ??= static fn ( $value ) => $value;
 
 		return new static(
 			$this->group_by( $callback )->map( // @phpstan-ignore-line argument.templateType
-				fn ( $value ) => $value->count()
+				static fn ( $value ) => $value->count()
 			)
 		);
 	}
@@ -873,7 +873,7 @@ trait Enumerates_Values {
 
 			$strings = array_filter(
 				[ $retrieved, $value ],
-				fn ( $value ) => is_string( $value ) || ( is_object( $value ) && method_exists( $value, '__toString' ) )
+				static fn ( $value ) => is_string( $value ) || ( is_object( $value ) && method_exists( $value, '__toString' ) )
 			);
 
 			if ( count( $strings ) < 2 && count( array_filter( [ $retrieved, $value ], is_object( ... ) ) ) === 1 ) {
@@ -1074,7 +1074,7 @@ trait Enumerates_Values {
 	 */
 	public function pipe_through( $callbacks ) {
 		return ( new Collection( $callbacks ) )->reduce(
-			fn ( $carry, $callback ) => $callback( $carry ),
+			static fn ( $carry, $callback ) => $callback( $carry ),
 			$this
 		);
 	}

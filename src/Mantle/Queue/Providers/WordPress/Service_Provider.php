@@ -42,7 +42,7 @@ class Service_Provider extends Base_Service_Provider {
 
 		$this->app->resolving(
 			'scheduler',
-			fn ( Schedule $scheduler ) => $scheduler->command( Cleanup_Jobs_Command::class )->cron(
+			static fn ( Schedule $scheduler ) => $scheduler->command( Cleanup_Jobs_Command::class )->cron(
 				/**
 				 * Filter the schedule for the queue cleanup job.
 				 *

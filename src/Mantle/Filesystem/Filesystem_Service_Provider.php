@@ -31,14 +31,14 @@ class Filesystem_Service_Provider extends Service_Provider implements Isolated_S
 	 * @return void
 	 */
 	protected function register_native_filesystem() {
-		$this->app->singleton( 'files', fn () => new Filesystem() );
+		$this->app->singleton( 'files', static fn () => new Filesystem() );
 	}
 
 	/**
 	 * Register the Flysystem Manager
 	 */
 	public function register_flysystem(): void {
-		$this->app->singleton( 'filesystem', fn ( $app ) => new Filesystem_Manager( $app ) );
+		$this->app->singleton( 'filesystem', static fn ( $app ) => new Filesystem_Manager( $app ) );
 	}
 
 	/**

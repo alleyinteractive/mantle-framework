@@ -104,7 +104,7 @@ trait Route_Dependency_Resolver {
 		return ! is_null(
 			Arr::first(
 				$parameters,
-				fn ( $value ) => $value instanceof $class,
+				static fn ( $value ) => $value instanceof $class,
 			)
 		);
 	}

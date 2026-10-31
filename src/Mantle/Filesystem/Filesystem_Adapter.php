@@ -125,10 +125,10 @@ class Filesystem_Adapter implements Filesystem {
 	public function directories( ?string $directory = null, bool $recursive = false ): array {
 		return $this->driver->listContents( $directory ?? '', $recursive )
 			->filter(
-				fn ( StorageAttributes $attributes ) => $attributes->isDir()
+				static fn ( StorageAttributes $attributes ) => $attributes->isDir()
 			)
 			->map(
-				fn ( StorageAttributes $attributes ) => $attributes->path()
+				static fn ( StorageAttributes $attributes ) => $attributes->path()
 			)
 			->toArray();
 	}
@@ -187,11 +187,11 @@ class Filesystem_Adapter implements Filesystem {
 	public function files( ?string $directory = null, bool $recursive = false ): array {
 		return $this->driver->listContents( $directory ?? '', $recursive )
 			->filter(
-				fn ( StorageAttributes $attributes ) => $attributes->isFile()
+				static fn ( StorageAttributes $attributes ) => $attributes->isFile()
 			)
 			->sortByPath()
 			->map(
-				fn ( StorageAttributes $attributes ) => $attributes->path()
+				static fn ( StorageAttributes $attributes ) => $attributes->path()
 			)
 			->toArray();
 	}

@@ -68,7 +68,7 @@ class Term_Factory extends Factory {
 		$posts = collect( $posts )->flatten()->all();
 
 		return $this->with_middleware(
-			function ( array $args, Closure $next ) use ( $posts ) {
+			static function ( array $args, Closure $next ) use ( $posts ) {
 				/**
 				 * The created term.
 				 *
@@ -109,7 +109,7 @@ class Term_Factory extends Factory {
 	public function with_taxonomy( string $taxonomy ): static {
 		return tap(
 			clone $this,
-			fn ( Term_Factory $factory ) => $factory->taxonomy = $taxonomy,
+			static fn ( Term_Factory $factory ) => $factory->taxonomy = $taxonomy,
 		);
 	}
 
