@@ -363,7 +363,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 
 		$first = Testable_Post::query()
 			->add_clause(
-				function ( array $clauses ) use ( &$applied_count, $post_id ) {
+				static function ( array $clauses ) use ( &$applied_count, $post_id ) {
 					$applied_count++;
 
 					$clauses['where'] .= ' AND ID = ' . $post_id;
@@ -423,7 +423,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 
 		$count = 0;
 
-		$result = Testable_Post::chunk( 10, function ( Collection $results, int $page ) use ( &$count ) {
+		$result = Testable_Post::chunk( 10, static function ( Collection $results, int $page ) use ( &$count ) {
 			$count += count( $results );
 
 			return false;
@@ -461,7 +461,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 			$ids = $ids->merge( $new_ids );
 
 			// Delete all the posts that were returned for true chunk by ID.
-			$results->each( fn ( Testable_Post $post ) => $post->delete( true ) );
+			$results->each( static fn ( Testable_Post $post ) => $post->delete( true ) );
 
 			$last_page = $page;
 		} );
@@ -477,7 +477,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 
 		$ids = new Collection();
 
-		Testable_Post::each( function ( Testable_Post $post ) use ( &$ids ) {
+		Testable_Post::each( static function ( Testable_Post $post ) use ( &$ids ) {
 			$ids->push( $post->id() );
 		} );
 
@@ -489,7 +489,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 
 		$ids = new Collection();
 
-		Testable_Post::each_by_id( function ( Testable_Post $post ) use ( &$ids ) {
+		Testable_Post::each_by_id( static function ( Testable_Post $post ) use ( &$ids ) {
 			$ids->push( $post->id() );
 
 			$post->delete( true );
@@ -503,12 +503,12 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 	public function test_map(): void {
 		$post_ids = static::factory()->post->create_many( 100 );
 
-		$ids = Testable_Post::query()->map( function ( Testable_Post $post ) {
+		$ids = Testable_Post::query()->map( static function ( Testable_Post $post ) {
 			return [ 'id' => $post->id() ];
 		} );
 
 		$this->assertEquals(
-			collect( $post_ids )->map( function ( $id ) {
+			collect( $post_ids )->map( static function ( $id ) {
 				return [ 'id' => $id ];
 			} )->sort()->values(),
 			$ids->sort()->values()

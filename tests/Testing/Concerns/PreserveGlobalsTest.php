@@ -279,7 +279,7 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 		}
 
 		$sitemap_provider_hooks = collect( $hooked )
-			->filter( fn ( $hook ) => is_array( $hook['function'] ) && isset( $hook['function'][0] ) && \WP_Sitemaps::class === $hook['function'][0]::class )
+			->filter( static fn ( $hook ) => is_array( $hook['function'] ) && isset( $hook['function'][0] ) && \WP_Sitemaps::class === $hook['function'][0]::class )
 			->all();
 
 		$this->assertCount(

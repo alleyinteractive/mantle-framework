@@ -70,7 +70,7 @@ class Expectation_Container {
 	 */
 	public function tear_down(): void {
 		$this->expectations->each(
-			fn ( Expectation $expectation ) => $expectation->validate(),
+			static fn ( Expectation $expectation ) => $expectation->validate(),
 		);
 	}
 }

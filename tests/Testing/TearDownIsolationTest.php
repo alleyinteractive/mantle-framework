@@ -23,7 +23,7 @@ class TearDownIsolationTest extends FrameworkTestCase {
 	}
 
 	public function test_cleanup_runs_when_a_trait_teardown_throws(): void {
-		add_filter( 'pre_option_blogname', fn () => 'leaked' );
+		add_filter( 'pre_option_blogname', static fn () => 'leaked' );
 
 		$this->acting_as( 'administrator' );
 

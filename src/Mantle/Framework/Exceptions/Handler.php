@@ -114,7 +114,7 @@ class Handler implements Contract {
 		$logger = $this->container->make( LoggerInterface::class );
 		$level  = Arr::first(
 			$this->levels,
-			fn ( $level, $type ) => $e instanceof $type,
+			static fn ( $level, $type ) => $e instanceof $type,
 			LogLevel::ERROR,
 		);
 
@@ -146,7 +146,7 @@ class Handler implements Contract {
 		$dont_report = array_merge( $this->dont_report, $this->internal_dont_report );
 
 		return ! is_null(
-			Arr::first( $dont_report, fn ( $type ) => $e instanceof $type ),
+			Arr::first( $dont_report, static fn ( $type ) => $e instanceof $type ),
 		);
 	}
 
@@ -348,7 +348,7 @@ class Handler implements Contract {
 			'file'      => $e->getFile(),
 			'line'      => $e->getLine(),
 			'trace'     => collect( $e->getTrace() )->map(
-				fn ( array $trace ) => Arr::except( $trace, [ 'args' ] )
+				static fn ( array $trace ) => Arr::except( $trace, [ 'args' ] )
 			)->all(),
 		] : [
 			'message' => $e instanceof HttpException ? $e->getMessage() : __( 'Server Error', 'mantle' ),

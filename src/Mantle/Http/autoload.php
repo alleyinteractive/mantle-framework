@@ -136,7 +136,7 @@ if ( ! function_exists( 'loop' ) ) {
 	function loop( ...$args ): string {
 		return view()
 			->loop( ...$args )
-			->map( fn ( View $item ) => $item->render() )
+			->map( static fn ( View $item ) => $item->render() )
 			->implode( '' );
 	}
 }
@@ -168,7 +168,7 @@ if ( ! function_exists( 'iterate' ) ) {
 	function iterate( ...$args ): string {
 		return view()
 		->iterate( ...$args )
-		->map( fn ( View $item ) => $item->render() )
+		->map( static fn ( View $item ) => $item->render() )
 		->implode( '' );
 	}
 }

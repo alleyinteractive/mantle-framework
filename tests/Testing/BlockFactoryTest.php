@@ -282,7 +282,7 @@ HTML;
 
 		Block_Factory::register_preset(
 			'test2',
-			fn ( Block_Factory $factory ) => $factory->blocks( [
+			static fn ( Block_Factory $factory ) => $factory->blocks( [
 				$factory->heading(),
 				$factory->paragraphs( 5 ),
 			] ),
@@ -290,7 +290,7 @@ HTML;
 
 		Block_Factory::register_preset(
 			'title_block',
-			fn ( Block_Factory $factory ) => $factory->block(
+			static fn ( Block_Factory $factory ) => $factory->block(
 				'namespace/multititle',
 				null,
 				[
@@ -301,7 +301,7 @@ HTML;
 
 		Block_Factory::register_preset(
 			'title_with_arguments',
-			fn ( Block_Factory $factory, string $title ) => $factory->block(
+			static fn ( Block_Factory $factory, string $title ) => $factory->block(
 				'namespace/multititle',
 				null,
 				[

@@ -139,7 +139,7 @@ class Installation_Manager {
 	public function theme( string $theme ): static {
 		putenv( 'WP_DEFAULT_THEME=' . $theme ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
 
-		return $this->loaded( fn () => switch_theme( $theme ) );
+		return $this->loaded( static fn () => switch_theme( $theme ) );
 	}
 
 	/**
@@ -162,7 +162,7 @@ class Installation_Manager {
 	 * @param array<int, string> $plugins Plugin files to activate in WordPress.
 	 */
 	public function plugins( array $plugins ): static {
-		return $this->loaded( fn () => update_option( 'active_plugins', $plugins ) );
+		return $this->loaded( static fn () => update_option( 'active_plugins', $plugins ) );
 	}
 
 	/**
@@ -197,7 +197,7 @@ class Installation_Manager {
 	 */
 	public function with_experimental_testing_url_host( bool $enable = true ): static {
 		return $this->before(
-			fn () => putenv( 'MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST=' . ( $enable ? '1' : '0' ) ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
+			static fn () => putenv( 'MANTLE_EXPERIMENTAL_TESTING_USE_HOME_URL_HOST=' . ( $enable ? '1' : '0' ) ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
 		);
 	}
 
@@ -208,7 +208,7 @@ class Installation_Manager {
 	 * @param mixed  $value Option value.
 	 */
 	public function with_option( string $option, mixed $value ): static {
-		return $this->loaded( fn () => update_option( $option, $value ) );
+		return $this->loaded( static fn () => update_option( $option, $value ) );
 	}
 
 	/**
@@ -230,7 +230,7 @@ class Installation_Manager {
 
 			if ( $set_tests_domain ) {
 				$this->before(
-					fn () => defined( 'WP_TESTS_DOMAIN' ) || define( 'WP_TESTS_DOMAIN', parse_url( $home, PHP_URL_HOST ) ), // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url
+					static fn () => defined( 'WP_TESTS_DOMAIN' ) || define( 'WP_TESTS_DOMAIN', parse_url( $home, PHP_URL_HOST ) ), // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url
 				);
 			}
 		}
@@ -243,7 +243,7 @@ class Installation_Manager {
 			$this->with_option( 'siteurl', $site );
 
 			// Setup the default HTTP_HOST and HTTPS to make sure the site is installed properly.
-			$this->before( function () use ( $site ): void {
+			$this->before( static function () use ( $site ): void {
 				$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = parse_url( $site, PHP_URL_HOST ); // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url
 
 				if ( 'https' === parse_url( $site, PHP_URL_SCHEME ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions.parse_url_parse_url
@@ -267,7 +267,7 @@ class Installation_Manager {
 	 */
 	public function with_debug( bool $enable = true ): static {
 		return $this->before(
-			fn () => putenv( 'MANTLE_TESTING_DEBUG=' . ( $enable ? '1' : '0' ) ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
+			static fn () => putenv( 'MANTLE_TESTING_DEBUG=' . ( $enable ? '1' : '0' ) ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
 		);
 	}
 
@@ -280,7 +280,7 @@ class Installation_Manager {
 	 */
 	public function with_multisite( bool $enable = true ): static {
 		return $this->before(
-			function () use ( $enable ): void {
+			static function () use ( $enable ): void {
 				if ( $enable ) {
 					putenv( 'WP_MULTISITE=1' ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
 					putenv( 'WP_TESTS_MULTISITE=1' ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv

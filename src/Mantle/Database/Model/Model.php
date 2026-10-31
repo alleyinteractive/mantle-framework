@@ -198,7 +198,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	public static function instance( Model $instance ) {
 		return tap(
 			( new static() )->set_raw_attributes( $instance->get_raw_attributes() ),
-			fn ( Model $model ) => $model->exists = true,
+			static fn ( Model $model ) => $model->exists = true,
 		);
 	}
 
@@ -619,7 +619,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	public static function update_or_create( array $attributes, array $values = [] ): static {
 		return tap(
 			static::first_or_new( $attributes ),
-			fn ( $instance ) => $instance->fill( $values )->save(),
+			static fn ( $instance ) => $instance->fill( $values )->save(),
 		);
 	}
 

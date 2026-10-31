@@ -166,7 +166,7 @@ class Route_Registrar implements Registrar_Contract {
 
 		$this->router->group(
 			$attributes,
-			function () use ( $callback, &$route ): void {
+			static function () use ( $callback, &$route ): void {
 				$route = $callback();
 			},
 		);

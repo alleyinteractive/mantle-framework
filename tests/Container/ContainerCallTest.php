@@ -25,7 +25,7 @@ class ContainerCallTest extends TestCase {
 	public function testCallClosureWithUnresolvableScalarThrowsBindingException(): void {
 		$this->expectException( Binding_Resolution_Exception::class );
 
-		( new Container() )->call( fn ( int $a ) => $a );
+		( new Container() )->call( static fn ( int $a ) => $a );
 	}
 
 	public function testCallWithAtSignBasedClassReferences(): void {
@@ -73,7 +73,7 @@ class ContainerCallTest extends TestCase {
 		$container = new Container();
 		$container->bind_method(
 			ContainerTestCallStub::class . '@unresolvable',
-			function ( $stub ) {
+			static function ( $stub ) {
 				return $stub->unresolvable( 'foo', 'bar' );
 			}
 		);
@@ -83,7 +83,7 @@ class ContainerCallTest extends TestCase {
 		$container = new Container();
 		$container->bind_method(
 			ContainerTestCallStub::class . '@unresolvable',
-			function ( $stub ) {
+			static function ( $stub ) {
 				return $stub->unresolvable( 'foo', 'bar' );
 			}
 		);
@@ -111,7 +111,7 @@ class ContainerCallTest extends TestCase {
 		$container = new Container();
 		$container->bind_method(
 			[ ContainerTestCallStub::class, 'unresolvable' ],
-			function ( $stub ) {
+			static function ( $stub ) {
 				return $stub->unresolvable( 'foo', 'bar' );
 			}
 		);
@@ -121,7 +121,7 @@ class ContainerCallTest extends TestCase {
 		$container = new Container();
 		$container->bind_method(
 			[ ContainerTestCallStub::class, 'unresolvable' ],
-			function ( $stub ) {
+			static function ( $stub ) {
 				return $stub->unresolvable( 'foo', 'bar' );
 			}
 		);
@@ -132,7 +132,7 @@ class ContainerCallTest extends TestCase {
 	public function testCallWithDependencies(): void {
 		$container = new Container();
 		$result    = $container->call(
-			function ( stdClass $foo, $bar = [] ) {
+			static function ( stdClass $foo, $bar = [] ) {
 				return func_get_args();
 			}
 		);
@@ -141,7 +141,7 @@ class ContainerCallTest extends TestCase {
 		$this->assertSame( [], $result[1] );
 
 		$result = $container->call(
-			function ( stdClass $foo, $bar = [] ) {
+			static function ( stdClass $foo, $bar = [] ) {
 				return func_get_args();
 			},
 			[ 'bar' => 'taylor' ]
@@ -152,7 +152,7 @@ class ContainerCallTest extends TestCase {
 
 		$stub   = new ContainerCallConcreteStub();
 		$result = $container->call(
-			function ( stdClass $foo, ContainerCallConcreteStub $bar ) {
+			static function ( stdClass $foo, ContainerCallConcreteStub $bar ) {
 				return func_get_args();
 			},
 			[ ContainerCallConcreteStub::class => $stub ]
@@ -165,7 +165,7 @@ class ContainerCallTest extends TestCase {
 		 * Wrap a function...
 		 */
 		$result = $container->wrap(
-			function ( stdClass $foo, $bar = [] ) {
+			static function ( stdClass $foo, $bar = [] ) {
 				return func_get_args();
 			},
 			[ 'bar' => 'taylor' ]
@@ -200,7 +200,7 @@ class ContainerCallTest extends TestCase {
 
 		$container = new Container();
 		$foo       = $container->call(
-			function ( $foo, $bar = 'default' ) {
+			static function ( $foo, $bar = 'default' ) {
 				return $foo;
 			}
 		);

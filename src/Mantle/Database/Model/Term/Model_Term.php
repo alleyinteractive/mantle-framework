@@ -101,7 +101,7 @@ trait Model_Term {
 		}
 
 		return array_map(
-			fn ( WP_Term $term ) => Term::new_from_existing( (array) $term ),
+			static fn ( WP_Term $term ) => Term::new_from_existing( (array) $term ),
 			(array) $terms,
 		);
 	}
@@ -122,7 +122,7 @@ trait Model_Term {
 		$terms = collect( Arr::wrap( $terms ) );
 
 		if ( $taxonomy ) {
-			$terms = $terms->map( function ( mixed $term ) use ( $taxonomy ): int {
+			$terms = $terms->map( static function ( mixed $term ) use ( $taxonomy ): int {
 				if ( $term instanceof WP_Term || $term instanceof Term ) {
 					return $term->term_id;
 				}
@@ -252,7 +252,7 @@ trait Model_Term {
 	public function remove_terms( $terms, ?string $taxonomy = null ) {
 		$terms = collect( Arr::wrap( $terms ) )
 			->map(
-				function ( $term ) use ( &$taxonomy ) {
+				static function ( $term ) use ( &$taxonomy ) {
 					if ( $term instanceof Term ) {
 						if ( empty( $taxonomy ) ) {
 							$taxonomy = $term->taxonomy();

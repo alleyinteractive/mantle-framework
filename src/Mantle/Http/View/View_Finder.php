@@ -207,7 +207,7 @@ class View_Finder {
 	protected function locate_template( array $templates, ?string $alias = null ): string {
 		// Filter on the raw paths: get_paths() dedupes, dropping aliases that share a path.
 		$paths = $alias
-			? array_filter( $this->paths, fn ( $path_alias ) => $alias === $path_alias, ARRAY_FILTER_USE_KEY )
+			? array_filter( $this->paths, static fn ( $path_alias ) => $alias === $path_alias, ARRAY_FILTER_USE_KEY )
 			: $this->get_paths();
 
 		foreach ( $templates as $template ) {
@@ -235,7 +235,7 @@ class View_Finder {
 	 */
 	public function get_possible_view_files( string $name ): array {
 		return array_map(
-			fn ( string $extension ) => "{$name}.{$extension}",
+			static fn ( string $extension ) => "{$name}.{$extension}",
 			$this->extensions
 		);
 	}

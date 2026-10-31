@@ -128,7 +128,7 @@ trait Has_Attributes {
 		static $methods = null;
 
 		$methods ??= array_map(
-			fn ( \ReflectionMethod $reflection ) => $reflection->getName(),
+			static fn ( \ReflectionMethod $reflection ) => $reflection->getName(),
 			( new \ReflectionClass( \Mantle\Contracts\Database\Core_Object::class ) )->getMethods(),
 		);
 

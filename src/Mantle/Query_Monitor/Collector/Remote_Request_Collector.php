@@ -317,7 +317,7 @@ class Remote_Request_Collector extends \QM_Collector {
 	 */
 	protected function get_trace(): array {
 		$trace = Backtrace::create()->startingFromFrame(
-			function ( Frame $frame ): bool {
+			static function ( Frame $frame ): bool {
 				if ( $frame->class !== Pending_Request::class ) {
 					return false;
 				}
@@ -329,7 +329,7 @@ class Remote_Request_Collector extends \QM_Collector {
 		// If no frames found, get the full trace from wp_remote_*().
 		if ( empty( $trace ) ) {
 			$trace = Backtrace::create()->startingFromFrame(
-				fn ( Frame $frame ): bool => str_starts_with( (string) $frame->method, 'wp_remote_' ),
+				static fn ( Frame $frame ): bool => str_starts_with( (string) $frame->method, 'wp_remote_' ),
 			)->frames();
 		}
 
@@ -342,7 +342,7 @@ class Remote_Request_Collector extends \QM_Collector {
 			\Mantle\Http_Client\http_client::class,
 		) ) {
 			$trace = $trace->skip_until(
-				fn ( Frame $frame ): bool => $frame->method === \Mantle\Http_Client\http_client::class,
+				static fn ( Frame $frame ): bool => $frame->method === \Mantle\Http_Client\http_client::class,
 			);
 		}
 

@@ -174,7 +174,7 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 
 			$this->listeners[ $event ][ $priority ] = array_filter(
 				$this->listeners[ $event ][ $priority ],
-				fn ( callable $value ) => ! in_array( $value, $wrappers, true ),
+				static fn ( callable $value ) => ! in_array( $value, $wrappers, true ),
 			);
 
 			unset( $this->listener_map[ $event ][ $priority ][ $key ] );

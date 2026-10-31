@@ -185,7 +185,7 @@ class Post_Query_Builder extends Builder {
 		$builder->query_hash = spl_object_hash( $query );
 
 		$builder->with_clauses(
-			fn () => $query->query( $builder->get_query_args() ),
+			static fn () => $query->query( $builder->get_query_args() ),
 		);
 
 		return $query->found_posts;
@@ -204,7 +204,7 @@ class Post_Query_Builder extends Builder {
 			// @phpstan-ignore return.type
 			return Collection::from( $post_ids )
 				->map(
-					function ( $post_id ) use ( $model_object_types ) {
+					static function ( $post_id ) use ( $model_object_types ) {
 						$post_type = \get_post_type( $post_id );
 
 						if ( empty( $model_object_types[ $post_type ] ) ) {

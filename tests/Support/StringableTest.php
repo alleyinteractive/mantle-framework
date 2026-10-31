@@ -134,7 +134,7 @@ class StringableTest extends TestCase {
 			'unless false',
 			(string) $this->stringable( 'unless' )->unless(
 				false,
-				function ( $stringable, $value ) {
+				static function ( $stringable, $value ) {
 					return $stringable->append( ' false' );
 				}
 			)
@@ -144,10 +144,10 @@ class StringableTest extends TestCase {
 			'unless true fallbacks to default',
 			(string) $this->stringable( 'unless' )->unless(
 				true,
-				function ( $stringable, $value ) {
+				static function ( $stringable, $value ) {
 					return $stringable->append( $value );
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->append( ' true fallbacks to default' );
 				}
 			)
@@ -159,10 +159,10 @@ class StringableTest extends TestCase {
 			'Tony Stark',
 			(string) $this->stringable( 'stark' )->when_contains(
 				'tar',
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Tony ' )->title();
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Arno ' )->title();
 				}
 			)
@@ -172,7 +172,7 @@ class StringableTest extends TestCase {
 			'stark',
 			(string) $this->stringable( 'stark' )->when_contains(
 				'xxx',
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Tony ' )->title();
 				}
 			)
@@ -182,10 +182,10 @@ class StringableTest extends TestCase {
 			'Arno Stark',
 			(string) $this->stringable( 'stark' )->when_contains(
 				'xxx',
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Tony ' )->title();
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Arno ' )->title();
 				}
 			)
@@ -197,10 +197,10 @@ class StringableTest extends TestCase {
 			'Tony Stark',
 			(string) $this->stringable( 'tony stark' )->when_contains_all(
 				[ 'tony', 'stark' ],
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->title();
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->studly();
 				}
 			)
@@ -210,7 +210,7 @@ class StringableTest extends TestCase {
 			'tony stark',
 			(string) $this->stringable( 'tony stark' )->when_contains_all(
 				[ 'xxx' ],
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->title();
 				}
 			)
@@ -220,10 +220,10 @@ class StringableTest extends TestCase {
 			'TonyStark',
 			(string) $this->stringable( 'tony stark' )->when_contains_all(
 				[ 'tony', 'xxx' ],
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->title();
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->studly();
 				}
 			)
@@ -252,10 +252,10 @@ class StringableTest extends TestCase {
 			'Tony Stark',
 			(string) $this->stringable( 'tony stark' )->when_ends_with(
 				'ark',
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->title();
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->studly();
 				}
 			)
@@ -265,10 +265,10 @@ class StringableTest extends TestCase {
 			'Tony Stark',
 			(string) $this->stringable( 'tony stark' )->when_ends_with(
 				[ 'kra', 'ark' ],
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->title();
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->studly();
 				}
 			)
@@ -278,7 +278,7 @@ class StringableTest extends TestCase {
 			'tony stark',
 			(string) $this->stringable( 'tony stark' )->when_ends_with(
 				[ 'xxx' ],
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->title();
 				}
 			)
@@ -288,10 +288,10 @@ class StringableTest extends TestCase {
 			'TonyStark',
 			(string) $this->stringable( 'tony stark' )->when_ends_with(
 				[ 'tony', 'xxx' ],
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->title();
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->studly();
 				}
 			)
@@ -303,10 +303,10 @@ class StringableTest extends TestCase {
 			'Nailed it...!',
 			(string) $this->stringable( 'Tony Stark' )->when_exactly(
 				'Tony Stark',
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return 'Nailed it...!';
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return 'Swing and a miss...!';
 				}
 			)
@@ -316,10 +316,10 @@ class StringableTest extends TestCase {
 			'Swing and a miss...!',
 			(string) $this->stringable( 'Tony Stark' )->when_exactly(
 				'Iron Man',
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return 'Nailed it...!';
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return 'Swing and a miss...!';
 				}
 			)
@@ -329,7 +329,7 @@ class StringableTest extends TestCase {
 			'Tony Stark',
 			(string) $this->stringable( 'Tony Stark' )->when_exactly(
 				'Iron Man',
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return 'Nailed it...!';
 				}
 			)
@@ -341,7 +341,7 @@ class StringableTest extends TestCase {
 			'Iron Man',
 			(string) $this->stringable( 'Tony' )->when_not_exactly(
 				'Tony Stark',
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return 'Iron Man';
 				}
 			)
@@ -351,10 +351,10 @@ class StringableTest extends TestCase {
 			'Swing and a miss...!',
 			(string) $this->stringable( 'Tony Stark' )->when_not_exactly(
 				'Tony Stark',
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return 'Iron Man';
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return 'Swing and a miss...!';
 				}
 			)
@@ -366,10 +366,10 @@ class StringableTest extends TestCase {
 			'Winner: /',
 			(string) $this->stringable( '/' )->when_is(
 				'/',
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Winner: ' );
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return 'Try again';
 				}
 			)
@@ -379,7 +379,7 @@ class StringableTest extends TestCase {
 			'/',
 			(string) $this->stringable( '/' )->when_is(
 				' /',
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Winner: ' );
 				}
 			)
@@ -389,10 +389,10 @@ class StringableTest extends TestCase {
 			'Try again',
 			(string) $this->stringable( '/' )->when_is(
 				' /',
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Winner: ' );
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return 'Try again';
 				}
 			)
@@ -402,7 +402,7 @@ class StringableTest extends TestCase {
 			'Winner: foo/bar/baz',
 			(string) $this->stringable( 'foo/bar/baz' )->when_is(
 				'foo/*',
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Winner: ' );
 				}
 			)
@@ -413,10 +413,10 @@ class StringableTest extends TestCase {
 		$this->assertSame(
 			'Ascii: A',
 			(string) $this->stringable( 'A' )->when_is_ascii(
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Ascii: ' );
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Not Ascii: ' );
 				}
 			)
@@ -425,7 +425,7 @@ class StringableTest extends TestCase {
 		$this->assertSame(
 			'ù',
 			(string) $this->stringable( 'ù' )->when_is_ascii(
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Ascii: ' );
 				}
 			)
@@ -434,10 +434,10 @@ class StringableTest extends TestCase {
 		$this->assertSame(
 			'Not Ascii: ù',
 			(string) $this->stringable( 'ù' )->when_is_ascii(
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Ascii: ' );
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Not Ascii: ' );
 				}
 			)
@@ -448,10 +448,10 @@ class StringableTest extends TestCase {
 		$this->assertSame(
 			'Uuid: 2cdc7039-65a6-4ac7-8e5d-d554a98e7b15',
 			(string) $this->stringable( '2cdc7039-65a6-4ac7-8e5d-d554a98e7b15' )->when_is_uuid(
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Uuid: ' );
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Not Uuid: ' );
 				}
 			)
@@ -460,7 +460,7 @@ class StringableTest extends TestCase {
 		$this->assertSame(
 			'2cdc7039-65a6-4ac7-8e5d-d554a98',
 			(string) $this->stringable( '2cdc7039-65a6-4ac7-8e5d-d554a98' )->when_is_uuid(
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Uuid: ' );
 				}
 			)
@@ -469,10 +469,10 @@ class StringableTest extends TestCase {
 		$this->assertSame(
 			'Not Uuid: 2cdc7039-65a6-4ac7-8e5d-d554a98',
 			(string) $this->stringable( '2cdc7039-65a6-4ac7-8e5d-d554a98' )->when_is_uuid(
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Uuid: ' );
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Not Uuid: ' );
 				}
 			)
@@ -484,10 +484,10 @@ class StringableTest extends TestCase {
 			'Winner: foo bar',
 			(string) $this->stringable( 'foo bar' )->when_test(
 				'/bar/',
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Winner: ' );
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return 'Try again';
 				}
 			)
@@ -497,10 +497,10 @@ class StringableTest extends TestCase {
 			'Try again',
 			(string) $this->stringable( 'foo bar' )->when_test(
 				'/link/',
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Winner: ' );
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return 'Try again';
 				}
 			)
@@ -510,7 +510,7 @@ class StringableTest extends TestCase {
 			'foo bar',
 			(string) $this->stringable( 'foo bar' )->when_test(
 				'/link/',
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->prepend( 'Winner: ' );
 				}
 			)
@@ -522,10 +522,10 @@ class StringableTest extends TestCase {
 			'Tony Stark',
 			(string) $this->stringable( 'tony stark' )->when_starts_with(
 				'ton',
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->title();
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->studly();
 				}
 			)
@@ -535,10 +535,10 @@ class StringableTest extends TestCase {
 			'Tony Stark',
 			(string) $this->stringable( 'tony stark' )->when_starts_with(
 				[ 'ton', 'not' ],
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->title();
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->studly();
 				}
 			)
@@ -548,7 +548,7 @@ class StringableTest extends TestCase {
 			'tony stark',
 			(string) $this->stringable( 'tony stark' )->when_starts_with(
 				[ 'xxx' ],
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->title();
 				}
 			)
@@ -558,10 +558,10 @@ class StringableTest extends TestCase {
 			'Tony Stark',
 			(string) $this->stringable( 'tony stark' )->when_starts_with(
 				[ 'tony', 'xxx' ],
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->title();
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->studly();
 				}
 			)
@@ -575,7 +575,7 @@ class StringableTest extends TestCase {
 				$this->assertSame(
 					$stringable,
 					$stringable->when_empty(
-						function () {
+						static function () {
 						}
 					)
 				);
@@ -585,7 +585,7 @@ class StringableTest extends TestCase {
 		$this->assertSame(
 			'empty',
 			(string) $this->stringable()->when_empty(
-				function () {
+				static function () {
 					return 'empty';
 				}
 			)
@@ -594,7 +594,7 @@ class StringableTest extends TestCase {
 		$this->assertSame(
 			'not-empty',
 			(string) $this->stringable( 'not-empty' )->when_empty(
-				function () {
+				static function () {
 					return 'empty';
 				}
 			)
@@ -608,7 +608,7 @@ class StringableTest extends TestCase {
 				$this->assertSame(
 					$stringable,
 					$stringable->when_not_empty(
-						function ( $stringable ) {
+						static function ( $stringable ) {
 							return $stringable . '.';
 						}
 					)
@@ -619,7 +619,7 @@ class StringableTest extends TestCase {
 		$this->assertSame(
 			'',
 			(string) $this->stringable()->when_not_empty(
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable . '.';
 				}
 			)
@@ -628,7 +628,7 @@ class StringableTest extends TestCase {
 		$this->assertSame(
 			'Not empty.',
 			(string) $this->stringable( 'Not empty' )->when_not_empty(
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable . '.';
 				}
 			)
@@ -640,7 +640,7 @@ class StringableTest extends TestCase {
 			'when',
 			(string) $this->stringable( 'when' )->when(
 				false,
-				function ( $stringable, $value ) {
+				static function ( $stringable, $value ) {
 					return $stringable->append( $value )->append( 'false' );
 				}
 			)
@@ -650,10 +650,10 @@ class StringableTest extends TestCase {
 			'when false fallbacks to default',
 			(string) $this->stringable( 'when false ' )->when(
 				false,
-				function ( $stringable, $value ) {
+				static function ( $stringable, $value ) {
 					return $stringable->append( $value );
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->append( 'fallbacks to default' );
 				}
 			)
@@ -665,7 +665,7 @@ class StringableTest extends TestCase {
 			'when true',
 			(string) $this->stringable( 'when ' )->when(
 				true,
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->append( 'true' );
 				}
 			)
@@ -675,10 +675,10 @@ class StringableTest extends TestCase {
 			'gets a value from if',
 			(string) $this->stringable( 'gets a value ' )->when(
 				'from if',
-				function ( $stringable, $value ) {
+				static function ( $stringable, $value ) {
 					return $stringable->append( $value );
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->append( 'fallbacks to default' );
 				}
 			)
@@ -690,7 +690,7 @@ class StringableTest extends TestCase {
 			'unless',
 			(string) $this->stringable( 'unless' )->unless(
 				1,
-				function ( $stringable, $value ) {
+				static function ( $stringable, $value ) {
 					return $stringable->append( $value )->append( 'true' );
 				}
 			)
@@ -700,10 +700,10 @@ class StringableTest extends TestCase {
 			'unless true fallbacks to default with value 1',
 			(string) $this->stringable( 'unless true ' )->unless(
 				1,
-				function ( $stringable, $value ) {
+				static function ( $stringable, $value ) {
 					return $stringable->append( $value );
 				},
-				function ( $stringable, $value ) {
+				static function ( $stringable, $value ) {
 					return $stringable->append( 'fallbacks to default with value ' )->append( $value );
 				}
 			)
@@ -715,7 +715,7 @@ class StringableTest extends TestCase {
 			'unless 0',
 			(string) $this->stringable( 'unless ' )->unless(
 				0,
-				function ( $stringable, $value ) {
+				static function ( $stringable, $value ) {
 					return $stringable->append( $value );
 				}
 			)
@@ -725,10 +725,10 @@ class StringableTest extends TestCase {
 			'gets the value 0',
 			(string) $this->stringable( 'gets the value ' )->unless(
 				0,
-				function ( $stringable, $value ) {
+				static function ( $stringable, $value ) {
 					return $stringable->append( $value );
 				},
-				function ( $stringable ) {
+				static function ( $stringable ) {
 					return $stringable->append( 'fallbacks to default' );
 				}
 			)
@@ -1265,7 +1265,7 @@ class StringableTest extends TestCase {
 		$fromTheTap = '';
 
 		$stringable = $stringable->tap(
-			function ( Stringable $string ) use ( &$fromTheTap ) {
+			static function ( Stringable $string ) use ( &$fromTheTap ) {
 				$fromTheTap = $string->substr( 0, 3 );
 			}
 		);
@@ -1275,7 +1275,7 @@ class StringableTest extends TestCase {
 	}
 
 	public function testPipe(): void {
-		$callback = function ( $stringable ) {
+		$callback = static function ( $stringable ) {
 			return 'bar';
 		};
 

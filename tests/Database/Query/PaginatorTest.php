@@ -185,7 +185,7 @@ class PaginatorTest extends FrameworkTestCase {
 	public function test_paginate_response(): void {
 		$post_ids = static::factory()->post->create_many( 100 );
 
-		Route::get( '/test-paginate', function() {
+		Route::get( '/test-paginate', static function() {
 			return Post::paginate( 20 );
 		} );
 

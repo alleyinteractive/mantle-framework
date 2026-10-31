@@ -13,19 +13,19 @@ class WordPressCacheRepositoryTest extends FrameworkTestCase {
 		$this->assertSame( 'cache-value', Cache::get( 'cache-key', 'default' ) );
 
 		$this->assertNull( Cache::get( 'sear-key' ) );
-		Cache::sear( 'sear-key', fn () => 'sear-value' );
+		Cache::sear( 'sear-key', static fn () => 'sear-value' );
 		$this->assertSame( 'sear-value', Cache::get( 'sear-key' ) );
 
 		$this->assertNull( Cache::get( 'remember-key' ) );
 		// remember() must return the computed value on a cache miss, then the cached value thereafter.
-		$this->assertSame( 'remember-value', Cache::remember( 'remember-key', 3600, fn () => 'remember-value' ) );
+		$this->assertSame( 'remember-value', Cache::remember( 'remember-key', 3600, static fn () => 'remember-value' ) );
 		$this->assertSame( 'remember-value', Cache::get( 'remember-key' ) );
-		$this->assertSame( 'remember-value', Cache::remember( 'remember-key', 3600, fn () => 'different-value' ) );
+		$this->assertSame( 'remember-value', Cache::remember( 'remember-key', 3600, static fn () => 'different-value' ) );
 
 		$this->assertNull( Cache::get( 'remember-forever-key' ) );
-		$this->assertSame( 'forever-value', Cache::remember_forever( 'remember-forever-key', fn () => 'forever-value' ) );
+		$this->assertSame( 'forever-value', Cache::remember_forever( 'remember-forever-key', static fn () => 'forever-value' ) );
 		$this->assertSame( 'forever-value', Cache::get( 'remember-forever-key' ) );
-		$this->assertSame( 'forever-value', Cache::remember_forever( 'remember-forever-key', fn () => 'different-value' ) );
+		$this->assertSame( 'forever-value', Cache::remember_forever( 'remember-forever-key', static fn () => 'different-value' ) );
 
 		$this->assertEmpty( Cache::get( 'pull-key' ) );
 		Cache::put( 'pull-key', 'pull-value' );
@@ -70,7 +70,7 @@ class WordPressCacheRepositoryTest extends FrameworkTestCase {
 			key: 'flexible-key',
 			stale: now()->addHour(),
 			expire: now()->addHours( 2 ),
-			callback: fn () => 'flexible-value',
+			callback: static fn () => 'flexible-value',
 		);
 
 		$this->assertInstanceOf( SWR_Storage::class, wp_cache_get( 'flexible-key', '' ) );
@@ -99,7 +99,7 @@ class WordPressCacheRepositoryTest extends FrameworkTestCase {
 			key: 'flexible-key',
 			stale: now()->addHour(),
 			expire: now()->addHours( 2 ),
-			callback: function () {
+			callback: static function () {
 				$_SERVER['__CALLED'] = true;
 				return 'flexible-value';
 			},
@@ -126,7 +126,7 @@ class WordPressCacheRepositoryTest extends FrameworkTestCase {
 			key: 'flexible-key',
 			stale: now()->subHour(),
 			expire: now()->addHours( 2 ),
-			callback: function () {
+			callback: static function () {
 				$_SERVER['__CALLED'] = true;
 				return 'new-value';
 			},
@@ -159,7 +159,7 @@ class WordPressCacheRepositoryTest extends FrameworkTestCase {
 			key: 'flexible-key',
 			stale: now()->subHour(),
 			expire: now()->addHours( 2 ),
-			callback: function () {
+			callback: static function () {
 				$_SERVER['__CALLED'] = true;
 				return 'updated-value';
 			},
@@ -176,7 +176,7 @@ class WordPressCacheRepositoryTest extends FrameworkTestCase {
 			key: 'flexible-key',
 			stale: now()->subHour(),
 			expire: now()->addHours( 2 ),
-			callback: function () {
+			callback: static function () {
 				$_SERVER['__CALLED'] = true;
 				return 'updated-value';
 			},
@@ -232,7 +232,7 @@ class WordPressCacheRepositoryTest extends FrameworkTestCase {
 			Cache::remember(
 				'false-key',
 				60,
-				function () use ( &$calls ) {
+				static function () use ( &$calls ) {
 					$calls++;
 					return true;
 				}
@@ -249,7 +249,7 @@ class WordPressCacheRepositoryTest extends FrameworkTestCase {
 		$this->assertTrue( cache( [ $key => 'cache-value' ], 3600 ) );
 		$this->assertSame( 'cache-value', cache( $key ) );
 
-		cache()->remember( 'remember-key', 3600, function() {
+		cache()->remember( 'remember-key', 3600, static function() {
 			return 'cache-value';
 		} );
 

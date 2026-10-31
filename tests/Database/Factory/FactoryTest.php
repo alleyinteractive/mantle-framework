@@ -275,7 +275,7 @@ class FactoryTest extends FrameworkTestCase {
 
 	public function test_callable_as_attribute(): void {
 		$post = Testable_Post::factory()->create_and_get( [
-			'post_title' => fn () => 'Title from callable',
+			'post_title' => static fn () => 'Title from callable',
 		] );
 
 		$this->assertSame( 'Title from callable', $post->post_title );
@@ -334,7 +334,7 @@ class Testable_Post_Factory extends Factory\Post_Factory {
 
 	public function custom_state(): static {
 		return $this->state(
-			fn ( array $attributes ) => [
+			static fn ( array $attributes ) => [
 				'title' => 'Title from the custom state',
 			]
 		);

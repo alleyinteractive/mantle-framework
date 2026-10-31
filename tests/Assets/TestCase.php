@@ -17,7 +17,7 @@ abstract class TestCase extends FrameworkTestCase {
 		remove_all_filters( 'am_asset_conditions', 10 );
 		add_filter(
 			'am_asset_conditions',
-			function() {
+			static function() {
 				return [
 					'global'            => true,
 					'article_post_type' => true,
@@ -43,7 +43,7 @@ abstract class TestCase extends FrameworkTestCase {
 		// Register with the container.
 		app()->singleton(
 			'asset.manager',
-			fn() => new Asset_Manager(),
+			static fn() => new Asset_Manager(),
 		);
 
 		app()->alias( 'asset.manager', Asset_Manager::class );

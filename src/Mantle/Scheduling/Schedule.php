@@ -168,7 +168,7 @@ class Schedule {
 	 */
 	public function due_events( Application $app ): Collection {
 		return collect( $this->events() )->filter(
-			fn ( Event $event ) => $event->is_due( $app ),
+			static fn ( Event $event ) => $event->is_due( $app ),
 		);
 	}
 

@@ -481,7 +481,7 @@ class StrTest extends TestCase {
 	}
 
 	public function testRandomStringFactoryCanBeSet(): void {
-		Str::create_random_strings_using( fn ( $length) => 'length:' . $length );
+		Str::create_random_strings_using( static fn ( $length) => 'length:' . $length );
 
 		$this->assertSame( 'length:7', Str::random( 7 ) );
 		$this->assertSame( 'length:7', Str::random( 7 ) );
@@ -519,7 +519,7 @@ class StrTest extends TestCase {
 	}
 
 	public function testItCanSpecifyAFallbackForARandomStringSequence(): void {
-		Str::create_random_strings_using_sequence( [ Str::random(), Str::random() ], fn () => throw new Exception( 'Out of random strings.' ) );
+		Str::create_random_strings_using_sequence( [ Str::random(), Str::random() ], static fn () => throw new Exception( 'Out of random strings.' ) );
 		Str::random();
 		Str::random();
 

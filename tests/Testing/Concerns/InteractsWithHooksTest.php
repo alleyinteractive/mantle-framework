@@ -66,7 +66,7 @@ class InteractsWithHooksTest extends FrameworkTestCase {
 	public function test_hook_return_callable_string(): void {
 		$this->expectApplied( 'callable_string_hook_to_add' )->once()->andReturn( '__return_false' );
 
-		add_filter( 'callable_string_hook_to_add', fn () => '__return_false' );
+		add_filter( 'callable_string_hook_to_add', static fn () => '__return_false' );
 
 		apply_filters( 'callable_string_hook_to_add', 'passed-value' );
 	}
@@ -75,8 +75,8 @@ class InteractsWithHooksTest extends FrameworkTestCase {
 		$this->expectApplied( 'truthy_hook_to_add' )->once()->andReturnTruthy();
 		$this->expectApplied( 'falsy_hook_to_add' )->once()->andReturnFalsy();
 
-		add_filter( 'truthy_hook_to_add', fn () => 123 );
-		add_filter( 'falsy_hook_to_add', fn () => 0 );
+		add_filter( 'truthy_hook_to_add', static fn () => 123 );
+		add_filter( 'falsy_hook_to_add', static fn () => 0 );
 
 		apply_filters( 'truthy_hook_to_add', false );
 		apply_filters( 'falsy_hook_to_add', true );
@@ -93,7 +93,7 @@ class InteractsWithHooksTest extends FrameworkTestCase {
 	public function test_hook_return_empty(): void {
 		$this->expectApplied( 'empty_hook_to_add' )->once()->andReturnEmpty();
 
-		add_filter( 'empty_hook_to_add', fn () => '' );
+		add_filter( 'empty_hook_to_add', static fn () => '' );
 
 		$this->assertEmpty( apply_filters( 'empty_hook_to_add', 'not_empty' ) );
 	}
@@ -101,7 +101,7 @@ class InteractsWithHooksTest extends FrameworkTestCase {
 	public function test_hook_return_array(): void {
 		$this->expectApplied( 'array_hook_to_add' )->once()->andReturnArray();
 
-		add_filter( 'array_hook_to_add', fn () => [] );
+		add_filter( 'array_hook_to_add', static fn () => [] );
 
 		$this->assertIsArray( apply_filters( 'array_hook_to_add', 'not_array' ) );
 	}
@@ -109,7 +109,7 @@ class InteractsWithHooksTest extends FrameworkTestCase {
 	public function test_hook_return_string(): void {
 		$this->expectApplied( 'string_hook_to_add' )->once()->andReturnString();
 
-		add_filter( 'string_hook_to_add', fn () => 'string' );
+		add_filter( 'string_hook_to_add', static fn () => 'string' );
 
 		$this->assertIsString( apply_filters( 'string_hook_to_add', 'not_string' ) );
 	}
@@ -117,7 +117,7 @@ class InteractsWithHooksTest extends FrameworkTestCase {
 	public function test_hook_return_int(): void {
 		$this->expectApplied( 'int_hook_to_add' )->once()->andReturnInteger();
 
-		add_filter( 'int_hook_to_add', fn () => 123 );
+		add_filter( 'int_hook_to_add', static fn () => 123 );
 
 		$this->assertIsInt( apply_filters( 'int_hook_to_add', 'not_int' ) );
 	}
@@ -134,14 +134,14 @@ class InteractsWithHooksTest extends FrameworkTestCase {
 		$passed_value = null;
 
 		$this->expectApplied( 'callback_hook_to_add' )->once()->andReturn(
-			function ( $value ) use ( &$passed_value ) {
+			static function ( $value ) use ( &$passed_value ) {
 				$passed_value = $value;
 
 				return 'filtered-value' === $value;
 			}
 		);
 
-		add_filter( 'callback_hook_to_add', fn () => 'filtered-value' );
+		add_filter( 'callback_hook_to_add', static fn () => 'filtered-value' );
 
 		apply_filters( 'callback_hook_to_add', 'passed-value' );
 	}

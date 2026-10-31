@@ -466,7 +466,7 @@ class PostObjectTest extends FrameworkTestCase {
 	}
 
 	public function test_get_all(): void {
-		Post::all()->each( fn ( Post $post ) => $post->delete( true ) );
+		Post::all()->each( static fn ( Post $post ) => $post->delete( true ) );
 
 		$published_post_ids = static::factory()->post->create_many( 5, [ 'post_status' => 'publish' ] );
 		$draft_post_ids     = static::factory()->post->create_many( 5, [ 'post_status' => 'draft' ] );

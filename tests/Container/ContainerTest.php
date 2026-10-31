@@ -46,7 +46,7 @@ class ContainerTest extends TestCase {
 		$container = new Container();
 		$container->bind(
 			'name',
-			function () {
+			static function () {
 					return 'Taylor';
 			}
 		);
@@ -58,13 +58,13 @@ class ContainerTest extends TestCase {
 		$container = new Container();
 		$container->bind(
 			'name',
-			function () {
+			static function () {
 				return 'Taylor';
 			}
 		);
 		$container->bind_if(
 			'name',
-			function () {
+			static function () {
 				return 'Dayle';
 			}
 		);
@@ -76,13 +76,13 @@ class ContainerTest extends TestCase {
 		$container = new Container();
 		$container->bind(
 			'surname',
-			function () {
+			static function () {
 				return 'Taylor';
 			}
 		);
 		$container->bind_if(
 			'name',
-			function () {
+			static function () {
 				return 'Dayle';
 			}
 		);
@@ -94,14 +94,14 @@ class ContainerTest extends TestCase {
 		$container = new Container();
 		$container->singleton(
 			'class',
-			function () {
+			static function () {
 				return new \stdClass();
 			}
 		);
 		$firstInstantiation = $container->make( 'class' );
 		$container->singleton_if(
 			'class',
-			function () {
+			static function () {
 				return new ContainerConcreteStub();
 			}
 		);
@@ -113,13 +113,13 @@ class ContainerTest extends TestCase {
 		$container = new Container();
 		$container->singleton(
 			'class',
-			function () {
+			static function () {
 				return new \stdClass();
 			}
 		);
 		$container->singleton_if(
 			'otherClass',
-			function () {
+			static function () {
 				return new ContainerConcreteStub();
 			}
 		);
@@ -132,7 +132,7 @@ class ContainerTest extends TestCase {
 		$container = new Container();
 		$container->singleton(
 			'class',
-			function () {
+			static function () {
 				return new \stdClass();
 			}
 		);
@@ -174,7 +174,7 @@ class ContainerTest extends TestCase {
 		$container = new Container();
 		$container->bind(
 			'something',
-			function ( $c ) {
+			static function ( $c ) {
 					return $c;
 			}
 		);
@@ -184,7 +184,7 @@ class ContainerTest extends TestCase {
 
 	public function testArrayAccess(): void {
 		$container             = new Container();
-		$container['something'] = function () {
+		$container['something'] = static function () {
 			return 'foo';
 		};
 		$this->assertTrue( isset( $container['something'] ) );
@@ -207,7 +207,7 @@ class ContainerTest extends TestCase {
 		$container = new Container();
 		$container->bind(
 			'foo',
-			function ( $app, $config ) {
+			static function ( $app, $config ) {
 					return $config;
 			}
 		);
@@ -269,18 +269,18 @@ class ContainerTest extends TestCase {
 		$container = new Container();
 		$container->bind(
 			'foo',
-			function () {
+			static function () {
 			}
 		);
 		$container->rebinding(
 			'foo',
-			function () {
+			static function () {
 					$_SERVER['__test.rebind'] = true;
 			}
 		);
 		$container->bind(
 			'foo',
-			function () {
+			static function () {
 			}
 		);
 
@@ -293,18 +293,18 @@ class ContainerTest extends TestCase {
 		$container = new Container();
 		$container->instance(
 			'foo',
-			function () {
+			static function () {
 			}
 		);
 		$container->rebinding(
 			'foo',
-			function () {
+			static function () {
 					$_SERVER['__test.rebind'] = true;
 			}
 		);
 		$container->instance(
 			'foo',
-			function () {
+			static function () {
 			}
 		);
 
@@ -317,13 +317,13 @@ class ContainerTest extends TestCase {
 		$container = new Container();
 		$container->rebinding(
 			'foo',
-			function () {
+			static function () {
 					$_SERVER['__test.rebind'] = true;
 			}
 		);
 		$container->instance(
 			'foo',
-			function () {
+			static function () {
 			}
 		);
 
@@ -392,7 +392,7 @@ class ContainerTest extends TestCase {
 			$container = new Container();
 			$container->bind(
 				'ConcreteStub',
-				function () {
+				static function () {
 						return new ContainerConcreteStub();
 				},
 				true
@@ -414,7 +414,7 @@ class ContainerTest extends TestCase {
 		$container = new Container();
 		$container->bind(
 			'ConcreteStub',
-			function () {
+			static function () {
 					return new ContainerConcreteStub();
 			},
 			true
@@ -448,7 +448,7 @@ class ContainerTest extends TestCase {
 		$container = new Container();
 		$container->bind(
 			'name',
-			function () {
+			static function () {
 					return 'Taylor';
 			}
 		);
@@ -482,7 +482,7 @@ class ContainerTest extends TestCase {
 
 		$container->bind(
 			'foo',
-			function ( $app, $config ) {
+			static function ( $app, $config ) {
 					return $config;
 			}
 		);
@@ -501,13 +501,13 @@ class ContainerTest extends TestCase {
 		$container = new Container();
 		$container->bind(
 			'foo',
-			function ( $app, $config ) {
+			static function ( $app, $config ) {
 					return $app->make( 'bar', [ 'name' => 'Taylor' ] );
 			}
 		);
 		$container->bind(
 			'bar',
-			function ( $app, $config ) {
+			static function ( $app, $config ) {
 					return $config;
 			}
 		);
@@ -520,14 +520,14 @@ class ContainerTest extends TestCase {
 
 		$container->bind(
 			'foo',
-			function ( $app, $config ) {
+			static function ( $app, $config ) {
 					return $app->make( 'bar' );
 			}
 		);
 
 		$container->bind(
 			'bar',
-			function ( $app, $config ) {
+			static function ( $app, $config ) {
 					return $config;
 			}
 		);
@@ -540,7 +540,7 @@ class ContainerTest extends TestCase {
 
 		$container->singleton(
 			'foo',
-			function ( $app, $config ) {
+			static function ( $app, $config ) {
 					return $config;
 			}
 		);

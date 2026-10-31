@@ -66,7 +66,7 @@ class WorkerTest extends MockeryTestCase {
 
 	public function test_event_listener(): void {
 		$events_fired = [];
-		$callback     = function( $event ) use ( &$events_fired ) {
+		$callback     = static function( $event ) use ( &$events_fired ) {
 			$events_fired[] = get_class( $event );
 		};
 

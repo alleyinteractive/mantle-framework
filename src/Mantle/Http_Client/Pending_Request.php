@@ -517,7 +517,7 @@ class Pending_Request {
 	 */
 	public function without_middleware( ?string $middleware = null ): static {
 		if ( $middleware ) {
-			return $this->filter_middleware( fn ( callable $item ) => ! $item instanceof $middleware );
+			return $this->filter_middleware( static fn ( callable $item ) => ! $item instanceof $middleware );
 		}
 
 		$this->middleware = [];
@@ -712,12 +712,12 @@ class Pending_Request {
 
 		return retry(
 			$request->options['retry'],
-			function ( int $attempts ) use ( $request ) {
+			static function ( int $attempts ) use ( $request ) {
 				$response = ( new Pipeline() )
 					->send( $request )
 					->through( $request->middleware )
 					->then(
-						fn () => Response::create(
+						static fn () => Response::create(
 							wp_remote_request(
 								$request->url,
 								$request->get_request_args(),

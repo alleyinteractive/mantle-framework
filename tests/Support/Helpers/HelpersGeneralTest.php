@@ -71,7 +71,7 @@ class HelpersGeneralTest extends TestCase {
 
 	public function testTap(): void {
 		$object = (object) [ 'id' => 1 ];
-		$this->assertSame( 2, tap( $object, function ( $object ) {
+		$this->assertSame( 2, tap( $object, static function ( $object ) {
 			$object->id = 2;
 		} )->id );
 
@@ -100,7 +100,7 @@ class HelpersGeneralTest extends TestCase {
 	public function testRetry(): void {
 		$startTime = microtime( true );
 
-		$attempts = retry( 2, function ( $attempts ) {
+		$attempts = retry( 2, static function ( $attempts ) {
 			if ( $attempts > 1 ) {
 				return $attempts;
 			}
@@ -118,13 +118,13 @@ class HelpersGeneralTest extends TestCase {
 	public function testRetryWithPassingWhenCallback(): void {
 		$startTime = microtime( true );
 
-		$attempts = retry( 2, function ( $attempts ) {
+		$attempts = retry( 2, static function ( $attempts ) {
 			if ( $attempts > 1 ) {
 				return $attempts;
 			}
 
 			throw new RuntimeException;
-		}, 100, function ( $ex ) {
+		}, 100, static function ( $ex ) {
 			return true;
 		} );
 
@@ -138,35 +138,35 @@ class HelpersGeneralTest extends TestCase {
 	public function testRetryWithFailingWhenCallback(): void {
 		$this->expectException( RuntimeException::class );
 
-		retry( 2, function ( $attempts ) {
+		retry( 2, static function ( $attempts ) {
 			if ( $attempts > 1 ) {
 				return $attempts;
 			}
 
 			throw new RuntimeException;
-		}, 100, function ( $ex ) {
+		}, 100, static function ( $ex ) {
 			return false;
 		} );
 	}
 
 	public function testTransform(): void {
-		$this->assertSame( 10, transform( 5, function ( $value ) {
+		$this->assertSame( 10, transform( 5, static function ( $value ) {
 			return $value * 2;
 		} ) );
 
-		$this->assertNull( transform( null, function () {
+		$this->assertNull( transform( null, static function () {
 			return 10;
 		} ) );
 	}
 
 	public function testTransformDefaultWhenBlank(): void {
-		$this->assertSame( 'baz', transform( null, function () {
+		$this->assertSame( 'baz', transform( null, static function () {
 			return 'bar';
 		}, 'baz' ) );
 
-		$this->assertSame( 'baz', transform( '', function () {
+		$this->assertSame( 'baz', transform( '', static function () {
 			return 'bar';
-		}, function () {
+		}, static function () {
 			return 'baz';
 		} ) );
 	}
@@ -174,7 +174,7 @@ class HelpersGeneralTest extends TestCase {
 	public function testWith(): void {
 		$this->assertSame( 10, with( 10 ) );
 
-		$this->assertSame( 10, with( 5, function ( $five ) {
+		$this->assertSame( 10, with( 5, static function ( $five ) {
 			return $five + 5;
 		} ) );
 	}

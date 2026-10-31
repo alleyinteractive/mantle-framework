@@ -9,7 +9,7 @@ use function Mantle\Support\Helpers\value;
 class HelpersArrayTest extends TestCase {
 	public function testValue(): void {
 		$this->assertSame( 'foo', value( 'foo' ) );
-		$this->assertSame( 'foo', value( function () {
+		$this->assertSame( 'foo', value( static function () {
 			return 'foo';
 		} ) );
 	}
@@ -33,7 +33,7 @@ class HelpersArrayTest extends TestCase {
 		$this->assertSame( 'Taylor', data_get( $array, '0.users.0.name' ) );
 		$this->assertNull( data_get( $array, '0.users.3' ) );
 		$this->assertSame( 'Not found', data_get( $array, '0.users.3', 'Not found' ) );
-		$this->assertSame( 'Not found', data_get( $array, '0.users.3', function () {
+		$this->assertSame( 'Not found', data_get( $array, '0.users.3', static function () {
 			return 'Not found';
 		} ) );
 		$this->assertSame( 'Taylor', data_get( $dottedArray, [

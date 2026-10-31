@@ -376,7 +376,7 @@ class Post_Type_Arguments implements Arrayable {
 		$this->arguments['supports'] = collect( $this->arguments['supports'] ?? [] )
 			->merge( [ 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'custom-fields', 'comments', 'revisions' ] )
 			->unique()
-			->reject( fn ( string $value ) => in_array( $value, $except, true ) )
+			->reject( static fn ( string $value ) => in_array( $value, $except, true ) )
 			->values()
 			->all();
 
@@ -411,7 +411,7 @@ class Post_Type_Arguments implements Arrayable {
 		}
 
 		$this->arguments['supports'] = collect( $this->arguments['supports'] )
-			->reject( fn( $value ) => $value === $name )
+			->reject( static fn( $value ) => $value === $name )
 			->values()
 			->all();
 

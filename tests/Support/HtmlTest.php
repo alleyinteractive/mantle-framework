@@ -95,7 +95,7 @@ class HtmlTest extends TestCase {
 		$crawler = new HTML( self::TEST_CONTENT );
 
 		$crawler->filter( '.test-class' )->modify(
-			fn ( HTML $element ) => $element->set_data( 'modified', 'true' ),
+			static fn ( HTML $element ) => $element->set_data( 'modified', 'true' ),
 		);
 
 		$this->assertTrimmedStringEquals(
@@ -119,7 +119,7 @@ class HtmlTest extends TestCase {
 		$crawler = new HTML( self::TEST_CONTENT );
 
 		$crawler->filter( '.test-class' )->modify(
-			fn ( HTML $element ) => $element->add_class( 'class1', 'class2' ),
+			static fn ( HTML $element ) => $element->add_class( 'class1', 'class2' ),
 		);
 
 		$this->assertTrimmedStringEquals(
@@ -143,7 +143,7 @@ class HtmlTest extends TestCase {
 		$crawler = new HTML( self::TEST_CONTENT );
 
 		$crawler->filter( '.test-class' )->modify(
-			fn ( HTML $element ) => $element->remove_class( 'test-class' ),
+			static fn ( HTML $element ) => $element->remove_class( 'test-class' ),
 		);
 
 		$this->assertTrimmedStringEquals(
@@ -167,7 +167,7 @@ class HtmlTest extends TestCase {
 		$crawler = new HTML( self::TEST_CONTENT );
 
 		$crawler->filterXPath( '//div[@id="test-id"]' )->modify(
-			fn ( HTML $element ) => $element->set_attribute( 'data-modified', 'true' ),
+			static fn ( HTML $element ) => $element->set_attribute( 'data-modified', 'true' ),
 		);
 
 		$this->assertTrimmedStringEquals(
@@ -202,7 +202,7 @@ class HtmlTest extends TestCase {
 		$crawler = new HTML( self::TEST_CONTENT );
 
 		$crawler->filter( '.test-class' )->modify(
-			function ( HTML $element ): ?DOMNode {
+			static function ( HTML $element ): ?DOMNode {
 				// Create a new DOMElement to replace the existing one.
 				$crawler = new HTML( '<span class="replaced-class">Replaced Element</span>' );
 
@@ -231,7 +231,7 @@ class HtmlTest extends TestCase {
 		$crawler = new HTML( self::TEST_CONTENT );
 
 		$crawler->filter( '.test-class' )->modify(
-			fn () => '<span class="replaced-class">Replaced Element</span>',
+			static fn () => '<span class="replaced-class">Replaced Element</span>',
 		);
 
 		$this->assertTrimmedStringEquals(
@@ -411,7 +411,7 @@ class HtmlTest extends TestCase {
 		$crawler = new HTML( self::TEST_CONTENT );
 
 		$elements = $crawler->filter( 'li' )->next_until(
-			fn ( HTML $element ) => $element->text() === 'Item 2',
+			static fn ( HTML $element ) => $element->text() === 'Item 2',
 		);
 
 		$this->assertCount( 1, $elements );
@@ -421,7 +421,7 @@ class HtmlTest extends TestCase {
 		$crawler = new HTML( self::TEST_CONTENT );
 
 		$elements = $crawler->filter( 'li' )->next_until(
-			fn ( HTML $element ) => $element->text() === 'Item 2',
+			static fn ( HTML $element ) => $element->text() === 'Item 2',
 			include: true,
 		);
 
@@ -434,7 +434,7 @@ class HtmlTest extends TestCase {
 		$crawler = new HTML( self::TEST_CONTENT );
 
 		$elements = $crawler->filter( 'li' )->previous_until(
-			fn ( HTML $element ) => $element->text() === 'Item 2',
+			static fn ( HTML $element ) => $element->text() === 'Item 2',
 		);
 
 		$this->assertCount( 1, $elements );
@@ -444,7 +444,7 @@ class HtmlTest extends TestCase {
 		$crawler = new HTML( self::TEST_CONTENT );
 
 		$elements = $crawler->filter( 'li' )->previous_until(
-			fn ( HTML $element ) => $element->text() === 'Item 2',
+			static fn ( HTML $element ) => $element->text() === 'Item 2',
 			include: true,
 		);
 

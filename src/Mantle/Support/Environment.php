@@ -66,7 +66,7 @@ class Environment {
 
 		return $value
 		->map(
-			function ( $value ) {
+			static function ( $value ) {
 				switch ( strtolower( (string) $value ) ) {
 					case 'true':
 					case '(true)':
@@ -89,7 +89,7 @@ class Environment {
 				return $value;
 			}
 		)
-		->getOrCall( fn () => value( $default ) );
+		->getOrCall( static fn () => value( $default ) );
 	}
 
 	/**

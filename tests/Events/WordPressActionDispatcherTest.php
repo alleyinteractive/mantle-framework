@@ -21,7 +21,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		$d = new Dispatcher( $this->app );
 		$d->action(
 			'action_to_listen',
-			function() {
+			static function() {
 				$_SERVER['__action_fired'] = true;
 			}
 		);
@@ -33,7 +33,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		$_SERVER['__action_value'] = 'a string when it should be an array';
 		$d->action(
 			'test_action_handler',
-			function( array $posts ) {
+			static function( array $posts ) {
 				$_SERVER['__action_value'] = $posts;
 			}
 		);
@@ -49,7 +49,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		$d = new Dispatcher( $this->app );
 		$d->action(
 			'test_action_handler_non_builtin_typecast',
-			function( Collection $posts ) {
+			static function( Collection $posts ) {
 				$_SERVER['__action_value'] = $posts;
 			}
 		);
@@ -65,7 +65,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		$d = new Dispatcher( $this->app );
 		$d->action(
 			'test_action_handler_non_builtin_typecast_to_array',
-			function( array $posts ) {
+			static function( array $posts ) {
 				$_SERVER['__action_value'] = $posts;
 			}
 		);
@@ -83,9 +83,9 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 
 		$d = new Dispatcher( $this->app );
 		$d->action_if(
-			fn () => true,
+			static fn () => true,
 			'test_action_if_should_run',
-			fn () => $_SERVER['test_action_if_should_run'] = true,
+			static fn () => $_SERVER['test_action_if_should_run'] = true,
 		);
 
 		do_action( 'test_action_if_should_run' );
@@ -98,15 +98,15 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 
 		$d = new Dispatcher( $this->app );
 		$d->action_if(
-			fn () => false,
+			static fn () => false,
 			'test_action_if_should_not_run',
-			fn () => $_SERVER['test_action_if_should_not_run'] = true,
+			static fn () => $_SERVER['test_action_if_should_not_run'] = true,
 		);
 
 		$d->action_if(
 			false,
 			'test_action_if_should_not_run',
-			fn () => $_SERVER['test_action_if_should_not_run'] = true,
+			static fn () => $_SERVER['test_action_if_should_not_run'] = true,
 		);
 
 		do_action( 'test_action_if_should_not_run' );
@@ -117,7 +117,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 	public function test_filter_handler(): void {
 		app()['events']->filter(
 			'test_filter_handler',
-			fn( string $string ) => strtoupper( $string ),
+			static fn( string $string ) => strtoupper( $string ),
 		);
 
 		$this->assertSame(
@@ -129,7 +129,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 	public function test_filter_handler_typehint(): void {
 		app()['events']->filter(
 			'test_filter_handler_typehint',
-			fn ( array $string ) => $string,
+			static fn ( array $string ) => $string,
 		);
 
 		$this->assertSame(
@@ -141,7 +141,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 	public function test_filter_handler_typehint_collection_returns_array(): void {
 		app()['events']->filter(
 			'test_filter_handler_typehint_collection_returns_array',
-			fn ( Collection $col ): array => $col->to_array(),
+			static fn ( Collection $col ): array => $col->to_array(),
 		);
 
 		$this->assertSame(
@@ -153,7 +153,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 	public function test_helpers(): void {
 		add_filter(
 			'test_filter_handler_typehint',
-			fn ( array $value ) => $value,
+			static fn ( array $value ) => $value,
 		);
 
 		$this->assertSame(
@@ -164,7 +164,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		$_SERVER['__test'] = false;
 		add_action(
 			'test_action_to_fire',
-			function() {
+			static function() {
 				$_SERVER['__test'] = true;
 			}
 		);
@@ -178,7 +178,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 
 		add_action(
 			Example_Typehint_Event::class,
-			function ( Example_Typehint_Event $event ): void {
+			static function ( Example_Typehint_Event $event ): void {
 				$_SERVER['__test'] = $event;
 			}
 		);
@@ -195,7 +195,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		$d = new Dispatcher( $this->app );
 		$d->action(
 			'test_mixed_typehint_action_argument',
-			function ( mixed $value ): void {
+			static function ( mixed $value ): void {
 				$_SERVER['__test'] = $value;
 			}
 		);
@@ -209,7 +209,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		$listener = [];
 
 		$d = new Dispatcher( $this->app );
-		$d->listen( 'example:*', function ( string $event_name, ...$args ) use ( &$listener ) {
+		$d->listen( 'example:*', static function ( string $event_name, ...$args ) use ( &$listener ) {
 			$listener[] = [ $event_name, ...$args ];
 		} );
 

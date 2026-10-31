@@ -156,8 +156,8 @@ class AssetManagerTest extends TestCase {
 	 */
 	public static function provide_async_and_defer(): array {
 		return [
-			'async then defer' => [ fn ( Asset $asset ) => $asset->async()->defer() ],
-			'defer then async' => [ fn ( Asset $asset ) => $asset->defer()->async() ],
+			'async then defer' => [ static fn ( Asset $asset ) => $asset->async()->defer() ],
+			'defer then async' => [ static fn ( Asset $asset ) => $asset->defer()->async() ],
 		];
 	}
 

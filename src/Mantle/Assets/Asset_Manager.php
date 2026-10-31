@@ -76,7 +76,7 @@ class Asset_Manager implements Asset_Manager_Contract {
 	): void {
 		hook_callable(
 			'wp_enqueue_scripts',
-			fn () => Asset_Manager_Preload::instance()->add_asset(
+			static fn () => Asset_Manager_Preload::instance()->add_asset(
 				[
 					'handle'      => $handle,
 					'src'         => $src,
@@ -99,7 +99,7 @@ class Asset_Manager implements Asset_Manager_Contract {
 	public function async( string $handle ): void {
 		hook_callable(
 			'wp_enqueue_scripts',
-			fn () => Asset_Manager_Scripts::instance()->modify_load_method( $handle, Load_Method::ASYNC ),
+			static fn () => Asset_Manager_Scripts::instance()->modify_load_method( $handle, Load_Method::ASYNC ),
 			20, // Ensures the asset is registered.
 		);
 	}
@@ -112,7 +112,7 @@ class Asset_Manager implements Asset_Manager_Contract {
 	public function defer( string $handle ): void {
 		hook_callable(
 			'wp_enqueue_scripts',
-			fn () => Asset_Manager_Scripts::instance()->modify_load_method( $handle, Load_Method::DEFER ),
+			static fn () => Asset_Manager_Scripts::instance()->modify_load_method( $handle, Load_Method::DEFER ),
 			20, // Ensures the asset is registered.
 		);
 	}
@@ -126,7 +126,7 @@ class Asset_Manager implements Asset_Manager_Contract {
 	public function load_method( string $handle, string $load_method = Load_Method::SYNC ): void {
 		hook_callable(
 			'wp_enqueue_scripts',
-			fn () => Asset_Manager_Scripts::instance()->modify_load_method( $handle, static::resolve_load_method( $load_method ) ),
+			static fn () => Asset_Manager_Scripts::instance()->modify_load_method( $handle, static::resolve_load_method( $load_method ) ),
 			20, // Ensures the asset is registered.
 		);
 	}

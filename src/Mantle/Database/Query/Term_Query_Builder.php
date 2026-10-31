@@ -146,7 +146,7 @@ class Term_Query_Builder extends Builder {
 		$builder->query_hash = spl_object_hash( $query );
 
 		return $builder->with_clauses(
-			fn (): int => (int) $query->query(
+			static fn (): int => (int) $query->query(
 				array_merge(
 					$builder->get_query_args(),
 					[

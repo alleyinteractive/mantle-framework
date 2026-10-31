@@ -27,7 +27,7 @@ class Testable_Model_With_Rest_Field extends Post {
 	protected static function boot(): void {
 		static::register_field(
 			'field-to-register',
-			function() {
+			static function() {
 				return 'value to return';
 			}
 		);

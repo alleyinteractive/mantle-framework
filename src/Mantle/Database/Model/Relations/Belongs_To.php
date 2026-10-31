@@ -334,7 +334,7 @@ class Belongs_To extends Relation {
 				}
 			)
 			->map(
-				function ( WP_Term $term ) use ( $return_term_ids ) {
+				static function ( WP_Term $term ) use ( $return_term_ids ) {
 					if ( $return_term_ids ) {
 						return $term->term_id;
 					}

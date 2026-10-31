@@ -138,7 +138,7 @@ class Load_Configuration implements Bootstrapable {
 		return collect( $paths )
 			->unique()
 			->filter(
-				fn ( $dir ) => is_string( $dir ) && is_dir( $dir ),
+				static fn ( $dir ) => is_string( $dir ) && is_dir( $dir ),
 			)
 			->values()
 			->all();

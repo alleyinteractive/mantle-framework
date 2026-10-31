@@ -22,7 +22,7 @@ class Block_Service_Provider extends Service_Provider {
 	public function register(): void {
 		$this->app->booting(
 			fn () => collect( $this->get_blocks() )->each(
-				fn ( string $block ) => ( new $block() )->register()
+				static fn ( string $block ) => ( new $block() )->register()
 			)
 		);
 	}
@@ -34,7 +34,7 @@ class Block_Service_Provider extends Service_Provider {
 	 */
 	public function get_blocks(): array {
 		return collect( $this->discover_blocks_within() )
-			->reject( fn ( $dir ) => ! is_dir( $dir ) )
+			->reject( static fn ( $dir ) => ! is_dir( $dir ) )
 			->reduce(
 				fn ( array $discovered, string $directory ) => array_merge_recursive(
 					$discovered,

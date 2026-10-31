@@ -194,7 +194,7 @@ class Post_Factory extends Factory {
 	 */
 	public function with_real_thumbnail( callable|string|null $file = null, int $width = 1200, int $height = 800, bool $recycle = true ): static {
 		return $this->with_middleware(
-			function ( array $args, Closure $next ) use ( $file, $width, $height, $recycle ) {
+			static function ( array $args, Closure $next ) use ( $file, $width, $height, $recycle ) {
 				$post = $next( $args );
 
 				update_post_meta(
@@ -222,7 +222,7 @@ class Post_Factory extends Factory {
 	public function with_post_type( string $post_type ): static {
 		return tap(
 			clone $this,
-			fn ( Post_Factory $factory ) => $factory->post_type = $post_type,
+			static fn ( Post_Factory $factory ) => $factory->post_type = $post_type,
 		);
 	}
 

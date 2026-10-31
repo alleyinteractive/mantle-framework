@@ -69,7 +69,7 @@ trait Create_Application {
 
 		$app->singleton_if(
 			'url',
-			fn ( $app ) => new Url_Generator(
+			static fn ( $app ) => new Url_Generator(
 				$app->get_root_url(),
 				new RouteCollection(),
 				$app['request'] ?? new Request(),

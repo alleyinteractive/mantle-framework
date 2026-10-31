@@ -81,7 +81,7 @@ class Queue_Jobs_Table extends WP_List_Table {
 					->title()
 					->when(
 						$count > 0,
-						fn ( $str ) => $str->append(
+						static fn ( $str ) => $str->append(
 							sprintf(
 								' <span class="count">(%d)</span>',
 								esc_html( number_format_i18n( $count ) ),
@@ -136,13 +136,13 @@ class Queue_Jobs_Table extends WP_List_Table {
 			// Allow the query to be filtered by status.
 			->when(
 				! empty( $active_status_filter ),
-				fn ( $query ) => $query->where( 'post_status', $active_status_filter ),
-				fn ( $query ) => $query->where( 'post_status', $statuses ),
+				static fn ( $query ) => $query->where( 'post_status', $active_status_filter ),
+				static fn ( $query ) => $query->where( 'post_status', $statuses ),
 			)
 			// Allow the query to be filtered by queue.
 			->when(
 				! empty( $active_queue_filter ),
-				fn ( Post_Query_Builder $query ) => $query->whereTerm(
+				static fn ( Post_Query_Builder $query ) => $query->whereTerm(
 					Provider::get_queue_term_id( $active_queue_filter, false ),
 					Provider::OBJECT_NAME,
 				),
@@ -151,7 +151,7 @@ class Queue_Jobs_Table extends WP_List_Table {
 
 		// TODO: Refactor with found_posts later.
 		$this->items = $query->get()->map(
-			function ( Queue_Record $model ): array {
+			static function ( Queue_Record $model ): array {
 				$worker = new Queue_Worker_Job( $model );
 				$job    = $worker->get_job();
 

@@ -91,7 +91,7 @@ class BylineManagerFactoryTest extends FrameworkTestCase {
 		$this->assertSame(
 			[ $author->post->post_title, 'John Doe' ],
 			collect( $byline_entries )->map(
-				fn ( $entry ) => $entry instanceof Profile ? $entry->post->post_title : $entry->atts['text']
+				static fn ( $entry ) => $entry instanceof Profile ? $entry->post->post_title : $entry->atts['text']
 			)->all(),
 		);
 	}

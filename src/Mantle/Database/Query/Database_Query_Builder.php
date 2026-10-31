@@ -76,7 +76,7 @@ class Database_Query_Builder extends Builder {
 
 		return new Collection(
 			array_map(
-				fn ( array $row ) => $model::new_from_existing( $row ),
+				static fn ( array $row ) => $model::new_from_existing( $row ),
 				$query
 			)
 		);
@@ -111,7 +111,7 @@ class Database_Query_Builder extends Builder {
 
 		$wheres = collect( $this->bindings['where'] )
 			->map(
-				fn ( mixed $binding, string $index ) => (string) $wpdb->prepare( // phpcs:ignore WordPress.DB
+				static fn ( mixed $binding, string $index ) => (string) $wpdb->prepare( // phpcs:ignore WordPress.DB
 					0 === (int) $index // phpcs:ignore WordPress.DB
 						? "{$binding['column']} {$binding['operator']} %s" // phpcs:ignore WordPress.DB
 						: "{$binding['boolean']} {$binding['column']} {$binding['operator']} %s", // phpcs:ignore WordPress.DB

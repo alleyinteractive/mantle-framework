@@ -197,7 +197,7 @@ class ArrTest extends TestCase {
 			Arr::first(
 				[],
 				null,
-				function () {
+				static function () {
 					return 'bar';
 				}
 			)
@@ -209,7 +209,7 @@ class ArrTest extends TestCase {
 		// Callback is not null and array is not empty
 		$value = Arr::first(
 			$array,
-			function ( $value ) {
+			static function ( $value ) {
 				return $value >= 150;
 			}
 		);
@@ -218,23 +218,23 @@ class ArrTest extends TestCase {
 		// Callback is not null, array is not empty but no satisfied item
 		$value2 = Arr::first(
 			$array,
-			function ( $value ) {
+			static function ( $value ) {
 				return $value > 300;
 			}
 		);
 		$value3 = Arr::first(
 			$array,
-			function ( $value ) {
+			static function ( $value ) {
 				return $value > 300;
 			},
 			'bar'
 		);
 		$value4 = Arr::first(
 			$array,
-			function ( $value ) {
+			static function ( $value ) {
 				return $value > 300;
 			},
-			function () {
+			static function () {
 				return 'baz';
 			}
 		);
@@ -248,7 +248,7 @@ class ArrTest extends TestCase {
 
 		$last = Arr::last(
 			$array,
-			function ( $value ) {
+			static function ( $value ) {
 				return $value < 250;
 			}
 		);
@@ -256,7 +256,7 @@ class ArrTest extends TestCase {
 
 		$last = Arr::last(
 			$array,
-			function ( $value, $key ) {
+			static function ( $value, $key ) {
 				return $key < 2;
 			}
 		);
@@ -404,7 +404,7 @@ class ArrTest extends TestCase {
 			Arr::get(
 				$array,
 				'names.otherDeveloper',
-				function () {
+				static function () {
 					return 'dayle';
 				}
 			)
@@ -1000,7 +1000,7 @@ class ArrTest extends TestCase {
 		$sortedWithClosure = array_values(
 			Arr::sort(
 				$unsorted,
-				function ( $value ) {
+				static function ( $value ) {
 					return $value['name'];
 				}
 			)
@@ -1074,7 +1074,7 @@ class ArrTest extends TestCase {
 
 		$array = Arr::where(
 			$array,
-			function ( $value, $key ) {
+			static function ( $value, $key ) {
 				return is_string( $value );
 			}
 		);
@@ -1097,7 +1097,7 @@ class ArrTest extends TestCase {
 
 		$array = Arr::where(
 			$array,
-			function ( $value, $key ) {
+			static function ( $value, $key ) {
 				return is_numeric( $key );
 			}
 		);
