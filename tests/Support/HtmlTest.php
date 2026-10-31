@@ -5,6 +5,7 @@ namespace Mantle\Tests\Support;
 use DOMNode;
 use Mantle\Support\HTML;
 use Mantle\Testing\Concerns\Assertions;
+use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -23,10 +24,20 @@ class HtmlTest extends TestCase {
 		</ul>
 	</div>';
 
+	private const string MULTI_CLASS_CONTENT = '<div class="one two three">Multiple classes</div>';
+
 	public function test_is_html_document(): void {
-		$this->assertFalse( ( new HTML( self::TEST_CONTENT ) )->is_html_document() );
-		$this->assertTrue( ( new HTML( '<html></html>' ) )->is_html_document() );
-		$this->assertTrue( ( new HTML( '<html>' . self::TEST_CONTENT . '</html>' ) )->is_html_document() );
+		$html = new HTML( self::TEST_CONTENT );
+
+		$this->assertFalse( $html->is_html_document() );
+
+		$html = new HTML( '<html></html>' );
+
+		$this->assertTrue( $html->is_html_document() );
+
+		$html = new HTML( '<html>' . self::TEST_CONTENT . '</html>' );
+
+		$this->assertTrue( $html->is_html_document() );
 	}
 
 	public function test_it_can_make_a_document_from_a_string(): void {
@@ -582,10 +593,84 @@ class HtmlTest extends TestCase {
 	}
 
 	public function test_element_assertions(): void {
-		( new HTML( self::TEST_CONTENT ) )
-			->assertQuerySelectorExists( '.test-class' )
+		$html = new HTML( self::TEST_CONTENT );
+
+		$html->assertQuerySelectorExists( '.test-class' )
 			->assertElementExistsByTestId( 'test-item' )
 			->assertQuerySelectorMissing( '.non-existent-class' );
+	}
+
+	public function test_assert_has_class(): void {
+		$html = new HTML( self::TEST_CONTENT );
+
+		$html->first_by_selector( '.test-class' )
+			->assertHasClass( 'test-class' )
+			->assertNotHasClass( 'non-existent-class' )
+			->assertNotHasClass( 'test-class', 'non-existent-class' );
+	}
+
+	public function test_assert_has_any_class(): void {
+		$html = new HTML( self::TEST_CONTENT );
+
+		$html->first_by_selector( '.test-class' )
+			->assertHasAnyClass( 'test-class', 'other-class' )
+			->assertNotHasAnyClass( 'non-existent-class', 'another-missing' );
+	}
+
+	public function test_assert_has_class_matches_multiple_classes(): void {
+		$html = new HTML( self::MULTI_CLASS_CONTENT );
+
+		$html->first_by_selector( 'div' )
+			->assertHasClass( 'one', 'two' )
+			->assertHasClass( 'one', 'two', 'three' )
+			->assertNotHasClass( 'one', 'missing' );
+	}
+
+	/**
+	 * @param string[] $classes
+	 */
+	#[DataProvider( 'class_assertion_failure_provider' )]
+	public function test_class_assertions_fail( string $content, string $selector, string $assertion, array $classes ): void {
+		$this->expectException( AssertionFailedError::class );
+
+		$html = new HTML( $content );
+
+		$html->first_by_selector( $selector )
+			->{$assertion}( ...$classes );
+	}
+
+	public static function class_assertion_failure_provider(): array {
+		return [
+			'has class: class missing' => [ self::TEST_CONTENT, '.test-class', 'assertHasClass', [ 'non-existent-class' ] ],
+			'has class: one of several missing' => [ self::MULTI_CLASS_CONTENT, 'div', 'assertHasClass', [ 'one', 'missing' ] ],
+			'not has class: class present' => [ self::TEST_CONTENT, '.test-class', 'assertNotHasClass', [ 'test-class' ] ],
+			'not has class: all classes present' => [ self::MULTI_CLASS_CONTENT, 'div', 'assertNotHasClass', [ 'one', 'two' ] ],
+			'has any class: none present' => [ self::TEST_CONTENT, '.test-class', 'assertHasAnyClass', [ 'non-existent-class', 'another-missing' ] ],
+			'not has any class: class present' => [ self::TEST_CONTENT, '.test-class', 'assertNotHasAnyClass', [ 'test-class' ] ],
+			'not has any class: one of several present' => [ self::TEST_CONTENT, '.test-class', 'assertNotHasAnyClass', [ 'non-existent-class', 'test-class' ] ],
+			'deprecated has class: class missing' => [ self::TEST_CONTENT, '.test-class', 'assertNodeHasClass', [ 'non-existent-class' ] ],
+			'deprecated has any class: none present' => [ self::TEST_CONTENT, '.test-class', 'assertNodeHasAnyClass', [ 'non-existent-class', 'another-missing' ] ],
+		];
+	}
+
+	/**
+	 * @param string[] $classes
+	 */
+	#[DataProvider( 'deprecated_class_assertion_provider' )]
+	public function test_deprecated_class_assertions_still_work( string $assertion, array $classes ): void {
+		$html = new HTML( self::TEST_CONTENT );
+
+		$html->first_by_selector( '.test-class' )
+			->{$assertion}( ...$classes );
+
+		$this->assertTrue( true ); // Reaching this line means the assertion passed.
+	}
+
+	public static function deprecated_class_assertion_provider(): array {
+		return [
+			'assertNodeHasClass' => [ 'assertNodeHasClass', [ 'test-class' ] ],
+			'assertNodeHasAnyClass' => [ 'assertNodeHasAnyClass', [ 'test-class', 'other-class' ] ],
+		];
 	}
 
 	public function test_it_can_get_the_nearest_previous_sibling(): void {
