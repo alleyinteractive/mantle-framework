@@ -9,7 +9,7 @@ class FileEngineTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->app['view.loader']
+		app()['view.loader']
 			->add_path( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view', 'unit-test');
 	}
 

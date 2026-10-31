@@ -20,8 +20,8 @@ class UrlGeneratorTest extends FrameworkTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		$this->router = $this->app['router'];
-		$this->url    = $this->app['url'];
+		$this->router = app()['router'];
+		$this->url    = app()['url'];
 
 		$request = new Request( [], [], [], [], [], [
 			'SERVER_NAME' => wp_parse_url( home_url(), PHP_URL_HOST ),

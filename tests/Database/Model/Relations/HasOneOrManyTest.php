@@ -162,6 +162,7 @@ class HasOneOrManyTest extends FrameworkTestCase {
 
 		$terms = get_the_tags( $post->id() );
 
+		$this->assertIsArray( $terms );
 		$this->assertNotEmpty( $terms );
 		$this->assertSame( $tag->id(), array_shift( $terms )->term_id );
 

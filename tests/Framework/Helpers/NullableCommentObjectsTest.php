@@ -21,6 +21,8 @@ class NullableCommentObjectsTest extends FrameworkTestCase {
 	public function test_comment_object_returns_comment(): void {
 		$known_id = self::factory()->comment->create();
 
+		$this->assertIsInt( $known_id );
+
 		$found_object = get_comment_object( $known_id );
 
 		$this->assertInstanceOf( \WP_Comment::class, $found_object );

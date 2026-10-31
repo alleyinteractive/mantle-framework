@@ -19,6 +19,8 @@ class SiteObjectTest extends FrameworkTestCase {
 
 		$object = get_site( $site->id() );
 
+		$this->assertInstanceOf( \WP_Site::class, $object );
+
 		$this->assertSame( $blogname, $site->name() );
 		$this->assertSame( $object->path, $site->slug() );
 		$this->assertSame( get_home_url( $site_id ), $site->permalink() );

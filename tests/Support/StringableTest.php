@@ -1390,12 +1390,14 @@ class StringableTest extends TestCase {
 	public function testToDate(): void {
 		$current = Carbon::create( 2020, 1, 1, 16, 30, 25 );
 
+		$this->assertNotNull( $current );
+
 		$this->assertEquals( $current, $this->stringable( '20-01-01 16:30:25' )->to_date() );
 		$this->assertEquals( $current, $this->stringable( '1577896225' )->to_date( 'U' ) );
 		$this->assertEquals( $current, $this->stringable( '20-01-01 13:30:25' )->to_date( null, 'America/Santiago' ) );
 
-		$this->assertTrue( $this->stringable( '2020-01-01' )->to_date()->isSameDay( $current ) );
-		$this->assertTrue( $this->stringable( '16:30:25' )->to_date()->isSameSecond( '16:30:25' ) );
+		$this->assertTrue( $this->stringable( '2020-01-01' )->to_date()?->isSameDay( $current ) );
+		$this->assertTrue( $this->stringable( '16:30:25' )->to_date()?->isSameSecond( '16:30:25' ) );
 	}
 
 	public function testToDateThrowsException(): void {

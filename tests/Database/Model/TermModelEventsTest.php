@@ -81,6 +81,8 @@ class TermModelEventsTest extends FrameworkTestCase {
 		Testable_Term_Model_Event::deleted( function() { $_SERVER['__test_non_model_deleted_event_fired'] = microtime( true ); } );
 
 		$insert  = \wp_insert_term( 'Inserted Term', 'category' );
+
+		$this->assertIsArray( $insert );
 		$term_id = $insert['term_id'];
 
 		\wp_update_term(
@@ -115,6 +117,8 @@ class TermModelEventsTest extends FrameworkTestCase {
 		$model->deleted( fn () => $_SERVER['__test_model_event_via_for_deleted_event_fired'] = microtime( true ) );
 
 		$insert  = \wp_insert_term( 'Inserted Term', 'test-taxonomy' );
+
+		$this->assertIsArray( $insert );
 		$term_id = $insert['term_id'];
 
 		\wp_update_term(

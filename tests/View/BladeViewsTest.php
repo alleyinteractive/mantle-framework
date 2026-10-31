@@ -10,7 +10,7 @@ class BladeViewsTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->app['view.loader']
+		app()['view.loader']
 			->clear_paths()
 			->add_path( MANTLE_PHPUNIT_TEMPLATE_PATH . '/blade', 'blade' );
 	}

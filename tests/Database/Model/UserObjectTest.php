@@ -31,6 +31,8 @@ class UserObjectTest extends FrameworkTestCase {
 		$object = User::find( $user_id );
 		$user = get_user_by( 'ID', $user_id );
 
+		$this->assertInstanceOf( \WP_User::class, $user );
+
 		$this->assertSame( $user_id, $object->id() );
 		$this->assertSame( $user->user_login, $object->slug() );
 		$this->assertSame( $user->display_name, $object->name() );

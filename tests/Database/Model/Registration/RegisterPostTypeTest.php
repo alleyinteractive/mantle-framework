@@ -59,6 +59,7 @@ class RegisterPostTypeTest extends FrameworkTestCase {
 		// Check the arguments.
 		$object = get_post_type_object( Testable_Registration_Post_Type_Fluent::$object_name );
 
+		$this->assertInstanceOf( \WP_Post_Type::class, $object );
 		$this->assertFalse( $object->show_in_menu );
 		$this->assertSame( 'Testable Post Types', $object->label );
 	}

@@ -125,7 +125,7 @@ class InteractsWithHooksTest extends FrameworkTestCase {
 	public function test_hook_applied_event(): void {
 		$this->expectApplied( Example_Event::class )->once();
 
-		$this->app['events']->dispatch( new Example_Event() );
+		app()['events']->dispatch( new Example_Event() );
 
 		$this->assertHookApplied( Example_Event::class, 1 );
 	}

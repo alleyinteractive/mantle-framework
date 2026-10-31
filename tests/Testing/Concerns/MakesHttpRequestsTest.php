@@ -98,6 +98,8 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_get_singular(): void {
 		$post_id = static::factory()->post->create();
+
+		$this->assertIsInt( $post_id );
 		$this->get( get_permalink( $post_id ) . '?test=asda' )
 			->assertOk()
 			->assertQueryTrue( 'is_single', 'is_singular' )
@@ -116,7 +118,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	public function test_with_headers(): void {
 		$capture = null;
 
-		$this->app['router']->get( '/example/', function ( Request $request ) use (&$capture) {
+		app()['router']->get( '/example/', function ( Request $request ) use (&$capture) {
 			$capture = $request->headers->all();
 
 			return '1234';
@@ -148,11 +150,11 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_follow_redirects(): void {
-		$this->app['router']->get( '/redirect/', function () {
+		app()['router']->get( '/redirect/', function () {
 			return redirect()->to( '/redirected/' );
 		} );
 
-		$this->app['router']->get( '/redirected/', function () {
+		app()['router']->get( '/redirected/', function () {
 			return 'redirected';
 		} );
 
@@ -163,7 +165,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	public function test_referer(): void {
-		$this->app['router']->get( '/example/', function ( Request $request ) {
+		app()['router']->get( '/example/', function ( Request $request ) {
 			return $request->headers->get( 'referer' );
 		} );
 
@@ -176,7 +178,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_with_cookie(): void {
-		$this->app['router']->get( '/example/', function ( Request $request ) {
+		app()['router']->get( '/example/', function ( Request $request ) {
 			return $request->cookies->all();
 		} );
 
@@ -216,6 +218,8 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_get_term(): void {
 		$category_id = static::factory()->category->create();
+
+		$this->assertIsInt( $category_id );
 
 		$this
 			->get( get_term_link( $category_id, 'category' ) )
@@ -258,10 +262,10 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$_SERVER['__route_run'] = false;
 
 		// Ensure routing is enabled.
-		$this->assertNotNull( $this->app->get_provider( Routing_Service_Provider::class ) );
+		$this->assertNotNull( app()->get_provider( Routing_Service_Provider::class ) );
 
 		// Register a route.
-		$this->app['router']->get(
+		app()['router']->get(
 			'/test-route',
 			function() {
 				$_SERVER['__route_run'] = true;
@@ -279,10 +283,10 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_get_mantle_route_404(): void {
 		// Ensure routing is enabled.
-		$this->assertNotNull( $this->app->get_provider( Routing_Service_Provider::class ) );
+		$this->assertNotNull( app()->get_provider( Routing_Service_Provider::class ) );
 
 		// Register a route.
-		$this->app['router']->get(
+		app()['router']->get(
 			'/test-route-404',
 			function() {
 				return response()->make( 'not-found', 404 );
@@ -297,17 +301,17 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
 	public function test_post_mantle_route(): void {
 		// Ensure routing is enabled.
-		$this->assertNotNull( $this->app->get_provider( Routing_Service_Provider::class ) );
+		$this->assertNotNull( app()->get_provider( Routing_Service_Provider::class ) );
 
 		// Register a route.
-		$this->app['router']->post(
+		app()['router']->post(
 			'/test-post',
 			function() {
 				return new Response( 'yes', 201, [ 'test-header' => 'test-value' ] );
 			}
 		);
 
-		$this->app['router']->get(
+		app()['router']->get(
 			'/404',
 			function() {
 				return new Response( 'yes', 404 );
@@ -327,6 +331,8 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->expectApplied( 'rest_dispatch_request' )->once()->andReturnNull();
 
 		$post_id = static::factory()->post->create( [ 'post_title' => 'Example Post Title' ] );
+
+		$this->assertIsInt( $post_id );
 
 		$this->get( rest_url( "wp/v2/posts/{$post_id}" ) )
 			->assertOk()
@@ -383,8 +389,8 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	#[DataProvider( 'dataprovider_run_multiple_requests' )]
-	public function test_router_redirect_response() {
-		$this->app['router']->get(
+	public function test_router_redirect_response(): void {
+		app()['router']->get(
 			'/route-to-redirect/',
 			fn () => redirect()->to( '/redirected/', 302, [ 'Other-Header' => '123' ] ),
 		);
@@ -432,8 +438,8 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertContent( 'This is the response!' );
 	}
 
-	public function test_post_json_mantle_route() {
-		$this->app['router']->post(
+	public function test_post_json_mantle_route(): void {
+		app()['router']->post(
 			'/test-post-json',
 			fn ( Request $request ) => new Response( $request['foo'], 201, [ 'test-header' => 'test-value' ] ),
 		);
@@ -681,7 +687,7 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	public function test_experimental_redirect_to(): void {
 		$this->setup_experiment_testing_url_host();
 
-		$this->app['router']->get(
+		app()['router']->get(
 			'/route-to-redirect/',
 			fn () => redirect()->to( '/redirected/' ),
 		);

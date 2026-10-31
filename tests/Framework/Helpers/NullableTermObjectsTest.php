@@ -21,6 +21,8 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 	public function test_term_object_returns_term(): void {
 		$known_id = self::factory()->term->create();
 
+		$this->assertIsInt( $known_id );
+
 		$found_object = get_term_object( $known_id );
 
 		$this->assertInstanceOf( \WP_Term::class, $found_object );
@@ -111,6 +113,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 			'edit'
 		);
 
+		$this->assertInstanceOf( \WP_Term::class, $found_object );
 		$this->assertSame(
 			$known_term->slug,
 			$found_object->slug
@@ -126,6 +129,7 @@ class NullableTermObjectsTest extends FrameworkTestCase {
 			'edit'
 		);
 
+		$this->assertInstanceOf( \WP_Term::class, $found_object );
 		$this->assertEmpty(
 			$found_object->slug
 		);

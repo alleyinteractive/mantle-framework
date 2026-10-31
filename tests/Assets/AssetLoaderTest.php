@@ -17,8 +17,8 @@ class AssetLoaderTest extends TestCase {
 
 		$this->loader = new Asset_Loader( $this->build_dir, 'https://example.org/base' );
 
-		$this->app['asset.loader'] = $this->loader;
-		$this->app->alias( 'asset.loader', Asset_Loader::class );
+		app()['asset.loader'] = $this->loader;
+		app()->alias( 'asset.loader', Asset_Loader::class );
 	}
 
 	public function test_read_path(): void {

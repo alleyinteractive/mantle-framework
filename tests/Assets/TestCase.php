@@ -41,13 +41,13 @@ abstract class TestCase extends FrameworkTestCase {
 		Asset_Manager_Styles::instance()->add_hooks();
 
 		// Register with the container.
-		$this->app->singleton(
+		app()->singleton(
 			'asset.manager',
 			fn() => new Asset_Manager(),
 		);
 
-		$this->app->alias( 'asset.manager', Asset_Manager::class );
-		$this->app->alias( 'asset.manager', \Mantle\Contracts\Assets\Asset_Manager::class );
+		app()->alias( 'asset.manager', Asset_Manager::class );
+		app()->alias( 'asset.manager', \Mantle\Contracts\Assets\Asset_Manager::class );
 	}
 
 	protected function get_wp_head(): string {

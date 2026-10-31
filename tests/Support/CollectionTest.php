@@ -2833,8 +2833,8 @@ class CollectionTest extends FrameworkTestCase {
 
 		$data = $data->map_into(TestCollectionMapIntoObject::class);
 
-		$this->assertSame('first', $data->get(0)->value);
-		$this->assertSame('second', $data->get(1)->value);
+		$this->assertSame('first', $data->get(0)?->value);
+		$this->assertSame('second', $data->get(1)?->value);
 	}
 
 	public function testNthWithOffsetBeyondStep(): void {
@@ -3822,23 +3822,23 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertInstanceOf($collection, $c->get(1));
 		$this->assertInstanceOf($collection, $c->get(2));
 		$this->assertCount(3, $c);
-		$this->assertSame([1, 4], $c->get(0)->all());
-		$this->assertSame([2, 5], $c->get(1)->all());
-		$this->assertSame([3, 6], $c->get(2)->all());
+		$this->assertSame([1, 4], $c->get(0)?->all());
+		$this->assertSame([2, 5], $c->get(1)?->all());
+		$this->assertSame([3, 6], $c->get(2)?->all());
 
 		$c = new $collection([1, 2, 3]);
 		$c = $c->zip([4, 5, 6], [7, 8, 9]);
 		$this->assertCount(3, $c);
-		$this->assertSame([1, 4, 7], $c->get(0)->all());
-		$this->assertSame([2, 5, 8], $c->get(1)->all());
-		$this->assertSame([3, 6, 9], $c->get(2)->all());
+		$this->assertSame([1, 4, 7], $c->get(0)?->all());
+		$this->assertSame([2, 5, 8], $c->get(1)?->all());
+		$this->assertSame([3, 6, 9], $c->get(2)?->all());
 
 		$c = new $collection([1, 2, 3]);
 		$c = $c->zip([4, 5, 6], [7]);
 		$this->assertCount(3, $c);
-		$this->assertSame([1, 4, 7], $c->get(0)->all());
-		$this->assertSame([2, 5, null], $c->get(1)->all());
-		$this->assertSame([3, 6, null], $c->get(2)->all());
+		$this->assertSame([1, 4, 7], $c->get(0)?->all());
+		$this->assertSame([2, 5, null], $c->get(1)?->all());
+		$this->assertSame([3, 6, null], $c->get(2)?->all());
 	}
 
 	/**
