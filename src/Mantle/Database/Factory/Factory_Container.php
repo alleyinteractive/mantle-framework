@@ -144,7 +144,7 @@ class Factory_Container {
 	protected function setup_faker( Container $container ): void {
 		$container->singleton_if(
 			Generator::class,
-			function () {
+			static function () {
 				$generator = \Faker\Factory::create();
 
 				$generator->addProvider( new Faker_Provider( $generator ) );

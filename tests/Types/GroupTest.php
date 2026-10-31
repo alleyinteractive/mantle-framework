@@ -14,6 +14,13 @@ class ValidatorGroupTest extends TestCase {
 		remove_all_actions( 'example_action' );
 	}
 
+	/**
+	 * Create a value that is not a valid feature.
+	 */
+	protected function make_invalid_feature(): mixed {
+		return new \stdClass();
+	}
+
 	public function test_boot_feature_without_validator(): void {
 		$feature = new class implements \Alley\WP\Types\Feature {
 			public function boot(): void {
@@ -90,14 +97,14 @@ class ValidatorGroupTest extends TestCase {
 	public function test_throws_exception_for_invalid_feature(): void {
 		$this->expectException( \InvalidArgumentException::class );
 
-		$group = new Validator_Group( new \stdClass() );
+		$group = new Validator_Group( $this->make_invalid_feature() );
 		$group->boot();
 	}
 
 	public function test_throws_exception_for_invalid_feature_in_array(): void {
 		$this->expectException( TypeError::class );
 
-		$group = new Validator_Group( [ new \stdClass() ] );
+		$group = new Validator_Group( [ $this->make_invalid_feature() ] );
 		$group->boot();
 	}
 
@@ -105,7 +112,7 @@ class ValidatorGroupTest extends TestCase {
 		$_SERVER['feature_booted'] = false;
 
 		$group = new Validator_Group(
-			function() {
+			static function() {
 				$_SERVER['feature_booted'] = true;
 			}
 		);

@@ -7,7 +7,7 @@ use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Utils;
 
 class RestFieldTest extends FrameworkTestCase {
-	public function test_rest_field() {
+	public function test_rest_field(): void {
 		Testable_Model_With_Rest_Field::boot_if_not_booted();
 
 		$post_id = static::factory()->post->create();
@@ -24,10 +24,10 @@ class Testable_Model_With_Rest_Field extends Post {
 
 	public static $object_name = 'post';
 
-	protected static function boot() {
+	protected static function boot(): void {
 		static::register_field(
 			'field-to-register',
-			function() {
+			static function() {
 				return 'value to return';
 			}
 		);

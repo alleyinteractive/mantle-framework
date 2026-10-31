@@ -24,6 +24,9 @@ use function Mantle\Support\Helpers\collect;
  * @extends \Mantle\Database\Query\Builder<TModel>
  *
  * @method \Mantle\Database\Query\Post_Query_Builder<TModel> anyStatus()
+ * @method \Mantle\Database\Query\Post_Query_Builder<TModel> orderByPostIn( string $order )
+ * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereAuthor( int $author )
+ * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereAuthorName( string $name )
  * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereId( int $id )
  * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereName( string $name )
  * @method \Mantle\Database\Query\Post_Query_Builder<TModel> whereSlug( string $slug )
@@ -182,7 +185,7 @@ class Post_Query_Builder extends Builder {
 		$builder->query_hash = spl_object_hash( $query );
 
 		$builder->with_clauses(
-			fn () => $query->query( $builder->get_query_args() ),
+			static fn () => $query->query( $builder->get_query_args() ),
 		);
 
 		return $query->found_posts;
@@ -201,7 +204,7 @@ class Post_Query_Builder extends Builder {
 			// @phpstan-ignore return.type
 			return Collection::from( $post_ids )
 				->map(
-					function ( $post_id ) use ( $model_object_types ) {
+					static function ( $post_id ) use ( $model_object_types ) {
 						$post_type = \get_post_type( $post_id );
 
 						if ( empty( $model_object_types[ $post_type ] ) ) {

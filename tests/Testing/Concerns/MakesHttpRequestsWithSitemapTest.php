@@ -10,6 +10,7 @@ use PHPUnit\Framework\Attributes\Group;
 
 use function Mantle\Support\Helpers\collect;
 use function Mantle\Support\Helpers\retry;
+use function Mantle\Support\Helpers\with;
 
 /**
  * Tests for making internal HTTP requests in tests related to sitemaps and robots.txt.
@@ -46,15 +47,16 @@ class MakesHttpRequestsWithSitemapTest extends FrameworkTestCase {
 	 * @dataProvider dataprovider_run_test_multiple_times
 	 */
 	#[DataProvider( 'dataprovider_run_test_multiple_times' )]
-	public function test_sitemap( $run = 0 ): void {
+	public function test_sitemap( int $run = 0 ): void {
 		$post = static::factory()->post->create_and_get( [
 			'post_title' => 'Example Post for Sitemap',
 			'post_name'  => 'example-post-for-sitemap',
 		] );
 
-		$server = wp_sitemaps_get_server();
+		$server = with( wp_sitemaps_get_server() );
 
 		$this->assertInstanceOf( \WP_Sitemaps::class, $server );
+
 		$this->assertTrue( $server->sitemaps_enabled(), 'Expected sitemaps to be enabled.' );
 
 		$sitemap_url = $server->index->get_index_url();
@@ -68,7 +70,11 @@ class MakesHttpRequestsWithSitemapTest extends FrameworkTestCase {
 			->assertSee( '<sitemap><loc>' );
 
 		// Extract a sitemap URL from the index (it is surrounded by <loc> tags).
-		preg_match( '/<loc>(.*?)<\/loc>/', $response->get_content(), $matches );
+		$content = $response->get_content();
+
+		$this->assertIsString( $content );
+
+		preg_match( '/<loc>(.*?)<\/loc>/', $content, $matches );
 
 		$this->assertNotEmpty( $matches[1] ?? null, 'Expected to find a sitemap URL in the index.' );
 
@@ -85,10 +91,12 @@ class MakesHttpRequestsWithSitemapTest extends FrameworkTestCase {
 
 	/**
 	 * Data provider to run the multiple requests test several times.
+	 *
+	 * @return array<string, array<int>>
 	 */
 	public static function dataprovider_run_test_multiple_times(): array {
 		return collect( range( 1, 3 ) )
-			->map_with_keys( fn ( $i ) => [ "run_{$i}" => [ $i ] ] )
+			->map_with_keys( static fn ( $i ) => [ "run_{$i}" => [ $i ] ] )
 			->all();
 	}
 }

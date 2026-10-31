@@ -350,7 +350,7 @@ class Event {
 	 * @param \Closure|bool $callback Callback to be invoked.
 	 */
 	public function when( mixed $callback ): static {
-		$this->filters[] = is_callable( $callback ) ? $callback : fn () => $callback;
+		$this->filters[] = is_callable( $callback ) ? $callback : static fn () => $callback;
 
 		return $this;
 	}
@@ -361,7 +361,7 @@ class Event {
 	 * @param \Closure|bool $callback Callback to be invoked.
 	 */
 	public function skip( mixed $callback ): static {
-		$this->rejects[] = is_callable( $callback ) ? $callback : fn () => $callback;
+		$this->rejects[] = is_callable( $callback ) ? $callback : static fn () => $callback;
 
 		return $this;
 	}

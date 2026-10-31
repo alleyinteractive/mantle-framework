@@ -18,7 +18,7 @@ class MemoizeTest extends TestCase {
 	public function test_it_can_memoize(): void {
 		$values = [];
 		for ( $i = 0; $i < 3; $i++ ) {
-			$values[] = memo( fn () => rand( 1, PHP_INT_MAX ) );
+			$values[] = memo( static fn () => rand( 1, PHP_INT_MAX ) );
 		};
 
 		$this->assertCount( 1, collect( $values )->unique()->all() );
@@ -26,7 +26,7 @@ class MemoizeTest extends TestCase {
 		// Ensure it is unique across multiple calls.
 		$values_2 = [];
 		for ( $i = 0; $i < 3; $i++ ) {
-			$values_2[] = memo( fn () => rand( 1, PHP_INT_MAX ) );
+			$values_2[] = memo( static fn () => rand( 1, PHP_INT_MAX ) );
 		};
 
 		$this->assertCount( 1, collect( $values_2 )->unique()->all() );
@@ -37,7 +37,7 @@ class MemoizeTest extends TestCase {
 		$values  = [];
 		for ( $i = 0; $i < 10; $i++ ) {
 			$values[] = memo(
-				fn () => rand( 1, PHP_INT_MAX ),
+				static fn () => rand( 1, PHP_INT_MAX ),
 				// This will result in two unique values as dependencies.
 				[ $i % 2 ],
 			);
@@ -54,7 +54,7 @@ class MemoizeTest extends TestCase {
 
 		$values = [];
 		for ( $i = 0; $i < 3; $i++ ) {
-			$values[] = memo( fn () => rand( 1, PHP_INT_MAX ) );
+			$values[] = memo( static fn () => rand( 1, PHP_INT_MAX ) );
 		};
 
 		$this->assertCount( 3, collect( $values )->unique()->all() );
@@ -63,17 +63,17 @@ class MemoizeTest extends TestCase {
 
 		$values_2 = [];
 		for ( $i = 0; $i < 3; $i++ ) {
-			$values_2[] = memo( fn () => rand( 1, PHP_INT_MAX ) );
+			$values_2[] = memo( static fn () => rand( 1, PHP_INT_MAX ) );
 		};
 
 		$this->assertCount( 1, collect( $values_2 )->unique()->all() );
 	}
 
 	public function test_it_can_flush_memoization(): void {
-		$callable = function (): array {
+		$callable = static function (): array {
 			$values = [];
 			for ( $i = 0; $i < 3; $i++ ) {
-				$values[] = memo( fn () => rand( 1, PHP_INT_MAX ) );
+				$values[] = memo( static fn () => rand( 1, PHP_INT_MAX ) );
 			};
 
 			return $values;

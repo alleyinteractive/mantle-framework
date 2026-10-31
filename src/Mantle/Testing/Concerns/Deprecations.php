@@ -151,7 +151,7 @@ trait Deprecations {
 			throw UnexpectedDeprecatedNoticeException::create(
 				message: "Unexpected deprecated notice for {$unexpected}",
 				frame: collect( $this->caught_deprecated_traces[ $index ] )
-					->skip_until( fn ( Frame $frame ): bool => in_array(
+					->skip_until( static fn ( Frame $frame ): bool => in_array(
 						$frame->method,
 						self::get_deprecation_methods(),
 						true,
@@ -220,7 +220,7 @@ trait Deprecations {
 	 */
 	public static function get_deprecation_methods(): array {
 		return collect( self::DEPRECATION_TYPES )->map(
-			fn ( string $type ): string => "_deprecated_{$type}"
+			static fn ( string $type ): string => "_deprecated_{$type}"
 		)->all();
 	}
 }

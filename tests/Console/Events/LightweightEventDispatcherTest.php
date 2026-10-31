@@ -12,11 +12,11 @@ class LightweightEventDispatcherTest extends TestCase {
 
 		$listener = [];
 
-		$dispatcher->listen( 'event_name', function( ...$args ) use ( &$listener ) {
+		$dispatcher->listen( 'event_name', static function( ...$args ) use ( &$listener ) {
 			$listener[] = [ 'event_name', ...$args ];
 		} );
 
-		$dispatcher->listen( [ 'event_name_2', 'event_name_3' ], function( ...$args ) use ( &$listener ) {
+		$dispatcher->listen( [ 'event_name_2', 'event_name_3' ], static function( ...$args ) use ( &$listener ) {
 			$listener[] = [ 'multi_listener', ...$args ];
 		} );
 
@@ -40,8 +40,8 @@ class LightweightEventDispatcherTest extends TestCase {
 		$dispatcher = new Lightweight_Event_Dispatcher();
 		$seen       = [];
 
-		$dispatcher->listen( 'event_name', function ( $value ) use ( &$seen ): void { $seen[] = $value; } );
-		$dispatcher->listen( 'event_name', function ( $value ) use ( &$seen ) { $seen[] = $value; return $value; } );
+		$dispatcher->listen( 'event_name', static function ( $value ) use ( &$seen ): void { $seen[] = $value; } );
+		$dispatcher->listen( 'event_name', static function ( $value ) use ( &$seen ) { $seen[] = $value; return $value; } );
 
 		$this->assertSame( 'hello', $dispatcher->dispatch( 'event_name', 'hello' ) );
 		$this->assertSame( [ 'hello', 'hello' ], $seen );
@@ -49,8 +49,8 @@ class LightweightEventDispatcherTest extends TestCase {
 		$event = new \stdClass();
 		$ids   = [];
 
-		$dispatcher->listen( \stdClass::class, function ( \stdClass $e ) use ( &$ids ) { $ids[] = spl_object_id( $e ); } );
-		$dispatcher->listen( \stdClass::class, function ( \stdClass $e ) use ( &$ids ) { $ids[] = spl_object_id( $e ); } );
+		$dispatcher->listen( \stdClass::class, static function ( \stdClass $e ) use ( &$ids ) { $ids[] = spl_object_id( $e ); } );
+		$dispatcher->listen( \stdClass::class, static function ( \stdClass $e ) use ( &$ids ) { $ids[] = spl_object_id( $e ); } );
 		$dispatcher->dispatch( $event );
 
 		$this->assertSame( [ spl_object_id( $event ), spl_object_id( $event ) ], $ids );
@@ -58,7 +58,7 @@ class LightweightEventDispatcherTest extends TestCase {
 
 	public function test_it_can_forget_a_specific_listener(): void {
 		$dispatcher = new Lightweight_Event_Dispatcher();
-		$listener   = fn ( $value ) => 'modified';
+		$listener   = static fn ( $value ) => 'modified';
 
 		$dispatcher->listen( 'event_name', $listener );
 		$dispatcher->forget( 'event_name', $listener );
@@ -69,7 +69,7 @@ class LightweightEventDispatcherTest extends TestCase {
 
 	public function test_listener_registered_twice_runs_twice(): void {
 		$dispatcher = new Lightweight_Event_Dispatcher();
-		$listener   = fn ( int $value ) => $value + 1;
+		$listener   = static fn ( int $value ) => $value + 1;
 
 		$dispatcher->listen( 'event_name', $listener );
 		$dispatcher->listen( 'event_name', $listener );
@@ -86,7 +86,7 @@ class LightweightEventDispatcherTest extends TestCase {
 
 		$listener = [];
 
-		$dispatcher->listen( 'event:*', function( ...$args ) use ( &$listener ) {
+		$dispatcher->listen( 'event:*', static function( ...$args ) use ( &$listener ) {
 			$listener[] = [ 'wildcard_listener', ...$args ];
 		} );
 
@@ -107,7 +107,7 @@ class LightweightEventDispatcherTest extends TestCase {
 	public function test_it_can_forget_events(): void {
 		$dispatcher = new Lightweight_Event_Dispatcher();
 
-		$dispatcher->listen( 'event_name', function() {
+		$dispatcher->listen( 'event_name', static function() {
 			return 'event_name';
 		} );
 
@@ -119,7 +119,7 @@ class LightweightEventDispatcherTest extends TestCase {
 	public function test_it_can_forget_wildcard_events(): void {
 		$dispatcher = new Lightweight_Event_Dispatcher();
 
-		$dispatcher->listen( 'event:*', function() {
+		$dispatcher->listen( 'event:*', static function() {
 			return 'event_name';
 		} );
 
@@ -134,7 +134,7 @@ class LightweightEventDispatcherTest extends TestCase {
 	public function test_it_can_filter_a_value(): void {
 		$dispatcher = new Lightweight_Event_Dispatcher();
 
-		$dispatcher->listen( 'event_name', function( int $value ) {
+		$dispatcher->listen( 'event_name', static function( int $value ) {
 			return $value + 1;
 		} );
 
@@ -146,7 +146,7 @@ class LightweightEventDispatcherTest extends TestCase {
 
 		$listener = [];
 
-		$dispatcher->listen( Example_Lightweight_Event::class, function( Example_Lightweight_Event $event ) use ( &$listener ) {
+		$dispatcher->listen( Example_Lightweight_Event::class, static function( Example_Lightweight_Event $event ) use ( &$listener ) {
 			$listener[] = $event->name;
 		} );
 

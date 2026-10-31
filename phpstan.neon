@@ -8,6 +8,7 @@ parameters:
 		- src/Mantle/
 		- mantle.php
 		- phpstan/
+		- tests/
 
 	ignoreErrors:
 		-
@@ -65,28 +66,54 @@ parameters:
 			paths:
 				- src/Mantle/Support/Collection.php
 
+	universalObjectCratesClasses:
+		- Mantle\Database\Model\Meta\Model_Meta_Proxy
+		- Mantle\Support\Higher_Order_Collection_Proxy
+		- Mantle\Support\Higher_Order_When_Proxy
+
 	scanFiles:
 		- %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-stubs.php
 
 	scanDirectories:
 		- tests/fixtures/phpstan
+		- %currentWorkingDirectory%/vendor/squizlabs/php_codesniffer/src
 
 	excludePaths:
-		- src/Mantle/Blocks
-		- src/Mantle/Container/Bound_Method.php
-		- src/Mantle/Database/Factory
-		- src/Mantle/Framework/Console/Hook_Usage_Command.php
-		- src/Mantle/Framework/Console/Generators
-		- src/Mantle/Query_Monitor
-		- src/Mantle/Queue/Providers/WordPress/Admin/Queue_Jobs_Table.php
-		- src/Mantle/Queue/Providers/WordPress/Admin/Service_Provider.php
-		- src/Mantle/Support/Enumerable.php
-		- src/Mantle/Support/Traits/Conditionable.php
-		- src/Mantle/Testing/Mock_Action.php
-		- src/Mantle/Testing/install-wordpress.php
-		- src/Mantle/Testing/preload.php
-		- src/Mantle/Testing/wordpress-bootstrap.php
-		- src/Mantle/**/vendor/**
+		analyseAndScan:
+			- src/Mantle/Blocks
+			- src/Mantle/Container/Bound_Method.php
+			- src/Mantle/Database/Factory
+			- src/Mantle/Framework/Console/Hook_Usage_Command.php
+			- src/Mantle/Framework/Console/Generators
+			- src/Mantle/Query_Monitor
+			- src/Mantle/Queue/Providers/WordPress/Admin/Queue_Jobs_Table.php
+			- src/Mantle/Queue/Providers/WordPress/Admin/Service_Provider.php
+			- src/Mantle/Support/Enumerable.php
+			- src/Mantle/Support/Traits/Conditionable.php
+			- src/Mantle/Testing/Mock_Action.php
+			- src/Mantle/Testing/install-wordpress.php
+			- src/Mantle/Testing/preload.php
+			- src/Mantle/Testing/wordpress-bootstrap.php
+			- src/Mantle/**/vendor/**
 
-		# Files that need to be fixed and re-added.
-		- src/Mantle/Queue/Queue_Fake.php
+			# Files that need to be fixed and re-added.
+			- src/Mantle/Queue/Queue_Fake.php
+
+		# Excluded from analysis only; tests/fixtures/phpstan still has to be scanned.
+		analyse:
+			# Test data, not test code.
+			- tests/fixtures
+			- tests/includes
+			- tests/template-parts
+			- tests/Console/hook-usage
+
+
+services:
+	-
+		class: Mantle\Tests\PHPStan\Higher_Order_Proxy_Extension
+		tags:
+			- phpstan.broker.methodsClassReflectionExtension
+	-
+		class: Mantle\Tests\PHPStan\Faker_Provider_Extension
+		tags:
+			- phpstan.broker.methodsClassReflectionExtension

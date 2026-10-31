@@ -23,7 +23,7 @@ trait Register_Rest_Fields {
 	/**
 	 * REST Field Registrar
 	 *
-	 * @var REST_Field_Registrar
+	 * @var REST_Field_Registrar|null
 	 */
 	protected static $rest_registrar;
 
@@ -49,7 +49,7 @@ trait Register_Rest_Fields {
 	 * @throws Model_Exception Thrown when registering a post type that is already registered.
 	 */
 	public static function register_fields(): void {
-		if ( ! isset( static::$rest_registrar ) ) { // @phpstan-ignore-line isset.property
+		if ( ! isset( static::$rest_registrar ) ) {
 			$class = static::class;
 			throw new Model_Exception( "REST field registrar is not defined for [{$class}]" );
 		}
@@ -68,7 +68,7 @@ trait Register_Rest_Fields {
 	 * @todo Allow for creation of a a REST Field from a SML REST Field.
 	 */
 	public static function register_field( $attribute, ?callable $get_callback = null ): REST_Field {
-		if ( ! isset( static::$rest_registrar ) ) { // @phpstan-ignore-line isset.property
+		if ( ! isset( static::$rest_registrar ) ) {
 			$class = static::class;
 			throw new Model_Exception( "REST field registrar is not defined for [{$class}]" );
 		}

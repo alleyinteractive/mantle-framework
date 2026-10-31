@@ -15,13 +15,16 @@ class HelpersCacheTest extends TestCase {
 		$this->assertSame( $expected, normalize_cache_ttl( value( $value ) ) );
 	}
 
+	/**
+	 * @return array<string, array{0: int, 1: mixed}>
+	 */
 	public static function normalize_cache_ttl_dataprovider(): array {
 		return [
 			'null'                => [ 0, null ],
 			'seconds'             => [ 3600, 3600 ],
-			'unix timestamp'      => [ 3600, fn () => now()->addHour() ],
+			'unix timestamp'      => [ 3600, static fn () => now()->addHour() ],
 			'date interval'       => [ 3600, new \DateInterval( 'PT1H' ) ],
-			'negative timestamp'  => [ 0, fn () => now()->subHour() ],
+			'negative timestamp'  => [ 0, static fn () => now()->subHour() ],
 			'zero'                => [ 0, 0 ],
 			'negative integer'    => [ 0, -100 ],
 		];

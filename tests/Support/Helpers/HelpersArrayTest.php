@@ -7,14 +7,14 @@ use function Mantle\Support\Helpers\data_set;
 use function Mantle\Support\Helpers\value;
 
 class HelpersArrayTest extends TestCase {
-	public function testValue() {
+	public function testValue(): void {
 		$this->assertSame( 'foo', value( 'foo' ) );
-		$this->assertSame( 'foo', value( function () {
+		$this->assertSame( 'foo', value( static function () {
 			return 'foo';
 		} ) );
 	}
 
-	public function testDataGet() {
+	public function testDataGet(): void {
 		$object      = (object) [ 'users' => [ 'name' => [ 'Taylor', 'Otwell' ] ] ];
 		$array       = [ (object) [ 'users' => [ (object) [ 'name' => 'Taylor' ] ] ] ];
 		$dottedArray = [
@@ -33,7 +33,7 @@ class HelpersArrayTest extends TestCase {
 		$this->assertSame( 'Taylor', data_get( $array, '0.users.0.name' ) );
 		$this->assertNull( data_get( $array, '0.users.3' ) );
 		$this->assertSame( 'Not found', data_get( $array, '0.users.3', 'Not found' ) );
-		$this->assertSame( 'Not found', data_get( $array, '0.users.3', function () {
+		$this->assertSame( 'Not found', data_get( $array, '0.users.3', static function () {
 			return 'Not found';
 		} ) );
 		$this->assertSame( 'Taylor', data_get( $dottedArray, [
@@ -54,7 +54,7 @@ class HelpersArrayTest extends TestCase {
 		$this->assertNull( data_get( $arrayAccess, 'email', 'Not found' ) );
 	}
 
-	public function testDataGetWithNestedArrays() {
+	public function testDataGetWithNestedArrays(): void {
 		$array = [
 			[ 'name' => 'taylor', 'email' => 'taylorotwell@gmail.com' ],
 			[ 'name' => 'abigail' ],
@@ -96,7 +96,7 @@ class HelpersArrayTest extends TestCase {
 		$this->assertNull( data_get( $array, 'posts.*.date' ) );
 	}
 
-	public function testDataGetWithDoubleNestedArraysCollapsesResult() {
+	public function testDataGetWithDoubleNestedArraysCollapsesResult(): void {
 		$array = [
 			'posts' => [
 				[
@@ -132,7 +132,7 @@ class HelpersArrayTest extends TestCase {
 		$this->assertSame( [], data_get( $array, 'posts.*.users.*.name' ) );
 	}
 
-	public function testDataFill() {
+	public function testDataFill(): void {
 		$data = [ 'foo' => 'bar' ];
 
 		$this->assertSame( [
@@ -153,7 +153,7 @@ class HelpersArrayTest extends TestCase {
 		);
 	}
 
-	public function testDataFillWithStar() {
+	public function testDataFillWithStar(): void {
 		$data = [ 'foo' => 'bar' ];
 
 		$this->assertSame(
@@ -183,7 +183,7 @@ class HelpersArrayTest extends TestCase {
 		);
 	}
 
-	public function testDataFillWithDoubleStar() {
+	public function testDataFillWithDoubleStar(): void {
 		$data = [
 			'posts' => [
 				(object) [
@@ -221,7 +221,7 @@ class HelpersArrayTest extends TestCase {
 		], $data );
 	}
 
-	public function testDataSet() {
+	public function testDataSet(): void {
 		$data = [ 'foo' => 'bar' ];
 
 		$this->assertSame(
@@ -258,7 +258,7 @@ class HelpersArrayTest extends TestCase {
 		);
 	}
 
-	public function testDataSetWithStar() {
+	public function testDataSetWithStar(): void {
 		$data = [ 'foo' => 'bar' ];
 
 		$this->assertSame(
@@ -282,7 +282,7 @@ class HelpersArrayTest extends TestCase {
 		);
 	}
 
-	public function testDataSetWithDoubleStar() {
+	public function testDataSetWithDoubleStar(): void {
 		$data = [
 			'posts' => [
 				(object) [
@@ -323,8 +323,14 @@ class HelpersArrayTest extends TestCase {
 
 class SupportTestArrayAccess implements ArrayAccess
 {
+	/**
+	 * @var array<mixed>
+	 */
 	protected array $attributes = [];
 
+	/**
+	 * @param array<mixed> $attributes Attributes.
+	 */
 	public function __construct(array $attributes = [])
 	{
 		$this->attributes = $attributes;

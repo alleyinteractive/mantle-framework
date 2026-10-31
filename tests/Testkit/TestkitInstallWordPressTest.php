@@ -8,7 +8,7 @@ use Mantle\Testkit\TestCase;
 // Required for callback.
 require_once __DIR__ . '/fixtures/global-functions.php';
 
-Installation_Manager::instance()->after( function() {
+Installation_Manager::instance()->after( static function() {
 	$_SERVER['__mantle_after_wordpress_install'] ??= 0;
 
 	$_SERVER['__mantle_after_wordpress_install']++;
@@ -17,7 +17,7 @@ Installation_Manager::instance()->after( function() {
 class TestkitInstallWordPressTest extends TestCase {
 	use Installs_WordPress;
 
-	public function test_mantle_is_installed_from_trait() {
+	public function test_mantle_is_installed_from_trait(): void {
 		$called = \mantle_after_wordpress_install( false );
 
 		$this->assertSame( 1, $called );

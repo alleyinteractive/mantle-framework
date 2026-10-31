@@ -131,7 +131,7 @@ trait Incorrect_Usage {
 			throw UnexpectedIncorrectUsageException::create(
 				message: "Unexpected incorrect usage notice for {$unexpected}",
 				frame: collect( $this->caught_doing_it_wrong_traces[ $index ] )
-					->skip_until( fn ( Frame $frame ): bool => $frame->method === '_doing_it_wrong' )
+					->skip_until( static fn ( Frame $frame ): bool => $frame->method === '_doing_it_wrong' )
 					->slice( 1 )
 					->first_or_fail(),
 			);

@@ -19,7 +19,7 @@ class ResetServerTest extends FrameworkTestCase {
 		Utils::reset_server();
 	}
 
-	public function test_modify_server_http_host() {
+	public function test_modify_server_http_host(): void {
 		$this->assertSame( WP_TESTS_DOMAIN, $_SERVER['HTTP_HOST'] );
 
 		$_SERVER['HTTP_HOST'] = 'other.org';
@@ -27,7 +27,7 @@ class ResetServerTest extends FrameworkTestCase {
 		$this->assertSame( 'other.org', $_SERVER['HTTP_HOST'] );
 	}
 
-	public function test_modify_server_request_uri() {
+	public function test_modify_server_request_uri(): void {
 		$this->assertSame( WP_TESTS_DOMAIN, $_SERVER['HTTP_HOST'] );
 	}
 }

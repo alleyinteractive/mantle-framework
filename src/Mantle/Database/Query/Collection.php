@@ -50,7 +50,7 @@ class Collection extends Base_Collection {
 	 * @return \Mantle\Support\Collection<int, class-string<TModel>>
 	 */
 	public function models(): Base_Collection {
-		return $this->map( fn ( $model ): string => $model::class )->unique()->values(); // @phpstan-ignore-line return.type
+		return $this->map( static fn ( $model ): string => $model::class )->unique()->values(); // @phpstan-ignore-line return.type
 	}
 
 	/**
@@ -68,7 +68,7 @@ class Collection extends Base_Collection {
 			$result->with_found_rows( $this->found_rows );
 		}
 
-		return $result->contains( fn ( $item ) => ! $item instanceof Model ) // @phpstan-ignore-line instanceof.alwaysTrue
+		return $result->contains( static fn ( $item ) => ! $item instanceof Model ) // @phpstan-ignore-line instanceof.alwaysTrue
 			? $result->to_base()
 			: $result;
 	}
@@ -91,7 +91,7 @@ class Collection extends Base_Collection {
 			$result->with_found_rows( $this->found_rows );
 		}
 
-		return $result->contains( fn ( $item ) => ! $item instanceof Model ) // @phpstan-ignore-line instanceof.alwaysTrue
+		return $result->contains( static fn ( $item ) => ! $item instanceof Model ) // @phpstan-ignore-line instanceof.alwaysTrue
 			? $result->to_base()
 			: $result;
 	}

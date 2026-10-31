@@ -88,7 +88,7 @@ class Post_Factory extends Factory {
 	 * Any slugs passed that are not found will be created. If you want to
 	 * only use existing terms, use `with_terms_only_existing()`.
 	 *
-	 * @param array<int|string, \WP_Term|int|string|array<string, mixed>>|\WP_Term|int|string ...$terms Terms to assign to the post.
+	 * @param array<int|string, \WP_Term|int|string|array<mixed>>|\WP_Term|int|string ...$terms Terms to assign to the post.
 	 */
 	public function with_terms( ...$terms ): static {
 		$terms = collect( Arr::wrap( $terms ) )->all();
@@ -153,7 +153,7 @@ class Post_Factory extends Factory {
 	 * Create a new factory instance to create posts with a set of terms without creating
 	 * any unknown terms.
 	 *
-	 * @param array<int|string, \WP_Term|int|string|array<string, mixed>>|\WP_Term|int|string ...$terms Terms to assign to the post.
+	 * @param array<int|string, \WP_Term|int|string|array<mixed>>|\WP_Term|int|string ...$terms Terms to assign to the post.
 	 */
 	public function with_terms_only_existing( ...$terms ): static {
 		// Handle an array in the first argument.
@@ -194,7 +194,7 @@ class Post_Factory extends Factory {
 	 */
 	public function with_real_thumbnail( callable|string|null $file = null, int $width = 1200, int $height = 800, bool $recycle = true ): static {
 		return $this->with_middleware(
-			function ( array $args, Closure $next ) use ( $file, $width, $height, $recycle ) {
+			static function ( array $args, Closure $next ) use ( $file, $width, $height, $recycle ) {
 				$post = $next( $args );
 
 				update_post_meta(
@@ -222,7 +222,7 @@ class Post_Factory extends Factory {
 	public function with_post_type( string $post_type ): static {
 		return tap(
 			clone $this,
-			fn ( Post_Factory $factory ) => $factory->post_type = $post_type,
+			static fn ( Post_Factory $factory ) => $factory->post_type = $post_type,
 		);
 	}
 

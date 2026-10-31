@@ -28,7 +28,7 @@ use function Mantle\Support\Helpers\tap;
  * @template TObject = object
  * @template TReturnValue = mixed
  *
- * @method \Mantle\Database\Factory\Fluent_Factory<TModel, TObject, TReturnValue> count(int $count)
+ * @method \Mantle\Database\Factory\Fluent_Factory<TModel, TObject, TReturnValue, static> count(int $count)
  */
 abstract class Factory {
 	use Concerns\Resolves_Factories;
@@ -146,7 +146,7 @@ abstract class Factory {
 	public function as_models() {
 		return tap(
 			clone $this,
-			fn ( Factory $factory ) => $factory->as_models = true,
+			static fn ( Factory $factory ) => $factory->as_models = true,
 		);
 	}
 
@@ -158,7 +158,7 @@ abstract class Factory {
 	public function as_objects() {
 		return tap(
 			clone $this,
-			fn ( Factory $factory ) => $factory->as_models = false,
+			static fn ( Factory $factory ) => $factory->as_models = false,
 		);
 	}
 
@@ -202,7 +202,7 @@ abstract class Factory {
 	public function without_middleware() {
 		return tap(
 			clone $this,
-			fn ( Factory $factory ) => $factory->middleware = new Collection(),
+			static fn ( Factory $factory ) => $factory->middleware = new Collection(),
 		);
 	}
 
@@ -224,7 +224,7 @@ abstract class Factory {
 
 		return tap(
 			clone $this,
-			fn ( Factory $factory ) => $factory->model = $model,
+			static fn ( Factory $factory ) => $factory->model = $model,
 		);
 	}
 
@@ -245,7 +245,7 @@ abstract class Factory {
 	public function slash( bool $value = true ): static {
 		return tap(
 			clone $this,
-			fn ( Factory $factory ) => $factory->slash = $value,
+			static fn ( Factory $factory ) => $factory->slash = $value,
 		);
 	}
 
@@ -257,7 +257,7 @@ abstract class Factory {
 	 */
 	public function state( array|callable $state ): static {
 		return $this->with_middleware(
-			function ( array $args, Closure $next ) use ( $state ) {
+			static function ( array $args, Closure $next ) use ( $state ) {
 				$args = array_merge(
 					$args,
 					is_callable( $state ) ? $state( $args ) : $state,

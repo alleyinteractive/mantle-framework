@@ -9,8 +9,8 @@ use RuntimeException;
 
 class PipelineTest extends TestCase {
 
-	public function testPipelineBasicUsage() {
-		$pipeTwo = function ( $piped, $next ) {
+	public function testPipelineBasicUsage(): void {
+		$pipeTwo = static function ( $piped, $next ) {
 			$_SERVER['__test.pipe.two'] = $piped;
 
 			return $next( $piped );
@@ -20,7 +20,7 @@ class PipelineTest extends TestCase {
 			->send( 'foo' )
 			->through( array( PipelineTestPipeOne::class, $pipeTwo ) )
 			->then(
-				function ( $piped ) {
+				static function ( $piped ) {
 					return $piped;
 				}
 			);
@@ -33,12 +33,12 @@ class PipelineTest extends TestCase {
 		unset( $_SERVER['__test.pipe.two'] );
 	}
 
-	public function testPipelineUsageWithObjects() {
+	public function testPipelineUsageWithObjects(): void {
 		$result = ( new Pipeline( new Container() ) )
 			->send( 'foo' )
 			->through( array( new PipelineTestPipeOne() ) )
 			->then(
-				function ( $piped ) {
+				static function ( $piped ) {
 					return $piped;
 				}
 			);
@@ -49,12 +49,12 @@ class PipelineTest extends TestCase {
 		unset( $_SERVER['__test.pipe.one'] );
 	}
 
-	public function testPipelineUsageWithInvokableObjects() {
+	public function testPipelineUsageWithInvokableObjects(): void {
 		$result = ( new Pipeline( new Container() ) )
 			->send( 'foo' )
 			->through( array( new PipelineTestPipeTwo() ) )
 			->then(
-				function ( $piped ) {
+				static function ( $piped ) {
 					return $piped;
 				}
 			);
@@ -65,8 +65,8 @@ class PipelineTest extends TestCase {
 		unset( $_SERVER['__test.pipe.one'] );
 	}
 
-	public function testPipelineUsageWithCallable() {
-		$function = function ( $piped, $next ) {
+	public function testPipelineUsageWithCallable(): void {
+		$function = static function ( $piped, $next ) {
 			$_SERVER['__test.pipe.one'] = 'foo';
 
 			return $next( $piped );
@@ -76,7 +76,7 @@ class PipelineTest extends TestCase {
 			->send( 'foo' )
 			->through( array( $function ) )
 			->then(
-				function ( $piped ) {
+				static function ( $piped ) {
 					return $piped;
 				}
 			);
@@ -97,12 +97,12 @@ class PipelineTest extends TestCase {
 		unset( $_SERVER['__test.pipe.one'] );
 	}
 
-	public function testPipelineUsageWithInvokableClass() {
+	public function testPipelineUsageWithInvokableClass(): void {
 		$result = ( new Pipeline( new Container() ) )
 			->send( 'foo' )
 			->through( array( PipelineTestPipeTwo::class ) )
 			->then(
-				function ( $piped ) {
+				static function ( $piped ) {
 					return $piped;
 				}
 			);
@@ -113,14 +113,14 @@ class PipelineTest extends TestCase {
 		unset( $_SERVER['__test.pipe.one'] );
 	}
 
-	public function testPipelineUsageWithParameters() {
+	public function testPipelineUsageWithParameters(): void {
 		$parameters = array( 'one', 'two' );
 
 		$result = ( new Pipeline( new Container() ) )
 			->send( 'foo' )
 			->through( PipelineTestParameterPipe::class . ':' . implode( ',', $parameters ) )
 			->then(
-				function ( $piped ) {
+				static function ( $piped ) {
 					return $piped;
 				}
 			);
@@ -131,33 +131,33 @@ class PipelineTest extends TestCase {
 		unset( $_SERVER['__test.pipe.parameters'] );
 	}
 
-	public function testPipelineViaChangesTheMethodBeingCalledOnThePipes() {
+	public function testPipelineViaChangesTheMethodBeingCalledOnThePipes(): void {
 		$pipelineInstance = new Pipeline( new Container() );
 		$result           = $pipelineInstance->send( 'data' )
 			->through( PipelineTestPipeOne::class )
 			->via( 'differentMethod' )
 			->then(
-				function ( $piped ) {
+				static function ( $piped ) {
 					return $piped;
 				}
 			);
 		$this->assertSame( 'data', $result );
 	}
 
-	public function testPipelineThrowsExceptionOnResolveWithoutContainer() {
+	public function testPipelineThrowsExceptionOnResolveWithoutContainer(): void {
 		$this->expectException( RuntimeException::class );
 		$this->expectExceptionMessage( 'A container instance has not been passed to the Pipeline.' );
 
 		( new Pipeline() )->send( 'data' )
 			->through( PipelineTestPipeOne::class )
 			->then(
-				function ( $piped ) {
+				static function ( $piped ) {
 					return $piped;
 				}
 			);
 	}
 
-	public function testPipelineThenReturnMethodRunsPipelineThenReturnsPassable() {
+	public function testPipelineThenReturnMethodRunsPipelineThenReturnsPassable(): void {
 		$result = ( new Pipeline( new Container() ) )
 					->send( 'foo' )
 					->through( array( PipelineTestPipeOne::class ) )
@@ -172,20 +172,20 @@ class PipelineTest extends TestCase {
 
 class PipelineTestPipeOne {
 
-	public function handle( $piped, $next ) {
+	public function handle( mixed $piped, callable $next ): mixed {
 		$_SERVER['__test.pipe.one'] = $piped;
 
 		return $next( $piped );
 	}
 
-	public function differentMethod( $piped, $next ) {
+	public function differentMethod( mixed $piped, callable $next ): mixed {
 		return $next( $piped );
 	}
 }
 
 class PipelineTestPipeTwo {
 
-	public function __invoke( $piped, $next ) {
+	public function __invoke( mixed $piped, callable $next ): mixed {
 		$_SERVER['__test.pipe.one'] = $piped;
 
 		return $next( $piped );
@@ -194,7 +194,7 @@ class PipelineTestPipeTwo {
 
 class PipelineTestParameterPipe {
 
-	public function handle( $piped, $next, $parameter1 = null, $parameter2 = null ) {
+	public function handle( mixed $piped, callable $next, mixed $parameter1 = null, mixed $parameter2 = null ): mixed {
 		$_SERVER['__test.pipe.parameters'] = array( $parameter1, $parameter2 );
 
 		return $next( $piped );

@@ -130,7 +130,7 @@ abstract class TestCase extends BaseTestCase {
 
 		if ( ! empty( static::$test_uses ) ) {
 			static::get_test_case_traits()->each(
-				function ( string|object $trait ): void {
+				static function ( string|object $trait ): void {
 					$callback = [ static::class, strtolower( class_basename( $trait ) ) . '_set_up_before_class' ];
 
 					if ( is_callable( $callback ) ) {
@@ -151,7 +151,7 @@ abstract class TestCase extends BaseTestCase {
 	public static function tearDownAfterClass(): void {
 		if ( ! empty( static::$test_uses ) ) {
 			static::get_test_case_traits()->each(
-				function ( string|object $trait ): void {
+				static function ( string|object $trait ): void {
 					$callback = [ static::class, strtolower( class_basename( $trait ) ) . '_tear_down_after_class' ];
 
 					if ( is_callable( $callback ) ) {

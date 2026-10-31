@@ -16,10 +16,17 @@ use function Mantle\Support\Helpers\get_comment_object;
  */
 class NullableCommentObjectsTest extends FrameworkTestCase {
 	/**
+	 * An ID that can never belong to a real object.
+	 */
+	private const IMPOSSIBLE_ID = PHP_INT_MAX;
+
+	/**
 	 * Test that `get_comment_object()` returns a comment object.
 	 */
-	public function test_comment_object_returns_comment() {
-		$known_id = self::factory()->comment->create();
+	public function test_comment_object_returns_comment(): void {
+		$known_id = static::factory()->comment->create();
+
+		$this->assertIsInt( $known_id );
 
 		$found_object = get_comment_object( $known_id );
 
@@ -31,8 +38,8 @@ class NullableCommentObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_comment_object()` returns null when there is no comment.
 	 */
-	public function test_comment_object_returns_null() {
-		$found_object = get_comment_object( $this->impossible_id );
+	public function test_comment_object_returns_null(): void {
+		$found_object = get_comment_object( self::IMPOSSIBLE_ID );
 
 		$this->assertNull( $found_object );
 	}

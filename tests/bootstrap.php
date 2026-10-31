@@ -25,7 +25,7 @@ define( 'MANTLE_PHPUNIT_TEMPLATE_PATH', __DIR__ . '/template-parts' );
 	->maybe_rsync_plugin()
 	->when(
 		Utils::env_bool( 'MANTLE_INSTALL_VIP_MU_PLUGINS', false ),
-		fn ( Installation_Manager $manager ) => $manager->with_vip_mu_plugins(),
+		static fn ( Installation_Manager $manager ) => $manager->with_vip_mu_plugins(),
 	)
 	->install_plugin( 'logger', 'https://github.com/alleyinteractive/logger/archive/refs/heads/develop.zip' )
 	->install_plugins(

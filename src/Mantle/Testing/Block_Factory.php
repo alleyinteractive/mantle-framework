@@ -128,7 +128,7 @@ class Block_Factory {
 		}
 
 		return collect( $blocks )
-			->map( fn ( $block ) => is_array( $block ) ? serialize_blocks( $block ) : $block )
+			->map( static fn ( $block ) => is_array( $block ) ? serialize_blocks( $block ) : $block )
 			->implode( "\n\n" );
 	}
 }

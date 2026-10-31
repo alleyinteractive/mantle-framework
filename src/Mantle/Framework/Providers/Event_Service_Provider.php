@@ -36,7 +36,7 @@ abstract class Event_Service_Provider extends Service_Provider implements Isolat
 	public function register(): void {
 		$this->app->singleton(
 			Events_Manifest::class,
-			fn ( Application $app ) => new Events_Manifest( $app->get_cached_events_path() ),
+			static fn ( Application $app ) => new Events_Manifest( $app->get_cached_events_path() ),
 		);
 
 		$this->app->booting(
@@ -91,7 +91,7 @@ abstract class Event_Service_Provider extends Service_Provider implements Isolat
 	 */
 	protected function discover_events(): array {
 		return collect( $this->discover_events_within() )
-			->reject( fn ( $dir ) => ! is_dir( $dir ) )
+			->reject( static fn ( $dir ) => ! is_dir( $dir ) )
 			->reduce(
 				fn ( array $discovered, string $directory ) => array_merge_recursive(
 					$discovered,

@@ -26,17 +26,18 @@ class UserObjectTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_find_user() {
+	public function test_find_user(): void {
 		$user_id = $this->get_random_user_id();
-		$object = User::find( $user_id );
+		$object = User::find_or_fail( $user_id );
 		$user = get_user_by( 'ID', $user_id );
+
+		$this->assertInstanceOf( \WP_User::class, $user );
 
 		$this->assertSame( $user_id, $object->id() );
 		$this->assertSame( $user->user_login, $object->slug() );
 		$this->assertSame( $user->display_name, $object->name() );
 		$this->assertSame( $user->user_email, $object->get( 'email' ) );
-		$this->assertSame( $user->user_email, $object->email );
-		$this->assertSame( $user->user_email, $object->user_email );
+		$this->assertSame( $user->user_email, $object->get( 'user_email' ) );
 
 		// Test that you can get the WordPress object.
 		$core_object = $object->core_object();
@@ -44,7 +45,7 @@ class UserObjectTest extends FrameworkTestCase {
 		$this->assertSame( $object->id(), $user_id );
 	}
 
-	public function test_create_user() {
+	public function test_create_user(): void {
 		$email = static::$faker->email();
 
 		$user = new User(
@@ -64,12 +65,12 @@ class UserObjectTest extends FrameworkTestCase {
 		$this->assertSame( $user->id(), $user_by_email->ID );
 	}
 
-	public function test_updating_user() {
+	public function test_updating_user(): void {
 		$user_id = $this->get_random_user_id();
-		$user    = User::find( $user_id );
+		$user    = User::find_or_fail( $user_id );
 
 		$email = static::$faker->email();
-		$user->email = $email;
+		$user->set( 'email', $email );
 		$user->save();
 
 		// Get the created user by the updated email.
@@ -78,9 +79,9 @@ class UserObjectTest extends FrameworkTestCase {
 		$this->assertSame( $user_id, $user_by_email->ID );
 	}
 
-	public function test_deleting_user() {
+	public function test_deleting_user(): void {
 		$user_id = $this->get_random_user_id();
-		$user    = User::find( $user_id );
+		$user    = User::find_or_fail( $user_id );
 
 		$this->assertTrue( $user->delete() );
 	}
@@ -88,6 +89,7 @@ class UserObjectTest extends FrameworkTestCase {
 	/**
 	 * Get a random user ID, ensures the ID is not the last in the set.
 	 *
+	 * @param array<string, mixed> $args Arguments for the users.
 	 * @return integer
 	 */
 	protected function get_random_user_id( $args = [] ): int {

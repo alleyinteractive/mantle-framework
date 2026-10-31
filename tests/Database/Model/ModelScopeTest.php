@@ -10,7 +10,7 @@ use Mantle\Database\Query\Post_Query_Builder;
 use Mantle\Testing\FrameworkTestCase;
 
 class ModelScopeTest extends FrameworkTestCase {
-	public function test_local_scope() {
+	public function test_local_scope(): void {
 		$post_id = $this->get_random_post_id();
 
 		$this->assertEmpty( Testable_Post_For_Scope::active()->get()->to_array() );
@@ -18,26 +18,29 @@ class ModelScopeTest extends FrameworkTestCase {
 		// Now set the post as the active one.
 		update_post_meta( $post_id, 'active', '1' );
 
-		$this->assertSame( $post_id, Testable_Post_For_Scope::active()->first()->id() );
+		$first = Testable_Post_For_Scope::active()->first();
+
+		$this->assertInstanceOf( Testable_Post_For_Scope::class, $first );
+		$this->assertSame( $post_id, $first->id() );
 	}
 
-	public function test_multiple_local_scopes() {
+	public function test_multiple_local_scopes(): void {
 		$post_id = $this->get_random_post_id();
 
-		$this->assertEmpty( Testable_Post_For_Scope::active()->ofType( 'type-to-check' )->get()->to_array() );
+		$this->assertEmpty( Testable_Post_For_Scope::active()->ofType( 'type-to-check' )->get()->to_array() ); // @phpstan-ignore method.notFound (scope ofType resolved via Builder::__call to Testable_Post_For_Scope::scopeOfType)
 
 		// Now set the post as the active one.
 		update_post_meta( $post_id, 'active', '1' );
 
 		// Should still be inactive.
-		$this->assertEmpty( Testable_Post_For_Scope::active()->ofType( 'type-to-check' )->get() );
+		$this->assertEmpty( Testable_Post_For_Scope::active()->ofType( 'type-to-check' )->get() ); // @phpstan-ignore method.notFound (scope ofType resolved via Builder::__call to Testable_Post_For_Scope::scopeOfType)
 
 		update_post_meta( $post_id, 'type', 'type-to-check' );
 
-		$this->assertSame( $post_id, Testable_Post_For_Scope::active()->ofType( 'type-to-check' )->first()->id() );
+		$this->assertSame( $post_id, Testable_Post_For_Scope::active()->ofType( 'type-to-check' )->first()->id() ); // @phpstan-ignore method.notFound (scope ofType resolved via Builder::__call to Testable_Post_For_Scope::scopeOfType)
 	}
 
-	public function test_global_scope() {
+	public function test_global_scope(): void {
 		$post_id = $this->get_random_post_id();
 
 		$this->assertEmpty( Testable_Post_For_Scope_Global_Scope::first() );
@@ -46,7 +49,7 @@ class ModelScopeTest extends FrameworkTestCase {
 		$this->assertSame( $post_id, Testable_Post_For_Scope_Global_Scope::first()->id() );
 	}
 
-	public function test_global_scope_class() {
+	public function test_global_scope_class(): void {
 		$post_id = $this->get_random_post_id();
 
 		$this->assertEmpty( Testable_Post_For_Scope_Global_Scope_Class::first() );
@@ -59,6 +62,7 @@ class ModelScopeTest extends FrameworkTestCase {
 	 * Get a random post ID, ensures the post ID is not the last in the set.
 	 *
 	 * @todo Replace with a model factory.
+	 * @param array<mixed> $args Unused.
 	 * @return integer
 	 */
 	protected function get_random_post_id( $args = [] ): int {
@@ -79,26 +83,37 @@ class ModelScopeTest extends FrameworkTestCase {
 	}
 }
 
+/**
+ * @method static Post_Query_Builder<static> active()
+ */
 class Testable_Post_For_Scope extends Post {
 	public static $object_name = 'post';
 
-	public function scopeActive( Post_Query_Builder $query ) {
+	/**
+	 * @param Post_Query_Builder<static> $query
+	 * @return Post_Query_Builder<static>
+	 */
+	public function scopeActive( Post_Query_Builder $query ): Post_Query_Builder {
 		return $query->whereMeta( 'active', '1' );
 	}
 
-	public function scopeOfType( Post_Query_Builder $query, string $type ) {
+	/**
+	 * @param Post_Query_Builder<static> $query
+	 * @return Post_Query_Builder<static>
+	 */
+	public function scopeOfType( Post_Query_Builder $query, string $type ): Post_Query_Builder {
 		return $query->whereMeta( 'type', $type );
 	}
 }
 
 class Testable_Post_For_Scope_Global_Scope extends Testable_Post_For_Scope {
 
-	protected static function boot() {
+	protected static function boot(): void {
 		parent::boot();
 
 		static::add_global_scope(
 			'active',
-			function( Post_Query_Builder $query ) {
+			static function( Post_Query_Builder $query ) {
 				return $query->whereMeta( 'global_scope_active', '1' );
 			}
 		);
@@ -107,7 +122,7 @@ class Testable_Post_For_Scope_Global_Scope extends Testable_Post_For_Scope {
 
 class Testable_Post_For_Scope_Global_Scope_Class extends Testable_Post_For_Scope {
 
-	protected static function boot() {
+	protected static function boot(): void {
 		parent::boot();
 
 		static::add_global_scope( new Test_Scope() );

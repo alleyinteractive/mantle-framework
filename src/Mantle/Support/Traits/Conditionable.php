@@ -22,12 +22,13 @@ trait Conditionable {
 	 * Apply the callback if the given "value" is (or resolves to) truthy.
 	 *
 	 * @template TWhenParameter
-	 * @template TWhenReturnType
+	 * @template TWhenReturnType = mixed
 	 *
 	 * @param  (\Closure($this): TWhenParameter)|TWhenParameter  $value
 	 * @param  (callable($this, TWhenParameter): TWhenReturnType)|null  $callback
 	 * @param  (callable($this, TWhenParameter): TWhenReturnType)|null  $default
-	 * @return static|TWhenReturnType
+	 * @return static|TWhenReturnType|Higher_Order_When_Proxy
+	 * @phpstan-return ($callback is null ? Higher_Order_When_Proxy : static|TWhenReturnType)
 	 */
 	public function when( mixed $value, ?callable $callback = null, ?callable $default = null ) {
 		$value = $value instanceof Closure ? $value( $this ) : $value;
@@ -51,12 +52,13 @@ trait Conditionable {
 	 * Apply the callback if the given "value" is (or resolves to) falsy.
 	 *
 	 * @template TUnlessParameter
-	 * @template TUnlessReturnType
+	 * @template TUnlessReturnType = mixed
 	 *
 	 * @param  (\Closure( $this): TUnlessParameter)|TUnlessParameter  $value
 	 * @param  (callable( $this, TUnlessParameter): TUnlessReturnType)|null  $callback
 	 * @param  (callable( $this, TUnlessParameter): TUnlessReturnType)|null  $default
-	 * @return static|TUnlessReturnType
+	 * @return static|TUnlessReturnType|Higher_Order_When_Proxy
+	 * @phpstan-return ($callback is null ? Higher_Order_When_Proxy : static|TUnlessReturnType)
 	 */
 	public function unless( mixed $value, ?callable $callback = null, ?callable $default = null ) {
 		$value = $value instanceof Closure ? $value( $this ) : $value;

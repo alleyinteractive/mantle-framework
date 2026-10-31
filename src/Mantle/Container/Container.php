@@ -445,7 +445,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	public function refresh( $abstract, $target, $method ) {
 		return $this->rebinding(
 			$abstract,
-			function ( $app, $instance ) use ( $target, $method ): void {
+			static function ( $app, $instance ) use ( $target, $method ): void {
 				$target->{$method}( $instance );
 			}
 		);
@@ -490,7 +490,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	 * Call the given Closure / class@method and inject its dependencies.
 	 *
 	 * @param  callable|string $callback Callback to execute.
-	 * @param  string[]        $parameters Parameters to pass.
+	 * @param  array<mixed>    $parameters Parameters to pass.
 	 * @param  string|null     $default_method Default method.
 	 *
 	 * @throws \InvalidArgumentException Throw for invalid arguments.
@@ -1188,7 +1188,7 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 	public function offsetSet( mixed $key, mixed $value ): void {
 		$this->bind(
 			$key,
-			$value instanceof Closure ? $value : fn () => $value
+			$value instanceof Closure ? $value : static fn () => $value
 		);
 	}
 

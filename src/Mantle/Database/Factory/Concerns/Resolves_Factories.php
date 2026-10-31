@@ -76,12 +76,11 @@ trait Resolves_Factories {
 	 * Attempts to resolve a factory name for the given model with an option to
 	 * override the resolver using a callback.
 	 *
-	 * @param class-string<\Mantle\Database\Model\Model> $model_name Model class
-	 * name.
+	 * @param string $model_name Model class name.
 	 * @return class-string<\Mantle\Database\Factory\Factory>
 	 */
 	public static function resolve_custom_factory_name( string $model_name ): string {
-		$resolver = static::$factory_name_resolver ?? function ( string $model_name ): Stringable {
+		$resolver = static::$factory_name_resolver ?? static function ( string $model_name ): Stringable {
 			$app_namespace = static::app_namespace();
 
 			return Str::of( $model_name )
@@ -110,7 +109,7 @@ trait Resolves_Factories {
 		// Attempt to resolve the parent class that is a model and not the base
 		// model class.
 		$parent_class = $parent_classes->first(
-			fn ( string $parent_class ) => Model\Model::class !== $parent_class
+			static fn ( string $parent_class ) => Model\Model::class !== $parent_class
 				&& str( $parent_class )->startsWith( $model_namespace ),
 		);
 

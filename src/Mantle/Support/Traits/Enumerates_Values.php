@@ -51,7 +51,11 @@ use function Mantle\Support\Helpers\data_get;
  * @property-read Higher_Order_Collection_Proxy $some
  * @property-read Higher_Order_Collection_Proxy $sort_by
  * @property-read Higher_Order_Collection_Proxy $sort_by_desc
+ * @property-read Higher_Order_Collection_Proxy $skip_until
+ * @property-read Higher_Order_Collection_Proxy $skip_while
  * @property-read Higher_Order_Collection_Proxy $sum
+ * @property-read Higher_Order_Collection_Proxy $take_until
+ * @property-read Higher_Order_Collection_Proxy $take_while
  * @property-read Higher_Order_Collection_Proxy $unique
  * @property-read Higher_Order_Collection_Proxy $until
  */
@@ -94,10 +98,10 @@ trait Enumerates_Values {
 	/**
 	 * Create a new collection instance if the value isn't one already.
 	 *
-	 * @template TMakeKey of array-key
-	 * @template TMakeValue
+	 * @template TMakeKey of array-key = array-key
+	 * @template TMakeValue = mixed
 	 *
-	 * @param  \Mantle\Contracts\Support\Arrayable<TMakeKey, TMakeValue>|iterable<TMakeKey, TMakeValue>|null $items
+	 * @param  \Mantle\Contracts\Support\Arrayable<TMakeKey, TMakeValue>|iterable<TMakeKey, TMakeValue>|scalar|object|null $items
 	 * @return static<TMakeKey, TMakeValue>
 	 */
 	public static function make( $items = [] ) {
@@ -121,11 +125,11 @@ trait Enumerates_Values {
 	/**
 	 * Get the underlying items from the given collection if applicable.
 	 *
-	 * @template TUnwrapKey of array-key
-	 * @template TUnwrapValue
+	 * @template TUnwrapKey of array-key = array-key
+	 * @template TUnwrapValue = mixed
 	 *
-	 * @param  array<TUnwrapKey, TUnwrapValue>|static<TUnwrapKey, TUnwrapValue> $value
-	 * @return array<TUnwrapKey, TUnwrapValue>
+	 * @param  array<TUnwrapKey, TUnwrapValue>|static<TUnwrapKey, TUnwrapValue>|scalar|null $value
+	 * @return array<TUnwrapKey, TUnwrapValue>|scalar|null
 	 */
 	public static function unwrap( $value ) {
 		return $value instanceof Enumerable ? $value->all() : $value; // @phpstan-ignore-line return.type
@@ -163,7 +167,7 @@ trait Enumerates_Values {
 	public function contains_strict( $key, $value = null ) {
 		if ( func_num_args() === 2 ) {
 			return $this->contains(
-				fn ( $item ) => data_get( $item, $key ) === $value
+				static fn ( $item ) => data_get( $item, $key ) === $value
 			);
 		}
 
@@ -221,12 +225,12 @@ trait Enumerates_Values {
 	/**
 	 * Execute a callback over each nested chunk of items.
 	 *
-	 * @param  callable(array<TKey, TValue>): mixed $callback
+	 * @param  callable $callback
 	 * @return static
 	 */
 	public function each_spread( callable $callback ) {
 		return $this->each(
-			function ( $chunk, $key ) use ( $callback ) {
+			static function ( $chunk, $key ) use ( $callback ) {
 				$chunk[] = $key;
 
 				return $callback( ...$chunk );
@@ -280,14 +284,12 @@ trait Enumerates_Values {
 	/**
 	 * Run a map over each nested chunk of items.
 	 *
-	 * @template TMapSpreadValue
-	 *
-	 * @param  callable(mixed): TMapSpreadValue $callback
-	 * @return static<TKey, TMapSpreadValue>
+	 * @param  callable $callback
+	 * @return static<TKey, mixed>
 	 */
 	public function map_spread( callable $callback ) {
 		return $this->map(
-			function ( $chunk, $key ) use ( $callback ) {
+			static function ( $chunk, $key ) use ( $callback ) {
 				$chunk[] = $key;
 
 				return $callback( ...$chunk );
@@ -315,8 +317,8 @@ trait Enumerates_Values {
 	/**
 	 * Map a collection and flatten the result by a single level.
 	 *
-	 * @template TFlatMapKey of array-key
-	 * @template TFlatMapValue
+	 * @template TFlatMapKey of array-key = array-key
+	 * @template TFlatMapValue = mixed
 	 *
 	 * @param  callable(TValue, TKey): (\Illuminate\Support\Collection<TFlatMapKey, TFlatMapValue>|array<TFlatMapKey, TFlatMapValue>) $callback
 	 * @return static<TFlatMapKey, TFlatMapValue>
@@ -335,7 +337,7 @@ trait Enumerates_Values {
 	 */
 	public function map_into( $class ) {
 		return $this->map(
-			fn ( $value, $key ) => new $class( $value, $key )
+			static fn ( $value, $key ) => new $class( $value, $key )
 		);
 	}
 
@@ -349,11 +351,11 @@ trait Enumerates_Values {
 		$callback = $this->value_retriever( $callback );
 
 		return $this->map(
-			fn ( $value ) => $callback( $value )
+			static fn ( $value ) => $callback( $value )
 		)->filter(
-			fn ( $value ) => ! is_null( $value )
+			static fn ( $value ) => ! is_null( $value )
 		)->reduce(
-			fn ( $result, $value ) => is_null( $result ) || $value < $result ? $value : $result
+			static fn ( $result, $value ) => is_null( $result ) || $value < $result ? $value : $result
 		);
 	}
 
@@ -367,9 +369,9 @@ trait Enumerates_Values {
 		$callback = $this->value_retriever( $callback );
 
 		return $this->filter(
-			fn ( $value ) => ! is_null( $value )
+			static fn ( $value ) => ! is_null( $value )
 		)->reduce(
-			function ( $result, $item ) use ( $callback ) {
+			static function ( $result, $item ) use ( $callback ) {
 				$value = $callback( $item );
 
 				return is_null( $result ) || $value > $result ? $value : $result;
@@ -433,10 +435,10 @@ trait Enumerates_Values {
 	 * @return mixed
 	 */
 	public function sum( $callback = null ) {
-		$callback = is_null( $callback ) ? fn ( $value ) => $value : $this->value_retriever( $callback );
+		$callback = is_null( $callback ) ? static fn ( $value ) => $value : $this->value_retriever( $callback );
 
 		return $this->reduce(
-			fn ( $result, $item ) => $result + $callback( $item ),
+			static fn ( $result, $item ) => $result + $callback( $item ),
 			0
 		);
 	}
@@ -539,24 +541,24 @@ trait Enumerates_Values {
 	/**
 	 * Filter items by the given key value pair.
 	 *
-	 * @param  string                                                                 $key The key to check.
-	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string> $values Values to search for.
-	 * @param  bool                                                                   $strict Whether to use strict comparison.
+	 * @param  string                                                                           $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable<array-key, mixed>|iterable<array-key, mixed> $values Values to search for.
+	 * @param  bool                                                                             $strict Whether to use strict comparison.
 	 * @return static
 	 */
 	public function where_in( string $key, mixed $values, bool $strict = false ) {
 		$values = $this->get_arrayable_items( $values );
 
 		return $this->filter(
-			fn ( $item ) => in_array( data_get( $item, $key ), $values, $strict ) // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
+			static fn ( $item ) => in_array( data_get( $item, $key ), $values, $strict ) // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 		);
 	}
 
 	/**
 	 * Filter items by the given key value pair using strict comparison.
 	 *
-	 * @param  string                                                                 $key The key to check.
-	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string> $values Values to search for.
+	 * @param  string                                                                           $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable<array-key, mixed>|iterable<array-key, mixed> $values Values to search for.
 	 * @return static
 	 */
 	public function where_in_strict( string $key, mixed $values ) {
@@ -566,8 +568,8 @@ trait Enumerates_Values {
 	/**
 	 * Filter items such that the value of the given key is between the given values.
 	 *
-	 * @param  string                                                                 $key The key to check.
-	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string> $values Values to search for.
+	 * @param  string                                                                           $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable<array-key, mixed>|iterable<array-key, mixed> $values Values to search for.
 	 * @return static
 	 */
 	public function where_between( string $key, mixed $values ) {
@@ -577,37 +579,37 @@ trait Enumerates_Values {
 	/**
 	 * Filter items such that the value of the given key is not between the given values.
 	 *
-	 * @param  string                                                                 $key The key to check.
-	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string> $values Values to search against.
+	 * @param  string                                                                           $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable<array-key, mixed>|iterable<array-key, mixed> $values Values to search against.
 	 * @return static
 	 */
 	public function where_not_between( string $key, mixed $values ) {
 		return $this->filter(
-			fn ( $item ) => data_get( $item, $key ) < reset( $values ) || data_get( $item, $key ) > end( $values )
+			static fn ( $item ) => data_get( $item, $key ) < reset( $values ) || data_get( $item, $key ) > end( $values )
 		);
 	}
 
 	/**
 	 * Filter items by the given key value pair.
 	 *
-	 * @param  string                                                                 $key The key to check.
-	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string> $values Values to search against.
-	 * @param  bool                                                                   $strict Whether to use strict comparison.
+	 * @param  string                                                                           $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable<array-key, mixed>|iterable<array-key, mixed> $values Values to search against.
+	 * @param  bool                                                                             $strict Whether to use strict comparison.
 	 * @return static
 	 */
 	public function where_not_in( string $key, mixed $values, bool $strict = false ) {
 		$values = $this->get_arrayable_items( $values );
 
 		return $this->reject(
-			fn ( $item ) => in_array( data_get( $item, $key ), $values, $strict ) // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
+			static fn ( $item ) => in_array( data_get( $item, $key ), $values, $strict ) // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 		);
 	}
 
 	/**
 	 * Filter items by the given key value pair using strict comparison.
 	 *
-	 * @param  string                                                                 $key The key to check.
-	 * @param  \Mantle\Contracts\Support\Arrayable<int, string>|iterable<int, string> $values Values to search against.
+	 * @param  string                                                                           $key The key to check.
+	 * @param  \Mantle\Contracts\Support\Arrayable<array-key, mixed>|iterable<array-key, mixed> $values Values to search against.
 	 * @return static
 	 */
 	public function where_not_in_strict( string $key, mixed $values ) {
@@ -624,7 +626,7 @@ trait Enumerates_Values {
 	 */
 	public function where_instance_of( string|array $type ) {
 		// @phpstan-ignore-next-line return.type
-		return $this->filter( function ( $value ) use ( $type ): bool {
+		return $this->filter( static function ( $value ) use ( $type ): bool {
 			if ( is_array( $type ) ) {
 				foreach ( $type as $class_type ) {
 					if ( $value instanceof $class_type ) {
@@ -673,7 +675,7 @@ trait Enumerates_Values {
 		$use_as_callable = $this->use_as_callable( $callback );
 
 		return $this->filter(
-			fn ( $value, $key ) => $use_as_callable
+			static fn ( $value, $key ) => $use_as_callable
 				? ! $callback( $value, $key )
 				: $value != $callback // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual, WordPress.PHP.StrictComparisons.LooseComparison
 		);
@@ -692,7 +694,7 @@ trait Enumerates_Values {
 		$exists = [];
 
 		return $this->reject(
-			function ( $item, $key ) use ( $callback, $strict, &$exists ) {
+			static function ( $item, $key ) use ( $callback, $strict, &$exists ) {
 				$id = $callback( $item, $key );
 				if ( in_array( $id, $exists, $strict ) ) {
 					return true;
@@ -725,11 +727,11 @@ trait Enumerates_Values {
 	/**
 	 * Get the collection of items as a plain array.
 	 *
-	 * @return array<TKey, TValue>
+	 * @return array<TKey, mixed>
 	 */
 	public function to_array() {
 		return $this->map(
-			fn ( $value ) => $value instanceof Arrayable ? $value->to_array() : $value,
+			static fn ( $value ) => $value instanceof Arrayable ? $value->to_array() : $value,
 		)->all();
 	}
 
@@ -749,7 +751,7 @@ trait Enumerates_Values {
 	 */
 	public function json_serialize(): mixed { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
 		return array_map(
-			fn ( $value ): mixed => match ( true ) {
+			static fn ( $value ): mixed => match ( true ) {
 				$value instanceof JsonSerializable => $value->jsonSerialize(),
 				$value instanceof Jsonable => json_decode( $value->to_json(), true ),
 				$value instanceof Arrayable => $value->to_array(),
@@ -784,11 +786,11 @@ trait Enumerates_Values {
 	 * @return static
 	 */
 	public function count_by( $callback = null ) {
-		$callback ??= fn ( $value ) => $value;
+		$callback ??= static fn ( $value ) => $value;
 
 		return new static(
 			$this->group_by( $callback )->map( // @phpstan-ignore-line argument.templateType
-				fn ( $value ) => $value->count()
+				static fn ( $value ) => $value->count()
 			)
 		);
 	}
@@ -871,7 +873,7 @@ trait Enumerates_Values {
 
 			$strings = array_filter(
 				[ $retrieved, $value ],
-				fn ( $value ) => is_string( $value ) || ( is_object( $value ) && method_exists( $value, '__toString' ) )
+				static fn ( $value ) => is_string( $value ) || ( is_object( $value ) && method_exists( $value, '__toString' ) )
 			);
 
 			if ( count( $strings ) < 2 && count( array_filter( [ $retrieved, $value ], is_object( ... ) ) ) === 1 ) {
@@ -1072,7 +1074,7 @@ trait Enumerates_Values {
 	 */
 	public function pipe_through( $callbacks ) {
 		return ( new Collection( $callbacks ) )->reduce(
-			fn ( $carry, $callback ) => $callback( $carry ),
+			static fn ( $carry, $callback ) => $callback( $carry ),
 			$this
 		);
 	}

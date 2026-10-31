@@ -44,12 +44,12 @@ class Routing_Service_Provider extends Service_Provider {
 	protected function register_router(): void {
 		$this->app->singleton(
 			'router',
-			fn ( $app ) => new Router( $app['events'], $app ),
+			static fn ( $app ) => new Router( $app['events'], $app ),
 		);
 
 		$this->app->singleton(
 			'router.entity',
-			fn ( $app ) => new Entity_Router( $app ),
+			static fn ( $app ) => new Entity_Router( $app ),
 		);
 	}
 
@@ -62,7 +62,7 @@ class Routing_Service_Provider extends Service_Provider {
 	protected function register_url_generator(): void {
 		$this->app->singleton(
 			'url',
-			function ( \Mantle\Contracts\Application $app ): \Mantle\Http\Routing\Url_Generator {
+			static function ( \Mantle\Contracts\Application $app ): \Mantle\Http\Routing\Url_Generator {
 				$routes = $app['router']->get_routes();
 				$routes = $app->instance( 'routes', $routes );
 
@@ -82,7 +82,7 @@ class Routing_Service_Provider extends Service_Provider {
 	protected function register_redirector(): void {
 		$this->app->singleton(
 			'redirect',
-			fn ( $app ) => new Redirector( $app['url'] )
+			static fn ( $app ) => new Redirector( $app['url'] )
 		);
 	}
 
@@ -92,7 +92,7 @@ class Routing_Service_Provider extends Service_Provider {
 	protected function register_response_factory(): void {
 		$this->app->singleton(
 			Response_Factory_Contract::class,
-			fn ( $app ) => new Response_Factory( $app['redirect'], $app['view'] )
+			static fn ( $app ) => new Response_Factory( $app['redirect'], $app['view'] )
 		);
 	}
 

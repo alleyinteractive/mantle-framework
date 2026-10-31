@@ -20,10 +20,10 @@ class PostModelRoutingTest extends FrameworkTestCase {
 		add_filter( 'deprecated_file_trigger_error', '__return_false' );
 	}
 
-	public function test_post_type() {
+	public function test_post_type(): void {
 		Testable_Post_Model::boot_if_not_booted();
 
-		Route::middleware( [ Substitute_Bindings::class, Wrap_Template::class ] )->group( function () {
+		Route::middleware( [ Substitute_Bindings::class, Wrap_Template::class ] )->group( static function () {
 			Route::model( Testable_Post_Model::class, Testable_Post_Model_Controller::class );
 		} );
 
@@ -34,20 +34,27 @@ class PostModelRoutingTest extends FrameworkTestCase {
 			]
 		);
 
+		$core_post = get_post( $post->id() );
+
+		$this->assertInstanceOf( \WP_Post::class, $core_post );
+
 		$this
 			->get( $post )
 			->assertOk()
 			->assertSee( $post->slug() )
-			->assertQueriedObject( get_post( $post->id() ) )
+			->assertQueriedObject( $core_post )
 			->assertQueryTrue( 'is_singular', 'is_single' );
 	}
 
-	public function test_custom_post_type() {
+	public function test_custom_post_type(): void {
 		Testable_Custom_Post_Model::register_object();
 
 		Route::model( Testable_Custom_Post_Model::class, Testable_Custom_Post_Model_Controller::class );
 
-		$this->assertTrue( post_type_exists( Testable_Custom_Post_Model::get_object_name() ) );
+		$post_type = Testable_Custom_Post_Model::get_object_name();
+
+		$this->assertIsString( $post_type );
+		$this->assertTrue( post_type_exists( $post_type ) );
 
 		$post = Testable_Custom_Post_Model::create(
 			[
@@ -63,7 +70,7 @@ class PostModelRoutingTest extends FrameworkTestCase {
 			->assertOk()
 			->assertContent( $post->slug() );
 
-		$archive_link = get_post_type_archive_link( Testable_Custom_Post_Model::get_object_name() );
+		$archive_link = get_post_type_archive_link( $post_type );
 		$this->assertSame( home_url( '/test_cpt_routing' ), $archive_link );
 
 		$this
@@ -82,7 +89,7 @@ class Testable_Post_Model extends Post {
 }
 
 class Testable_Post_Model_Controller extends Controller {
-	public function show( string $year, string $month, string $date, Testable_Post_Model $post ) {
+	public function show( string $year, string $month, string $date, Testable_Post_Model $post ): string {
 		return $post->slug();
 	}
 }
@@ -101,11 +108,14 @@ class Testable_Custom_Post_Model extends Post implements Registrable {
 }
 
 class Testable_Custom_Post_Model_Controller extends Controller {
-	public function index() {
+	/**
+	 * @return array<int, int|null>
+	 */
+	public function index(): array {
 		return [ Testable_Custom_Post_Model::first()->id() ];
 	}
 
-	public function show( $slug ) {
+	public function show( string $slug ): string {
 		return $slug;
 	}
 }

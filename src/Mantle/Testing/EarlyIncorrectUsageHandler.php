@@ -55,7 +55,7 @@ final class EarlyIncorrectUsageHandler {
 			title: 'Unexpected incorrect usage call in test bootstrap',
 			description: $message,
 			frames: collect( Backtrace::create()->frames() )
-				->skip_until( fn ( Frame $frame ) => $frame->method === '_doing_it_wrong' )
+				->skip_until( static fn ( Frame $frame ) => $frame->method === '_doing_it_wrong' )
 				->slice( 1 )
 				->values()
 				->all(),

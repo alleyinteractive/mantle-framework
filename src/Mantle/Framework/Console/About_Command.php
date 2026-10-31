@@ -116,7 +116,7 @@ class About_Command extends Command {
 		);
 
 		static::add(
-			fn () => [
+			static fn () => [
 				'Path' => config( 'assets.path' ),
 				'URL'  => config( 'assets.url' ),
 			],
@@ -124,14 +124,14 @@ class About_Command extends Command {
 		);
 
 		static::add(
-			fn () => [
+			static fn () => [
 				'Compiled Path' => config( 'view.compiled' ),
 			],
 			'Views',
 		);
 
 		static::add(
-			fn () => [
+			static fn () => [
 				'Filesystem' => config( 'filesystem.default' ),
 				'Logging'    => config( 'logging.default' ),
 				'Queue'      => config( 'queue.default' ),

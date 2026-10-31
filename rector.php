@@ -7,15 +7,12 @@
 
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
-use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
 use Rector\CodingStyle\Rector\ArrowFunction\ArrowFunctionDelegatingCallToFirstClassCallableRector;
 use Rector\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\Closure\ClosureDelegatingCallToFirstClassCallableRector;
-use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector;
 use Rector\CodingStyle\Rector\If_\AlternativeIfToBracketRector;
-use Rector\CodingStyle\Rector\If_\NullableCompareToNullRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveDuplicatedReturnSelfDocblockRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveMixedDocblockOverruledByNativeTypeRector;
@@ -25,8 +22,6 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveUselessUnionReturnDocblockRector;
 use Rector\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultParamRector;
 use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableRector;
 
-use Rector\EarlyReturn\Rector\If_\ChangeOrIfContinueToMultiContinueRector;
-use Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector;
 use Rector\Php70\Rector\StmtsAwareInterface\IfIssetToCoalescingRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
@@ -34,12 +29,8 @@ use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php80\Rector\NotIdentical\StrContainsRector;
 use Rector\Php81\Rector\Array_\ArrayToFirstClassCallableRector;
 use Rector\Php81\Rector\Array_\FirstClassCallableRector;
-use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
-use Rector\Php84\Rector\Param\ExplicitNullableParamTypeRector;
-use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnArrayDocblockBasedOnArrayMapRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNullableTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
@@ -58,7 +49,6 @@ use Rector\ValueObject\PhpVersion;
  * Rules that are known to cause issues and should not be used:
  *
  * - RemoveUselessParamTagRector: Conflicts with WordPress Coding Standards
- * - ChangeOrIfContinueToMultiContinueRector: doesn't make sense.
  */
 return RectorConfig::configure()
 	->withPhpVersion( PhpVersion::PHP_83 )
@@ -76,18 +66,10 @@ return RectorConfig::configure()
 	->withRules(
 		[
 			RenameForeachValueVariableToMatchExprVariableRector::class,
-			ExplicitNullableParamTypeRector::class,
 			AddParamTypeDeclarationRector::class,
-			AddReturnArrayDocblockBasedOnArrayMapRector::class,
 		]
 	)
 	->withSkip( [
-		// Adding #[\Override] shifts PHPStan's reported line for this file's
-		// intentionally-suppressed generics false-positives, breaking the inline
-		// @phpstan-ignore-line directives on the overridden methods.
-		AddOverrideAttributeToOverriddenMethodsRector::class => [
-			__DIR__ . '/src/Mantle/Database/Query/Collection.php',
-		],
 		AddVoidReturnTypeWhereNoReturnRector::class => [
 			__DIR__ . '/src/Mantle/Testing/Concerns/Core_Shim.php',
 			__DIR__ . '/tests/Testing/CoreTestShimTest.php',
@@ -115,11 +97,7 @@ return RectorConfig::configure()
 		RemoveUselessParamTagRector::class,
 		StrContainsRector::class,
 		AddArrowFunctionReturnTypeRector::class,
-		ChangeOrIfContinueToMultiContinueRector::class,
 		EmptyOnNullableObjectToInstanceOfRector::class,
-		ReturnBinaryOrToEarlyReturnRector::class => [
-			__DIR__ . '/src/Mantle/Http_Client/Response.php',
-		],
 		RemoveExtraParametersRector::class => [
 			__DIR__ . '/src/Mantle/Support/helpers/helpers-general.php',
 		],
@@ -136,19 +114,12 @@ return RectorConfig::configure()
 			__DIR__ . '/src/Mantle/Support/Collection.php',
 			__DIR__ . '/src/Mantle/Support/Traits/Enumerates_Values.php',
 		],
-		ExplicitBoolCompareRector::class => [
-			__DIR__ . '/src/Mantle/Database/Model/Post.php',
-			__DIR__ . '/src/Mantle/Testing',
-		],
 		ObjectExplicitBoolCompareRector::class => [
 			__DIR__ . '/src/Mantle/Database/Model/Post.php',
 			__DIR__ . '/src/Mantle/Testing',
 		],
 		SimplifyEmptyCheckOnEmptyArrayRector::class,
-		DisallowedEmptyRuleFixerRector::class,
-		NullableCompareToNullRector::class,
 		CatchExceptionNameMatchingTypeRector::class,
-		EncapsedStringsToSprintfRector::class,
 		FlipTypeControlToUseExclusiveTypeRector::class,
 		ClosureDelegatingCallToFirstClassCallableRector::class,
 		ArrowFunctionDelegatingCallToFirstClassCallableRector::class,

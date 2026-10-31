@@ -38,8 +38,8 @@ use function Mantle\Support\Helpers\tap;
  * @method static boolean chunk_by_id(int $count, callable $callback)
  * @method static boolean each(callable $callback, int $count = 100)
  * @method static boolean each_by_id(callable $callback, int $count = 100, string $attribute = 'id')
- * @method static \Mantle\Contracts\Paginator\Paginator simple_paginate(int $per_page = 20, int $current_page = null)
- * @method static \Mantle\Contracts\Paginator\Paginator paginate(int $per_page = 20, int $current_page = null)
+ * @method static \Mantle\Database\Pagination\Paginator<static> simple_paginate(int $per_page = 20, ?int $current_page = null)
+ * @method static \Mantle\Database\Pagination\Length_Aware_Paginator<static> paginate(int $per_page = 20, ?int $current_page = null)
  */
 abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializable, Url_Routable {
 	use Forward_Calls;
@@ -198,7 +198,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	public static function instance( Model $instance ) {
 		return tap(
 			( new static() )->set_raw_attributes( $instance->get_raw_attributes() ),
-			fn ( Model $model ) => $model->exists = true,
+			static fn ( Model $model ) => $model->exists = true,
 		);
 	}
 
@@ -619,7 +619,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 	public static function update_or_create( array $attributes, array $values = [] ): static {
 		return tap(
 			static::first_or_new( $attributes ),
-			fn ( $instance ) => $instance->fill( $values )->save(),
+			static fn ( $instance ) => $instance->fill( $values )->save(),
 		);
 	}
 

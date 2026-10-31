@@ -17,7 +17,7 @@ abstract class TestCase extends FrameworkTestCase {
 		remove_all_filters( 'am_asset_conditions', 10 );
 		add_filter(
 			'am_asset_conditions',
-			function() {
+			static function() {
 				return [
 					'global'            => true,
 					'article_post_type' => true,
@@ -41,20 +41,20 @@ abstract class TestCase extends FrameworkTestCase {
 		Asset_Manager_Styles::instance()->add_hooks();
 
 		// Register with the container.
-		$this->app->singleton(
+		app()->singleton(
 			'asset.manager',
-			fn() => new Asset_Manager(),
+			static fn() => new Asset_Manager(),
 		);
 
-		$this->app->alias( 'asset.manager', Asset_Manager::class );
-		$this->app->alias( 'asset.manager', \Mantle\Contracts\Assets\Asset_Manager::class );
+		app()->alias( 'asset.manager', Asset_Manager::class );
+		app()->alias( 'asset.manager', \Mantle\Contracts\Assets\Asset_Manager::class );
 	}
 
 	protected function get_wp_head(): string {
-		return $this->get( '/' )->body();
+		return $this->get( '/' )->body() ?? '';
 	}
 
-	protected function reset_assets() {
+	protected function reset_assets(): void {
 		global $wp_scripts;
 
 		$wp_scripts = new WP_Scripts();

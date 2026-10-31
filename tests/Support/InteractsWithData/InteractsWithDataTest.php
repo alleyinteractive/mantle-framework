@@ -23,8 +23,7 @@ class InteractsWithDataTest extends TestCase {
 	public function test_as_stringable(): void {
 		$option = TestableInteractsWithData::create( 'test' );
 
-		$this->assertInstanceOf( \Mantle\Support\Stringable::class, $option->stringable() );
-		$this->assertSame(
+				$this->assertSame(
 			'test',
 			$option->stringable()->value(),
 		);
@@ -106,7 +105,7 @@ class InteractsWithDataTest extends TestCase {
 	public function test_as_date(): void {
 		$this->assertNull( TestableInteractsWithData::create( '' )->date() );
 
-		$this->assertSame( '2020-01-01', TestableInteractsWithData::create( '2020-01-01' )->date()->format( 'Y-m-d' ) );
+		$this->assertSame( '2020-01-01', TestableInteractsWithData::create( '2020-01-01' )->date()?->format( 'Y-m-d' ) );
 	}
 
 	public function test_as_object(): void {

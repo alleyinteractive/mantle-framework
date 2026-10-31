@@ -23,8 +23,8 @@ class NullableSiteObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_site_object()` returns a site object.
 	 */
-	public function test_site_object_returns_site() {
-		$known_id = self::factory()->blog->create();
+	public function test_site_object_returns_site(): void {
+		$known_id = static::factory()->blog->create();
 
 		$found_object = get_site_object( $known_id );
 
@@ -36,7 +36,7 @@ class NullableSiteObjectsTest extends FrameworkTestCase {
 	/**
 	 * Test that `get_site_object()` returns null when there is no site.
 	 */
-	public function test_site_object_returns_null() {
+	public function test_site_object_returns_null(): void {
 		$found_object = get_site_object( -99 );
 
 		$this->assertNull( $found_object );

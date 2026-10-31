@@ -33,7 +33,7 @@ trait Post_Events {
 
 		add_filter_side_effect(
 			'wp_insert_post_data',
-			function ( array $data, array $postarr ) use ( $post_type ): void {
+			static function ( array $data, array $postarr ) use ( $post_type ): void {
 				if ( empty( $data['post_type'] ) || $post_type !== $data['post_type'] ) {
 					return;
 				}
@@ -50,7 +50,7 @@ trait Post_Events {
 
 		\add_action(
 			'save_post',
-			function ( $post_id, \WP_Post $post, $update ) use ( $post_type ): void {
+			static function ( $post_id, \WP_Post $post, $update ) use ( $post_type ): void {
 				if ( $post_type !== $post->post_type ) {
 					return;
 				}

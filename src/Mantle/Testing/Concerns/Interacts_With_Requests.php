@@ -156,9 +156,9 @@ trait Interacts_With_Requests {
 	 * @throws InvalidArgumentException Thrown on invalid argument.
 	 * @throws InvalidArgumentException Thrown on invalid response type.
 	 *
-	 * @template TCallableReturn of Mock_Http_Sequence|Mock_Http_Response|Arrayable|null
+	 * @template TCallableReturn
 	 *
-	 * @param (callable(string|Request, ?array): TCallableReturn)|Mock_Http_Response|string|array<string, Mock_Http_Response|callable|array<mixed>> $url_or_callback URL to fake, array of URL and response pairs, or a closure
+	 * @param (callable(string, array<mixed>): TCallableReturn)|(callable(Request): TCallableReturn)|Mock_Http_Response|string|array<string, Mock_Http_Response|callable|array<mixed>>|null $url_or_callback URL to fake, array of URL and response pairs, or a closure
 	 *                                                                                                                                         that will return a faked response.
 	 * @param Mock_Http_Response|array<mixed>|callable $response Optional response object, defaults to a 200 response with no body.
 	 * @param Http_Method|string|null $method Optional request method to apply to, defaults to all. Does not apply to array of URL and response pairs OR callbacks.
@@ -388,7 +388,7 @@ trait Interacts_With_Requests {
 			}
 
 			// Check if the stray request should be ignored.
-			if ( $this->ignored_strayed_requests->contains( fn ( string|iterable $ignored_url ) => Str::is( $ignored_url, $url ) ) ) {
+			if ( $this->ignored_strayed_requests->contains( static fn ( string|iterable $ignored_url ) => Str::is( $ignored_url, $url ) ) ) {
 				return null;
 			}
 
@@ -477,7 +477,7 @@ trait Interacts_With_Requests {
 			return collect();
 		}
 
-		return collect( $this->recorded_requests )->filter( fn ( Request $response ) => $callback( $response ) );
+		return collect( $this->recorded_requests )->filter( static fn ( Request $response ) => $callback( $response ) );
 	}
 
 	/**
@@ -535,7 +535,7 @@ trait Interacts_With_Requests {
 		}
 
 		if ( is_string( $url_or_callback ) ) {
-			$url_or_callback = fn ( $request ) => Str::is( $url_or_callback, $request->url() );
+			$url_or_callback = static fn ( $request ) => Str::is( $url_or_callback, $request->url() );
 		}
 
 		$requests = $this->recorded_requests( $url_or_callback )->count();
@@ -563,7 +563,7 @@ trait Interacts_With_Requests {
 		}
 
 		if ( is_string( $url_or_callback ) ) {
-			$url_or_callback = fn ( Request $request ) => Str::is( $url_or_callback, $request->url() );
+			$url_or_callback = static fn ( Request $request ) => Str::is( $url_or_callback, $request->url() );
 		}
 
 		PHPUnit::assertEquals(
@@ -606,7 +606,7 @@ trait Interacts_With_Requests {
 		}
 
 		if ( is_string( $expected ) ) {
-			$expected = fn ( Request $request ) => Str::is( $expected, $request->url() );
+			$expected = static fn ( Request $request ) => Str::is( $expected, $request->url() );
 		}
 
 		PHPUnit::assertTrue(
@@ -629,7 +629,7 @@ trait Interacts_With_Requests {
 		}
 
 		if ( is_string( $expected ) ) {
-			$expected = fn ( Request $request ) => Str::is( $expected, $request->url() );
+			$expected = static fn ( Request $request ) => Str::is( $expected, $request->url() );
 		}
 
 		PHPUnit::assertEquals(

@@ -86,7 +86,7 @@ class Utils {
 	 * @return string Rendered output.
 	 */
 	public static function get_echo( callable $callable, array $args = [] ): string {
-		return capture( fn () => $callable( ...$args ) );
+		return capture( static fn () => $callable( ...$args ) );
 	}
 
 	/**
@@ -317,8 +317,8 @@ class Utils {
 	 */
 	public static function get_query_conditional_tags(): array {
 		return collect( get_class_methods( \WP_Query::class ) ) // @phpstan-ignore-line
-			->filter( fn ( $method ) => str_starts_with( $method, 'is_' ) && function_exists( $method ) )
-			->reject( fn ( $method ) => in_array( $method, [ 'is_comments_popup', 'is_main_query' ], true ) )
+			->filter( static fn ( $method ) => str_starts_with( $method, 'is_' ) && function_exists( $method ) )
+			->reject( static fn ( $method ) => in_array( $method, [ 'is_comments_popup', 'is_main_query' ], true ) )
 			->sort()
 			->values()
 			->all();
@@ -487,18 +487,18 @@ class Utils {
 		)
 				->when(
 					$use_sqlite_db,
-					fn ( Collection $collection ) => $collection->push( [ 'WP_USE_SQLITE', 'true' ] )
+					static fn ( Collection $collection ) => $collection->push( [ 'WP_USE_SQLITE', 'true' ] )
 				)
 				->when(
 					static::is_debug_mode(),
-					fn ( Collection $collection ) => $collection->push( [ 'INSTALL_WP_TEST_DEBUG', 'true' ] )
+					static fn ( Collection $collection ) => $collection->push( [ 'INSTALL_WP_TEST_DEBUG', 'true' ] )
 				)
 				->when(
 					! empty( static::env( 'CACHEDIR', '' ) ),
-					fn ( Collection $collection ) => $collection->push( [ 'CACHEDIR', static::env( 'CACHEDIR', '' ) ] )
+					static fn ( Collection $collection ) => $collection->push( [ 'CACHEDIR', static::env( 'CACHEDIR', '' ) ] )
 				)
 				->map(
-					fn ( array $item ) => sprintf( 'export %s=%s', $item[0], static::shell_safe( $item[1] ) )
+					static fn ( array $item ) => sprintf( 'export %s=%s', $item[0], static::shell_safe( $item[1] ) )
 				)
 				->implode( ' && ' );
 
@@ -548,10 +548,10 @@ class Utils {
 		)
 			->when(
 				! empty( static::env( 'CACHEDIR', '' ) ),
-				fn ( Collection $collection ) => $collection->push( [ 'CACHEDIR', static::env( 'CACHEDIR', '' ) ] )
+				static fn ( Collection $collection ) => $collection->push( [ 'CACHEDIR', static::env( 'CACHEDIR', '' ) ] )
 			)
 			->map(
-				fn ( array $item ) => sprintf( 'export %s=%s', $item[0], static::shell_safe( $item[1] ) )
+				static fn ( array $item ) => sprintf( 'export %s=%s', $item[0], static::shell_safe( $item[1] ) )
 			)
 			->implode( ' && ' );
 

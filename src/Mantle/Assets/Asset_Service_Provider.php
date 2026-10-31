@@ -21,7 +21,7 @@ class Asset_Service_Provider extends Service_Provider {
 	public function register(): void {
 		$this->app->singleton_if(
 			'asset.manager',
-			fn () => new Asset_Manager(),
+			static fn () => new Asset_Manager(),
 		);
 
 		$this->app->alias( 'asset.manager', Asset_Manager::class );
@@ -29,7 +29,7 @@ class Asset_Service_Provider extends Service_Provider {
 
 		$this->app->singleton_if(
 			'asset.loader',
-			fn () => new Asset_Loader(),
+			static fn () => new Asset_Loader(),
 		);
 
 		$this->app->alias( 'asset.loader', Asset_Loader::class );

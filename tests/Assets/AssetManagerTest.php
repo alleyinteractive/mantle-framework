@@ -14,7 +14,7 @@ use PHPUnit\Framework\Attributes\Group;
  */
 #[Group( 'assets' )]
 class AssetManagerTest extends TestCase {
-	public function test_register_script() {
+	public function test_register_script(): void {
 		$manager = new Asset_Manager();
 		$manager
 			->script(
@@ -40,7 +40,7 @@ class AssetManagerTest extends TestCase {
 		);
 	}
 
-	public function test_register_style() {
+	public function test_register_style(): void {
 		$manager = new Asset_Manager();
 		$manager
 			->style(
@@ -55,7 +55,7 @@ class AssetManagerTest extends TestCase {
 		);
 	}
 
-	public function test_fluent_script() {
+	public function test_fluent_script(): void {
 		$manager = new Asset_Manager();
 		$manager
 			->script( "example-fluent" )
@@ -80,7 +80,7 @@ class AssetManagerTest extends TestCase {
 		);
 	}
 
-	public function test_fluent_script_helper() {
+	public function test_fluent_script_helper(): void {
 		asset()
 			->script( "example-helper" )
 			->src( "https://example.org/example-helper.js" )
@@ -104,13 +104,12 @@ class AssetManagerTest extends TestCase {
 		);
 	}
 
-	public function test_core_dependency() {
+	public function test_core_dependency(): void {
 		global $wp_scripts;
 
 		// Prevent a failing test if this is removed in the future.
 		if ( ! isset( $wp_scripts->registered["masonry"] ) ) {
 			$this->markTestSkipped( "masonry is not registered in core, should change the dependency tested against" );
-			return;
 		}
 
 		$version = $wp_scripts->registered["masonry"]->ver;
@@ -142,7 +141,7 @@ class AssetManagerTest extends TestCase {
 	 * @param callable(Asset): Asset $apply
 	 */
 	#[DataProvider( 'provide_async_and_defer' )]
-	public function test_async_and_defer_load_as_async( callable $apply ) {
+	public function test_async_and_defer_load_as_async( callable $apply ): void {
 		$apply(
 			asset()
 				->script( 'example-async-defer' )
@@ -152,14 +151,17 @@ class AssetManagerTest extends TestCase {
 		$this->assertScriptLoadsAsync( 'example-async-defer' );
 	}
 
+	/**
+	 * @return array<string, array{\Closure(Asset): Asset}>
+	 */
 	public static function provide_async_and_defer(): array {
 		return [
-			'async then defer' => [ fn ( Asset $asset ) => $asset->async()->defer() ],
-			'defer then async' => [ fn ( Asset $asset ) => $asset->defer()->async() ],
+			'async then defer' => [ static fn ( Asset $asset ) => $asset->async()->defer() ],
+			'defer then async' => [ static fn ( Asset $asset ) => $asset->defer()->async() ],
 		];
 	}
 
-	public function test_async_and_defer_keeps_async_with_blocking_dependent_on_asset_manager_1x() {
+	public function test_async_and_defer_keeps_async_with_blocking_dependent_on_asset_manager_1x(): void {
 		if ( ! in_array( Load_Method::ASYNC_DEFER, Asset_Manager_Scripts::instance()->load_methods, true ) ) {
 			$this->markTestSkipped( 'The async-defer load method requires wp-asset-manager 1.x.' );
 		}
@@ -181,7 +183,7 @@ class AssetManagerTest extends TestCase {
 		);
 	}
 
-	public function test_deprecated_async_defer_load_method_loads_as_async() {
+	public function test_deprecated_async_defer_load_method_loads_as_async(): void {
 		new Asset(
 			type: 'script',
 			handle: 'example-constructor',
@@ -192,7 +194,7 @@ class AssetManagerTest extends TestCase {
 		$this->assertScriptLoadsAsync( 'example-constructor' );
 	}
 
-	public function test_deprecated_async_defer_modified_load_method_loads_as_async() {
+	public function test_deprecated_async_defer_modified_load_method_loads_as_async(): void {
 		asset()
 			->script( 'example-modified' )
 			->src( 'https://example.org/example-modified.js' );

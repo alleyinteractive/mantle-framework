@@ -144,7 +144,7 @@ class Hook_Usage_Command extends Command {
 		$dir   = new RecursiveDirectoryIterator( $path );
 		$files = new RecursiveCallbackFilterIterator(
 			$dir,
-			function ( \SplFileInfo $current, $key, RecursiveDirectoryIterator $iterator ) use ( $paths_to_ignore ): bool {
+			static function ( \SplFileInfo $current, $key, RecursiveDirectoryIterator $iterator ) use ( $paths_to_ignore ): bool {
 				if ( Str::is( $paths_to_ignore, $current->getRealPath() ) ) {
 					return false;
 				}
@@ -301,7 +301,7 @@ class Hook_Usage_Command extends Command {
 			->trim()
 			->unique()
 			->filter(
-				fn( $path ): bool => is_file( $path ) || is_dir( $path )
+				static fn( $path ): bool => is_file( $path ) || is_dir( $path )
 			)
 			->values();
 	}

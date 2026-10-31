@@ -735,7 +735,7 @@ abstract class Builder {
 	 * @param bool $force Flag to force delete.
 	 */
 	public function delete( bool $force = false ): void {
-		$this->all()->each->delete( $force ); // @phpstan-ignore-line undefined method
+		$this->all()->each->delete( $force );
 	}
 
 	/**
@@ -743,7 +743,7 @@ abstract class Builder {
 	 *
 	 * @param int $per_page Items per page.
 	 * @param int $current_page Current page number.
-	 * @return PaginatorContract<TModel>
+	 * @return Paginator<TModel>
 	 */
 	public function simple_paginate( int $per_page = 20, ?int $current_page = null ): PaginatorContract {
 		return Container::get_instance()->make(
@@ -761,7 +761,7 @@ abstract class Builder {
 	 *
 	 * @param int $per_page Items per page.
 	 * @param int $current_page Current page number.
-	 * @return PaginatorContract<TModel>
+	 * @return Length_Aware_Paginator<TModel>
 	 */
 	public function paginate( int $per_page = 20, ?int $current_page = null ): PaginatorContract {
 		return Container::get_instance()->make(
@@ -864,7 +864,7 @@ abstract class Builder {
 	 * @return boolean
 	 */
 	public function each( callable $callback, int $count = 100 ) {
-		return $this->chunk( $count, function ( Collection $results ) use ( $callback ): bool {
+		return $this->chunk( $count, static function ( Collection $results ) use ( $callback ): bool {
 			foreach ( $results as $result ) {
 				if ( false === $callback( $result ) ) {
 					return false;
@@ -884,7 +884,7 @@ abstract class Builder {
 	 * @return boolean
 	 */
 	public function each_by_id( callable $callback, int $count = 100, string $attribute = 'id' ) {
-		return $this->chunk_by_id( $count, function ( Collection $results ) use ( $callback ): bool {
+		return $this->chunk_by_id( $count, static function ( Collection $results ) use ( $callback ): bool {
 			foreach ( $results as $result ) {
 				if ( false === $callback( $result ) ) {
 					return false;
@@ -907,7 +907,7 @@ abstract class Builder {
 	public function map( callable $callback, int $count = 100 ) {
 		$results = new Collection();
 
-		$this->chunk( $count, function ( Collection $items ) use ( $callback, $results ): bool {
+		$this->chunk( $count, static function ( Collection $items ) use ( $callback, $results ): bool {
 			$results->push( ...$items->map( $callback ) );
 
 			return true;
@@ -952,7 +952,7 @@ abstract class Builder {
 		return ( new Collection( (array) $this->model ) )
 			// @phpstan-ignore argument.type
 			->combine( $this->model )
-			->map( fn ( $model ) => $model::get_object_name() )
+			->map( static fn ( $model ) => $model::get_object_name() )
 			->flip();
 	}
 

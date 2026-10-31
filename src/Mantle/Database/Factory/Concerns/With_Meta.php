@@ -64,7 +64,7 @@ trait With_Meta {
 		[ $first, $repeated ] = $this->split_meta_maps( $maps );
 
 		return $this->with_middleware(
-			function ( array $args, Closure $next ) use ( $first, $repeated ) {
+			static function ( array $args, Closure $next ) use ( $first, $repeated ) {
 				$args['meta'] = array_merge_recursive(
 					$args['meta'] ?? [],
 					$first

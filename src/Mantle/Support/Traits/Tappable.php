@@ -18,6 +18,7 @@ trait Tappable {
 	 *
 	 * @param  callable|null $callback
 	 * @return static|\Mantle\Support\Higher_Order_Tap_Proxy
+	 * @phpstan-return ($callback is null ? \Mantle\Support\Higher_Order_Tap_Proxy : static)
 	 */
 	public function tap( $callback = null ) {
 		return tap( $this, $callback );

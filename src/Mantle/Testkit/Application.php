@@ -291,11 +291,11 @@ class Application extends Container implements Application_Contract {
 	 * Register the base service providers.
 	 */
 	protected function register_base_service_providers(): void {
-		$this->singleton( 'events', fn ( $app ) => new Dispatcher( $app ) );
+		$this->singleton( 'events', static fn ( $app ) => new Dispatcher( $app ) );
 
 		$this->singleton(
 			Generator::class,
-			function (): Generator {
+			static function (): Generator {
 				$factory = Factory::create();
 
 				$factory->addProvider( new Faker_Provider( $factory ) );

@@ -52,7 +52,7 @@ use function Mantle\Support\Helpers\stringable;
  * @property string $modified Alias to post_modified.
  * @property string $modified_gmt Alias to post_modified_gmt.
  * @property string $description Alias to post_excerpt.
- * @property string $id Alias to ID.
+ * @property int $id Alias to ID.
  * @property string $name Alias to post_title.
  * @property string $slug Alias to post_name.
  * @property string $status Alias to post_status.
@@ -162,7 +162,7 @@ class Post extends Model implements Contracts\Database\Core_Object, Contracts\Da
 	 * @todo Add global scopes for the model to allow for the query builder
 	 *       to verify the object type as well.
 	 *
-	 * @param \WP_Post|int $object Post to retrieve for.
+	 * @param mixed $object Post to retrieve for (a post ID or WP_Post).
 	 */
 	public static function find( mixed $object ): ?static {
 		// get_post() falls back to the global post for empty input, which is never the caller's intent here.
@@ -468,7 +468,7 @@ PHP
 				$index     = 1;
 				$structure = preg_replace_callback(
 					'/\%/',
-					function () use ( &$index ): string {
+					static function () use ( &$index ): string {
 						return ( $index++ ) % 2 ? '{' : '}';
 					},
 					(string) $structure

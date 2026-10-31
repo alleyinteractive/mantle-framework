@@ -14,7 +14,7 @@ use Mantle\Database\Model\Model_Exception;
 /**
  * Interface for interfacing with a model's meta.
  *
- * @property object $meta
+ * @property \Mantle\Database\Model\Meta\Model_Meta_Proxy $meta
  */
 trait Model_Meta {
 	/**

@@ -16,15 +16,15 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		app()->singleton_if( 'events', fn ( $app ) => new Dispatcher( $app ) );
+		app()->singleton_if( 'events', static fn ( $app ) => new Dispatcher( $app ) );
 	}
 
-	public function testBasicEventExecution() {
+	public function testBasicEventExecution(): void {
 		unset( $_SERVER['__event.test'] );
 		$d = new Dispatcher();
 		$d->listen(
 			__METHOD__,
-			function ( $foo ) {
+			static function ( $foo ) {
 				$_SERVER['__event.test'] = $foo;
 			}
 		);
@@ -35,13 +35,13 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( 'bar', $_SERVER['__event.test'] );
 	}
 
-	public function testContainerResolutionOfEventHandlers() {
+	public function testContainerResolutionOfEventHandlers(): void {
 		$d = new Dispatcher( $container = m::mock( Container::class ) );
 		$container
 			->shouldReceive( 'make' )
 			->once()
 			->with( 'FooHandler' )
-			->andReturn( $handler = m::mock( stdClass::class ) );
+			->andReturn( $handler = m::mock( \stdClass::class ) );
 
 		$handler
 			->shouldReceive( 'onFooEvent' )
@@ -56,13 +56,13 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( 'baz', $d->dispatch( __METHOD__, 'foo', 'bar' ) );
 	}
 
-	public function testContainerResolutionOfEventHandlersWithDefaultMethods() {
+	public function testContainerResolutionOfEventHandlersWithDefaultMethods(): void {
 		$d = new Dispatcher( $container = m::mock( Container::class ) );
 		$container
 			->shouldReceive( 'make' )
 			->once()
 			->with( 'FooHandler' )
-			->andReturn( $handler = m::mock( stdClass::class ) );
+			->andReturn( $handler = m::mock( \stdClass::class ) );
 
 		$handler
 			->shouldReceive( 'handle' )
@@ -76,14 +76,14 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$d->dispatch( __METHOD__, 'foo', 'bar' );
 	}
 
-	public function test_typehinted_event_callback_isolated() {
+	public function test_typehinted_event_callback_isolated(): void {
 		$_SERVER['__event_run'] = false;
 
 		$d = new Dispatcher( app() );
 
 		$d->listen(
 			Example_Event::class,
-			fn ( Example_Event $e ) => $_SERVER['__event_run'] = true
+			static fn ( Example_Event $e ) => $_SERVER['__event_run'] = true
 		);
 
 		$d->dispatch( new Example_Event() );
@@ -91,12 +91,12 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertTrue( $_SERVER['__event_run'] );
 	}
 
-	public function test_typehinted_event_callback() {
+	public function test_typehinted_event_callback(): void {
 		$_SERVER['__event_run'] = false;
 
 		app( 'events' )->listen(
 			Example_Event::class,
-			fn ( Example_Event $e ) => $_SERVER['__event_run'] = true
+			static fn ( Example_Event $e ) => $_SERVER['__event_run'] = true
 		);
 
 		app( 'events' )->dispatch( new Example_Event() );
@@ -104,12 +104,12 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertTrue( $_SERVER['__event_run'] );
 	}
 
-	public function test_multiple_void_listeners_receive_same_event_object() {
+	public function test_multiple_void_listeners_receive_same_event_object(): void {
 		$events = app( 'events' );
 		$seen   = [];
 
-		$events->listen( Example_Event::class, function ( Example_Event $e ) use ( &$seen ): void { $seen[] = spl_object_id( $e ); } );
-		$events->listen( Example_Event::class, function ( Example_Event $e ) use ( &$seen ) { $seen[] = spl_object_id( $e ); } );
+		$events->listen( Example_Event::class, static function ( Example_Event $e ) use ( &$seen ): void { $seen[] = spl_object_id( $e ); } );
+		$events->listen( Example_Event::class, static function ( Example_Event $e ) use ( &$seen ) { $seen[] = spl_object_id( $e ); } );
 		$events->listen( Example_Event::class, Example_Void_Listener::class );
 
 		$event = new Example_Event();
@@ -120,31 +120,31 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( spl_object_id( $event ), Example_Void_Listener::$seen );
 	}
 
-	public function test_void_listener_does_not_clobber_payload_for_later_listeners() {
+	public function test_void_listener_does_not_clobber_payload_for_later_listeners(): void {
 		$events = app( 'events' );
 		$seen   = [];
 
-		$events->listen( __FUNCTION__, function ( $value ) use ( &$seen ): void { $seen[] = $value; } );
-		$events->listen( __FUNCTION__, function ( $value ) use ( &$seen ) { $seen[] = $value; return $value; } );
+		$events->listen( __FUNCTION__, static function ( $value ) use ( &$seen ): void { $seen[] = $value; } );
+		$events->listen( __FUNCTION__, static function ( $value ) use ( &$seen ) { $seen[] = $value; return $value; } );
 
 		$this->assertSame( 'hello', $events->dispatch( __FUNCTION__, 'hello' ) );
 		$this->assertSame( [ 'hello', 'hello' ], $seen );
 	}
 
-	public function test_filter_listener_can_replace_an_object_value() {
+	public function test_filter_listener_can_replace_an_object_value(): void {
 		$events = app( 'events' );
 
-		$events->listen( __FUNCTION__, fn ( $value ) => [ 'replaced' ] );
+		$events->listen( __FUNCTION__, static fn ( $value ) => [ 'replaced' ] );
 
 		$this->assertSame( [ 'replaced' ], $events->dispatch( __FUNCTION__, new \WP_Error( 'code' ) ) );
 	}
 
-	public function test_object_event_listener_returning_another_object_keeps_the_event() {
+	public function test_object_event_listener_returning_another_object_keeps_the_event(): void {
 		$events = app( 'events' );
 		$seen   = [];
 
-		$events->listen( Example_Event::class, fn ( Example_Event $e ) => new \stdClass() );
-		$events->listen( Example_Event::class, function ( Example_Event $e ) use ( &$seen ) { $seen[] = spl_object_id( $e ); } );
+		$events->listen( Example_Event::class, static fn ( Example_Event $e ) => new \stdClass() );
+		$events->listen( Example_Event::class, static function ( Example_Event $e ) use ( &$seen ) { $seen[] = spl_object_id( $e ); } );
 
 		$event = new Example_Event();
 
@@ -153,9 +153,9 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( [ spl_object_id( $event ) ], $seen );
 	}
 
-	public function test_it_can_forget_a_specific_listener() {
+	public function test_it_can_forget_a_specific_listener(): void {
 		$events   = app( 'events' );
-		$listener = fn ( $value ) => 'modified';
+		$listener = static fn ( $value ) => 'modified';
 
 		$events->listen( __FUNCTION__, $listener );
 		$events->listen( __FUNCTION__, Example_Void_Listener::class );
@@ -172,12 +172,12 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( 'original', $events->dispatch( __FUNCTION__, 'original' ) );
 	}
 
-	public function test_dispatch_string_event_name() {
+	public function test_dispatch_string_event_name(): void {
 		$events = app( 'events' );
 
 		$events->listen(
 			__FUNCTION__,
-			fn () => $_SERVER['__event_run'] = true
+			static fn () => $_SERVER['__event_run'] = true
 		);
 
 		$events->dispatch( __FUNCTION__ );
@@ -185,12 +185,12 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertTrue( $_SERVER['__event_run'] );
 	}
 
-	public function test_dispatch_string_event_name_with_payload() {
+	public function test_dispatch_string_event_name_with_payload(): void {
 		$events = app( 'events' );
 
 		$events->listen(
 			__FUNCTION__,
-			fn ( $payload ) => $_SERVER['__event_run'] = $payload
+			static fn ( $payload ) => $_SERVER['__event_run'] = $payload
 		);
 
 		$events->dispatch( __FUNCTION__, 'foo' );
@@ -198,12 +198,12 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( 'foo', $_SERVER['__event_run'] );
 	}
 
-	public function test_dispatch_string_event_name_with_single_non_array_payload() {
+	public function test_dispatch_string_event_name_with_single_non_array_payload(): void {
 		$events = app( 'events' );
 
 		$events->listen(
 			__FUNCTION__,
-			fn ( $payload ) => $_SERVER['__event_run'] = $payload
+			static fn ( $payload ) => $_SERVER['__event_run'] = $payload
 		);
 
 		$events->dispatch( __FUNCTION__, 'foo' );
@@ -211,12 +211,12 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( 'foo', $_SERVER['__event_run'] );
 	}
 
-	public function test_dispatch_string_event_name_with_multiple_payloads() {
+	public function test_dispatch_string_event_name_with_multiple_payloads(): void {
 		$events = app( 'events' );
 
 		$events->listen(
 			__FUNCTION__,
-			fn ( ...$args ) => $_SERVER['__event_run'] = $args,
+			static fn ( ...$args ) => $_SERVER['__event_run'] = $args,
 		);
 
 		$events->dispatch( __FUNCTION__, 'foo', 'bar' );
@@ -227,7 +227,7 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	public function test_it_can_forget_events(): void {
 		$dispatcher = new Dispatcher();
 
-		$dispatcher->listen( 'event_name', function () {
+		$dispatcher->listen( 'event_name', static function () {
 			return 'event_name';
 		} );
 
@@ -239,7 +239,7 @@ class EventDispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	public function test_it_can_forget_wildcard_events(): void {
 		$dispatcher = new Dispatcher();
 
-		$dispatcher->listen( 'event:*', function () {
+		$dispatcher->listen( 'event:*', static function () {
 			return 'event_name';
 		} );
 
@@ -268,6 +268,9 @@ class Example_Event {
 class Example_Void_Listener {
 	public static ?int $seen = null;
 
+	/**
+	 * @param mixed $event Event.
+	 */
 	public function handle( $event ): void {
 		static::$seen = is_object( $event ) ? spl_object_id( $event ) : null;
 	}

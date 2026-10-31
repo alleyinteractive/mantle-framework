@@ -9,8 +9,8 @@ class SeederTest extends FrameworkTestCase {
 	public function test_it_can_seed_data(): void {
 		$_SERVER['__seeder_run'] = false;
 
-		$seeder = $this->app->make( TestableSeeder::class );
-		$seeder->set_container( $this->app );
+		$seeder = app()->make( TestableSeeder::class );
+		$seeder->set_container( app() );
 
 		$seeder();
 
@@ -22,8 +22,8 @@ class SeederTest extends FrameworkTestCase {
 			'post_title' => 'Seeded post',
 		] );
 
-		$seeder = $this->app->make( TestableSeederWithFactory::class );
-		$seeder->set_container( $this->app );
+		$seeder = app()->make( TestableSeederWithFactory::class );
+		$seeder->set_container( app() );
 
 		$seeder();
 
@@ -35,8 +35,8 @@ class SeederTest extends FrameworkTestCase {
 	public function test_it_can_call_another_seeder(): void {
 		$_SERVER['__seeder_run'] = false;
 
-		$seeder = $this->app->make( TestableSeederCallsAnotherSeeder::class );
-		$seeder->set_container( $this->app );
+		$seeder = app()->make( TestableSeederCallsAnotherSeeder::class );
+		$seeder->set_container( app() );
 
 		$seeder();
 

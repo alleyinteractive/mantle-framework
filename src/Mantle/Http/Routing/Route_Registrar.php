@@ -21,6 +21,13 @@ use Mantle\Support\Str;
  * class will be called to setup attributes such as middleware, prefix, etc.
  * that should be shared across multiple routes that are registered in a group.
  *
+ * @method Route get(string $uri, \Closure|array<mixed>|string|null $action = null)
+ * @method Route post(string $uri, \Closure|array<mixed>|string|null $action = null)
+ * @method Route put(string $uri, \Closure|array<mixed>|string|null $action = null)
+ * @method Route patch(string $uri, \Closure|array<mixed>|string|null $action = null)
+ * @method Route delete(string $uri, \Closure|array<mixed>|string|null $action = null)
+ * @method Route options(string $uri, \Closure|array<mixed>|string|null $action = null)
+ * @method Route any(string $uri, \Closure|array<mixed>|string|null $action = null)
  * @method \Mantle\Http\Routing\Route_Registrar as(string $value)
  * @method \Mantle\Http\Routing\Route_Registrar domain(string $value)
  * @method \Mantle\Http\Routing\Route_Registrar middleware(array<string>|string|null $middleware)
@@ -159,7 +166,7 @@ class Route_Registrar implements Registrar_Contract {
 
 		$this->router->group(
 			$attributes,
-			function () use ( $callback, &$route ): void {
+			static function () use ( $callback, &$route ): void {
 				$route = $callback();
 			},
 		);

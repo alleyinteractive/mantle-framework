@@ -264,14 +264,14 @@ HTML;
 		);
 	}
 
-	public function test_it_throws_an_exception_for_invalid_blocks() {
+	public function test_it_throws_an_exception_for_invalid_blocks(): void {
 		$this->expectException( \InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'Unknown block factory method: unknown_method' );
 
-		block_factory()->unknown_method();
+		block_factory()->unknown_method(); // @phpstan-ignore method.notFound (unknown name is rejected at runtime by Block_Factory::__call)
 	}
 
-	public function test_it_can_generate_a_preset() {
+	public function test_it_can_generate_a_preset(): void {
 		Block_Factory::register_preset(
 			'test',
 			block_factory()->blocks( [
@@ -282,7 +282,7 @@ HTML;
 
 		Block_Factory::register_preset(
 			'test2',
-			fn ( Block_Factory $factory ) => $factory->blocks( [
+			static fn ( Block_Factory $factory ) => $factory->blocks( [
 				$factory->heading(),
 				$factory->paragraphs( 5 ),
 			] ),
@@ -290,7 +290,7 @@ HTML;
 
 		Block_Factory::register_preset(
 			'title_block',
-			fn ( Block_Factory $factory ) => $factory->block(
+			static fn ( Block_Factory $factory ) => $factory->block(
 				'namespace/multititle',
 				null,
 				[
@@ -301,7 +301,7 @@ HTML;
 
 		Block_Factory::register_preset(
 			'title_with_arguments',
-			fn ( Block_Factory $factory, string $title ) => $factory->block(
+			static fn ( Block_Factory $factory, string $title ) => $factory->block(
 				'namespace/multititle',
 				null,
 				[
@@ -312,10 +312,10 @@ HTML;
 
 		$this->assertStringStartsWith(
 			'<!-- wp:heading {"level":2} -->',
-			block_factory()->test(),
+			block_factory()->test(), // @phpstan-ignore method.notFound (preset method resolved via Block_Factory::__call)
 		);
 
-		$preset_test2 = block_factory()->test2();
+		$preset_test2 = block_factory()->test2(); // @phpstan-ignore method.notFound (preset method resolved via Block_Factory::__call)
 
 		$this->assertStringStartsWith(
 			'<!-- wp:heading {"level":2} -->',
@@ -326,7 +326,7 @@ HTML;
 
 		$this->assertSame(
 			'<!-- wp:namespace/multititle {"seo":"Attribute on the block"} /-->',
-			block_factory()->title_block(),
+			block_factory()->title_block(), // @phpstan-ignore method.notFound (preset method resolved via Block_Factory::__call)
 		);
 
 		$this->assertSame(
@@ -336,13 +336,16 @@ HTML;
 
 		$this->assertSame(
 			'<!-- wp:namespace/multititle {"seo":"Title Here"} /-->',
-			block_factory()->title_with_arguments( 'Title Here' ),
+			block_factory()->title_with_arguments( 'Title Here' ), // @phpstan-ignore method.notFound (preset method resolved via Block_Factory::__call)
 		);
 	}
 
+	/**
+	 * @param array<string, mixed> $attributes Block attributes.
+	 */
 	#[DataProvider('block_serialization_dataprovider')]
 	public function test_block_serialization_unicode_characters( array $attributes, string $expected ): void {
-		$block = get_comment_delimited_block_content( 'namespace/blockname', $attributes, null );
+		$block = get_comment_delimited_block_content( 'namespace/blockname', $attributes, '' );
 
 		$this->assertSame( $expected, $block );
 
@@ -353,6 +356,9 @@ HTML;
 		$this->assertSame( $expected, $post->post_content );
 	}
 
+	/**
+	 * @return array<string, array{array<string, mixed>, string}>
+	 */
 	public static function block_serialization_dataprovider(): array {
 		return [
 			'unicode' => [

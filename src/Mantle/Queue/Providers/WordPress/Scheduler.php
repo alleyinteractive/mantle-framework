@@ -111,7 +111,7 @@ class Scheduler {
 	public static function unschedule( ?string $queue = null ): void {
 		static::get_scheduled_cron_jobs( $queue )
 			->each(
-				fn ( array $job ) => wp_unschedule_event( $job['timestamp'], static::EVENT, $job['args'] ?? [] ),
+				static fn ( array $job ) => wp_unschedule_event( $job['timestamp'], static::EVENT, $job['args'] ?? [] ),
 			);
 	}
 
@@ -186,7 +186,7 @@ class Scheduler {
 		/** @var Collection<int, array<mixed>> $jobs */
 		$jobs = collect( _get_cron_array() )
 			->reduce(
-				function ( Collection $carry, array $items, $timestamp ) use ( $queue ): Collection {
+				static function ( Collection $carry, array $items, $timestamp ) use ( $queue ): Collection {
 					if ( empty( $items[ static::EVENT ] ) ) {
 						return $carry;
 					}

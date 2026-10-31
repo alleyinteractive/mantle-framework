@@ -25,7 +25,8 @@ if ( ! function_exists( 'response' ) ) {
 	 * @param string $content Response content, optional.
 	 * @param int    $status  Response status code, optional.
 	 * @param array  $headers Response headers, optional.
-	 * @return Response_Factory
+	 * @return Response_Factory|\Mantle\Http\Response
+	 * @phpstan-return ($args is array{} ? Response_Factory : \Mantle\Http\Response)
 	 */
 	function response( ...$args ) {
 		$factory = app( Response_Factory::class );
@@ -135,7 +136,7 @@ if ( ! function_exists( 'loop' ) ) {
 	function loop( ...$args ): string {
 		return view()
 			->loop( ...$args )
-			->map( fn ( View $item ) => $item->render() )
+			->map( static fn ( View $item ) => $item->render() )
 			->implode( '' );
 	}
 }
@@ -167,7 +168,7 @@ if ( ! function_exists( 'iterate' ) ) {
 	function iterate( ...$args ): string {
 		return view()
 		->iterate( ...$args )
-		->map( fn ( View $item ) => $item->render() )
+		->map( static fn ( View $item ) => $item->render() )
 		->implode( '' );
 	}
 }

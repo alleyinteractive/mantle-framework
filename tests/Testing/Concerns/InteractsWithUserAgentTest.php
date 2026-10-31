@@ -27,7 +27,7 @@ class InteractsWithUserAgentTest extends FrameworkTestCase {
 
 		$this->assertTrue( wp_is_mobile() );
 
-		$this->before_request( function() use ( &$captured_user_agent ) {
+		$this->before_request( static function() use ( &$captured_user_agent ) {
 			$captured_user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 		} );
 

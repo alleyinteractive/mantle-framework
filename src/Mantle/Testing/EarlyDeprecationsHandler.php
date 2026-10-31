@@ -88,7 +88,7 @@ final class EarlyDeprecationsHandler {
 			title: "Unexpected {$type} deprecation notice in test bootstrap",
 			description: $message,
 			frames: collect( Backtrace::create()->frames() )
-				->skip_until( fn ( Frame $frame ) => in_array( $frame->method, TestCase::get_deprecation_methods(), true ) )
+				->skip_until( static fn ( Frame $frame ) => in_array( $frame->method, TestCase::get_deprecation_methods(), true ) )
 				->slice( 1 )
 				->values()
 				->all(),

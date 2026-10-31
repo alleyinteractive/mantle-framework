@@ -112,7 +112,7 @@ class Bootloader implements Contract {
 			->with_application( $app ?? new Application( $base_path ) )
 			->with_kernels()
 			->with_exception_handler()
-			->with_wp_cli_options( description: fn () => __( 'Mantle Framework Command Line Interface', 'mantle' ) );
+			->with_wp_cli_options( description: static fn () => __( 'Mantle Framework Command Line Interface', 'mantle' ) );
 	}
 
 	/**
@@ -230,7 +230,7 @@ class Bootloader implements Contract {
 		assert( $this->app instanceof Contracts\Application, 'Application instance is not set on Bootloader.' );
 
 		$this->app->booted(
-			function ( Application $app ) use ( $callback, $web, $rest_api, $pass_through ): void {
+			static function ( Application $app ) use ( $callback, $web, $rest_api, $pass_through ): void {
 				$router = $app['router'];
 
 				if ( $callback ) {
@@ -384,7 +384,7 @@ class Bootloader implements Contract {
 				}
 
 				// Remove the `--url=` option as it shouldn't be passed down to the console command.
-				$argv = $argv->filter( fn ( $value ) => ! Str::starts_with( $value, '--url=' ) );
+				$argv = $argv->filter( static fn ( $value ) => ! Str::starts_with( $value, '--url=' ) );
 
 				$status    = $kernel->handle(
 					$input = new ArgvInput( $argv->values()->to_array() ), // @phpstan-ignore-line argument.type

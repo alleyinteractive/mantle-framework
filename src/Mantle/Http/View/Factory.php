@@ -335,7 +335,7 @@ class Factory implements Contract {
 
 		return Arr::first(
 			$extensions,
-			fn ( $value ) => Str::ends_with( $path, '.' . $value )
+			static fn ( $value ) => Str::ends_with( $path, '.' . $value )
 		);
 	}
 }

@@ -18,7 +18,7 @@ class ViewFinderTest extends FrameworkTestCase {
 		$_SERVER['__view_loaded'] = false;
 	}
 
-	public function test_loading_view() {
+	public function test_loading_view(): void {
 		$this->load_view( 'view-loader/view-loader' );
 
 		$this->assertTrue( $_SERVER['__view_loaded'] );
@@ -27,7 +27,7 @@ class ViewFinderTest extends FrameworkTestCase {
 	/**
 	 * Allow an alias to define the specific view location to load from.
 	 */
-	public function test_loading_view_alias() {
+	public function test_loading_view_alias(): void {
 		$this->load_view( '@view-loader-alias/view-loader' );
 
 		$this->assertSame( 'alias', $_SERVER['__view_loaded'] );
@@ -36,7 +36,7 @@ class ViewFinderTest extends FrameworkTestCase {
 	/**
 	 * Ensure that an alias doesn't fallback to other template parts.
 	 */
-	public function test_loading_view_alias_fallback() {
+	public function test_loading_view_alias_fallback(): void {
 		$this->load_view( '@unit-test/view-loader/alias-specific' );
 		$this->assertFalse( $_SERVER['__view_loaded'] );
 
@@ -76,7 +76,7 @@ class ViewFinderTest extends FrameworkTestCase {
 	 *
 	 * @param string $name View to load.
 	 */
-	protected function load_view( string $name ) {
+	protected function load_view( string $name ): void {
 		try {
 			include View_Loader::find( $name );
 		} catch ( \Throwable $e ) { }

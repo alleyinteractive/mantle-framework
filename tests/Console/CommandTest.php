@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\NullOutput;
 
 class CommandTest extends TestCase {
 
-	public function test_kernel_register_accepts_command_instance() {
+	public function test_kernel_register_accepts_command_instance(): void {
 		\Mantle\Console\Application::forget_bootstrappers();
 
 		$app    = new Application();
@@ -30,7 +30,7 @@ class CommandTest extends TestCase {
 		\Mantle\Console\Application::forget_bootstrappers();
 	}
 
-	public function test_registering_command_with_just_name() {
+	public function test_registering_command_with_just_name(): void {
 		$command = new class extends Command {
 			protected $name = 'foo:bar';
 		};
@@ -38,7 +38,7 @@ class CommandTest extends TestCase {
 		$this->assertSame( 'foo:bar', $command->getName() );
 	}
 
-	public function test_command_argument_and_option_registration() {
+	public function test_command_argument_and_option_registration(): void {
 		$command = new class extends Command {
 			protected $signature = 'foo:bar {arg1} {arg2?} {--opt1} {--opt2=} {--opt3=*}';
 		};
@@ -49,11 +49,11 @@ class CommandTest extends TestCase {
 		$this->assertSame( 1, $command->getDefinition()->getArgumentRequiredCount() );
 	}
 
-	public function test_command_argument_and_option_reading() {
+	public function test_command_argument_and_option_reading(): void {
 		$command = new class extends Command {
 			protected $signature = 'foo:bar {arg1} {arg2?} {--opt1} {--opt2=} {--opt3=*}';
 
-			public function __invoke() { }
+			public function __invoke(): void { }
 		};
 
 		$command->set_container( new Application() );
@@ -82,7 +82,7 @@ class CommandTest extends TestCase {
 		$this->assertSame( [ 'value4', 'value5' ], $command->option( 'opt3' ) );
 	}
 
-	public function test_command_invalid_arguments() {
+	public function test_command_invalid_arguments(): void {
 		$this->expectException( \InvalidArgumentException::class );
 
 		$command = new class extends Command {
@@ -97,7 +97,7 @@ class CommandTest extends TestCase {
 		] ), new NullOutput() );
 	}
 
-	public function test_command_hidden() {
+	public function test_command_hidden(): void {
 		$command = new class extends Command {
 			protected $signature = 'foo:bar';
 

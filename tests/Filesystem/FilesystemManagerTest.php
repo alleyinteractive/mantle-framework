@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 use Mockery as m;
 
 use function Mantle\Support\Helpers\tap;
+use function Mantle\Support\Helpers\with;
 
 class FilesystemManagerTest extends FrameworkTestCase {
 	protected function tearDown(): void {
@@ -24,10 +25,10 @@ class FilesystemManagerTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_default_disk() {
+	public function test_default_disk(): void {
 		$this->expectApplied( 'mantle_filesystem_local_config' )->once()->andReturnArray();
 
-		$filesystem = $this->app->make( Filesystem_Manager::class );
+		$filesystem = app()->make( Filesystem_Manager::class );
 
 		$drive = $filesystem->drive();
 
@@ -52,14 +53,14 @@ class FilesystemManagerTest extends FrameworkTestCase {
 		$this->assertFalse( $drive->exists( 'file.txt' ) );
 	}
 
-	public function test_invalid_disk() {
+	public function test_invalid_disk(): void {
 		$this->expectException( InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'Disk [unsupported] does not have a configured driver.' );
 
 		$filesystem = new Filesystem_Manager(
 			tap(
 				new Application(),
-				function( Application $app ) {
+				static function( Application $app ) {
 					$app['config'] = [ 'filesystem' => [] ];
 				}
 			)
@@ -68,14 +69,14 @@ class FilesystemManagerTest extends FrameworkTestCase {
 		$filesystem->drive( 'unsupported' );
 	}
 
-	public function test_unknown_driver() {
+	public function test_unknown_driver(): void {
 		$this->expectException( InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'Disk [valid-disk-unknown-driver] uses a driver [unknown] that is not supported.' );
 
 		$filesystem = new Filesystem_Manager(
 			tap(
 				new Application(),
-				function( Application $app ) {
+				static function( Application $app ) {
 					$app['config'] = [
 						'filesystem.disks.valid-disk-unknown-driver' => [
 							'driver' => 'unknown',
@@ -88,13 +89,13 @@ class FilesystemManagerTest extends FrameworkTestCase {
 		$filesystem->drive( 'valid-disk-unknown-driver' );
 	}
 
-	public function test_custom_driver() {
+	public function test_custom_driver(): void {
 		$_SERVER['__custom_driver_called'] = 0;
 
 		$filesystem = new Filesystem_Manager(
 			tap(
 				new Application(),
-				function( Application $app ) {
+				static function( Application $app ) {
 					$app['config'] = [
 						'filesystem.disks.custom-driver' => [
 							'driver' => 'custom-driver',
@@ -106,19 +107,19 @@ class FilesystemManagerTest extends FrameworkTestCase {
 			)
 		);
 
-		$adapter = m::mock( \Mantle\Contracts\Filesystem\Filesystem::class );
+		$adapter = $this->createMock( \Mantle\Contracts\Filesystem\Filesystem::class );
 
-		$adapter->shouldReceive( 'exists' )
-			->once()
+		$adapter->expects( $this->once() )
+			->method( 'exists' )
 			->with( '/path' )
-			->andReturn( true );
+			->willReturn( true );
 
 		$_SERVER['__custom_driver_called'] = 0;
 
 		$filesystem->extend(
 			'custom-driver',
 			function ( $app, array $config ) use ( $adapter ) {
-				$this->assertInstanceof( \Mantle\Contracts\Application::class, $app );
+				$this->assertInstanceOf( \Mantle\Contracts\Application::class, with( $app ) );
 				$this->assertSame( [ 'driver' => 'custom-driver', 'extra_config' => 'value', 'root' => '/path' ], $config );
 
 				$_SERVER['__custom_driver_called']++;

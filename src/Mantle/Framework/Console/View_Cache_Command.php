@@ -175,7 +175,7 @@ class View_Cache_Command extends Command {
 		$cwd = getcwd();
 
 		collect( explode( ',', $path ) )
-			->map( fn ( $item ) => $cwd . DIRECTORY_SEPARATOR . $item )
+			->map( static fn ( $item ) => $cwd . DIRECTORY_SEPARATOR . $item )
 			->each( function ( string $path ): void {
 				if ( ! is_dir( $path ) ) {
 					$this->error( "Path [{$path}] does not exist. Skipping..." );
