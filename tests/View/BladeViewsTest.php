@@ -58,7 +58,7 @@ class BladeViewsTest extends FrameworkTestCase {
 	}
 
 	public function test_blade_directive(): void {
-		Blade::directive( 'test', function ( $expression ) {
+		Blade::directive( 'test', static function ( $expression ) {
 			return "<?php echo 'Test: $expression'; ?>";
 		} );
 

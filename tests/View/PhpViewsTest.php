@@ -208,7 +208,7 @@ class PhpViewsTest extends FrameworkTestCase {
 	}
 
 	public function test_nested_loops(): void {
-		$create_post = function( $date ) {
+		$create_post = static function( $date ) {
 			return static::factory()->post->create(
 				[
 					'post_date' => $date,

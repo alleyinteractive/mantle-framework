@@ -222,7 +222,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 
 	public function test_error_response(): void {
 		$this->fake_request(
-			function() {
+			static function() {
 				return new \WP_Error( 'http-error', 'Error!' );
 			}
 		);
@@ -317,7 +317,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 
 	public function test_prevent_stray_requests_callback(): void {
 		$this->prevent_stray_requests(
-			fn () => Mock_Http_Response::create()->with_status( 400 ),
+			static fn () => Mock_Http_Response::create()->with_status( 400 ),
 		);
 
 		$this->assertSame( 400, Http::get( 'https://example.com/' )->status() );
@@ -362,7 +362,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 
 	public function test_file_as_response(): void {
 		$this->fake_request(
-			fn() => Mock_Http_Response::create()->with_file( MANTLE_PHPUNIT_FIXTURES_PATH . '/images/alley.jpg' )
+			static fn() => Mock_Http_Response::create()->with_file( MANTLE_PHPUNIT_FIXTURES_PATH . '/images/alley.jpg' )
 		);
 
 		$filename = sys_get_temp_dir() . '/' . time() . '-alley.jpg';
@@ -376,7 +376,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 
 	public function test_streamed_response(): void {
 		$this->fake_request(
-			fn() => Mock_Http_Response::create()->with_file( MANTLE_PHPUNIT_FIXTURES_PATH . '/images/alley.jpg' )
+			static fn() => Mock_Http_Response::create()->with_file( MANTLE_PHPUNIT_FIXTURES_PATH . '/images/alley.jpg' )
 		);
 
 		$response = Http::stream()->get( 'https://alley.com/wp-content/uploads/2021/12/NSF_Cover.png?w=960' );
@@ -424,7 +424,7 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 
 	public function test_unknown_return_value_from_callback(): void {
 		$this->fake_request(
-			fn () => new DateTime(),
+			static fn () => new DateTime(),
 		);
 
 		$this->expectException( InvalidArgumentException::class );
@@ -437,9 +437,9 @@ class InteractsWithExternalRequestsTest extends FrameworkTestCase {
 		/** @var Request|null $object */
 		$object = null;
 
-		$this->fake_request( fn ( Request $request ) => null );
+		$this->fake_request( static fn ( Request $request ) => null );
 
-		$this->fake_request( function ( Request $request ) use ( &$object ) {
+		$this->fake_request( static function ( Request $request ) use ( &$object ) {
 			$object = $request;
 
 			return mock_http_response()->with_json( [ 'status' => 'ok' ] );

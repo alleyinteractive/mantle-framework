@@ -98,7 +98,7 @@ class BootloaderTest extends TestCase {
 	}
 
 	public function test_it_can_setup_routing(): void {
-		add_filter( 'wp_using_themes', fn () => true, 99 );
+		add_filter( 'wp_using_themes', static fn () => true, 99 );
 
 		bootloader()
 			->with_routing(
@@ -125,8 +125,8 @@ class BootloaderTest extends TestCase {
 	public function test_it_can_setup_routing_closure(): void {
 		bootloader()
 			->with_routing(
-				function (): void {
-					Route::get( '/example-closure', fn () => 'Hello Closure' );
+				static function (): void {
+					Route::get( '/example-closure', static fn () => 'Hello Closure' );
 				}
 			)
 			->boot();

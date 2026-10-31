@@ -241,7 +241,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 				public function register(): void {
 					$this->call_after_resolving(
 						'foo',
-						function ( $resolved ) {
+						static function ( $resolved ) {
 							$_SERVER['__after_resolving'] = 'one';
 						}
 					);
@@ -253,7 +253,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$this->assertFalse( $_SERVER['__after_resolving'] );
 
-		$app->bind( 'foo',  fn () => 'bar' );
+		$app->bind( 'foo',  static fn () => 'bar' );
 
 		$this->assertSame( 'bar', $app->make( 'foo' ) );
 
@@ -269,7 +269,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 				public function register(): void {
 					$this->call_after_resolving(
 						'foo',
-						function ( $resolved ) {
+						static function ( $resolved ) {
 							$_SERVER['__after_resolving'] = 'one';
 						}
 					);
@@ -277,7 +277,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 			}
 		);
 
-		$app->bind( 'foo',  fn () => 'bar' );
+		$app->bind( 'foo',  static fn () => 'bar' );
 
 		$this->assertSame( 'bar', $app->make( 'foo' ) );
 

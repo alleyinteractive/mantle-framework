@@ -126,7 +126,7 @@ class HasOneOrManyTest extends FrameworkTestCase {
 
 	public function test_has_many_post_to_post_modifier(): void {
 		$posts = array_map(
-			fn ( int $post_id ) => Testable_Post::find_or_fail( $post_id ),
+			static fn ( int $post_id ) => Testable_Post::find_or_fail( $post_id ),
 			static::factory()->post->create_ordered_set( 50 ),
 		);
 
@@ -143,7 +143,7 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		$this->assertTrue( taxonomy_exists( Relation::RELATION_TAXONOMY ) );
 
 		$posts = array_map(
-			fn ( int $post_id ) => Testable_Post_Using_Term::find_or_fail( $post_id ),
+			static fn ( int $post_id ) => Testable_Post_Using_Term::find_or_fail( $post_id ),
 			static::factory()->post->create_ordered_set( 50 ),
 		);
 

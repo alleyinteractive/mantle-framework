@@ -202,7 +202,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	}
 
 	public function test_factory_middleware(): void {
-		$middleware = function ( $item, Closure $next ) {
+		$middleware = static function ( $item, Closure $next ) {
 			$post = $next( $item );
 
 			update_post_meta( $post->ID, '_test_meta_key', '_test_meta_value' );
@@ -218,7 +218,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	public function test_global_factory_middleware(): void {
 		$this->assertEmpty( static::factory()->post->middleware->all() );
 
-		static::factory()->post->with_global_middleware( function( array $item, Closure $next ) {
+		static::factory()->post->with_global_middleware( static function( array $item, Closure $next ) {
 			$post = $next( $item );
 
 			update_post_meta( $post->ID, 'global_meta', 'global_value' );
@@ -351,7 +351,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	#[Group( 'with_terms' )]
 	public function test_posts_with_multiple_terms_single_array( string $field ): void {
 		$tags = collect( static::factory()->tag->create_many( 5 ) )
-			->map( fn ( $term_id ) => get_term( $term_id ) )
+			->map( static fn ( $term_id ) => get_term( $term_id ) )
 			->pluck( $field )
 			->all();
 
@@ -555,7 +555,7 @@ class UnitTestingFactoryTest extends FrameworkTestCase {
 	 */
 	public static function dataprovider_factory(): array {
 		return [
-			'example' => [ fn () => static::factory()->post->create_and_get() ],
+			'example' => [ static fn () => static::factory()->post->create_and_get() ],
 		];
 	}
 

@@ -16,7 +16,7 @@ class RouterTest extends FrameworkTestCase {
 		$router = $this->get_router();
 		$router->get(
 			'foo/bar',
-			function () {
+			static function () {
 				return 'hello';
 			}
 		);
@@ -25,13 +25,13 @@ class RouterTest extends FrameworkTestCase {
 		$router = $this->get_router();
 		$router->get(
 			'foo/bar',
-			function () {
+			static function () {
 				return 'hello';
 			}
 		);
 		$router->post(
 			'foo/bar',
-			function () {
+			static function () {
 				return 'post hello';
 			}
 		);
@@ -41,7 +41,7 @@ class RouterTest extends FrameworkTestCase {
 		$router = $this->get_router();
 		$router->get(
 			'foo/{bar}',
-			function ( $name ) {
+			static function ( $name ) {
 				return $name;
 			}
 		);
@@ -50,7 +50,7 @@ class RouterTest extends FrameworkTestCase {
 		$router = $this->get_router();
 		$router->get(
 			'foo/{file}',
-			function ( $file ) {
+			static function ( $file ) {
 				return $file;
 			}
 		);
@@ -61,7 +61,7 @@ class RouterTest extends FrameworkTestCase {
 			'foo/bar',
 			array(
 				'as'       => 'foo',
-				'callback' => function () {
+				'callback' => static function () {
 					return 'bar';
 				},
 			)
@@ -69,7 +69,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertSame( 'bar', $router->dispatch( Request::create( 'foo/bar', 'PATCH' ) )?->getContent() );
 
 		$router = $this->get_router();
-		$router->get( 'head/request', fn () => 'hello' );
+		$router->get( 'head/request', static fn () => 'hello' );
 
 		$response = $router->dispatch( Request::create( 'head/request', 'HEAD' ) );
 
@@ -77,7 +77,7 @@ class RouterTest extends FrameworkTestCase {
 		$this->assertEmpty( $response->getContent() );
 
 		$router = $this->get_router();
-		$router->any( 'any/request', fn () => 'hello' );
+		$router->any( 'any/request', static fn () => 'hello' );
 
 		$this->assertSame( 'hello', $router->dispatch( Request::create( 'any/request', 'GET' ) )?->getContent() );
 		$this->assertSame( 'hello', $router->dispatch( Request::create( 'any/request', 'POST' ) )?->getContent() );
@@ -89,13 +89,13 @@ class RouterTest extends FrameworkTestCase {
 		$router = $this->get_router();
 		$router->get(
 			'foo/bar',
-			function () {
+			static function () {
 				return 'first';
 			}
 		);
 		$router->get(
 			'foo/bar',
-			function () {
+			static function () {
 				return 'second';
 			}
 		);
@@ -104,7 +104,7 @@ class RouterTest extends FrameworkTestCase {
 		$router = $this->get_router();
 		$router->get(
 			'foo/bar/åαф',
-			function () {
+			static function () {
 				return 'hello';
 			}
 		);
@@ -115,7 +115,7 @@ class RouterTest extends FrameworkTestCase {
 			'foo/bar',
 			[
 				'boom'     => 'auth',
-				'callback' => fn () => 'closure',
+				'callback' => static fn () => 'closure',
 			]
 		);
 
@@ -124,14 +124,14 @@ class RouterTest extends FrameworkTestCase {
 
 	public function testClosureMiddleware(): void {
 			$router     = $this->get_router();
-			$middleware = function ( $request, $next ) {
+			$middleware = static function ( $request, $next ) {
 					return 'caught';
 			};
 			$router->get(
 				'foo/bar',
 				array(
 					'middleware' => $middleware,
-					function () {
+					static function () {
 						return 'hello';
 					},
 				)
@@ -143,7 +143,7 @@ class RouterTest extends FrameworkTestCase {
 			$router = $this->get_router();
 			$router->bind(
 				'name',
-				function ( $value ) {
+				static function ( $value ) {
 					return strtoupper( $value );
 				}
 			);
@@ -152,7 +152,7 @@ class RouterTest extends FrameworkTestCase {
 				'foo/{name}',
 				array(
 					'middleware' => Substitute_Bindings::class,
-					'callback'   => function ( $name ) {
+					'callback'   => static function ( $name ) {
 						return $name;
 					},
 				)
@@ -166,7 +166,7 @@ class RouterTest extends FrameworkTestCase {
 			'foo/{bar}',
 			array(
 				'middleware' => Substitute_Bindings::class,
-				'callback'   => function ( RouteModelBindingStub $name ) {
+				'callback'   => static function ( RouteModelBindingStub $name ) {
 					return $name->get( 'route_key' );
 				},
 			)
@@ -182,7 +182,7 @@ class RouterTest extends FrameworkTestCase {
 			'foo/{bar}',
 			array(
 				'middleware' => Substitute_Bindings::class,
-				'callback'   => function ( Routing_Test_User_Model $bar ) {
+				'callback'   => static function ( Routing_Test_User_Model $bar ) {
 					return $bar->get( 'route_key' );
 				},
 			)
@@ -192,7 +192,7 @@ class RouterTest extends FrameworkTestCase {
 			'names/{two}/{three}',
 			array(
 				'middleware' => Substitute_Bindings::class,
-				'callback'   => function ( Routing_Test_User_Model $two, Routing_Test_User_Model $three ) {
+				'callback'   => static function ( Routing_Test_User_Model $two, Routing_Test_User_Model $three ) {
 					return $two->get( 'route_key' ) . '-' . $three->get( 'route_key' );
 				},
 			)
@@ -212,7 +212,7 @@ class RouterTest extends FrameworkTestCase {
 			'example/non-binding/{who}',
 			[
 				'middleware' => Substitute_Bindings::class,
-				'callback'   => fn ( string $who ) => "Hello {$who}",
+				'callback'   => static fn ( string $who ) => "Hello {$who}",
 			],
 		);
 
@@ -232,7 +232,7 @@ class RouterTest extends FrameworkTestCase {
 			'{year}/{month}/{day}/{post}',
 			array(
 				'middleware' => Substitute_Bindings::class,
-				'callback'   => function ( $year, $month, $day, Routing_Test_Post_Model $post ) {
+				'callback'   => static function ( $year, $month, $day, Routing_Test_Post_Model $post ) {
 					return $post->name();
 				},
 			)
@@ -248,7 +248,7 @@ class RouterTest extends FrameworkTestCase {
 		$router->get(
 			'/example-route-url',
 			[
-				'callback' => fn () => 'response',
+				'callback' => static fn () => 'response',
 				'name' => 'test_route_name_url',
 			]
 		);
@@ -262,11 +262,11 @@ class RouterTest extends FrameworkTestCase {
 		$router = $this->get_router();
 
 		$router->get( '/test_fluent_routing' )
-			->callback( function() {} )
+			->callback( static function() {} )
 			->name( 'route-name' );
 
 		$router->get( '/test_fluent_routing_with_var/{var}' )
-				->callback( function() {} )
+				->callback( static function() {} )
 				->name( 'route-name-with-var' );
 
 		$router->sync_routes_to_url_generator();
@@ -282,7 +282,7 @@ class RouterTest extends FrameworkTestCase {
 		$router = $this->get_router();
 
 		$router->middleware( Testable_Middleware_Router::class )->group(
-			fn () => $router->get( '/example-route-with-middleware', fn () => 'The response' )->name( 'example-route' ),
+			static fn () => $router->get( '/example-route-with-middleware', static fn () => 'The response' )->name( 'example-route' ),
 		);
 
 		$this->get( '/example-route-with-middleware' )
@@ -298,9 +298,9 @@ class RouterTest extends FrameworkTestCase {
 		$router = $this->get_router();
 
 		$router->middleware( Testable_Middleware_Router::class )->group(
-			fn () => $router
-				->get( '/example-route-with-middleware-without', fn () => 'The response' )
-				->middleware( function ( $request, $next ) {
+			static fn () => $router
+				->get( '/example-route-with-middleware-without', static fn () => 'The response' )
+				->middleware( static function ( $request, $next ) {
 					$_SERVER['closure_middleware'] = true;
 
 					return $next( $request );
@@ -322,9 +322,9 @@ class RouterTest extends FrameworkTestCase {
 		$router = $this->get_router();
 
 		$router->middleware( Testable_Middleware_Router::class )->group(
-			fn () => $router
-				->get( '/example-route-with-middleware-without', fn () => 'The response' )
-				->middleware( function ( $request, $next ) {
+			static fn () => $router
+				->get( '/example-route-with-middleware-without', static fn () => 'The response' )
+				->middleware( static function ( $request, $next ) {
 					$_SERVER['closure_middleware'] = true;
 
 					return $next( $request );
@@ -344,7 +344,7 @@ class RouterTest extends FrameworkTestCase {
 		$router = $this->get_router();
 
 		$router->prefix( 'example-prefix' )->group(
-			fn () => $router->get( '/example-route-prefix', fn () => 'The response' )->name( 'example-route' ),
+			static fn () => $router->get( '/example-route-prefix', static fn () => 'The response' )->name( 'example-route' ),
 		);
 
 		$router->sync_routes_to_url_generator();
@@ -360,7 +360,7 @@ class RouterTest extends FrameworkTestCase {
 		$router = $this->get_router();
 
 		$router->name( 'example-prefix.' )->group(
-			fn () => $router->get( '/example-route-prefix', fn () => 'The response' )->name( 'example-route' ),
+			static fn () => $router->get( '/example-route-prefix', static fn () => 'The response' )->name( 'example-route' ),
 		);
 
 		$router->sync_routes_to_url_generator();
@@ -375,7 +375,7 @@ class RouterTest extends FrameworkTestCase {
 	public function test_registrar_prefix_applies_without_group(): void {
 		$router = $this->get_router();
 
-		$route = $router->prefix( 'direct-prefix' )->get( '/example', fn () => 'prefixed' );
+		$route = $router->prefix( 'direct-prefix' )->get( '/example', static fn () => 'prefixed' );
 
 		$this->assertSame( '/direct-prefix/example', $route->getPath() );
 		$this->assertSame( 'prefixed', $router->dispatch( Request::create( 'direct-prefix/example', 'GET' ) )?->getContent() );
@@ -384,7 +384,7 @@ class RouterTest extends FrameworkTestCase {
 	public function test_registrar_where_applies_without_group(): void {
 		$router = $this->get_router();
 
-		$router->where( [ 'id' => '\d+' ] )->get( '/where-direct/{id}', fn ( $id ) => "id-{$id}" );
+		$router->where( [ 'id' => '\d+' ] )->get( '/where-direct/{id}', static fn ( $id ) => "id-{$id}" );
 
 		$this->assertSame( 'id-123', $router->dispatch( Request::create( 'where-direct/123', 'GET' ) )?->getContent() );
 
@@ -397,7 +397,7 @@ class RouterTest extends FrameworkTestCase {
 		$router = $this->get_router();
 
 		$router->where( [ 'id' => '\d+' ] )->group(
-			fn () => $router->get( '/where-group/{id}', fn ( $id ) => "id-{$id}" ),
+			static fn () => $router->get( '/where-group/{id}', static fn ( $id ) => "id-{$id}" ),
 		);
 
 		$this->assertSame( 'id-123', $router->dispatch( Request::create( 'where-group/123', 'GET' ) )?->getContent() );
@@ -410,7 +410,7 @@ class RouterTest extends FrameworkTestCase {
 	public function test_registrar_domain_applies_without_group(): void {
 		$router = $this->get_router();
 
-		$router->domain( 'api.example.org' )->get( '/domain-direct', fn () => 'domain' );
+		$router->domain( 'api.example.org' )->get( '/domain-direct', static fn () => 'domain' );
 
 		$this->assertSame( 'domain', $router->dispatch( Request::create( 'http://api.example.org/domain-direct', 'GET' ) )?->getContent() );
 
@@ -422,8 +422,8 @@ class RouterTest extends FrameworkTestCase {
 	public function test_registrar_name_applies_without_group(): void {
 		$router = $this->get_router();
 
-		$router->name( 'direct-name' )->get( '/direct-named-route', fn () => 'named' );
-		$router->as( 'direct-as' )->get( '/direct-as-route', fn () => 'as' );
+		$router->name( 'direct-name' )->get( '/direct-named-route', static fn () => 'named' );
+		$router->as( 'direct-as' )->get( '/direct-as-route', static fn () => 'as' );
 
 		$router->sync_routes_to_url_generator();
 
@@ -435,7 +435,7 @@ class RouterTest extends FrameworkTestCase {
 		$router = $this->get_router();
 
 		$router->name( 'admin.' )->group(
-			fn () => $router->name( 'dashboard' )->get( '/admin-dashboard', fn () => 'dashboard' ),
+			static fn () => $router->name( 'dashboard' )->get( '/admin-dashboard', static fn () => 'dashboard' ),
 		);
 
 		$router->sync_routes_to_url_generator();
@@ -446,7 +446,7 @@ class RouterTest extends FrameworkTestCase {
 	public function test_registrar_name_prefix_combines_with_route_name(): void {
 		$router = $this->get_router();
 
-		$router->name( 'posts.' )->get( '/posts-index', fn () => 'index' )->name( 'index' );
+		$router->name( 'posts.' )->get( '/posts-index', static fn () => 'index' )->name( 'index' );
 
 		$router->sync_routes_to_url_generator();
 
@@ -456,8 +456,8 @@ class RouterTest extends FrameworkTestCase {
 	public function test_registrar_name_prefix_allows_multiple_unnamed_routes(): void {
 		$router = $this->get_router();
 
-		$router->name( 'posts.' )->get( '/posts-a', fn () => 'a' );
-		$router->name( 'posts.' )->get( '/posts-b', fn () => 'b' );
+		$router->name( 'posts.' )->get( '/posts-a', static fn () => 'a' );
+		$router->name( 'posts.' )->get( '/posts-b', static fn () => 'b' );
 
 		$this->assertSame( 'a', $router->dispatch( Request::create( 'posts-a', 'GET' ) )?->getContent() );
 		$this->assertSame( 'b', $router->dispatch( Request::create( 'posts-b', 'GET' ) )?->getContent() );
@@ -466,7 +466,7 @@ class RouterTest extends FrameworkTestCase {
 	public function test_registrar_middleware_applies_once_without_group(): void {
 		$router = $this->get_router();
 
-		$route = $router->middleware( Testable_Middleware_Router::class )->get( '/direct-middleware', fn () => 'middleware' );
+		$route = $router->middleware( Testable_Middleware_Router::class )->get( '/direct-middleware', static fn () => 'middleware' );
 
 		$this->assertSame( [ Testable_Middleware_Router::class ], $route->middleware() );
 	}
@@ -474,8 +474,8 @@ class RouterTest extends FrameworkTestCase {
 	public function test_can_middleware_checks_every_ability(): void {
 		$this->acting_as( 'author' );
 
-		\Mantle\Facade\Route::get( '/can-multi', fn () => 'ok' )->middleware( 'can:edit_posts,manage_options' );
-		\Mantle\Facade\Route::get( '/can-single', fn () => 'ok' )->middleware( 'can:edit_posts' );
+		\Mantle\Facade\Route::get( '/can-multi', static fn () => 'ok' )->middleware( 'can:edit_posts,manage_options' );
+		\Mantle\Facade\Route::get( '/can-single', static fn () => 'ok' )->middleware( 'can:edit_posts' );
 
 		$this->get( '/can-multi' )->assertStatus( 403 );
 		$this->get( '/can-single' )->assertOk();
@@ -486,7 +486,7 @@ class RouterTest extends FrameworkTestCase {
 
 		$router->get(
 			'iface',
-			fn ( \Mantle\Contracts\Container $container ) => 'ok',
+			static fn ( \Mantle\Contracts\Container $container ) => 'ok',
 		);
 
 		$this->assertSame( 'ok', $router->dispatch( Request::create( 'iface', 'GET' ) )?->getContent() );
@@ -496,8 +496,8 @@ class RouterTest extends FrameworkTestCase {
 		$router = $this->get_router();
 
 		$router->name( 'admin.' )->group(
-			fn () => $router->name( 'users.' )->group(
-				fn () => $router->get( '/nested-named-route', fn () => 'nested' )->name( 'index' ),
+			static fn () => $router->name( 'users.' )->group(
+				static fn () => $router->get( '/nested-named-route', static fn () => 'nested' )->name( 'index' ),
 			),
 		);
 
@@ -509,8 +509,8 @@ class RouterTest extends FrameworkTestCase {
 	public function test_falsy_route_responses(): void {
 		$router = $this->get_router();
 
-		$router->get( 'empty-array', fn () => [] );
-		$router->get( 'zero-string', fn () => '0' );
+		$router->get( 'empty-array', static fn () => [] );
+		$router->get( 'zero-string', static fn () => '0' );
 
 		$response = $router->dispatch( Request::create( 'empty-array', 'GET' ) );
 
@@ -527,7 +527,7 @@ class RouterTest extends FrameworkTestCase {
 			'bound/{post}',
 			[
 				'middleware' => Substitute_Bindings::class,
-				'callback'   => fn ( Routing_Test_Post_Model $post ) => $post->name(),
+				'callback'   => static fn ( Routing_Test_Post_Model $post ) => $post->name(),
 			]
 		);
 
@@ -547,7 +547,7 @@ class RouterTest extends FrameworkTestCase {
 			'bound/{post}',
 			[
 				'middleware' => Substitute_Bindings::class,
-				'callback'   => fn ( Routing_Test_Post_Model $post ) => $post->name(),
+				'callback'   => static fn ( Routing_Test_Post_Model $post ) => $post->name(),
 			]
 		);
 

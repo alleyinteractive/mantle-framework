@@ -113,7 +113,7 @@ class Testable_Post_For_Scope_Global_Scope extends Testable_Post_For_Scope {
 
 		static::add_global_scope(
 			'active',
-			function( Post_Query_Builder $query ) {
+			static function( Post_Query_Builder $query ) {
 				return $query->whereMeta( 'global_scope_active', '1' );
 			}
 		);

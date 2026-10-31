@@ -60,7 +60,7 @@ class FilesystemManagerTest extends FrameworkTestCase {
 		$filesystem = new Filesystem_Manager(
 			tap(
 				new Application(),
-				function( Application $app ) {
+				static function( Application $app ) {
 					$app['config'] = [ 'filesystem' => [] ];
 				}
 			)
@@ -76,7 +76,7 @@ class FilesystemManagerTest extends FrameworkTestCase {
 		$filesystem = new Filesystem_Manager(
 			tap(
 				new Application(),
-				function( Application $app ) {
+				static function( Application $app ) {
 					$app['config'] = [
 						'filesystem.disks.valid-disk-unknown-driver' => [
 							'driver' => 'unknown',
@@ -95,7 +95,7 @@ class FilesystemManagerTest extends FrameworkTestCase {
 		$filesystem = new Filesystem_Manager(
 			tap(
 				new Application(),
-				function( Application $app ) {
+				static function( Application $app ) {
 					$app['config'] = [
 						'filesystem.disks.custom-driver' => [
 							'driver' => 'custom-driver',

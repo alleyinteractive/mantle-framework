@@ -26,14 +26,14 @@ class ScheduleTest extends FrameworkTestCase {
 
 		$schedule = app()->make(Schedule::class);
 		assert( $schedule instanceof Schedule );
-		$schedule->call( function() {
+		$schedule->call( static function() {
 			$_SERVER['__event_should_run'] = true;
-		} )->when( fn () => true );
+		} )->when( static fn () => true );
 
 		// Setup an event that shouldn't be run because of a filter.
-		$schedule->call( function() {
+		$schedule->call( static function() {
 			$_SERVER['__event_shouldnt_run'] = true;
-		} )->skip( fn () => true );
+		} )->skip( static fn () => true );
 
 		$schedule->run_due_events();
 
@@ -58,12 +58,12 @@ class ScheduleTest extends FrameworkTestCase {
 
 		$schedule = app()->make(Schedule::class);
 		$schedule
-			->call( function() { } )
-			->before( function() {
+			->call( static function() { } )
+			->before( static function() {
 					$_SERVER['__event_before_callback'] = microtime( true );
 				}
 			)
-			->after( function() {
+			->after( static function() {
 					$_SERVER['__event_after_callback'] = microtime( true );
 				}
 			);
@@ -73,7 +73,7 @@ class ScheduleTest extends FrameworkTestCase {
 	}
 
 	public function testPingRescuesTransferExceptions(): void {
-		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 500 ) );
+		$this->fake_request( static fn () => Mock_Http_Response::create()->with_status( 500 ) );
 
 		$event = new Event( '' );
 
@@ -81,7 +81,7 @@ class ScheduleTest extends FrameworkTestCase {
 
 		$event->ping_before( 'https://httpstat.us/500' )
 			->then(
-				function () use ( &$thenCalled ) {
+				static function () use ( &$thenCalled ) {
 					$thenCalled = true;
 				}
 			);
@@ -97,9 +97,9 @@ class ScheduleTest extends FrameworkTestCase {
 	public function test_schedule_with_facade(): void {
 		$_SERVER['__run'] = false;
 
-		Facade::call( function () {
+		Facade::call( static function () {
 			$_SERVER['__run'] = true;
-		} )->when( fn () => true );
+		} )->when( static fn () => true );
 
 		app()->make(Schedule::class)->run_due_events();
 

@@ -23,7 +23,7 @@ class PostModelRoutingTest extends FrameworkTestCase {
 	public function test_post_type(): void {
 		Testable_Post_Model::boot_if_not_booted();
 
-		Route::middleware( [ Substitute_Bindings::class, Wrap_Template::class ] )->group( function () {
+		Route::middleware( [ Substitute_Bindings::class, Wrap_Template::class ] )->group( static function () {
 			Route::model( Testable_Post_Model::class, Testable_Post_Model_Controller::class );
 		} );
 

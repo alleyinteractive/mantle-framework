@@ -61,13 +61,13 @@ class ApplicationTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$app = new Application();
 		$app->flush();
 		$app->booting(
-			function() {
+			static function() {
 				$_SERVER['__booting_callback'] = microtime( true );
 			}
 		);
 
 		$app->booted(
-			function() {
+			static function() {
 				$_SERVER['__boot_callback'] = microtime( true );
 			}
 		);
@@ -88,7 +88,7 @@ class ApplicationTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$app->flush();
 		$app->terminating(
-			function (): void {
+			static function (): void {
 				$_SERVER['__terminating_callback'] = microtime( true );
 			},
 		);

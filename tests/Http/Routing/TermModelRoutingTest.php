@@ -19,7 +19,7 @@ class TermModelRoutingTest extends FrameworkTestCase {
 	public function test_category_term(): void {
 		Testable_Category_Model::boot_if_not_booted();
 
-		Route::middleware( [ Substitute_Bindings::class ] )->group( function () {
+		Route::middleware( [ Substitute_Bindings::class ] )->group( static function () {
 			Route::model( Testable_Category_Model::class, Testable_Term_Model_Controller::class );
 		} );
 
@@ -64,7 +64,7 @@ class TermModelRoutingTest extends FrameworkTestCase {
 	public function test_custom_taxonomy(): void {
 		Testable_Custom_Taxonomy_Model::register_object();
 
-		Route::middleware( [ Substitute_Bindings::class ] )->group( function () {
+		Route::middleware( [ Substitute_Bindings::class ] )->group( static function () {
 			Route::model( Testable_Custom_Taxonomy_Model::class, Testable_Custom_Term_Model_Controller::class );
 		} );
 

@@ -8,7 +8,7 @@ use function Mantle\Support\Helpers\send_json_response;
 
 class HelpersResponseTest extends FrameworkTestCase {
 	public function test_send_json(): void {
-		add_action( 'template_redirect', fn () => send_json_response( [
+		add_action( 'template_redirect', static fn () => send_json_response( [
 			'success' => true,
 			'data'    => [ 'foo' => 'bar' ],
 		], 201 ) );

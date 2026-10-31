@@ -164,7 +164,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 	public function test_job_failure(): void {
 		$_SERVER['__failed_run'] = 0;
 
-		app()['events']->listen( Job_Failed::class, fn () => $_SERVER['__failed_run']++ );
+		app()['events']->listen( Job_Failed::class, static fn () => $_SERVER['__failed_run']++ );
 
 		$this->assertNotInCronQueue( Job_To_Fail::class );
 
@@ -187,7 +187,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 	public function test_job_dispatch_anonymous(): void {
 		$_SERVER['__closure_job'] = false;
 
-		dispatch( function() {
+		dispatch( static function() {
 			$_SERVER['__closure_job'] = true;
 		} );
 
@@ -222,12 +222,12 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 
 		app()['events']->listen(
 			Job_Failed::class,
-			fn () => $_SERVER['__failed_run'] = true,
+			static fn () => $_SERVER['__failed_run'] = true,
 		);
 
 		dispatch(
-			fn () => throw new RuntimeException( 'Something went wrong' ),
-		)->catch( fn () => $_SERVER['__failed_run'] = true );
+			static fn () => throw new RuntimeException( 'Something went wrong' ),
+		)->catch( static fn () => $_SERVER['__failed_run'] = true );
 
 		// Assert the serialize queue post exists.
 		$this->assertPostExists( [
@@ -422,7 +422,7 @@ class WordPressCronQueueTest extends FrameworkTestCase {
 	public function test_dispatch_after_response(): void {
 		$_SERVER['__example_job'] = false;
 
-		dispatch( fn () => $_SERVER['__example_job'] = true )->after_response();
+		dispatch( static fn () => $_SERVER['__example_job'] = true )->after_response();
 
 		$this->assertFalse( $_SERVER['__example_job'] );
 

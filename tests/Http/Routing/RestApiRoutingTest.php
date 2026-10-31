@@ -17,7 +17,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 		$route = Route::rest_api(
 			'namespace/v1',
 			'/example-closure',
-			fn () => 'example-closure',
+			static fn () => 'example-closure',
 		);
 
 		$this->assertInstanceOf( RouteObject::class, $route );
@@ -36,7 +36,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 			'namespace/v1',
 			'/example-array',
 			[
-				'callback' => fn () => 'example-array',
+				'callback' => static fn () => 'example-array',
 			]
 		);
 
@@ -68,15 +68,15 @@ class RestApiRoutingTest extends FrameworkTestCase {
 	public function test_register_routes_in_callback(): void {
 		$return = Route::rest_api(
 			'namespace/v1',
-			function() {
-				Route::get( '/example-group-get', fn () => 'example-group-get' );
+			static function() {
+				Route::get( '/example-group-get', static fn () => 'example-group-get' );
 
 				Route::get(
 					'/example-with-param/(?P<slug>[a-z\-]+)',
-					fn ( WP_REST_Request $request) => $request['slug'],
+					static fn ( WP_REST_Request $request) => $request['slug'],
 				);
 
-				Route::post( '/example-post', fn () => 'example-post' );
+				Route::post( '/example-post', static fn () => 'example-post' );
 			}
 		);
 
@@ -99,7 +99,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 		// Registering a group of routes from controller methods.
 		Route::rest_api(
 			'namespace/v1',
-			function () {
+			static function () {
 				Route::get( '/example-invoke', Testable_Invokable_Rest_Api_Controller::class );
 
 				Route::get( '/example-controller/index', [ Testable_Rest_Api_Controller::class, 'index' ] );
@@ -135,9 +135,9 @@ class RestApiRoutingTest extends FrameworkTestCase {
 	public function test_fluent_attributes_do_not_leak_to_sibling_routes(): void {
 		Route::rest_api(
 			'namespace/v1',
-			function (): void {
-				Route::middleware( Testable_Before_Middleware::class )->get( '/sibling-admin', fn () => 'admin' );
-				Route::get( '/sibling-public', fn () => 'public' );
+			static function (): void {
+				Route::middleware( Testable_Before_Middleware::class )->get( '/sibling-admin', static fn () => 'admin' );
+				Route::get( '/sibling-public', static fn () => 'public' );
 			},
 		);
 
@@ -151,7 +151,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 	}
 
 	public function test_registrar_prefix_applies_to_rest_route(): void {
-		Route::prefix( 'prefixed' )->rest_api( 'namespace/v1', '/rest-prefix', fn () => 'rest-prefix' );
+		Route::prefix( 'prefixed' )->rest_api( 'namespace/v1', '/rest-prefix', static fn () => 'rest-prefix' );
 
 		$this->get( rest_url( '/namespace/v1/prefixed/rest-prefix' ) )
 			->assertOk()
@@ -161,9 +161,9 @@ class RestApiRoutingTest extends FrameworkTestCase {
 	public function test_registrar_prefix_applies_to_rest_route_in_callback(): void {
 		Route::rest_api(
 			'namespace/v1',
-			function (): void {
-				Route::prefix( 'inner' )->get( '/rest-inner-prefix', fn () => 'inner-prefix' );
-				Route::get( '/rest-no-prefix', fn () => 'no-prefix' );
+			static function (): void {
+				Route::prefix( 'inner' )->get( '/rest-inner-prefix', static fn () => 'inner-prefix' );
+				Route::get( '/rest-no-prefix', static fn () => 'no-prefix' );
 			},
 		);
 
@@ -177,8 +177,8 @@ class RestApiRoutingTest extends FrameworkTestCase {
 	}
 
 	public function test_same_path_in_different_namespaces(): void {
-		Route::rest_api( 'namespace-a/v1', '/same-path', fn () => 'a' );
-		Route::rest_api( 'namespace-b/v1', '/same-path', fn () => 'b' );
+		Route::rest_api( 'namespace-a/v1', '/same-path', static fn () => 'a' );
+		Route::rest_api( 'namespace-b/v1', '/same-path', static fn () => 'b' );
 
 		$this->get( rest_url( '/namespace-a/v1/same-path' ) )->assertOk()->assertContent( $this->encode_json( 'a' ) );
 		$this->get( rest_url( '/namespace-b/v1/same-path' ) )->assertOk()->assertContent( $this->encode_json( 'b' ) );
@@ -189,7 +189,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 			->rest_api(
 				'namespace/v1',
 				'/example-middleware-route',
-				function() {
+				static function() {
 					return 'base-response';
 				}
 			);
@@ -201,7 +201,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 
 	public function test_middleware_closure_route(): void {
 		Route::middleware(
-			function( WP_REST_Request $request, Closure $next ) {
+			static function( WP_REST_Request $request, Closure $next ) {
 				$request->set_param( 'input', 'modified' );
 				return $next( $request );
 			}
@@ -210,7 +210,7 @@ class RestApiRoutingTest extends FrameworkTestCase {
 			'/example-middleware-modify-post',
 			[
 				'methods' => 'POST',
-				'callback' => fn ( WP_REST_Request $request ) => $request['input'],
+				'callback' => static fn ( WP_REST_Request $request ) => $request['input'],
 			]
 		);
 
@@ -222,10 +222,10 @@ class RestApiRoutingTest extends FrameworkTestCase {
 	public function test_middleware_added_fluently(): void {
 		Route::rest_api(
 				'namespace/v1',
-				function (): void {
-					Route::get( '/example-middleware-fluent', function() {
+				static function (): void {
+					Route::get( '/example-middleware-fluent', static function() {
 						return 'base-response';
-					} )->middleware( function ( WP_REST_Request $request, Closure $next ) {
+					} )->middleware( static function ( WP_REST_Request $request, Closure $next ) {
 						return 'middleware-response';
 					} );
 				},
@@ -238,11 +238,11 @@ class RestApiRoutingTest extends FrameworkTestCase {
 
 	public function test_group_route(): void {
 		Route::middleware( Testable_Before_Middleware::class )->group(
-			function() {
+			static function() {
 				Route::rest_api(
 					'namespace/v1',
 					'example-group',
-					function() {
+					static function() {
 						return 'response';
 					}
 				);
