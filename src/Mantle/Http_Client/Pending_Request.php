@@ -161,6 +161,7 @@ class Pending_Request {
 	 * Set or get the URL for the request.
 	 *
 	 * @param string|null $url URL for the request, optional.
+	 * @phpstan-return ($url is null ? string|null : static)
 	 */
 	public function url( string|null $url = null ): static|string|null {
 		if ( is_null( $url ) ) {
@@ -200,6 +201,7 @@ class Pending_Request {
 	 * Set or get the method for the request.
 	 *
 	 * @param string|Http_Method|null $method Http Method for the request, optional.
+	 * @phpstan-return ($method is null ? Http_Method : static)
 	 */
 	public function method( string|Http_Method|null $method = null ): static|Http_Method {
 		if ( is_null( $method ) ) {
@@ -745,7 +747,7 @@ class Pending_Request {
 	 * Create a pool request from the current pending request.
 	 *
 	 * @param callable $callback Callback to build the HTTP pool.
-	 * @phpstan-param (callable(Pool $pool): array<int|string, Response>) $callback
+	 * @phpstan-param (callable(Pool $pool): array<int|string, Pooled_Pending_Request>) $callback
 	 * @return array<int|string, Response>
 	 */
 	public function pool( callable $callback ): array {
