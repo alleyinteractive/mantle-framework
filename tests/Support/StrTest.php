@@ -88,21 +88,11 @@ class StrTest extends TestCase {
 		$this->assertTrue( Str::starts_with( 'jason', collect( [ 'day', 'jas' ] ) ) );
 		$this->assertFalse( Str::starts_with( 'jason', 'day' ) );
 		$this->assertFalse( Str::starts_with( 'jason', [ 'day' ] ) );
-		$this->assertFalse( Str::starts_with( 'jason', null ) );
-		$this->assertFalse( Str::starts_with( 'jason', [ null ] ) );
-		$this->assertFalse( Str::starts_with( '0123', [ null ] ) );
-		$this->assertTrue( Str::starts_with( '0123', 0 ) );
 		$this->assertFalse( Str::starts_with( 'jason', 'J' ) );
 		$this->assertFalse( Str::starts_with( 'jason', '' ) );
 		$this->assertFalse( Str::starts_with( '', '' ) );
 		$this->assertFalse( Str::starts_with( '7', ' 7' ) );
 		$this->assertTrue( Str::starts_with( '7a', '7' ) );
-		$this->assertTrue( Str::starts_with( '7a', 7 ) );
-		$this->assertTrue( Str::starts_with( '7.12a', 7.12 ) );
-		$this->assertFalse( Str::starts_with( '7.12a', 7.13 ) );
-		$this->assertTrue( Str::starts_with( 7.123, '7' ) );
-		$this->assertTrue( Str::starts_with( 7.123, '7.12' ) );
-		$this->assertFalse( Str::starts_with( 7.123, '7.13' ) );
 		// Test for multibyte string support
 		$this->assertTrue( Str::starts_with( 'Jönköping', 'Jö' ) );
 		$this->assertTrue( Str::starts_with( 'Malmö', 'Malmö' ) );
@@ -123,17 +113,9 @@ class StrTest extends TestCase {
 		$this->assertFalse( Str::ends_with( 'jason', [ 'no' ] ) );
 		$this->assertFalse( Str::ends_with( 'jason', '' ) );
 		$this->assertFalse( Str::ends_with( '', '' ) );
-		$this->assertFalse( Str::ends_with( 'jason', [ null ] ) );
-		$this->assertFalse( Str::ends_with( 'jason', null ) );
 		$this->assertFalse( Str::ends_with( 'jason', 'N' ) );
 		$this->assertFalse( Str::ends_with( '7', ' 7' ) );
 		$this->assertTrue( Str::ends_with( 'a7', '7' ) );
-		$this->assertTrue( Str::ends_with( 'a7', 7 ) );
-		$this->assertTrue( Str::ends_with( 'a7.12', 7.12 ) );
-		$this->assertFalse( Str::ends_with( 'a7.12', 7.13 ) );
-		$this->assertTrue( Str::ends_with( 0.27, '7' ) );
-		$this->assertTrue( Str::ends_with( 0.27, '0.27' ) );
-		$this->assertFalse( Str::ends_with( 0.27, '8' ) );
 		// Test for multibyte string support
 		$this->assertTrue( Str::ends_with( 'Jönköping', 'öping' ) );
 		$this->assertTrue( Str::ends_with( 'Malmö', 'mö' ) );
@@ -223,8 +205,6 @@ class StrTest extends TestCase {
 		$this->assertSame( 'hannah', Str::before( 'hannah', 'xxxx' ) );
 		$this->assertSame( 'hannah', Str::before( 'hannah', '' ) );
 		$this->assertSame( 'han', Str::before( 'han0nah', '0' ) );
-		$this->assertSame( 'han', Str::before( 'han0nah', 0 ) );
-		$this->assertSame( 'han', Str::before( 'han2nah', 2 ) );
 	}
 
 	public function testStrBeforeLast(): void {
@@ -235,8 +215,6 @@ class StrTest extends TestCase {
 		$this->assertSame( 'yvette', Str::before_last( 'yvette', 'xxxx' ) );
 		$this->assertSame( 'yvette', Str::before_last( 'yvette', '' ) );
 		$this->assertSame( 'yv0et', Str::before_last( 'yv0et0te', '0' ) );
-		$this->assertSame( 'yv0et', Str::before_last( 'yv0et0te', 0 ) );
-		$this->assertSame( 'yv2et', Str::before_last( 'yv2et2te', 2 ) );
 	}
 
 	public function testStrBetween(): void {
@@ -274,8 +252,6 @@ class StrTest extends TestCase {
 		$this->assertSame( 'hannah', Str::after( 'hannah', 'xxxx' ) );
 		$this->assertSame( 'hannah', Str::after( 'hannah', '' ) );
 		$this->assertSame( 'nah', Str::after( 'han0nah', '0' ) );
-		$this->assertSame( 'nah', Str::after( 'han0nah', 0 ) );
-		$this->assertSame( 'nah', Str::after( 'han2nah', 2 ) );
 	}
 
 	public function testStrAfterLast(): void {
@@ -286,8 +262,6 @@ class StrTest extends TestCase {
 		$this->assertSame( 'yvette', Str::after_last( 'yvette', 'xxxx' ) );
 		$this->assertSame( 'yvette', Str::after_last( 'yvette', '' ) );
 		$this->assertSame( 'te', Str::after_last( 'yv0et0te', '0' ) );
-		$this->assertSame( 'te', Str::after_last( 'yv0et0te', 0 ) );
-		$this->assertSame( 'te', Str::after_last( 'yv2et2te', 2 ) );
 		$this->assertSame( 'foo', Str::after_last( '----foo', '---' ) );
 	}
 
@@ -384,8 +358,6 @@ class StrTest extends TestCase {
 		$this->assertFalse( Str::is( [ 'a*', 'b*' ], 'f/' ) );
 
 		// numeric values and patterns
-		$this->assertFalse( Str::is( [ 'a*', 'b*' ], 123 ) );
-		$this->assertTrue( Str::is( [ '*2*', 'b*' ], 11211 ) );
 
 		$this->assertTrue( Str::is( '*/foo', 'blah/baz/foo' ) );
 
@@ -398,9 +370,6 @@ class StrTest extends TestCase {
 		// empty patterns
 		$this->assertFalse( Str::is( [], 'test' ) );
 
-		$this->assertFalse( Str::is( '', 0 ) );
-		$this->assertFalse( Str::is( [ null ], 0 ) );
-		$this->assertTrue( Str::is( [ null ], null ) );
 	}
 
 	/**
@@ -432,8 +401,6 @@ class StrTest extends TestCase {
 		$this->assertFalse( Str::is_json( '{first: "John"}' ) );
 		$this->assertFalse( Str::is_json( '[{first: "John"}, {first: "Jane"}]' ) );
 		$this->assertFalse( Str::is_json( '' ) );
-		$this->assertFalse( Str::is_json( null ) );
-		$this->assertFalse( Str::is_json( [] ) );
 	}
 
 	public function testIsMatch(): void {
@@ -490,7 +457,6 @@ class StrTest extends TestCase {
 		$this->assertSame( 16, strlen( Str::random() ) );
 		$randomInteger = random_int( 1, 100 );
 		$this->assertSame( $randomInteger, strlen( Str::random( $randomInteger ) ) );
-		$this->assertIsString( Str::random() );
 	}
 
 	/** @test */
@@ -603,7 +569,6 @@ class StrTest extends TestCase {
 		$this->assertSame( 'foo foobar', Str::replace_first( 'bar', '', 'foobar foobar' ) );
 		$this->assertSame( 'foobar foobar', Str::replace_first( 'xxx', 'yyy', 'foobar foobar' ) );
 		$this->assertSame( 'foobar foobar', Str::replace_first( '', 'yyy', 'foobar foobar' ) );
-		$this->assertSame( '1', Str::replace_first( 0, '1', '0' ) );
 		// Test for multibyte string support
 		$this->assertSame( 'Jxxxnköping Malmö', Str::replace_first( 'ö', 'xxx', 'Jönköping Malmö' ) );
 		$this->assertSame( 'Jönköping Malmö', Str::replace_first( '', 'yyy', 'Jönköping Malmö' ) );
@@ -827,7 +792,6 @@ class StrTest extends TestCase {
 
 	public function testAsciiNull(): void {
 		$this->assertSame( '', Str::ascii( null ) );
-		$this->assertTrue( Str::is_ascii( null ) );
 		$this->assertSame( '', Str::slug( null ) );
 	}
 

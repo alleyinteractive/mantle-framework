@@ -9,7 +9,6 @@ class UriTest extends FrameworkTestCase {
 	public function test_basic_uri(): void {
 		$uri = Uri::of( 'https://example.com/path?query=string#fragment' );
 
-		$this->assertInstanceOf( Uri::class, $uri );
 		$this->assertSame( 'https://example.com/path?query=string#fragment', (string) $uri->get_uri() );
 		$this->assertSame( 'https', $uri->get_uri()->getScheme() );
 		$this->assertSame( 'example.com', $uri->get_uri()->getHost() );

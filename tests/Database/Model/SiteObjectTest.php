@@ -5,7 +5,6 @@ use Mantle\Database\Model\Site;
 use Mantle\Testing\Concerns\Multisite_Test;
 use Mantle\Testing\FrameworkTestCase;
 
-
 class SiteObjectTest extends FrameworkTestCase {
 	use Multisite_Test;
 

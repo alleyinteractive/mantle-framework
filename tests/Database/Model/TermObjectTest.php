@@ -7,7 +7,6 @@ use Mantle\Database\Model\Registration\Register_Taxonomy;
 use Mantle\Database\Model\Term;
 use Mantle\Testing\FrameworkTestCase;
 
-
 class TermObjectTest extends FrameworkTestCase {
 	protected function setUp(): void {
 		parent::setUp();

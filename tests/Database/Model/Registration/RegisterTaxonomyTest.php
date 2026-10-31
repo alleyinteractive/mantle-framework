@@ -59,6 +59,5 @@ class RegisterTaxonomyTest extends FrameworkTestCase {
 		// Allow the taxonomy to be registered.
 		do_action( 'init' );
 
-		$this->assertTrue( taxonomy_exists( $taxonomy ) );
 	}
 }

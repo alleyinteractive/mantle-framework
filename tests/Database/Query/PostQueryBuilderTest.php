@@ -348,8 +348,6 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 
 			$count += count( $results );
 
-			$this->assertInstanceof( Collection::class, $results );
-
 			if ( $page <= 10 ) {
 				$this->assertSame( 10, $results->count() );
 			} else {

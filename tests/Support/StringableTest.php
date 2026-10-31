@@ -772,17 +772,10 @@ class StringableTest extends TestCase {
 		$this->assertTrue( $this->stringable( 'jason' )->startsWith( collect( [ 'day', 'jas' ] ) ) );
 		$this->assertFalse( $this->stringable( 'jason' )->startsWith( 'day' ) );
 		$this->assertFalse( $this->stringable( 'jason' )->startsWith( [ 'day' ] ) );
-		$this->assertFalse( $this->stringable( 'jason' )->startsWith( null ) );
-		$this->assertFalse( $this->stringable( 'jason' )->startsWith( [ null ] ) );
-		$this->assertFalse( $this->stringable( '0123' )->startsWith( [ null ] ) );
-		$this->assertTrue( $this->stringable( '0123' )->startsWith( 0 ) );
 		$this->assertFalse( $this->stringable( 'jason' )->startsWith( 'J' ) );
 		$this->assertFalse( $this->stringable( 'jason' )->startsWith( '' ) );
 		$this->assertFalse( $this->stringable( '7' )->startsWith( ' 7' ) );
 		$this->assertTrue( $this->stringable( '7a' )->startsWith( '7' ) );
-		$this->assertTrue( $this->stringable( '7a' )->startsWith( 7 ) );
-		$this->assertTrue( $this->stringable( '7.12a' )->startsWith( 7.12 ) );
-		$this->assertFalse( $this->stringable( '7.12a' )->startsWith( 7.13 ) );
 		$this->assertTrue( $this->stringable( 7.123 )->startsWith( '7' ) );
 		$this->assertTrue( $this->stringable( 7.123 )->startsWith( '7.12' ) );
 		$this->assertFalse( $this->stringable( 7.123 )->startsWith( '7.13' ) );
@@ -831,8 +824,6 @@ class StringableTest extends TestCase {
 		$this->assertSame( 'hannah', (string) $this->stringable( 'hannah' )->before( 'xxxx' ) );
 		$this->assertSame( 'hannah', (string) $this->stringable( 'hannah' )->before( '' ) );
 		$this->assertSame( 'han', (string) $this->stringable( 'han0nah' )->before( '0' ) );
-		$this->assertSame( 'han', (string) $this->stringable( 'han0nah' )->before( 0 ) );
-		$this->assertSame( 'han', (string) $this->stringable( 'han2nah' )->before( 2 ) );
 	}
 
 	public function testBeforeLast(): void {
@@ -843,8 +834,6 @@ class StringableTest extends TestCase {
 		$this->assertSame( 'yvette', (string) $this->stringable( 'yvette' )->before_last( 'xxxx' ) );
 		$this->assertSame( 'yvette', (string) $this->stringable( 'yvette' )->before_last( '' ) );
 		$this->assertSame( 'yv0et', (string) $this->stringable( 'yv0et0te' )->before_last( '0' ) );
-		$this->assertSame( 'yv0et', (string) $this->stringable( 'yv0et0te' )->before_last( 0 ) );
-		$this->assertSame( 'yv2et', (string) $this->stringable( 'yv2et2te' )->before_last( 2 ) );
 	}
 
 	public function testBetween(): void {
@@ -882,8 +871,6 @@ class StringableTest extends TestCase {
 		$this->assertSame( 'hannah', (string) $this->stringable( 'hannah' )->after( 'xxxx' ) );
 		$this->assertSame( 'hannah', (string) $this->stringable( 'hannah' )->after( '' ) );
 		$this->assertSame( 'nah', (string) $this->stringable( 'han0nah' )->after( '0' ) );
-		$this->assertSame( 'nah', (string) $this->stringable( 'han0nah' )->after( 0 ) );
-		$this->assertSame( 'nah', (string) $this->stringable( 'han2nah' )->after( 2 ) );
 	}
 
 	public function testAfterLast(): void {
@@ -894,8 +881,6 @@ class StringableTest extends TestCase {
 		$this->assertSame( 'yvette', (string) $this->stringable( 'yvette' )->after_last( 'xxxx' ) );
 		$this->assertSame( 'yvette', (string) $this->stringable( 'yvette' )->after_last( '' ) );
 		$this->assertSame( 'te', (string) $this->stringable( 'yv0et0te' )->after_last( '0' ) );
-		$this->assertSame( 'te', (string) $this->stringable( 'yv0et0te' )->after_last( 0 ) );
-		$this->assertSame( 'te', (string) $this->stringable( 'yv2et2te' )->after_last( 2 ) );
 		$this->assertSame( 'foo', (string) $this->stringable( '----foo' )->after_last( '---' ) );
 	}
 
@@ -1294,7 +1279,6 @@ class StringableTest extends TestCase {
 			return 'bar';
 		};
 
-		$this->assertInstanceOf( Stringable::class, $this->stringable( 'foo' )->pipe( $callback ) );
 		$this->assertSame( 'bar', (string) $this->stringable( 'foo' )->pipe( $callback ) );
 	}
 

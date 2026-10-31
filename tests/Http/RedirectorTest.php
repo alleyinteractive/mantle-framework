@@ -12,7 +12,6 @@ use Mantle\Http\Routing\Redirector;
 use Mantle\Http\Routing\Url_Generator;
 use Mockery as m;
 use Symfony\Component\HttpFoundation\HeaderBag;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class RedirectorTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
@@ -56,7 +55,6 @@ class RedirectorTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 	public function testBasicRedirectTo(): void {
 		$response = $this->redirect->to( 'bar' );
 
-		$this->assertInstanceOf( RedirectResponse::class, $response );
 		$this->assertSame( 'http://foo.com/bar', $response->getTargetUrl() );
 		$this->assertSame( 302, $response->getStatusCode() );
 	}

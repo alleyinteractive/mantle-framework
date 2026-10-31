@@ -4,7 +4,6 @@ namespace Mantle\Tests\Database\Model;
 use Mantle\Database\Model\Comment;
 use Mantle\Testing\FrameworkTestCase;
 
-
 class CommentObjectTest extends FrameworkTestCase {
 	public function test_comment_object() {
 		$comment = $this->factory->comment->create_and_get();

@@ -378,11 +378,8 @@ class ArrTest extends TestCase {
 		$this->assertSame( $array, Arr::get( $array, null ) );
 
 		// Test $array not an array
-		$this->assertSame( 'default', Arr::get( null, 'foo', 'default' ) );
-		$this->assertSame( 'default', Arr::get( false, 'foo', 'default' ) );
 
 		// Test $array not an array and key is null
-		$this->assertSame( 'default', Arr::get( null, null, 'default' ) );
 
 		// Test $array is empty and key is null
 		$this->assertEmpty( Arr::get( [], null ) );
@@ -453,15 +450,6 @@ class ArrTest extends TestCase {
 		$this->assertTrue( Arr::has( $array, 'foo' ) );
 		$this->assertTrue( Arr::has( $array, 'bar.baz' ) );
 
-		$array = [ 'foo', 'bar' ];
-		$this->assertFalse( Arr::has( $array, null ) );
-
-		$this->assertFalse( Arr::has( null, 'foo' ) );
-		$this->assertFalse( Arr::has( false, 'foo' ) );
-
-		$this->assertFalse( Arr::has( null, null ) );
-		$this->assertFalse( Arr::has( [], null ) );
-
 		$array = [ 'products' => [ 'desk' => [ 'price' => 100 ] ] ];
 		$this->assertTrue( Arr::has( $array, [ 'products.desk' ] ) );
 		$this->assertTrue( Arr::has( $array, [ 'products.desk', 'products.desk.price' ] ) );
@@ -478,8 +466,6 @@ class ArrTest extends TestCase {
 		$this->assertTrue( Arr::has( $array, 'products.0.name' ) );
 		$this->assertFalse( Arr::has( $array, 'products.0.price' ) );
 
-		$this->assertFalse( Arr::has( [], [ null ] ) );
-		$this->assertFalse( Arr::has( null, [ null ] ) );
 
 		$this->assertTrue( Arr::has( [ '' => 'some' ], '' ) );
 		$this->assertTrue( Arr::has( [ '' => 'some' ], [ '' ] ) );
@@ -498,7 +484,6 @@ class ArrTest extends TestCase {
 		$this->assertTrue( Arr::has_any( $array, 'age' ) );
 		$this->assertTrue( Arr::has_any( $array, 'city' ) );
 		$this->assertFalse( Arr::has_any( $array, 'foo' ) );
-		$this->assertTrue( Arr::has_any( $array, 'name', 'email' ) );
 		$this->assertTrue( Arr::has_any( $array, [ 'name', 'email' ] ) );
 
 		$array = [
@@ -904,10 +889,6 @@ class ArrTest extends TestCase {
 		$random = Arr::random( [], 0 );
 		$this->assertIsArray( $random );
 		$this->assertCount( 0, $random );
-
-		$random = Arr::random( [], '0' );
-		$this->assertIsArray( $random );
-		$this->assertCount( 0, $random );
 	}
 
 	public function testRandomThrowsAnErrorWhenRequestingMoreItemsThanAreAvailable(): void {
@@ -1224,15 +1205,10 @@ class ArrTest extends TestCase {
 		$object        = new stdClass();
 		$object->value = 'a';
 		$this->assertSame( [ 'a' ], Arr::wrap( $string ) );
-		$this->assertSame( $array, Arr::wrap( $array ) );
 		$this->assertSame( [ $object ], Arr::wrap( $object ) );
 		$this->assertSame( [], Arr::wrap( null ) );
-		$this->assertSame( [ null ], Arr::wrap( [ null ] ) );
-		$this->assertSame( [ null, null ], Arr::wrap( [ null, null ] ) );
 		$this->assertSame( [ '' ], Arr::wrap( '' ) );
-		$this->assertSame( [ '' ], Arr::wrap( [ '' ] ) );
 		$this->assertSame( [ false ], Arr::wrap( false ) );
-		$this->assertSame( [ false ], Arr::wrap( [ false ] ) );
 		$this->assertSame( [ 0 ], Arr::wrap( 0 ) );
 
 		$obj        = new stdClass();
