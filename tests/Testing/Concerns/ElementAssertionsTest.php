@@ -30,14 +30,14 @@ class ElementAssertionsTest extends FrameworkTestCase {
 		return new Test_Response( $this->test_content );
 	}
 
-	public function test_element_exists_by_xpath() {
+	public function test_element_exists_by_xpath(): void {
 		$this->response()
 			->assertElementExists( '//div' )
 			->assertElementExists( '//section' )
 			->assertElementMissing( '//article' );
 	}
 
-	public function test_element_exists_by_id() {
+	public function test_element_exists_by_id(): void {
 		$this->response()
 			->assertElementExistsById( 'test-id' )
 			->assertElementExistsById( '#test-id' )
@@ -46,7 +46,7 @@ class ElementAssertionsTest extends FrameworkTestCase {
 			->assertElementMissingById( '.test-id' ); // A class selector should not match an ID.
 	}
 
-	public function test_element_exists_by_class() {
+	public function test_element_exists_by_class(): void {
 		$this->response()
 			->assertElementExistsByClassName( 'test-class' )
 			->assertElementExistsByClassName( '.test-class' )
@@ -54,14 +54,14 @@ class ElementAssertionsTest extends FrameworkTestCase {
 			->assertElementMissingByClassName( '.missing-class' );
 	}
 
-	public function test_element_exists_by_tag() {
+	public function test_element_exists_by_tag(): void {
 		$this->response()
 			->assertElementExistsByTagName( 'div' )
 			->assertElementExistsByTagName( 'section' )
 			->assertElementMissingByTagName( 'article' );
 	}
 
-	public function test_element_exists_by_query_selector() {
+	public function test_element_exists_by_query_selector(): void {
 		$this->response()
 			->assertElementExistsByQuerySelector( 'div' )
 			->assertElementExistsByQuerySelector( 'section' )
@@ -71,7 +71,7 @@ class ElementAssertionsTest extends FrameworkTestCase {
 			->assertElementMissingByQuerySelector( 'aside' );
 	}
 
-	public function test_element_count() {
+	public function test_element_count(): void {
 		$this->response()
 			->assertElementCount( '//li', 3 )
 			->assertElementCount( '//div', 3 )
@@ -80,13 +80,13 @@ class ElementAssertionsTest extends FrameworkTestCase {
 			->assertQuerySelectorCount( 'div', 3 );
 	}
 
-	public function test_by_test_id() {
+	public function test_by_test_id(): void {
 		$this->response()
 			->assertElementExistsByTestId( 'test-item' )
 			->assertElementMissingByTestId( 'missing-item' );
 	}
 
-	public function test_element_callback() {
+	public function test_element_callback(): void {
 		$this->response()
 			->assertElement( '//section', fn ( DOMNode $node ) => $node->textContent === 'Example Section' )
 			->assertQuerySelector( 'section', fn ( DOMNode $node ) => $node->textContent === 'Example Section' )
@@ -127,7 +127,7 @@ class ElementAssertionsTest extends FrameworkTestCase {
 				->assertBlockMissing( 'missing-block' );
 	}
 
-	public function test_deprecated_html_string() {
+	public function test_deprecated_html_string(): void {
 		html_string( $this->test_content )
 			->assertContains( 'Example Section' )
 			->assertContains( 'Example Section', 1 )

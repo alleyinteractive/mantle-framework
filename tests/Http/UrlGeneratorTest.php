@@ -31,7 +31,7 @@ class UrlGeneratorTest extends FrameworkTestCase {
 		$this->url->set_request( $request );
 	}
 
-	public function test_home_url_check() {
+	public function test_home_url_check(): void {
 		// Ensure that home_url() generates the correct URL for asserting against.
 		$this->assertStringEndsNotWith( '/', home_url( '/no/trailing/slash' ) );
 		$this->assertStringEndsWith( '/', home_url( '/no/trailing/slash/' ) );
@@ -41,7 +41,7 @@ class UrlGeneratorTest extends FrameworkTestCase {
 	 * @dataProvider urlGenerationProvider
 	 */
 	#[DataProvider( 'urlGenerationProvider' )]
-	public function test_basic_generation( $expected, $args ) {
+	public function test_basic_generation( string $expected, array $args ): void {
 		$this->assertSame( home_url( $expected ), $this->url->to( ...$args ) );
 	}
 

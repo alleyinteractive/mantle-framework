@@ -12,7 +12,7 @@ use stdClass;
 
 class ArrTest extends TestCase {
 
-	public function testAccessible() {
+	public function testAccessible(): void {
 		$this->assertTrue( Arr::accessible( [] ) );
 		$this->assertTrue( Arr::accessible( [ 1, 2 ] ) );
 		$this->assertTrue(
@@ -38,7 +38,7 @@ class ArrTest extends TestCase {
 		);
 	}
 
-	public function testAdd() {
+	public function testAdd(): void {
 		$array = Arr::add( [ 'name' => 'Desk' ], 'price', 100 );
 		$this->assertSame(
 			[
@@ -52,7 +52,7 @@ class ArrTest extends TestCase {
 		$this->assertSame( [ 'developer' => [ 'name' => 'Ferid' ] ], Arr::add( [], 'developer.name', 'Ferid' ) );
 	}
 
-	public function testCollapse() {
+	public function testCollapse(): void {
 		$data = [ [ 'foo', 'bar' ], [ 'baz' ] ];
 		$this->assertSame( [ 'foo', 'bar', 'baz' ], Arr::collapse( $data ) );
 
@@ -60,7 +60,7 @@ class ArrTest extends TestCase {
 		// $this->assertSame( [ 1, 2, 3, 'foo', 'bar', 'baz', 'boom' ], Arr::collapse( $array ) );
 	}
 
-	public function testCrossJoin() {
+	public function testCrossJoin(): void {
 		// Single dimension
 		$this->assertSame(
 			[ [ 1, 'a' ], [ 1, 'b' ], [ 1, 'c' ] ],
@@ -112,13 +112,13 @@ class ArrTest extends TestCase {
 		$this->assertSame( [ [] ], Arr::cross_join() );
 	}
 
-	public function testDivide() {
+	public function testDivide(): void {
 		[ $keys, $values ] = Arr::divide( [ 'name' => 'Desk' ] );
 		$this->assertSame( [ 'name' ], $keys );
 		$this->assertSame( [ 'Desk' ], $values );
 	}
 
-	public function testDot() {
+	public function testDot(): void {
 		$array = Arr::dot( [ 'foo' => [ 'bar' => 'baz' ] ] );
 		$this->assertSame( [ 'foo.bar' => 'baz' ], $array );
 
@@ -146,7 +146,7 @@ class ArrTest extends TestCase {
 		);
 	}
 
-	public function testExcept() {
+	public function testExcept(): void {
 		$array = [
 			'name' => 'taylor',
 			'age'  => 26,
@@ -172,7 +172,7 @@ class ArrTest extends TestCase {
 		$this->assertSame( [ 'framework' => [ 'language' => 'PHP' ] ], Arr::except( $array, [ 'name', 'framework.name' ] ) );
 	}
 
-	public function testExists() {
+	public function testExists(): void {
 		$this->assertTrue( Arr::exists( [ 1 ], 0 ) );
 		$this->assertTrue( Arr::exists( [ null ], 0 ) );
 		$this->assertTrue( Arr::exists( [ 'a' => 1 ], 'a' ) );
@@ -185,7 +185,7 @@ class ArrTest extends TestCase {
 		$this->assertFalse( Arr::exists( new Collection( [ 'a' => null ] ), 'b' ) );
 	}
 
-	public function testFirst() {
+	public function testFirst(): void {
 		$array = [ 100, 200, 300 ];
 
 		// Callback is null and array is empty
@@ -242,7 +242,7 @@ class ArrTest extends TestCase {
 		$this->assertSame( 'baz', $value4 );
 	}
 
-	public function testLast() {
+	public function testLast(): void {
 		$array = [ 100, 200, 300 ];
 
 		$last = Arr::last(
@@ -264,7 +264,7 @@ class ArrTest extends TestCase {
 		$this->assertSame( 300, Arr::last( $array ) );
 	}
 
-	public function testFlatten() {
+	public function testFlatten(): void {
 		// Flat arrays are unaffected
 		$array = [ '#foo', '#bar', '#baz' ];
 		$this->assertSame( [ '#foo', '#bar', '#baz' ], Arr::flatten( $array ) );
@@ -302,7 +302,7 @@ class ArrTest extends TestCase {
 		$this->assertSame( [ '#foo', '#bar', '#zap', '#baz' ], Arr::flatten( $array ) );
 	}
 
-	public function testFlattenWithDepth() {
+	public function testFlattenWithDepth(): void {
 		// No depth flattens recursively
 		$array = [ [ '#foo', [ '#bar', [ '#baz' ] ] ], '#zap' ];
 		$this->assertSame( [ '#foo', '#bar', '#baz', '#zap' ], Arr::flatten( $array ) );
@@ -315,7 +315,7 @@ class ArrTest extends TestCase {
 		$this->assertSame( [ '#foo', '#bar', [ '#baz' ], '#zap' ], Arr::flatten( $array, 2 ) );
 	}
 
-	public function testGet() {
+	public function testGet(): void {
 		$array = [ 'products.desk' => [ 'price' => 100 ] ];
 		$this->assertSame( [ 'price' => 100 ], Arr::get( $array, 'products.desk' ) );
 
@@ -413,7 +413,7 @@ class ArrTest extends TestCase {
 		);
 	}
 
-	public function testHas() {
+	public function testHas(): void {
 		$array = [ 'products.desk' => [ 'price' => 100 ] ];
 		$this->assertTrue( Arr::has( $array, 'products.desk' ) );
 
@@ -488,7 +488,7 @@ class ArrTest extends TestCase {
 		$this->assertFalse( Arr::has( [], [ '' ] ) );
 	}
 
-	public function testHasAnyMethod() {
+	public function testHasAnyMethod(): void {
 		$array = [
 			'name' => 'Taylor',
 			'age'  => '',
@@ -521,7 +521,7 @@ class ArrTest extends TestCase {
 		$this->assertTrue( Arr::has_any( $array, [ 'foo.bax', 'foo.baz' ] ) );
 	}
 
-	public function testIsAssoc() {
+	public function testIsAssoc(): void {
 		$this->assertTrue(
 			Arr::is_assoc(
 				[
@@ -557,7 +557,7 @@ class ArrTest extends TestCase {
 		$this->assertFalse( Arr::is_assoc( [ 'a', 'b' ] ) );
 	}
 
-	public function testOnly() {
+	public function testOnly(): void {
 		$array = [
 			'name'   => 'Desk',
 			'price'  => 100,
@@ -574,7 +574,7 @@ class ArrTest extends TestCase {
 		$this->assertEmpty( Arr::only( $array, [ 'nonExistingKey' ] ) );
 	}
 
-	public function testPluck() {
+	public function testPluck(): void {
 		$data = [
 			'post-1' => [
 				'comments' => [
@@ -624,7 +624,7 @@ class ArrTest extends TestCase {
 		$this->assertSame( [ 'Taylor', 'Abigail' ], $array );
 	}
 
-	public function testPluckWithArrayValue() {
+	public function testPluckWithArrayValue(): void {
 		$array = [
 			[ 'developer' => [ 'name' => 'Taylor' ] ],
 			[ 'developer' => [ 'name' => 'Abigail' ] ],
@@ -633,7 +633,7 @@ class ArrTest extends TestCase {
 		$this->assertSame( [ 'Taylor', 'Abigail' ], $array );
 	}
 
-	public function testPluckWithKeys() {
+	public function testPluckWithKeys(): void {
 		$array = [
 			[
 				'name' => 'Taylor',
@@ -671,7 +671,7 @@ class ArrTest extends TestCase {
 		);
 	}
 
-	public function testPluckWithCarbonKeys() {
+	public function testPluckWithCarbonKeys(): void {
 		$array = [
 			[
 				'start' => new Carbon( '2017-07-25 00:00:00' ),
@@ -682,7 +682,7 @@ class ArrTest extends TestCase {
 		$this->assertEquals( [ '2017-07-25 00:00:00' => '2017-07-30 00:00:00' ], $array );
 	}
 
-	public function testArrayPluckWithArrayAndObjectValues() {
+	public function testArrayPluckWithArrayAndObjectValues(): void {
 		$array = [
 			(object) [
 				'name'  => 'taylor',
@@ -703,7 +703,7 @@ class ArrTest extends TestCase {
 		);
 	}
 
-	public function testArrayPluckWithNestedKeys() {
+	public function testArrayPluckWithNestedKeys(): void {
 		$array = [ [ 'user' => [ 'taylor', 'otwell' ] ], [ 'user' => [ 'dayle', 'rees' ] ] ];
 		$this->assertSame( [ 'taylor', 'dayle' ], Arr::pluck( $array, 'user.0' ) );
 		$this->assertSame( [ 'taylor', 'dayle' ], Arr::pluck( $array, [ 'user', 0 ] ) );
@@ -723,7 +723,7 @@ class ArrTest extends TestCase {
 		);
 	}
 
-	public function testArrayPluckWithNestedArrays() {
+	public function testArrayPluckWithNestedArrays(): void {
 		$array = [
 			[
 				'account' => 'a',
@@ -764,7 +764,7 @@ class ArrTest extends TestCase {
 		$this->assertSame( [ [ 'taylorotwell@gmail.com' ], [ null, null ] ], Arr::pluck( $array, 'users.*.email' ) );
 	}
 
-	public function testPrepend() {
+	public function testPrepend(): void {
 		$array = Arr::prepend( [ 'one', 'two', 'three', 'four' ], 'zero' );
 		$this->assertSame( [ 'zero', 'one', 'two', 'three', 'four' ], $array );
 
@@ -786,7 +786,7 @@ class ArrTest extends TestCase {
 		);
 	}
 
-	public function testPull() {
+	public function testPull(): void {
 		$array = [
 			'name'  => 'Desk',
 			'price' => 100,
@@ -824,7 +824,7 @@ class ArrTest extends TestCase {
 		);
 	}
 
-	public function testQuery() {
+	public function testQuery(): void {
 		$this->assertSame( '', Arr::query( [] ) );
 		$this->assertSame( 'foo=bar', Arr::query( [ 'foo' => 'bar' ] ) );
 		$this->assertSame(
@@ -865,7 +865,7 @@ class ArrTest extends TestCase {
 		);
 	}
 
-	public function testRandom() {
+	public function testRandom(): void {
 		$random = Arr::random( [ 'foo', 'bar', 'baz' ] );
 		$this->assertContains( $random, [ 'foo', 'bar', 'baz' ] );
 
@@ -900,7 +900,7 @@ class ArrTest extends TestCase {
 		$this->assertContains( $random[1], [ 'foo', 'bar', 'baz' ] );
 	}
 
-	public function testRandomOnEmptyArray() {
+	public function testRandomOnEmptyArray(): void {
 		$random = Arr::random( [], 0 );
 		$this->assertIsArray( $random );
 		$this->assertCount( 0, $random );
@@ -910,7 +910,7 @@ class ArrTest extends TestCase {
 		$this->assertCount( 0, $random );
 	}
 
-	public function testRandomThrowsAnErrorWhenRequestingMoreItemsThanAreAvailable() {
+	public function testRandomThrowsAnErrorWhenRequestingMoreItemsThanAreAvailable(): void {
 		$exceptions = 0;
 
 		try {
@@ -934,7 +934,7 @@ class ArrTest extends TestCase {
 		$this->assertSame( 3, $exceptions );
 	}
 
-	public function testSet() {
+	public function testSet(): void {
 		$array = [ 'products' => [ 'desk' => [ 'price' => 100 ] ] ];
 		Arr::set( $array, 'products.desk.price', 200 );
 		$this->assertSame( [ 'products' => [ 'desk' => [ 'price' => 200 ] ] ], $array );
@@ -990,7 +990,7 @@ class ArrTest extends TestCase {
 		$this->assertSame( [ 'products' => [ 'desk' => [ 'price' => 300 ] ] ], $array );
 	}
 
-	public function testSort() {
+	public function testSort(): void {
 		$unsorted = [
 			[ 'name' => 'Desk' ],
 			[ 'name' => 'Chair' ],
@@ -1020,7 +1020,7 @@ class ArrTest extends TestCase {
 		$this->assertSame( $expected, $sortedWithDotNotation );
 	}
 
-	public function testSortRecursive() {
+	public function testSortRecursive(): void {
 		$array = [
 			'users'        => [
 				[
@@ -1077,7 +1077,7 @@ class ArrTest extends TestCase {
 		$this->assertSame( $expect, Arr::sort_recursive( $array ) );
 	}
 
-	public function testWhere() {
+	public function testWhere(): void {
 		$array = [ 100, '200', 300, '400', 500 ];
 
 		$array = Arr::where(
@@ -1096,7 +1096,7 @@ class ArrTest extends TestCase {
 		);
 	}
 
-	public function testWhereKey() {
+	public function testWhereKey(): void {
 		$array = [
 			'10'  => 1,
 			'foo' => 3,
@@ -1119,7 +1119,7 @@ class ArrTest extends TestCase {
 		);
 	}
 
-	public function testForget() {
+	public function testForget(): void {
 		$array = [ 'products' => [ 'desk' => [ 'price' => 100 ] ] ];
 		Arr::forget( $array, null );
 		$this->assertSame( [ 'products' => [ 'desk' => [ 'price' => 100 ] ] ], $array );
@@ -1218,7 +1218,7 @@ class ArrTest extends TestCase {
 		$this->assertSame( [ 'emails' => [ 'joe@example.com' => [ 'name' => 'Joe' ] ] ], $array );
 	}
 
-	public function testWrap() {
+	public function testWrap(): void {
 		$string        = 'a';
 		$array         = [ 'a' ];
 		$object        = new stdClass();

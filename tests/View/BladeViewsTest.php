@@ -15,12 +15,12 @@ class BladeViewsTest extends FrameworkTestCase {
 			->add_path( MANTLE_PHPUNIT_TEMPLATE_PATH . '/blade', 'blade' );
 	}
 
-	public function test_basic() {
+	public function test_basic(): void {
 		$contents = (string) view( '@blade/basic', [ 'name' => 'world' ] );
 		$this->assertSame( 'Hello, world.', trim( $contents ) );
 	}
 
-	public function test_if_else() {
+	public function test_if_else(): void {
 		$this->assertStringContainsString(
 			'True!',
 			(string) view( '@blade/if-else', [ 'should_if' => true ] ),
@@ -32,7 +32,7 @@ class BladeViewsTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_include() {
+	public function test_include(): void {
 		$this->assertStringContainsString(
 			'child',
 			(string) view( '@blade/parent' )

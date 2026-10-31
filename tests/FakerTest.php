@@ -14,7 +14,7 @@ class FakerTest extends \PHPUnit\Framework\TestCase {
 		$this->faker->addProvider( new Faker_Provider( $this->faker ) );
 	}
 
-	public function test_block() {
+	public function test_block(): void {
 		$this->assertSame(
 			'<!-- wp:namespace/block /-->',
 			$this->faker->block( 'namespace/block' )
@@ -36,7 +36,7 @@ class FakerTest extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	public function test_paragraph() {
+	public function test_paragraph(): void {
 		$block = $this->faker->paragraph_block();
 
 		$this->assertStringContainsString( '<!-- wp:paragraph -->' . PHP_EOL . '<p>', $block );

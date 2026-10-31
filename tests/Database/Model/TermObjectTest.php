@@ -74,7 +74,7 @@ class TermObjectTest extends FrameworkTestCase {
 		$this->assertSame( 'Updated Content', $term->name );
 	}
 
-	public function test_setting_id() {
+	public function test_setting_id(): void {
 		$this->expectException( Model_Exception::class );
 
 		$term   = $this->factory->term->create_and_get();
@@ -92,7 +92,7 @@ class TermObjectTest extends FrameworkTestCase {
 		$this->assertEmpty( get_term( $term->term_id, $term->taxonomy ) );
 	}
 
-	public function test_saving_term_through_model() {
+	public function test_saving_term_through_model(): void {
 		$term = new Term();
 		$term->name = 'test-term';
 		$term->taxonomy = 'category';
@@ -104,7 +104,7 @@ class TermObjectTest extends FrameworkTestCase {
 		$this->assertNotEmpty( $term->get( 'term_taxonomy_id' ) );
 	}
 
-	public function test_unsaved_term_parent_attribute() {
+	public function test_unsaved_term_parent_attribute(): void {
 		$term = new Testable_Tag( [ 'name' => 'Unsaved' ] );
 
 		$this->assertNull( $term->parent );
@@ -124,7 +124,7 @@ class TermObjectTest extends FrameworkTestCase {
 		$this->assertNull( Testable_Category::find( $term ) );
 	}
 
-	public function test_model_taxonomy_assumed() {
+	public function test_model_taxonomy_assumed(): void {
 		$object = new Example_Taxonomy( [ 'name' => 'assumed term' ] );
 		$object->save();
 		$this->assertNotEmpty( $object->id() );

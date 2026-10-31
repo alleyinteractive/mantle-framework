@@ -9,7 +9,7 @@ use Mantle\Testing\FrameworkTestCase;
 class SiteObjectTest extends FrameworkTestCase {
 	use Multisite_Test;
 
-	public function test_site_attributes() {
+	public function test_site_attributes(): void {
 		$site_id = static::factory()->blog->create();
 		$site    = Site::find( $site_id );
 

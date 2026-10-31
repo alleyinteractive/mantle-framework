@@ -78,7 +78,7 @@ class RegisterPostTypeTest extends FrameworkTestCase {
 		$this->assertTrue( post_type_exists( $post_type ) );
 	}
 
-	public function test_invalid_register_post_type() {
+	public function test_invalid_register_post_type(): void {
 		$post_type = 'post';
 
 		$this->expectException( Model_Exception::class );
@@ -165,7 +165,7 @@ class Testable_Post_Type_With_Fields extends Post implements Registrable_Fields 
 		);
 	}
 
-	public static function boot() {
+	public static function boot(): void {
 		parent::boot();
 
 		static::register_field( 'testable-field', __NAMESPACE__ . '\testable_get_callback' )
@@ -174,10 +174,10 @@ class Testable_Post_Type_With_Fields extends Post implements Registrable_Fields 
 	}
 }
 
-function testable_get_callback() {
+function testable_get_callback(): string {
 	return $_SERVER['__testable_get_callback'] ?? 'testable_get_callback';
 }
 
-function testable_update_callback() {
+function testable_update_callback(): string {
 	return $_SERVER['__testable_update_callback'] ?? 'testable_update_callback';
 }

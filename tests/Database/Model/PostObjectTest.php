@@ -109,7 +109,7 @@ class PostObjectTest extends FrameworkTestCase {
 		Testable_Post::find_or_fail( 0 );
 	}
 
-	public function test_create_with_accessor_stores_raw_value() {
+	public function test_create_with_accessor_stores_raw_value(): void {
 		$model = Testable_Post_With_Accessor::create( [ 'title' => 'Raw Title', 'status' => 'publish' ] );
 
 		$this->assertSame( 'Prefixed Raw Title', $model->title );
@@ -145,7 +145,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertEmpty( $object->get_meta( 'attr_meta_key_to_set' ) );
 	}
 
-	public function test_post_meta_attributes_invalid() {
+	public function test_post_meta_attributes_invalid(): void {
 		$this->expectException( Model_Exception::class );
 
 		new Testable_Post(
@@ -239,7 +239,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertEmpty( $post );
 	}
 
-	public function test_creating_post_through_model() {
+	public function test_creating_post_through_model(): void {
 		$post = new Post(
 			[
 				'post_title'   => 'Example Title',
@@ -251,7 +251,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertNotEmpty( $post->id() );
 	}
 
-	public function test_setting_guarded_id() {
+	public function test_setting_guarded_id(): void {
 		$this->expectException( Model_Exception::class );
 
 		$post   = $this->factory->post->create_and_get();
@@ -261,7 +261,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$object->save();
 	}
 
-	public function test_setting_unguarded_attribute() {
+	public function test_setting_unguarded_attribute(): void {
 		$this->expectException( Model_Exception::class );
 
 		$post   = $this->factory->post->create_and_get();
@@ -284,7 +284,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertNull( $object );
 	}
 
-	public function test_post_type_assumed() {
+	public function test_post_type_assumed(): void {
 		$object = new Test_Post_Type( [ 'name' => 'post-type-test' ] );
 		$object->save();
 		$this->assertNotEmpty( $object->id() );
@@ -292,14 +292,14 @@ class PostObjectTest extends FrameworkTestCase {
 
 	}
 
-	public function test_model_incorrect_post_type() {
+	public function test_model_incorrect_post_type(): void {
 		register_post_type( 'example_post_type' );
 		$post_id = $this->factory->post->create( [ 'post_type' => 'example_post_type' ] );
 
 		$this->assertNull( Testable_Post::find( $post_id ) );
 	}
 
-	public function test_dynamic_model_instance() {
+	public function test_dynamic_model_instance(): void {
 		register_post_type( 'foo_post_type' );
 
 		$post_id = $this->factory->post->for( 'foo_post_type' )->create();
@@ -332,7 +332,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertSame( 'New Post', $post->post_title );
 	}
 
-	public function test_query_builder() {
+	public function test_query_builder(): void {
 		$post_id = $this->get_random_post_id();
 		$first = Testable_Post::where( 'id', $post_id )->first();
 
@@ -342,13 +342,13 @@ class PostObjectTest extends FrameworkTestCase {
 	/**
 	 * Ensure that 'set_test_key_attribute()' method is used on the model.
 	 */
-	public function test_mutated_attribute() {
+	public function test_mutated_attribute(): void {
 		$object = new Testable_Post( [ 'test_key' => 'non-mutated-attribute' ] );
 
 		$this->assertSame( 'mutated_value', $object->get( 'test_key' ) );
 	}
 
-	public function test_setting_meta_before_saving() {
+	public function test_setting_meta_before_saving(): void {
 		$object = new Testable_Post(
 			[
 				'name' => 'Test Post with Meta',
@@ -373,7 +373,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertSame( 'Updated meta value', $object->meta->meta_key );
 	}
 
-	public function test_meta_as_array() {
+	public function test_meta_as_array(): void {
 		$object = new Testable_Post(
 			[
 				'name' => 'Test Post with Meta',
@@ -395,7 +395,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertSame( 'Updated meta value', $object->get_meta( 'meta_key' ) );
 	}
 
-	public function test_terms_attribute() {
+	public function test_terms_attribute(): void {
 		$post = static::factory()->post->as_models()->create_and_get();
 		$category = static::factory()->category->create_and_get();
 
@@ -418,7 +418,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertEmpty( get_the_category( $post->id() ) );
 	}
 
-	public function test_terms_attribute_create() {
+	public function test_terms_attribute_create(): void {
 		$category = static::factory()->category->create_and_get();
 
 		// Create a post using terms attribute.
@@ -431,7 +431,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertPostHasTerm( $new_post, $category );
 	}
 
-	public function test_terms_attribute_create_without_taxonomy() {
+	public function test_terms_attribute_create_without_taxonomy(): void {
 		$category_a = static::factory()->category->create_and_get();
 		$category_b = static::factory()->category->create_and_get();
 
@@ -445,7 +445,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertPostHasTerm( $new_post, $category_b );
 	}
 
-	public function test_terms_attribute_create_without_taxonomy_multiple() {
+	public function test_terms_attribute_create_without_taxonomy_multiple(): void {
 		$category = static::factory()->category->create_and_get();
 		$tag      = static::factory()->tag->create_and_get();
 
@@ -486,7 +486,7 @@ class PostObjectTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_modified_date() {
+	public function test_modified_date(): void {
 		$original = now()->subYear()->toDateTimeString();
 
 		$post = static::factory()->post->as_models()->create_and_get( [
@@ -508,7 +508,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertTrue( Carbon::parse( $post->modified )->gt( $date ) );
 	}
 
-	public function test_dates_attribute() {
+	public function test_dates_attribute(): void {
 		$post = static::factory()->post->as_models()->create_and_get();
 
 		$this->assertInstanceOf( Model_Date_Proxy::class, $post->dates );
@@ -539,7 +539,7 @@ class PostObjectTest extends FrameworkTestCase {
 		$this->assertSame( $newDate->toDateTimeString(), $post->dates->modified->toDateTimeString() );
 	}
 
-	public function test_thumbnail_relationship() {
+	public function test_thumbnail_relationship(): void {
 		$post          = static::factory()->post->as_models()->create_and_get();
 		$attachment_id = static::factory()->attachment->with_image()->create();
 
@@ -575,7 +575,7 @@ class Testable_Post extends Post {
 	/**
 	 * Allow testing the 'test_key' attribute.
 	 */
-	public function set_test_key_attribute() {
+	public function set_test_key_attribute(): void {
 		$this->attributes['test_key'] = 'mutated_value';
 	}
 }
@@ -609,7 +609,7 @@ class Test_Post_Type extends Post implements Registrable {
 class Testable_Post_With_Accessor extends Post {
 	public static $object_name = 'post';
 
-	public function get_post_title_attribute( $value ) {
+	public function get_post_title_attribute( string $value ): string {
 		return 'Prefixed ' . $value;
 	}
 }

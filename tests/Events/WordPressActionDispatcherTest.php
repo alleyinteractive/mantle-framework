@@ -15,7 +15,7 @@ use function Mantle\Support\Helpers\collect;
  */
 #[Group( 'events' )]
 class WordPressActionDispatcherTest extends FrameworkTestCase {
-	public function test_action_handler() {
+	public function test_action_handler(): void {
 		$_SERVER['__action_fired'] = false;
 
 		$d = new Dispatcher( $this->app );
@@ -43,7 +43,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		$this->assertIsArray( $_SERVER['__action_value'] );
 	}
 
-	public function test_action_handler_non_builtin_typecast() {
+	public function test_action_handler_non_builtin_typecast(): void {
 		$_SERVER['__action_value'] = [ 1, 2, 3 ];
 
 		$d = new Dispatcher( $this->app );
@@ -59,7 +59,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		$this->assertInstanceOf( Collection::class, $_SERVER['__action_value'] );
 	}
 
-	public function test_action_handler_non_builtin_typecast_to_array() {
+	public function test_action_handler_non_builtin_typecast_to_array(): void {
 		$_SERVER['__action_value'] = collect( [ 1, 2, 3 ] );
 
 		$d = new Dispatcher( $this->app );
@@ -78,7 +78,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		$this->assertSame( [ 1, 2, 3 ], $_SERVER['__action_value'] );
 	}
 
-	public function test_action_if_should_run() {
+	public function test_action_if_should_run(): void {
 		$_SERVER['test_action_if_should_run'] = false;
 
 		$d = new Dispatcher( $this->app );
@@ -93,7 +93,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		$this->assertTrue( $_SERVER['test_action_if_should_run'] ?? false );
 	}
 
-	public function test_action_if_should_not_run() {
+	public function test_action_if_should_not_run(): void {
 		$_SERVER['test_action_if_should_not_run'] = false;
 
 		$d = new Dispatcher( $this->app );
@@ -150,7 +150,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_helpers() {
+	public function test_helpers(): void {
 		add_filter(
 			'test_filter_handler_typehint',
 			fn ( array $value ) => $value,
@@ -173,7 +173,7 @@ class WordPressActionDispatcherTest extends FrameworkTestCase {
 		$this->assertTrue( $_SERVER['__test'] );
 	}
 
-	public function test_typehint_action_argument() {
+	public function test_typehint_action_argument(): void {
 		$_SERVER['__test'] = false;
 
 		add_action(

@@ -16,7 +16,7 @@ use Mantle\Testing\Attributes\PermalinkStructure;
 use Mantle\Testing\FrameworkTestCase;
 
 class TermModelRoutingTest extends FrameworkTestCase {
-	public function test_category_term() {
+	public function test_category_term(): void {
 		Testable_Category_Model::boot_if_not_booted();
 
 		Route::middleware( [ Substitute_Bindings::class ] )->group( function () {
@@ -41,7 +41,7 @@ class TermModelRoutingTest extends FrameworkTestCase {
 			->assertQueryTrue( 'is_archive', 'is_category', 'is_tax' );
 	}
 
-	public function test_tag_url() {
+	public function test_tag_url(): void {
 		$this->assertTrue( taxonomy_exists( 'post_tag' ) );
 
 		// Account for an edge case where this was accidentally cleared during development of
@@ -53,7 +53,7 @@ class TermModelRoutingTest extends FrameworkTestCase {
 		$this->assertSame( home_url( '/tag/example-tag/' ), get_term_link( $tag ) );
 	}
 
-	public function test_custom_taxonomy() {
+	public function test_custom_taxonomy(): void {
 		Testable_Custom_Taxonomy_Model::register_object();
 
 		Route::middleware( [ Substitute_Bindings::class ] )->group( function () {
@@ -96,7 +96,7 @@ class Testable_Category_Model extends Term {
 }
 
 class Testable_Term_Model_Controller extends Controller {
-	public function show( Testable_Category_Model $category  ) {
+	public function show( Testable_Category_Model $category ): string {
 		return $category->slug();
 	}
 }
@@ -115,7 +115,7 @@ class Testable_Custom_Taxonomy_Model extends Term implements Registrable {
 }
 
 class Testable_Custom_Term_Model_Controller extends Controller {
-	public function show( Testable_Custom_Taxonomy_Model $test_tax_test  ) {
+	public function show( Testable_Custom_Taxonomy_Model $test_tax_test ): string {
 		return $test_tax_test->slug();
 	}
 }

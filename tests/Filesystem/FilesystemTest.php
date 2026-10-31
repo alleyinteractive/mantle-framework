@@ -49,20 +49,20 @@ class FilesystemTest extends TestCase {
 		$this->assertSame( 'Hello World', $files->get( static::$temp_dir . '/file.txt' ) );
 	}
 
-	public function testPutStoresFiles() {
+	public function testPutStoresFiles(): void {
 		$files = new Filesystem();
 		$files->put( static::$temp_dir . '/file.txt', 'Hello World' );
 		$this->assertStringEqualsFile( static::$temp_dir . '/file.txt', 'Hello World' );
 	}
 
-	public function testPutJson() {
+	public function testPutJson(): void {
 		$files = new Filesystem();
 		$files->put_json( static::$temp_dir . '/file.json', [ 'foo' => 'bar' ] );
 		$this->assertStringEqualsFile( static::$temp_dir . '/file.json', '{"foo":"bar"}' );
 	}
 
-	public function testReplaceCreatesFile() {
-		$tempFile = static::$temp_dir . '/file.txt';
+	public function testReplaceCreatesFile(): void {
+		$tempFile = self::$temp_dir . '/file.txt';
 
 		$filesystem = new Filesystem();
 
@@ -70,9 +70,9 @@ class FilesystemTest extends TestCase {
 		$this->assertStringEqualsFile( $tempFile, 'Hello World' );
 	}
 
-	public function testReplaceWhenUnixSymlinkExists() {
-		$tempFile   = static::$temp_dir . '/file.txt';
-		$symlinkDir = static::$temp_dir . '/symlink_dir';
+	public function testReplaceWhenUnixSymlinkExists(): void {
+		$tempFile   = self::$temp_dir . '/file.txt';
+		$symlinkDir = self::$temp_dir . '/symlink_dir';
 		$symlink    = "{$symlinkDir}/symlink.txt";
 
 		if ( ! is_dir( $symlinkDir ) ) {
@@ -144,20 +144,20 @@ class FilesystemTest extends TestCase {
 		$this->assertFileDoesNotExist( static::$temp_dir . '/file3.txt' );
 	}
 
-	public function testPrependExistingFiles() {
+	public function testPrependExistingFiles(): void {
 		$files = new Filesystem();
 		$files->put( static::$temp_dir . '/file.txt', 'World' );
 		$files->prepend( static::$temp_dir . '/file.txt', 'Hello ' );
 		$this->assertStringEqualsFile( static::$temp_dir . '/file.txt', 'Hello World' );
 	}
 
-	public function testPrependNewFiles() {
+	public function testPrependNewFiles(): void {
 		$files = new Filesystem();
 		$files->prepend( static::$temp_dir . '/file.txt', 'Hello World' );
 		$this->assertStringEqualsFile( static::$temp_dir . '/file.txt', 'Hello World' );
 	}
 
-	public function testMissingFile() {
+	public function testMissingFile(): void {
 		$files = new Filesystem();
 		$this->assertTrue( $files->missing( static::$temp_dir . '/file.txt' ) );
 	}
@@ -190,7 +190,7 @@ class FilesystemTest extends TestCase {
 	public function testMacro() {
 		file_put_contents( static::$temp_dir . '/foo.txt', 'Hello World' );
 		$files   = new Filesystem();
-		$temp_dir = static::$temp_dir;
+		$temp_dir = self::$temp_dir;
 		$files->macro(
 			'getFoo',
 			function () use ( $files, $temp_dir ) {
@@ -212,7 +212,7 @@ class FilesystemTest extends TestCase {
 		unset( $files );
 	}
 
-	public function testCopyDirectoryReturnsFalseIfSourceIsntDirectory() {
+	public function testCopyDirectoryReturnsFalseIfSourceIsntDirectory(): void {
 		$files = new Filesystem();
 		$this->assertFalse( $files->copy_directory( static::$temp_dir . '/breeze/boom/foo/bar/baz', static::$temp_dir ) );
 	}
@@ -282,7 +282,7 @@ class FilesystemTest extends TestCase {
 		$this->assertFalse( $files->move_directory( static::$temp_dir . '/tmp6', static::$temp_dir . '/tmp7', true ) );
 	}
 
-	public function testGetThrowsExceptionNonexisitingFile() {
+	public function testGetThrowsExceptionNonexisitingFile(): void {
 		$this->expectException( File_Not_Found_Exception::class );
 
 		$files = new Filesystem();
@@ -295,7 +295,7 @@ class FilesystemTest extends TestCase {
 		$this->assertSame( 'Howdy?', $files->get_require( static::$temp_dir . '/file.php' ) );
 	}
 
-	public function testGetRequireThrowsExceptionNonExistingFile() {
+	public function testGetRequireThrowsExceptionNonExistingFile(): void {
 		$this->expectException( File_Not_Found_Exception::class );
 
 		$files = new Filesystem();
@@ -425,13 +425,13 @@ class FilesystemTest extends TestCase {
 		$this->assertContains( static::$temp_dir . DIRECTORY_SEPARATOR . 'music', $directories );
 	}
 
-	public function testMakeDirectory() {
+	public function testMakeDirectory(): void {
 		$files = new Filesystem();
 		$this->assertTrue( $files->make_directory( static::$temp_dir . '/created' ) );
 		$this->assertFileExists( static::$temp_dir . '/created' );
 	}
 
-	public function testRequireOnceRequiresFileProperly() {
+	public function testRequireOnceRequiresFileProperly(): void {
 		$filesystem = new Filesystem();
 		mkdir( static::$temp_dir . '/scripts' );
 		file_put_contents( static::$temp_dir . '/scripts/foo.php', '<?php function random_function_xyz(){};' );
@@ -442,7 +442,7 @@ class FilesystemTest extends TestCase {
 		$this->assertFalse( function_exists( 'random_function_xyz_changed' ) );
 	}
 
-	public function testCopyCopiesFileProperly() {
+	public function testCopyCopiesFileProperly(): void {
 		$filesystem = new Filesystem();
 		$data       = 'contents';
 		mkdir( static::$temp_dir . '/text' );
@@ -452,7 +452,7 @@ class FilesystemTest extends TestCase {
 		$this->assertSame( $data, file_get_contents( static::$temp_dir . '/text/foo2.txt' ) );
 	}
 
-	public function testIsFileChecksFilesProperly() {
+	public function testIsFileChecksFilesProperly(): void {
 		$filesystem = new Filesystem();
 		mkdir( static::$temp_dir . '/help' );
 		file_put_contents( static::$temp_dir . '/help/foo.txt', 'contents' );
@@ -483,7 +483,7 @@ class FilesystemTest extends TestCase {
 		$this->assertSame( 'acbd18db4cc2f85cedef654fccc4a4d8', $filesystem->hash( static::$temp_dir . '/foo.txt' ) );
 	}
 
-	public function test_guess_class_name() {
+	public function test_guess_class_name(): void {
 		$filesystem = new Filesystem();
 
 		$this->assertSame( 'Example_Class', $filesystem->guess_class_name( __DIR__ . '/data/class-example-class.php' ) );

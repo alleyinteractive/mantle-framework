@@ -32,7 +32,7 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		unregister_taxonomy( 'test_taxonomy' );
 	}
 
-	public function test_has_one_post_to_post() {
+	public function test_has_one_post_to_post(): void {
 		$date = Carbon::now()->subWeek()->toDateTimeString();
 
 		$post = Testable_Post::create( [ 'title' => 'Test Post', 'date' => $date, 'status' => 'publish' ] );
@@ -54,7 +54,7 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		$this->assertSame( $post->id, $page->post->id );
 	}
 
-	public function test_has_many_post_to_post() {
+	public function test_has_many_post_to_post(): void {
 		Utils::delete_all_data();
 
 		$date = Carbon::now()->subWeek();
@@ -102,7 +102,7 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		$this->assertNull( $sponsor->posts()->first() );
 	}
 
-	public function test_has_many_post_to_post_is_not_limited() {
+	public function test_has_many_post_to_post_is_not_limited(): void {
 		$post = Testable_Post::create( [ 'title' => 'Parent with many pages', 'status' => 'publish' ] );
 
 		for ( $i = 0; $i < 105; $i++ ) {
@@ -113,7 +113,7 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		$this->assertCount( 105, $post->pages()->get() );
 	}
 
-	public function test_has_many_post_to_post_modifier() {
+	public function test_has_many_post_to_post_modifier(): void {
 		$posts = array_map(
 			[ Testable_Post::class, 'find' ],
 			static::factory()->post->create_ordered_set( 50 ),
@@ -128,7 +128,7 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		$this->assertCount( 10, $sponsor->posts_query_modifier()->get() );
 	}
 
-	public function test_has_many_post_to_post_modifier_using_terms() {
+	public function test_has_many_post_to_post_modifier_using_terms(): void {
 		$this->assertTrue( taxonomy_exists( Relation::RELATION_TAXONOMY ) );
 
 		$posts = array_map(
@@ -192,7 +192,7 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_has_one_term_to_post() {
+	public function test_has_one_term_to_post(): void {
 		$tag = Testable_Tag::create( [ 'name' => 'Has One Term to Post' ] );
 
 		$post = $tag->post()->save( new Testable_Post( [
@@ -209,7 +209,7 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		$this->assertEmpty( get_the_tags( $post->id ) );
 	}
 
-	public function test_has_many_term_to_post() {
+	public function test_has_many_term_to_post(): void {
 		$tag = Testable_Tag::create( [ 'name' => 'Has Many Term to Post' ] );
 
 		$posts = [];
@@ -232,7 +232,7 @@ class HasOneOrManyTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_has_many_post_to_post_with_terms() {
+	public function test_has_many_post_to_post_with_terms(): void {
 		$date = Carbon::now()->subDays( 7 )->toDateTimeString();
 		$sponsor = Testable_Sponsor_Using_Term::create( [ 'title' => 'Sponsor Test', 'status' => 'publish', 'date' => $date ] );
 		$post    = $sponsor->post()->save(

@@ -27,23 +27,23 @@ class ResponseFactoryTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		app()->forget_instance( 'request' );
 	}
 
-	public function test_raw_response() {
+	public function test_raw_response(): void {
 		$response = response()->make( "I'm a teapot", 418 );
 		$this->assertSame( "I'm a teapot", $response->getContent() );
 	}
 
-	public function test_raw_response_through_helper() {
+	public function test_raw_response_through_helper(): void {
 		$response = response( "I'm a teapot", 418 );
 		$this->assertSame( "I'm a teapot", $response->getContent() );
 	}
 
-	public function test_json_response() {
+	public function test_json_response(): void {
 		$response = response()->json( [ 'response' => 'test' ] );
 		$this->assertSame( '{"response":"test"}', $response->getContent() );
 		$this->assertSame( 'application/json', $response->headers->get( 'Content-Type' ) );
 	}
 
-	public function test_no_content_response() {
+	public function test_no_content_response(): void {
 		$this->assertEmpty( response()->no_content()->getContent() );
 	}
 }

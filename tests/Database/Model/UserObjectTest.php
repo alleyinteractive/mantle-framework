@@ -26,7 +26,7 @@ class UserObjectTest extends FrameworkTestCase {
 		}
 	}
 
-	public function test_find_user() {
+	public function test_find_user(): void {
 		$user_id = $this->get_random_user_id();
 		$object = User::find( $user_id );
 		$user = get_user_by( 'ID', $user_id );
@@ -44,7 +44,7 @@ class UserObjectTest extends FrameworkTestCase {
 		$this->assertSame( $object->id(), $user_id );
 	}
 
-	public function test_create_user() {
+	public function test_create_user(): void {
 		$email = static::$faker->email();
 
 		$user = new User(
@@ -64,7 +64,7 @@ class UserObjectTest extends FrameworkTestCase {
 		$this->assertSame( $user->id(), $user_by_email->ID );
 	}
 
-	public function test_updating_user() {
+	public function test_updating_user(): void {
 		$user_id = $this->get_random_user_id();
 		$user    = User::find( $user_id );
 
@@ -78,7 +78,7 @@ class UserObjectTest extends FrameworkTestCase {
 		$this->assertSame( $user_id, $user_by_email->ID );
 	}
 
-	public function test_deleting_user() {
+	public function test_deleting_user(): void {
 		$user_id = $this->get_random_user_id();
 		$user    = User::find( $user_id );
 

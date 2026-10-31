@@ -54,7 +54,7 @@ abstract class TestCase extends FrameworkTestCase {
 		return $this->get( '/' )->body();
 	}
 
-	protected function reset_assets() {
+	protected function reset_assets(): void {
 		global $wp_scripts;
 
 		$wp_scripts = new WP_Scripts();

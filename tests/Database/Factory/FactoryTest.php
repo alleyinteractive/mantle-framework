@@ -16,7 +16,7 @@ use PHPUnit\Framework\Attributes\Group;
  */
 #[Group( 'factory' )]
 class FactoryTest extends FrameworkTestCase {
-	public function test_create_basic_model() {
+	public function test_create_basic_model(): void {
 		$factory = Post::factory();
 
 		$this->assertInstanceOf( Factory\Post_Factory::class, $factory );
@@ -91,7 +91,7 @@ class FactoryTest extends FrameworkTestCase {
 		$this->assertContainsOnlyInstancesOf( Post::class, $posts->all() );
 	}
 
-	public function test_create_model_with_custom_factory() {
+	public function test_create_model_with_custom_factory(): void {
 		$factory = Testable_Post_With_Factory::factory();
 
 		$this->assertInstanceOf( Testable_Post_Factory::class, $factory );
@@ -104,7 +104,7 @@ class FactoryTest extends FrameworkTestCase {
 		$this->assertSame( 'Title from the custom factory', $post->post_title );
 	}
 
-	public function test_create_model_with_custom_factory_string() {
+	public function test_create_model_with_custom_factory_string(): void {
 		$factory = Testable_Post_With_Factory_String::factory();
 
 		$this->assertInstanceOf( Testable_Post_Factory::class, $factory );
@@ -117,7 +117,7 @@ class FactoryTest extends FrameworkTestCase {
 		$this->assertSame( 'Title from the custom factory', $post->post_title );
 	}
 
-	public function test_create_model_with_scope() {
+	public function test_create_model_with_scope(): void {
 		$post = Testable_Post_With_Factory::factory()->custom_state()->create_and_get();
 
 		$this->assertSame( 'Title from the custom state', $post->post_title );
@@ -145,7 +145,7 @@ class FactoryTest extends FrameworkTestCase {
 	 * @dataProvider factory_resolve_custom_names
 	 */
 	#[DataProvider( 'factory_resolve_custom_names' )]
-	public function test_resolve_custom_names( string $model, string $expected ) {
+	public function test_resolve_custom_names( string $model, string $expected ): void {
 		$this->assertSame( $expected, Factory\Factory::resolve_custom_factory_name( $model ) );
 	}
 
@@ -162,7 +162,7 @@ class FactoryTest extends FrameworkTestCase {
 	 * @dataProvider factory_resolve_default
 	 */
 	#[DataProvider( 'factory_resolve_default' )]
-	public function test_resolve_default( string $model, string $expected ) {
+	public function test_resolve_default( string $model, string $expected ): void {
 		$this->assertSame( $expected, Factory\Factory::default_factory_name( $model ) );
 	}
 
@@ -179,7 +179,7 @@ class FactoryTest extends FrameworkTestCase {
 		];
 	}
 
-	public function test_throws_exception_on_unknown_class() {
+	public function test_throws_exception_on_unknown_class(): void {
 		$class = new class {};
 
 		$this->expectException( \InvalidArgumentException::class );
@@ -187,7 +187,7 @@ class FactoryTest extends FrameworkTestCase {
 		Factory\Factory::default_factory_name( $class::class ); // @phpstan-ignore-line
 	}
 
-	public function test_create_multiple_fluently() {
+	public function test_create_multiple_fluently(): void {
 		$post_ids = Testable_Post::factory()->count( 3 )->create()->all();
 
 		$this->assertIsArray( $post_ids );
@@ -211,7 +211,7 @@ class FactoryTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_create_multiple_fluently_with_scopes() {
+	public function test_create_multiple_fluently_with_scopes(): void {
 		$posts = Testable_Post_With_Factory::factory()
 			->count( 3 )
 			->custom_state()
@@ -227,7 +227,7 @@ class FactoryTest extends FrameworkTestCase {
 		);
 	}
 
-	public function test_factory_macro() {
+	public function test_factory_macro(): void {
 		Post_Factory::macro(
 			'with_custom_meta',
 			fn () => $this->with_meta( [ 'custom_meta_key' => 'custom_meta_value' ] ),
@@ -238,7 +238,7 @@ class FactoryTest extends FrameworkTestCase {
 		$this->assertSame( 'custom_meta_value', get_post_meta( $post_id, 'custom_meta_key', true ) );
 	}
 
-	public function test_create_custom_post_type_model() {
+	public function test_create_custom_post_type_model(): void {
 		register_post_type(
 			'custom_post_type',
 			[
@@ -254,7 +254,7 @@ class FactoryTest extends FrameworkTestCase {
 		$this->assertNotEmpty( $post->content );
 	}
 
-	public function test_create_custom_taxonomy_model() {
+	public function test_create_custom_taxonomy_model(): void {
 		register_taxonomy(
 			'custom_taxonomy',
 			'post',
@@ -324,8 +324,7 @@ class Testable_Post_Factory extends Factory\Post_Factory {
 		];
 	}
 
-	public function custom_state()
-	{
+	public function custom_state(): static {
 		return $this->state(
 			fn ( array $attributes ) => [
 				'title' => 'Title from the custom state',

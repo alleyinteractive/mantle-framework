@@ -70,7 +70,7 @@ class BelongsToOneOrManyTest extends FrameworkTestCase {
 		$this->assertNotEmpty( get_the_terms( $post->id, Has_One_Or_Many::RELATION_TAXONOMY ) );
 	}
 
-	public function test_post_to_term() {
+	public function test_post_to_term(): void {
 		$this->expectException( InvalidArgumentException::class );
 
 		$post = Testable_Post::find( static::factory()->post->create() );

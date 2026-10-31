@@ -8,7 +8,7 @@ use Mantle\Testing\FrameworkTestCase;
 use function Mantle\Support\Helpers\collect;
 
 class TermQueryBuilderTest extends FrameworkTestCase {
-	public function test_term_by_name() {
+	public function test_term_by_name(): void {
 		$tag_id = $this->get_random_term_id();
 		$tag    = \get_term( $tag_id );
 
@@ -19,7 +19,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $tag_id, $first->id() );
 	}
 
-	public function test_term_by_slug() {
+	public function test_term_by_slug(): void {
 		$tag_id = $this->get_random_term_id();
 		$tag    = \get_term( $tag_id );
 
@@ -30,7 +30,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $tag_id, $first->id() );
 	}
 
-	public function test_term_by_id() {
+	public function test_term_by_id(): void {
 		$tag_id = $this->get_random_term_id();
 		$tag    = \get_term( $tag_id );
 
@@ -41,7 +41,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $tag_id, $first->id() );
 	}
 
-	public function test_term_by_meta() {
+	public function test_term_by_meta(): void {
 		$tag_id = $this->get_random_term_id();
 
 		update_term_meta( $tag_id, 'term-key', 'term-value' );
@@ -53,7 +53,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $tag_id, $first->id() );
 	}
 
-	public function test_term_exclude() {
+	public function test_term_exclude(): void {
 		$tag_id = $this->get_random_term_id();
 
 		$get = Builder::create( Testable_Tag_Term::class )
@@ -64,7 +64,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 		$this->assertNotContains( $tag_id, $get->to_array() );
 	}
 
-	public function test_term_orderby_asc() {
+	public function test_term_orderby_asc(): void {
 		$term_ids = collect( static::factory()->term->create_many( 10 ) );
 
 		$get = Testable_Tag_Term::query()
@@ -76,7 +76,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $term_ids->sort()->values()->to_array(), $get->to_array() );
 	}
 
-	public function test_term_orderby_desc() {
+	public function test_term_orderby_desc(): void {
 		$term_ids = collect( static::factory()->term->create_many( 10 ) );
 
 		$get = Testable_Tag_Term::query()
@@ -88,7 +88,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $term_ids->sort_desc()->values()->to_array(), $get->to_array() );
 	}
 
-	public function test_term_orderby_include() {
+	public function test_term_orderby_include(): void {
 		$term_ids = static::factory()->term->create_many( 10 );
 
 		// Shuffle to get a random order
@@ -103,7 +103,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( $term_ids, $get->to_array() );
 	}
 
-	public function test_query_clauses() {
+	public function test_query_clauses(): void {
 		$applied_count = 0;
 		$term_id       = $this->get_random_term_id();
 
@@ -132,7 +132,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 		$this->assertSame( 1, $applied_count ); // The clauses should only be applied once.
 	}
 
-	public function test_for_page() {
+	public function test_for_page(): void {
 		static::factory()->tag->create_many( 5 );
 
 		$page_one   = Testable_Tag::query()->for_page( 1, 2 )->get()->pluck( 'id' );
@@ -146,7 +146,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 		$this->assertEmpty( $page_two->intersect( $page_three )->all() );
 	}
 
-	public function test_chunk() {
+	public function test_chunk(): void {
 		static::factory()->tag->create_many( 5 );
 
 		$chunks = [];
@@ -164,7 +164,7 @@ class TermQueryBuilderTest extends FrameworkTestCase {
 		$this->assertCount( 5, array_unique( $ids ) );
 	}
 
-	public function test_count() {
+	public function test_count(): void {
 		static::factory()->tag->create_many( 14 );
 
 		$this->assertSame( 14, Testable_Tag::count() );

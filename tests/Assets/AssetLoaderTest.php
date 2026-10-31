@@ -21,7 +21,7 @@ class AssetLoaderTest extends TestCase {
 		$this->app->alias( 'asset.loader', Asset_Loader::class );
 	}
 
-	public function test_read_path() {
+	public function test_read_path(): void {
 		$this->assertSame(
 			'/app.js?id=8c5b220bf6f482881a90',
 			$this->loader->path( '/app.js' ),
@@ -33,27 +33,27 @@ class AssetLoaderTest extends TestCase {
 		);
 	}
 
-	public function test_read_path_subdir() {
+	public function test_read_path_subdir(): void {
 		$this->assertSame(
 			'/example-entry/index.js?id=534dc549a5fb03be27a1',
 			$this->loader->path( '/example-entry/index.js' ),
 		);
 	}
 
-	public function test_read_script_url() {
+	public function test_read_script_url(): void {
 		$this->assertSame(
 			'https://example.org/base/app.js?id=8c5b220bf6f482881a90',
 			$this->loader->url( '/app.js' ),
 		);
 	}
 
-	public function test_unknown_asset() {
+	public function test_unknown_asset(): void {
 		$this->expectException( Asset_Not_Found::class );
 
 		$this->loader->path( '/unknown.js' );
 	}
 
-	public function test_invoke() {
+	public function test_invoke(): void {
 		$loader = $this->loader;
 
 		$this->assertSame(
@@ -62,7 +62,7 @@ class AssetLoaderTest extends TestCase {
 		);
 	}
 
-	public function test_read_blocks() {
+	public function test_read_blocks(): void {
 		$this->assertSame(
 			[
 				$this->build_dir . '/example-block/index.php',
@@ -71,14 +71,14 @@ class AssetLoaderTest extends TestCase {
 		);
 	}
 
-	public function test_asset_loader_helper() {
+	public function test_asset_loader_helper(): void {
 		$this->assertSame(
 			'https://example.org/base/app.js?id=8c5b220bf6f482881a90',
 			asset_loader( '/app.js' ),
 		);
 	}
 
-	public function test_asset_enqueue_from_asset_path() {
+	public function test_asset_enqueue_from_asset_path(): void {
 		asset()->script( '/app.js' )->async();
 
 		$head = $this->get_wp_head();
@@ -102,7 +102,7 @@ class AssetLoaderTest extends TestCase {
 		$this->assertStringContainsString( 'wp-blocks-js', $head );
 	}
 
-	public function test_asset_enqueue_no_error_if_not_found() {
+	public function test_asset_enqueue_no_error_if_not_found(): void {
 		asset()->script( '/unknown.js' )->async();
 
 		// Ensure that no exception was thrown.

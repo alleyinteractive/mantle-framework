@@ -10,6 +10,7 @@ use Mantle\Queue\Job;
 use Mantle\Queue\Queue_Worker_Job;
 use Mantle\Support\Collection;
 use Mockery as m;
+use Mockery\MockInterface;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use PHPUnit\Framework\Attributes\Group;
 
@@ -55,7 +56,7 @@ class WorkerTest extends MockeryTestCase {
 		remove_all_filters( Events\Run_Start::class );
 	}
 
-	public function test_event_fire() {
+	public function test_event_fire(): void {
 		$this->app['queue']->get_provider( 'test' )->push( $this->get_mock_job( 1 ) );
 		$this->app['queue']->get_provider( 'test' )->push( $this->get_mock_job( 2 ) );
 		$this->app['queue']->get_provider( 'test' )->push( $this->get_mock_job( 3 ) );
@@ -63,7 +64,7 @@ class WorkerTest extends MockeryTestCase {
 		$this->app['queue.worker']->run( 3 );
 	}
 
-	public function test_event_listener() {
+	public function test_event_listener(): void {
 		$events_fired = [];
 		$callback     = function( $event ) use ( &$events_fired ) {
 			$events_fired[] = get_class( $event );
@@ -92,7 +93,7 @@ class WorkerTest extends MockeryTestCase {
 		);
 	}
 
-	protected function get_mock_job( $id, $should_run = true ) {
+	protected function get_mock_job( int $id, bool $should_run = true ): Queue_Worker_Job&MockInterface {
 		$mock_job = m::mock( Queue_Worker_Job::class );
 
 		if ( $should_run ) {

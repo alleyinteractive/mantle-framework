@@ -35,7 +35,7 @@ class PrinterTest extends TestCase {
 		$_SERVER['argv'] = static::$argv;
 	}
 
-	public function test_make_class() {
+	public function test_make_class(): void {
 		$file = new PhpFile();
 
 		$file
@@ -61,7 +61,7 @@ class PrinterTest extends TestCase {
 		$this->lint_code( $file, 'class-example-class' );
 	}
 
-	public function test_make_function() {
+	public function test_make_function(): void {
 		$file = new PhpFile();
 
 		$file
@@ -86,7 +86,7 @@ class PrinterTest extends TestCase {
 		$this->lint_code( $file, 'functions-example' );
 	}
 
-	protected function lint_code( PhpFile $file, string $file_name ) {
+	protected function lint_code( PhpFile $file, string $file_name ): void {
 		$code = ( new Printer() )->printFile( $file );
 		$path = static::$temp_dir .  $file_name . '.php';
 

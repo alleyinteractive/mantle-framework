@@ -49,7 +49,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertTrue( $app->is_booted() );
 	}
 
-	public function test_hook_method_action() {
+	public function test_hook_method_action(): void {
 		$_SERVER['__hook_fired'] = false;
 
 		$app = m::mock( Application::class )->makePartial();
@@ -61,7 +61,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertTrue( $_SERVER['__hook_fired'] );
 	}
 
-	public function test_hook_method_action_alternative_name() {
+	public function test_hook_method_action_alternative_name(): void {
 		$_SERVER['__hook_fired'] = false;
 
 		$app = m::mock( Application::class )->makePartial();
@@ -113,7 +113,7 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( 10, $value );
 	}
 
-	public function test_typehint_event() {
+	public function test_typehint_event(): void {
 		$_SERVER['__custom_event_fired'] = false;
 
 		$app = m::mock( Application::class )->makePartial();
@@ -227,13 +227,13 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( [ 'some_tag', 'tag_one', 'tag_two' ], Service_Provider::publishable_tags() );
 	}
 
-	public function test_call_after_resolving() {
+	public function test_call_after_resolving(): void {
 		$_SERVER['__after_resolving'] = false;
 
 		$app = m::mock( Application::class )->makePartial();
 		$app->register(
 			new class ( $app ) extends Service_Provider {
-				public function register() {
+				public function register(): void {
 					$this->call_after_resolving(
 						'foo',
 						function ( $resolved ) {
@@ -255,13 +255,13 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		$this->assertSame( 'one', $_SERVER['__after_resolving'] );
 	}
 
-	public function test_call_after_resolving_already_resolved() {
+	public function test_call_after_resolving_already_resolved(): void {
 		$_SERVER['__after_resolving'] = false;
 
 		$app = m::mock( Application::class )->makePartial();
 		$app->register(
 			new class ( $app ) extends Service_Provider {
-				public function register() {
+				public function register(): void {
 					$this->call_after_resolving(
 						'foo',
 						function ( $resolved ) {
@@ -305,42 +305,42 @@ class ServiceProviderTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 }
 
 class Provider_Test_Hook extends Service_Provider {
-	public function on_custom_hook() {
+	public function on_custom_hook(): void {
 		$_SERVER['__hook_fired'] = true;
 	}
 
-	public function action__my_custom_hook() {
+	public function action__my_custom_hook(): void {
 		$_SERVER['__hook_fired'] = true;
 	}
 
-	public function on_custom_filter( $value ) {
+	public function on_custom_filter( int $value ): int {
 		return $value + 10;
 	}
 
 	#[Action('testable-attribute-hook', 20)]
-	public function handle_custom_hook() {
+	public function handle_custom_hook(): void {
 		$_SERVER['__custom_hook_fired'] = true;
 	}
 
 	// Assert that only a single action is registered for this hook.
 	#[Action('custom_filter_dedupe')]
-	public function on_custom_filter_dedupe( $value ) {
+	public function on_custom_filter_dedupe( int $value ): int {
 		return $value + 10;
 	}
 
 	#[Action(Example_Service_Provider_Event::class)]
-	public function handle_custom_event( Example_Service_Provider_Event $event ) {
+	public function handle_custom_event( Example_Service_Provider_Event $event ): void {
 		$_SERVER['__custom_event_fired'] = $event;
 	}
 
 	#[Filter('custom_filter_from_attribute')]
-	public function filter_custom_filter_from_attribute( int $value ) {
+	public function filter_custom_filter_from_attribute( int $value ): int {
 		return $value * 10;
 	}
 }
 
 class ServiceProviderForTestingOne extends Service_Provider {
-	public function boot() {
+	public function boot(): void {
 		$this->publishes( [ 'source/unmarked/one' => 'destination/unmarked/one' ] );
 		$this->publishes( [ 'source/tagged/one' => 'destination/tagged/one' ], 'some_tag' );
 		$this->publishes( [ 'source/tagged/multiple' => 'destination/tagged/multiple' ], [ 'tag_one', 'tag_two' ] );
@@ -348,7 +348,7 @@ class ServiceProviderForTestingOne extends Service_Provider {
 }
 
 class ServiceProviderForTestingTwo extends Service_Provider {
-	public function boot() {
+	public function boot(): void {
 		$this->publishes( [ 'source/unmarked/two/a' => 'destination/unmarked/two/a' ] );
 		$this->publishes( [ 'source/unmarked/two/b' => 'destination/unmarked/two/b' ] );
 		$this->publishes( [ 'source/unmarked/two/c' => 'destination/tagged/two/a' ] );
@@ -368,11 +368,11 @@ class PassingValidator implements Validator {
 
 #[PassingValidator]
 class PassingValidatorServiceProvider extends Service_Provider {
-	public function register() {
+	public function register(): void {
 		$_SERVER['__service_provider_registered'] = true;
 	}
 
-	public function boot() {
+	public function boot(): void {
 		$_SERVER['__service_provider_booted'] = true;
 	}
 }
@@ -386,11 +386,11 @@ class FailingValidator implements Validator {
 
 #[FailingValidator]
 class FailingValidatorServiceProvider extends Service_Provider {
-	public function register() {
+	public function register(): void {
 		$_SERVER['__service_provider_registered'] = true;
 	}
 
-	public function boot() {
+	public function boot(): void {
 		$_SERVER['__service_provider_booted'] = true;
 	}
 }

@@ -42,7 +42,7 @@ class FilesystemAdapterTest extends TestCase {
 		parent::tearDown();
 	}
 
-	public function testPutReturnsFalseWhenWriteFails() {
+	public function testPutReturnsFalseWhenWriteFails(): void {
 		mkdir( $this->temp_dir . '/ro', 0500 );
 
 		$files = new Filesystem_Adapter( $this->filesystem, $this->adapter );
@@ -56,7 +56,7 @@ class FilesystemAdapterTest extends TestCase {
 		$throwing->put( 'ro/sub/file.txt', 'contents' );
 	}
 
-	public function testResponse() {
+	public function testResponse(): void {
 		$this->filesystem->write( 'file.txt', 'Hello World' );
 		$files    = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 		$response = $files->response( 'file.txt' );
@@ -70,7 +70,7 @@ class FilesystemAdapterTest extends TestCase {
 		$this->assertSame( 'inline; filename=file.txt', $response->headers->get( 'content-disposition' ) );
 	}
 
-	public function testDownload() {
+	public function testDownload(): void {
 	$this->filesystem->write( 'file.txt', 'Hello World' );
 	$files    = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 	$response = $files->download( 'file.txt', 'hello.txt' );
@@ -78,7 +78,7 @@ class FilesystemAdapterTest extends TestCase {
 	$this->assertSame( 'attachment; filename=hello.txt', $response->headers->get( 'content-disposition' ) );
 	}
 
-	public function testDownloadNonAsciiFilename() {
+	public function testDownloadNonAsciiFilename(): void {
 	$this->filesystem->write( 'file.txt', 'Hello World' );
 	$files    = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 	$response = $files->download( 'file.txt', 'пиздюк.txt' );
@@ -86,7 +86,7 @@ class FilesystemAdapterTest extends TestCase {
 	$this->assertSame( "attachment; filename=pizdiuk.txt; filename*=utf-8''%D0%BF%D0%B8%D0%B7%D0%B4%D1%8E%D0%BA.txt", $response->headers->get( 'content-disposition' ) );
 	}
 
-	public function testDownloadNonAsciiEmptyFilename() {
+	public function testDownloadNonAsciiEmptyFilename(): void {
 	$this->filesystem->write( 'пиздюк.txt', 'Hello World' );
 	$files    = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 	$response = $files->download( 'пиздюк.txt' );
@@ -94,7 +94,7 @@ class FilesystemAdapterTest extends TestCase {
 	$this->assertSame( 'attachment; filename=pizdiuk.txt; filename*=utf-8\'\'%D0%BF%D0%B8%D0%B7%D0%B4%D1%8E%D0%BA.txt', $response->headers->get( 'content-disposition' ) );
 	}
 
-	public function testDownloadPercentInFilename() {
+	public function testDownloadPercentInFilename(): void {
 	$this->filesystem->write( 'Hello%World.txt', 'Hello World' );
 	$files    = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 	$response = $files->download( 'Hello%World.txt', 'Hello%World.txt' );
@@ -102,18 +102,18 @@ class FilesystemAdapterTest extends TestCase {
 	$this->assertSame( 'attachment; filename=HelloWorld.txt; filename*=utf-8\'\'Hello%25World.txt', $response->headers->get( 'content-disposition' ) );
 	}
 
-	public function testExists() {
+	public function testExists(): void {
 		$this->filesystem->write( 'file.txt', 'Hello World' );
 		$filesystem_adapter = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 		$this->assertTrue( $filesystem_adapter->exists( 'file.txt' ) );
 	}
 
-	public function testMissing() {
+	public function testMissing(): void {
 		$filesystem_adapter = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 		$this->assertTrue( $filesystem_adapter->missing( 'file.txt' ) );
 	}
 
-	public function testPath() {
+	public function testPath(): void {
 		$this->filesystem->write( 'file.txt', 'Hello World' );
 		$filesystem_adapter = new Filesystem_Adapter(
 			$this->filesystem,
@@ -125,45 +125,45 @@ class FilesystemAdapterTest extends TestCase {
 		$this->assertSame( $this->temp_dir . DIRECTORY_SEPARATOR . 'file.txt', $filesystem_adapter->path( 'file.txt' ) );
 	}
 
-	public function testGet() {
+	public function testGet(): void {
 		$this->filesystem->write( 'file.txt', 'Hello World' );
 		$filesystem_adapter = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 		$this->assertSame( 'Hello World', $filesystem_adapter->get( 'file.txt' ) );
 	}
 
-	public function testGetFileNotFound() {
+	public function testGetFileNotFound(): void {
 		$filesystem_adapter = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 		$this->assertNull( $filesystem_adapter->get( 'file.txt' ) );
 	}
 
-	public function testPut() {
+	public function testPut(): void {
 		$filesystem_adapter = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 		$filesystem_adapter->put( 'file.txt', 'Something inside' );
 		$this->assertStringEqualsFile( $this->temp_dir . '/file.txt', 'Something inside' );
 	}
 
-	public function testPrepend() {
+	public function testPrepend(): void {
 		file_put_contents( $this->temp_dir . '/file.txt', 'World' );
 		$filesystem_adapter = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 		$filesystem_adapter->prepend( 'file.txt', 'Hello ' );
 		$this->assertStringEqualsFile( $this->temp_dir . '/file.txt', 'Hello ' . PHP_EOL . 'World' );
 	}
 
-	public function testAppend() {
+	public function testAppend(): void {
 		file_put_contents( $this->temp_dir . '/file.txt', 'Hello ' );
 		$filesystem_adapter = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 		$filesystem_adapter->append( 'file.txt', 'Moon' );
 		$this->assertStringEqualsFile( $this->temp_dir . '/file.txt', 'Hello ' . PHP_EOL . 'Moon' );
 	}
 
-	public function testDelete() {
+	public function testDelete(): void {
 		file_put_contents( $this->temp_dir . '/file.txt', 'Hello World' );
 		$filesystem_adapter = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 		$this->assertTrue( $filesystem_adapter->delete( 'file.txt' ) );
 		$this->assertFileDoesNotExist( $this->temp_dir . '/file.txt' );
 	}
 
-	public function testCopy() {
+	public function testCopy(): void {
 		$data = '33232';
 		mkdir( $this->temp_dir . '/foo' );
 		file_put_contents( $this->temp_dir . '/foo/foo.txt', $data );
@@ -178,7 +178,7 @@ class FilesystemAdapterTest extends TestCase {
 		$this->assertSame( $data, file_get_contents( $this->temp_dir . '/foo/foo2.txt' ) );
 	}
 
-	public function testMove() {
+	public function testMove(): void {
 		$data = '33232';
 		mkdir( $this->temp_dir . '/foo' );
 		file_put_contents( $this->temp_dir . '/foo/foo.txt', $data );
@@ -192,7 +192,7 @@ class FilesystemAdapterTest extends TestCase {
 		$this->assertSame( $data, file_get_contents( $this->temp_dir . '/foo/foo2.txt' ) );
 	}
 
-	public function testStream() {
+	public function testStream(): void {
 		$this->filesystem->write( 'file.txt', $original_content = 'Hello World' );
 		$filesystem_adapter = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 		$readStream         = $filesystem_adapter->readStream( 'file.txt' );
@@ -200,7 +200,7 @@ class FilesystemAdapterTest extends TestCase {
 		$this->assertSame( $original_content, $filesystem_adapter->get( 'copy.txt' ) );
 	}
 
-	public function testStreamBetweenFilesystems() {
+	public function testStreamBetweenFilesystems(): void {
 		$secondFilesystem = new Flysystem( $adapter = new LocalFilesystemAdapter( $this->temp_dir . '/second' ) );
 		$this->filesystem->write( 'file.txt', $original_content = 'Hello World' );
 		$filesystem_adapter       = new Filesystem_Adapter( $this->filesystem, $this->adapter );
@@ -210,7 +210,7 @@ class FilesystemAdapterTest extends TestCase {
 		$this->assertSame( $original_content, $secondFilesystem_Adapter->get( 'copy.txt' ) );
 	}
 
-	public function testStreamToExistingFileOverwrites() {
+	public function testStreamToExistingFileOverwrites(): void {
 		$this->filesystem->write( 'file.txt', 'Hello World' );
 		$this->filesystem->write( 'existing.txt', 'Dear Kate' );
 
@@ -222,13 +222,13 @@ class FilesystemAdapterTest extends TestCase {
 		);
 	}
 
-	public function testReadStreamNonExistentFile() {
+	public function testReadStreamNonExistentFile(): void {
 		$filesystem_adapter = new Filesystem_Adapter( $this->filesystem, $this->adapter );
 
 		$this->assertFalse( $filesystem_adapter->readStream( 'nonexistent.txt' ) );
 	}
 
-	public function testReadStreamNonExistentFileThrows() {
+	public function testReadStreamNonExistentFileThrows(): void {
 		$this->expectException( UnableToReadFile::class );
 
 		$filesystem_adapter = new Filesystem_Adapter( $this->filesystem, $this->adapter, [ 'throw' => true ] );
@@ -236,13 +236,13 @@ class FilesystemAdapterTest extends TestCase {
 		$filesystem_adapter->readStream( 'nonexistent.txt' );
 	}
 
-	public function testStreamInvalidResourceThrows() {
+	public function testStreamInvalidResourceThrows(): void {
 		$this->expectException( InvalidArgumentException::class );
 		$filesystem_adapter = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
 		$filesystem_adapter->writeStream( 'file.txt', 'foo bar' );
 	}
 
-	public function testPutFileAs() {
+	public function testPutFileAs(): void {
 		file_put_contents( $filePath = $this->temp_dir . '/foo.txt', 'uploaded file content' );
 
 		$filesystem_adapter = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
@@ -260,7 +260,7 @@ class FilesystemAdapterTest extends TestCase {
 		$this->assertSame( 'uploaded file content', $filesystem_adapter->read( $storagePath ) );
 	}
 
-	public function testPutFileAsWithAbsoluteFilePath() {
+	public function testPutFileAsWithAbsoluteFilePath(): void {
 		file_put_contents( $filePath = $this->temp_dir . '/foo.txt', 'normal file content' );
 
 		$filesystem_adapter = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
@@ -270,7 +270,7 @@ class FilesystemAdapterTest extends TestCase {
 		$this->assertSame( 'normal file content', $filesystem_adapter->read( $storagePath ) );
 	}
 
-	public function testPutFile() {
+	public function testPutFile(): void {
 		file_put_contents( $filePath = $this->temp_dir . '/foo.txt', 'uploaded file content' );
 
 		$filesystem_adapter = new Filesystem_Adapter( $this->filesystem, $this->adapter );;
@@ -286,7 +286,7 @@ class FilesystemAdapterTest extends TestCase {
 		$filesystem_adapter->assertExists( $storagePath );
 	}
 
-	public function testPutFileWithAbsoluteFilePath() {
+	public function testPutFileWithAbsoluteFilePath(): void {
 		file_put_contents( $filePath = $this->temp_dir . '/foo.txt', 'uploaded file content' );
 
 		$filesystem_adapter = new Filesystem_Adapter( $this->filesystem, $this->adapter );

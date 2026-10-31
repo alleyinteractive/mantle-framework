@@ -264,14 +264,14 @@ HTML;
 		);
 	}
 
-	public function test_it_throws_an_exception_for_invalid_blocks() {
+	public function test_it_throws_an_exception_for_invalid_blocks(): void {
 		$this->expectException( \InvalidArgumentException::class );
 		$this->expectExceptionMessage( 'Unknown block factory method: unknown_method' );
 
 		block_factory()->unknown_method();
 	}
 
-	public function test_it_can_generate_a_preset() {
+	public function test_it_can_generate_a_preset(): void {
 		Block_Factory::register_preset(
 			'test',
 			block_factory()->blocks( [

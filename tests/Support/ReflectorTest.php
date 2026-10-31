@@ -39,5 +39,5 @@ class ExampleChildClass extends ExampleClass {}
 
 class ExampleClassWithMethod {
 	#[ExampleAttribute]
-	public function example_method() {}
+	public function example_method(): void {}
 }

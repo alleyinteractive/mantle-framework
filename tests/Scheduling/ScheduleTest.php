@@ -20,7 +20,7 @@ class ScheduleTest extends FrameworkTestCase {
 		$this->assertInCronQueue( Schedule::CRON_HOOK );
 	}
 
-	public function test_running_event() {
+	public function test_running_event(): void {
 		$_SERVER['__event_should_run']   = false;
 		$_SERVER['__event_shouldnt_run'] = false;
 
@@ -52,7 +52,7 @@ class ScheduleTest extends FrameworkTestCase {
 		$this->assertSame( 0, $event->exit_code );
 	}
 
-	public function test_before_after_callback() {
+	public function test_before_after_callback(): void {
 		$_SERVER['__event_before_callback'] = false;
 		$_SERVER['__event_after_callback']  = false;
 
@@ -72,7 +72,7 @@ class ScheduleTest extends FrameworkTestCase {
 		$this->assertTrue( $_SERVER['__event_before_callback'] < $_SERVER['__event_after_callback'] );
 	}
 
-	public function testPingRescuesTransferExceptions() {
+	public function testPingRescuesTransferExceptions(): void {
 		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 500 ) );
 
 		$event = new Event( '' );

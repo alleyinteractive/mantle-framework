@@ -13,12 +13,12 @@ class FileEngineTest extends FrameworkTestCase {
 			->add_path( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view', 'unit-test');
 	}
 
-	public function test_css_load() {
+	public function test_css_load(): void {
 		$contents = (string) view( '@unit-test/css' );
 		$this->assertSame( 'body { color: red; }', trim( $contents ) );
 	}
 
-	public function test_html_load() {
+	public function test_html_load(): void {
 		$contents = (string) view( '@unit-test/html' );
 		$this->assertSame( '<p>Content here</p>', trim( $contents ) );
 	}
