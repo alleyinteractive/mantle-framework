@@ -12,8 +12,7 @@ require_once __DIR__ . '/StrTest.php';
 class StringableTest extends TestCase {
 
 	/**
-	 * @param  string $string
-	 * @return \Mantle\Support\Stringable
+	 * @param  mixed $string
 	 */
 	protected function stringable( mixed $string = '' ): Stringable {
 		return new Stringable( $string );

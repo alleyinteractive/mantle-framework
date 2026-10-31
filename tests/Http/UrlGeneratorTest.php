@@ -39,6 +39,9 @@ class UrlGeneratorTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider urlGenerationProvider
+	 *
+	 * @param string                      $expected Expected path.
+	 * @param array<int|string, mixed>    $args Arguments for the URL generator.
 	 */
 	#[DataProvider( 'urlGenerationProvider' )]
 	public function test_basic_generation( string $expected, array $args ): void {

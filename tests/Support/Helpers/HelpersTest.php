@@ -84,6 +84,8 @@ class HelpersTest extends TestCase {
 
 	/**
 	 * @dataProvider classname_provider
+	 *
+	 * @param array<mixed> $input Class name arguments.
 	 */
 	#[DataProvider('classname_provider')]
 	public function test_classname( array $input, string $expected ): void {

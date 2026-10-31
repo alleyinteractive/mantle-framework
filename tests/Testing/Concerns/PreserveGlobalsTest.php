@@ -290,6 +290,9 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 	 * Data provider that can be used to test that a data provider can be called
 	 * multiple times without issue.
 	 */
+	/**
+	 * @return array<string, array<mixed>>
+	 */
 	public static function dataprovider_twice(): array {
 		return [
 			'first'  => [],

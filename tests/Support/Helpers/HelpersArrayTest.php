@@ -323,8 +323,14 @@ class HelpersArrayTest extends TestCase {
 
 class SupportTestArrayAccess implements ArrayAccess
 {
+	/**
+	 * @var array<mixed>
+	 */
 	protected array $attributes = [];
 
+	/**
+	 * @param array<mixed> $attributes Attributes.
+	 */
 	public function __construct(array $attributes = [])
 	{
 		$this->attributes = $attributes;

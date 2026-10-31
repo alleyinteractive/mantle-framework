@@ -158,6 +158,9 @@ class Testable_Post_Type_With_Fields extends Post implements Registrable_Fields 
 
 	public static $object_name = 'post';
 
+	/**
+	 * @return array<string, mixed>
+	 */
 	public static function get_registration_args(): array {
 		return array(
 			'public'       => true,

@@ -297,6 +297,9 @@ class HtmlTest extends TestCase {
 		);
 	}
 
+	/**
+	 * @return array<string, array{0: string|HTML|DOMNode|null}>
+	 */
 	public static function wrap_data_provider(): array {
 		$html = '<div class="ul-wrapper"></div>';
 
@@ -376,6 +379,9 @@ class HtmlTest extends TestCase {
 		);
 	}
 
+	/**
+	 * @return array<string, array{0: string|HTML|DOMNode|null}>
+	 */
 	public static function inner_wrap_data_provider(): array {
 		$html = '<span class="li-wrapper"></span>';
 
@@ -459,6 +465,9 @@ class HtmlTest extends TestCase {
 		$this->assertStringsEqualsWithoutWhitespace( $expected, $crawler->to_html() );
 	}
 
+	/**
+	 * @return array<string, array{0: string, 1: string, 2: string}>
+	 */
 	public static function append_dataprovider(): array {
 		$base = '
 		<div>
@@ -509,6 +518,9 @@ class HtmlTest extends TestCase {
 		$this->assertStringsEqualsWithoutWhitespace( $expected, $crawler->to_html() );
 	}
 
+	/**
+	 * @return array<string, array{0: string, 1: string, 2: string}>
+	 */
 	public static function prepend_dataprovider(): array {
 		$base = '
 		<div>

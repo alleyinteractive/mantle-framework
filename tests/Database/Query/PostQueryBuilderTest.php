@@ -677,6 +677,8 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 
 	/**
 	 * @dataProvider date_comparison_provider
+	 *
+	 * @param array<int, mixed> $args
 	 */
 	#[DataProvider( 'date_comparison_provider' )]
 	public function test_date_comparisons( int $expected, string $method, array $args ): void {
@@ -705,6 +707,9 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		return Carbon::create( 2020, 1, 1, 0, 0, 0, wp_timezone() );
 	}
 
+	/**
+	 * @return array<string, array{int, string, array<int, Carbon>}>
+	 */
 	public static function date_comparison_provider(): array {
 		$start = static::date_comparison_start();
 
@@ -731,6 +736,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 	/**
 	 * Get a random post ID, ensures the post ID is not the last in the set.
 	 *
+	 * @param array<string, mixed> $args Arguments for the posts.
 	 * @return integer
 	 */
 	protected static function get_random_post_id( $args = [] ): int {

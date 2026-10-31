@@ -110,6 +110,9 @@ class WorkerTest extends MockeryTestCase {
 }
 
 class Testable_Provider implements Provider {
+	/**
+	 * @var array<int, mixed>
+	 */
 	protected array $jobs = [];
 
 	/**

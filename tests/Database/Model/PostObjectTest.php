@@ -560,6 +560,7 @@ class PostObjectTest extends FrameworkTestCase {
 	/**
 	 * Get a random post ID, ensures the post ID is not the last in the set.
 	 *
+	 * @param array<string, mixed> $args Arguments for the posts.
 	 * @return integer
 	 */
 	protected function get_random_post_id( $args = [] ): int {

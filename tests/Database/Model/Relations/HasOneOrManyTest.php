@@ -8,6 +8,7 @@ use Mantle\Database\Model\Relations\Has_One;
 use Mantle\Database\Model\Relations\Relation;
 use Mantle\Database\Model\Term;
 use Mantle\Database\Model_Service_Provider;
+use Mantle\Support\Collection;
 use Mantle\Testing\Concerns\Refresh_Database;
 use Mantle\Testing\FrameworkTestCase;
 use Mantle\Testing\Utils;
@@ -267,6 +268,7 @@ class HasOneOrManyTest extends FrameworkTestCase {
 	/**
 	 * Get a random post ID, ensures the post ID is not the last in the set.
 	 *
+	 * @param array<string, mixed> $args Arguments for the posts.
 	 * @return int
 	 */
 	protected function get_random_post_id( $args = [] ): int {
@@ -276,7 +278,14 @@ class HasOneOrManyTest extends FrameworkTestCase {
 	}
 }
 
+/**
+ * @property Testable_Page $page
+ * @property Collection<int, Testable_Page> $pages
+ * @property Testable_Tag $tag
+ * @property Collection<int, Testable_Tag> $tags
+ */
 class Testable_Post extends Post {
+	/** @use Relationships<static> */
 	use Relationships;
 
 	public static $object_name = 'post';
@@ -306,7 +315,11 @@ class Testable_Post extends Post {
 	}
 }
 
+/**
+ * @property Testable_Post $post
+ */
 class Testable_Page extends Post {
+	/** @use Relationships<static> */
 	use Relationships;
 
 	public static $object_name = 'page';
@@ -316,7 +329,12 @@ class Testable_Page extends Post {
 	}
 }
 
+/**
+ * @property Testable_Post $post
+ * @property Collection<int, Testable_Post> $posts
+ */
 class Testable_Tag extends Term {
+	/** @use Relationships<static> */
 	use Relationships;
 
 	public static $object_name = 'post_tag';
@@ -331,6 +349,7 @@ class Testable_Tag extends Term {
 }
 
 class Testable_Sponsor extends Post {
+	/** @use Relationships<static> */
 	use Relationships;
 
 	public static $object_name = 'sponsor';
@@ -349,6 +368,7 @@ class Testable_Sponsor extends Post {
 }
 
 class Testable_Term extends Term {
+	/** @use Relationships<static> */
 	use Relationships;
 
 	public static $object_name = 'test_taxonomy';
@@ -359,6 +379,7 @@ class Testable_Term extends Term {
 }
 
 class Testable_Tag_Relationships extends Term {
+	/** @use Relationships<static> */
 	use Relationships;
 
 	public static $object_name = 'post_tag';
@@ -369,6 +390,7 @@ class Testable_Tag_Relationships extends Term {
 }
 
 class Testable_Post_Using_Term extends Post {
+	/** @use Relationships<static> */
 	use Relationships;
 
 	public static $object_name = 'post';
@@ -379,6 +401,7 @@ class Testable_Post_Using_Term extends Post {
 }
 
 class Testable_Sponsor_Using_Term extends Post {
+	/** @use Relationships<static> */
 	use Relationships;
 
 	public static $object_name = 'sponsor';

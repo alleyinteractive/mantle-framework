@@ -31,12 +31,18 @@ class Example_Listener {
 		// ...
 	}
 
+	/**
+	 * @param mixed $event Event.
+	 */
 	#[Action('attribute-event')]
 	public function handle_attribute_string_callback( $event ): void {
 		// ...
 
 	}
 
+	/**
+	 * @param mixed $event Event.
+	 */
 	#[Action('attribute-event', 20)]
 	public function handle_attribute_string_callback_priority( $event ): void {
 		// ...

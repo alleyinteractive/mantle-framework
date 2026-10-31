@@ -90,7 +90,12 @@ class BelongsToOneOrManyTest extends FrameworkTestCase {
 	}
 }
 
+/**
+ * @property Testable_Sponsor $sponsor
+ * @property Testable_Sponsor $sponsor_with_terms
+ */
 class Testable_Post extends Post {
+	/** @use Relationships<static> */
 	use Relationships;
 
 	public static $object_name = 'post';
@@ -109,12 +114,17 @@ class Testable_Post extends Post {
 }
 
 class Testable_Sponsor extends Post {
+	/** @use Relationships<static> */
 	use Relationships;
 
 	public static $object_name = 'sponsor';
 }
 
+/**
+ * @property Testable_Tag|null $related_tag
+ */
 class Testable_Tag extends Term {
+	/** @use Relationships<static> */
 	use Relationships;
 
 	public static $object_name = 'post_tag';
