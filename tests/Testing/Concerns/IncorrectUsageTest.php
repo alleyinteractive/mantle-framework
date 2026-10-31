@@ -41,7 +41,8 @@ class IncorrectUsageTest extends FrameworkTestCase {
 		$this->ignoreIncorrectUsage( 'WP_*' );
 		$this->setExpectedIncorrectUsage( 'expected_incorrect_usage' );
 
-		wp_cache_set( false, 'data' ); // Throws a deprecation notice because of the invalid cache key.
+		// Throws a deprecation notice because of the invalid cache key.
+		wp_cache_set( false, 'data' ); // @phpstan-ignore argument.type (false passed on purpose; wp_cache_set() expects an int|string key)
 		_doing_it_wrong( 'wp_prefix_test', 'This is a test', '1.0.0' );
 		_doing_it_wrong( 'expected_incorrect_usage', 'This is a test', '1.0.0' );
 	}

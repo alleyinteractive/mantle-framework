@@ -519,7 +519,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$post_id = static::get_random_post_id();
 
 		$result = Testable_Post::query()
-			->where_raw( 'ID', $post_id )
+			->where_raw( 'ID', $post_id ) // @phpstan-ignore argument.type (int passed on purpose; where_raw $operator parameter is ?string)
 			->first();
 
 		$this->assertInstanceOf( Testable_Post::class, $result );
@@ -578,7 +578,7 @@ class PostQueryBuilderTest extends FrameworkTestCase {
 		$post_id = static::get_random_post_id();
 
 		$result = Testable_Post::whereRaw( 'ID', 'unknown' )
-			->orWhereRaw( 'ID', $post_id )
+			->orWhereRaw( 'ID', $post_id ) // @phpstan-ignore argument.type (int passed on purpose; where_raw $operator parameter is ?string)
 			->first();
 
 		$this->assertInstanceOf( Testable_Post::class, $result );

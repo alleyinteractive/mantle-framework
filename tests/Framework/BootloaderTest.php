@@ -33,15 +33,14 @@ class BootloaderTest extends TestCase {
 		parent::tearDown();
 	}
 
-	public function test_it_can_create_an_instance() {
-		$this->assertInstanceOf( Bootloader::class, Bootloader::get_instance() );
-		$this->assertNotNull( Bootloader::get_instance()->get_base_path() );
+	public function test_it_can_create_an_instance(): void {
+		$this->assertNotNull( Bootloader::get_instance()->get_base_path() ); // @phpstan-ignore method.notFound (get_base_path is proxied to the application through Bootloader::__call)
 	}
 
 	public function test_it_set_basepath_from_env(): void {
 		$_ENV['MANTLE_BASE_PATH'] = '/foo/bar';
 
-		$this->assertSame( '/foo/bar', Bootloader::get_instance()->get_base_path() );
+		$this->assertSame( '/foo/bar', Bootloader::get_instance()->get_base_path() ); // @phpstan-ignore method.notFound (get_base_path is proxied to the application through Bootloader::__call)
 	}
 
 	public function test_it_can_be_used_by_helper(): void {

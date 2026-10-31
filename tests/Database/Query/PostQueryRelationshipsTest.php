@@ -59,7 +59,9 @@ class PostQueryRelationshipsTest extends FrameworkTestCase {
 		$missing = Testable_Post::query()->has( 'sponsor', 'non-exist' )->first();
 		$this->assertEmpty( $missing );
 
-		$expected = Testable_Post::has( 'sponsor', $sponsor_id )->first();
+		$expected = Testable_Post::query()->has( 'sponsor', $sponsor_id )->first(); // @phpstan-ignore argument.type (int passed on purpose; has() $compare parameter is ?string)
+
+		$this->assertInstanceOf( Testable_Post::class, $expected );
 		$this->assertSame( $post_a, $expected->id() );
 	}
 
