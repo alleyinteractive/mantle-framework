@@ -6,7 +6,7 @@ use Mantle\Testing\FrameworkTestCase;
 class InvadeTest extends FrameworkTestCase {
 	public function test_invade_private_method(): void {
 		$object = new class() {
-			private function secret( string $value ): string {
+			private function secret( string $value ): string { // @phpstan-ignore method.unused (called through invade() below)
 				return strtoupper( $value );
 			}
 		};

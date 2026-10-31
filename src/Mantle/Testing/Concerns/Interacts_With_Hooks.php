@@ -78,7 +78,7 @@ trait Interacts_With_Hooks {
 		);
 
 		if ( null !== $count ) {
-			$times_fired = $this->hooks_fired[ $hook ] ?? 0;
+			$times_fired = $this->hooks_fired[ $hook ];
 
 			PHPUnit::assertEquals(
 				$count,
