@@ -22,9 +22,23 @@ trait Assertions {
 	 *
 	 * @param string ...$class Class names.
 	 */
-	public function assertNodeHasClass( string ...$class ): static {
+	public function assertHasClass( string ...$class ): static {
 		Assert::assertTrue( $this->has_class( ...$class ), sprintf(
 			'Failed asserting that the node has class(es): %s',
+			implode( ', ', $class )
+		) );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the node does not have all of the specified classes.
+	 *
+	 * @param string ...$class Class names.
+	 */
+	public function assertNotHasClass( string ...$class ): static {
+		Assert::assertFalse( $this->has_class( ...$class ), sprintf(
+			'Failed asserting that the node does not have class(es): %s',
 			implode( ', ', $class )
 		) );
 
@@ -36,13 +50,47 @@ trait Assertions {
 	 *
 	 * @param string ...$class Class names.
 	 */
-	public function assertNodeHasAnyClass( string ...$class ): static {
+	public function assertHasAnyClass( string ...$class ): static {
 		Assert::assertTrue( $this->has_any_class( ...$class ), sprintf(
 			'Failed asserting that the node has any of the class(es): %s',
 			implode( ', ', $class )
 		) );
 
 		return $this;
+	}
+
+	/**
+	 * Assert that the node has none of the specified classes.
+	 *
+	 * @param string ...$class Class names.
+	 */
+	public function assertNotHasAnyClass( string ...$class ): static {
+		Assert::assertFalse( $this->has_any_class( ...$class ), sprintf(
+			'Failed asserting that the node has none of the class(es): %s',
+			implode( ', ', $class )
+		) );
+
+		return $this;
+	}
+
+	/**
+	 * Assert that the node has all of the specified classes.
+	 *
+	 * @deprecated Use assertHasClass() instead.
+	 * @param string ...$class Class names.
+	 */
+	public function assertNodeHasClass( string ...$class ): static {
+		return $this->assertHasClass( ...$class );
+	}
+
+	/**
+	 * Assert that the node has any of the specified classes.
+	 *
+	 * @deprecated Use assertHasAnyClass() instead.
+	 * @param string ...$class Class names.
+	 */
+	public function assertNodeHasAnyClass( string ...$class ): static {
+		return $this->assertHasAnyClass( ...$class );
 	}
 
 	/**
