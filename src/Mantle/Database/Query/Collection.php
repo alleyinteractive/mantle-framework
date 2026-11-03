@@ -68,7 +68,7 @@ class Collection extends Base_Collection {
 			$result->with_found_rows( $this->found_rows );
 		}
 
-		return $result->contains( static fn ( $item ) => ! $item instanceof Model ) // @phpstan-ignore-line instanceof.alwaysTrue
+		return $result->contains( static fn ( $item ) => ! $item instanceof Model )
 			? $result->to_base()
 			: $result;
 	}
@@ -91,7 +91,7 @@ class Collection extends Base_Collection {
 			$result->with_found_rows( $this->found_rows );
 		}
 
-		return $result->contains( static fn ( $item ) => ! $item instanceof Model ) // @phpstan-ignore-line instanceof.alwaysTrue
+		return $result->contains( static fn ( $item ) => ! $item instanceof Model )
 			? $result->to_base()
 			: $result;
 	}
