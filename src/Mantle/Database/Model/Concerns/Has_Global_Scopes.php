@@ -42,7 +42,7 @@ trait Has_Global_Scopes {
 		}
 
 		if ( $scope instanceof Closure ) {
-			static::$global_scopes[ static::class ][ spl_object_hash( $scope ) ] = $scope;
+			static::$global_scopes[ static::class ][ 'closure:' . spl_object_id( $scope ) ] = $scope;
 			return true;
 		}
 

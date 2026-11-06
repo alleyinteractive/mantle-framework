@@ -71,7 +71,7 @@ trait Query_Clauses {
 		}
 
 		// Only apply the clauses if the query is set and the query hash matches.
-		if ( ! $query || spl_object_hash( $query ) !== $this->get_query_hash() ) {
+		if ( ! $query || (string) spl_object_id( $query ) !== $this->get_query_hash() ) {
 			return $clauses;
 		}
 
@@ -142,7 +142,7 @@ trait Query_Clauses {
 	 */
 	public function on_pre_get_terms( \WP_Term_Query $query ): void {
 		// Only apply the clauses if the query hash matches.
-		if ( spl_object_hash( $query ) !== $this->get_query_hash() ) {
+		if ( (string) spl_object_id( $query ) !== $this->get_query_hash() ) {
 			return;
 		}
 

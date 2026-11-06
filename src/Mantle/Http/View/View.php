@@ -145,7 +145,7 @@ class View implements \Stringable {
 				}
 
 				if ( is_object( $value ) ) {
-					return spl_object_hash( $value );
+					return spl_object_id( $value );
 				}
 
 				return $value;
