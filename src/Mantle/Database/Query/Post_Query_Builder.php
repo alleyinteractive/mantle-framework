@@ -145,7 +145,7 @@ class Post_Query_Builder extends Builder {
 		$query = new \WP_Query();
 
 		// Store the query hash for reference by side-effects.
-		$this->query_hash = spl_object_hash( $query );
+		$this->query_hash = (string) spl_object_id( $query );
 
 		$this->with_clauses(
 			fn () => $query->query( $this->get_query_args() ),
@@ -182,7 +182,7 @@ class Post_Query_Builder extends Builder {
 		$query = new \WP_Query();
 
 		// Store the query hash for reference by side-effects.
-		$builder->query_hash = spl_object_hash( $query );
+		$builder->query_hash = (string) spl_object_id( $query );
 
 		$builder->with_clauses(
 			static fn () => $query->query( $builder->get_query_args() ),
@@ -327,7 +327,7 @@ class Post_Query_Builder extends Builder {
 		add_filter(
 			'posts_request',
 			function ( string $sql, \WP_Query $query ) use ( $die ): string {
-				if ( spl_object_hash( $query ) === $this->query_hash ) {
+				if ( (string) spl_object_id( $query ) === $this->query_hash ) {
 					dump( $sql );
 
 					if ( $die ) {
