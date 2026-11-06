@@ -125,6 +125,15 @@ jobs:
             wordpress: "latest"
             dependencies: "prefer-lowest"
             multisite: true
+          # PHP 8.6 only against latest WordPress: before 7.1, core calls spl_object_hash(), which 8.6 deprecates.
+          - php: 8.6
+            wordpress: "latest"
+            dependencies: "prefer-stable"
+            multisite: true
+          - php: 8.6
+            wordpress: "latest"
+            dependencies: "prefer-stable"
+            multisite: false
     runs-on: ubuntu-latest
     name: "PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite ' || '' }}Dependencies ${{ matrix.dependencies }}${{ matrix.vip-mu-plugins && ' vip-mu-plugins' || '' }}"
     env:
@@ -135,7 +144,8 @@ jobs:
       - name: Run PHP Tests
         uses: alleyinteractive/action-test-php@develop
         with:
-          install-command: composer update --${{ matrix.dependencies }} --prefer-dist --no-interaction --no-progress
+          # laminas/laminas-validator caps its supported PHP version below 8.6.
+          install-command: composer update --${{ matrix.dependencies }} --prefer-dist --no-interaction --no-progress ${{ matrix.php == 8.6 && '--ignore-platform-req=php+' || '' }}
           php-version: '${{ matrix.php }}'
           skip-wordpress-install: 'true'
           test-command: 'composer phpunit'

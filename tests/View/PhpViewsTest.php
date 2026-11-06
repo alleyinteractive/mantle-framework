@@ -80,6 +80,16 @@ class PhpViewsTest extends FrameworkTestCase {
 		$this->assertStringContainsString( 'Child loaded: successfully', $contents );
 	}
 
+	public function test_parent_child_load_from_dotted_directory(): void {
+		app()['view.loader']
+			->clear_paths()
+			->add_path( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view-in.dotted-dir', 'unit-test' );
+
+		$contents = (string) view( 'parent' );
+		$this->assertStringContainsString( 'Parent loaded: successfully', $contents );
+		$this->assertStringContainsString( 'Child loaded: successfully', $contents );
+	}
+
 	public function test_iterate(): void {
 		$items = [
 			rand_str(),

@@ -228,7 +228,8 @@ class Factory implements Contract {
 	 * @param string $slug Slug of the view to load.
 	 */
 	protected function resolve_child_view_path_from_parent( string $slug ): string {
-		$path = Str::before( (string) $this->current?->get_path(), '.' ) . '-' . Str::substr( $slug, 1 );
+		$parent = (string) $this->current?->get_path();
+		$path   = dirname( $parent ) . '/' . Str::before( basename( $parent ), '.' ) . '-' . Str::substr( $slug, 1 );
 
 		foreach ( $this->finder->get_possible_view_files( $path ) as $file ) {
 			if ( file_exists( $file ) ) {

@@ -106,7 +106,7 @@ class Term_Query_Builder extends Builder {
 	public function get(): Collection {
 		$query = new \WP_Term_Query();
 
-		$this->query_hash = spl_object_hash( $query );
+		$this->query_hash = (string) spl_object_id( $query );
 
 		/**
 		 * Fetch the terms IDs for the query.
@@ -143,7 +143,7 @@ class Term_Query_Builder extends Builder {
 
 		$query = new \WP_Term_Query();
 
-		$builder->query_hash = spl_object_hash( $query );
+		$builder->query_hash = (string) spl_object_id( $query );
 
 		return $builder->with_clauses(
 			static fn (): int => (int) $query->query(
@@ -166,7 +166,7 @@ class Term_Query_Builder extends Builder {
 		add_filter(
 			'terms_pre_query',
 			function ( mixed $terms, \WP_Term_Query $query ) use ( $die ) {
-				if ( spl_object_hash( $query ) === $this->query_hash ) {
+				if ( (string) spl_object_id( $query ) === $this->query_hash ) {
 					dump( $query->request );
 
 					if ( $die ) {

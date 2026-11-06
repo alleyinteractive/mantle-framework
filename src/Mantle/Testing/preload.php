@@ -66,7 +66,7 @@ if ( ! function_exists( __NAMESPACE__ . '\\_test_filter_build_unique_id' ) ) {
 
 		if ( is_object( $function[0] ) ) {
 			// Object class calling.
-			return spl_object_hash( $function[0] ) . $function[1];
+			return 'spl_object_id:' . spl_object_id( $function[0] ) . $function[1];
 		}
 
 		if ( is_string( $function[0] ) ) {
