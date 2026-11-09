@@ -115,6 +115,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 
 - `assertNodeHasClass()` and `assertNodeHasAnyClass()` on the HTML assertions. Use `assertHasClass()` and `assertHasAnyClass()` ([#883](https://github.com/alleyinteractive/mantle-framework/pull/883)).
+- Rector config (`rector.php`) drops skips and rules that Rector 2.8 deprecated, so `composer rector` prints no warnings.
 
 ## v1.22.2
 

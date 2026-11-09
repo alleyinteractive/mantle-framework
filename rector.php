@@ -5,51 +5,41 @@
  * phpcs:disable
  */
 
+declare(strict_types=1);
+
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
-use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodingStyle\Rector\ArrowFunction\ArrowFunctionDelegatingCallToFirstClassCallableRector;
 use Rector\CodeQuality\Rector\If_\ExplicitNullableObjectInstanceRector;
-use Rector\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\Closure\ClosureDelegatingCallToFirstClassCallableRector;
-use Rector\CodingStyle\Rector\FunctionLike\FunctionLikeToFirstClassCallableRector;
 use Rector\CodingStyle\Rector\If_\AlternativeIfToBracketRector;
 use Rector\Config\RectorConfig;
-use Rector\DeadCode\Rector\ClassMethod\RemoveDuplicatedReturnSelfDocblockRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveMixedDocblockOverruledByNativeTypeRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessUnionReturnDocblockRector;
 use Rector\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultParamRector;
-use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableRector;
-
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector;
 use Rector\Php70\Rector\StmtsAwareInterface\IfIssetToCoalescingRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php80\Rector\NotIdentical\StrContainsRector;
 use Rector\Php81\Rector\Array_\ArrayToFirstClassCallableRector;
-use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
+use Rector\TypeDeclaration\Rector\ClassLike\AddVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNullableTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictFluentReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector;
-use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
 use Rector\ValueObject\PhpVersion;
 
 /**
- * Rector Configuration
+ * Rules in `withSkip()` are disabled on purpose.
  *
- * Overtime this file will have more rules enabled for it. Right now, most of
- * them are commented out. They will be spread out over multiple pull requests.
- *
- * Rules that are known to cause issues and should not be used:
- *
- * - RemoveUselessParamTagRector: Conflicts with WordPress Coding Standards
+ * - RemoveUselessParamTagRector: Conflicts with WordPress Coding Standards.
+ * - Docblock rules (RemoveMixedDocblockOverruledByNativeTypeRector, RemoveUselessUnionReturnDocblockRector AlternativeIfToBracketRector): Rector re-prints edited nodes with extra tabs and mangles the file.
  */
 return RectorConfig::configure()
 	->withPhpVersion( PhpVersion::PHP_83 )
@@ -66,7 +56,6 @@ return RectorConfig::configure()
 	)
 	->withRules(
 		[
-			RenameForeachValueVariableToMatchExprVariableRector::class,
 			AddParamTypeDeclarationRector::class,
 		]
 	)
@@ -91,16 +80,12 @@ return RectorConfig::configure()
 			__DIR__ . '/src/Mantle/Database/Model/Relations',
 		],
 		ArrayToFirstClassCallableRector::class,
-		// Rector re-prints the nodes it edits with four tabs per indent level instead of
-		// one, so any rule that rewrites a docblock or an if-block mangles the file.
-		RemoveDuplicatedReturnSelfDocblockRector::class,
 		RemoveMixedDocblockOverruledByNativeTypeRector::class,
 		RemoveUselessUnionReturnDocblockRector::class,
 		AlternativeIfToBracketRector::class,
 		RemoveUselessParamTagRector::class,
 		StrContainsRector::class,
 		AddArrowFunctionReturnTypeRector::class,
-		EmptyOnNullableObjectToInstanceOfRector::class,
 		ExplicitNullableObjectInstanceRector::class,
 		RemoveExtraParametersRector::class => [
 			__DIR__ . '/src/Mantle/Support/helpers/helpers-general.php',
@@ -118,13 +103,8 @@ return RectorConfig::configure()
 			__DIR__ . '/src/Mantle/Support/Collection.php',
 			__DIR__ . '/src/Mantle/Support/Traits/Enumerates_Values.php',
 		],
-		ObjectExplicitBoolCompareRector::class => [
-			__DIR__ . '/src/Mantle/Database/Model/Post.php',
-			__DIR__ . '/src/Mantle/Testing',
-		],
 		SimplifyEmptyCheckOnEmptyArrayRector::class,
 		CatchExceptionNameMatchingTypeRector::class,
-		FlipTypeControlToUseExclusiveTypeRector::class,
 		ClosureDelegatingCallToFirstClassCallableRector::class,
 		ArrowFunctionDelegatingCallToFirstClassCallableRector::class,
 		RemoveNullArgOnNullDefaultParamRector::class,
