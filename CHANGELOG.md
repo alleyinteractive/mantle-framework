@@ -5,17 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## v1.23.0
 
 ### Added
 
+- PHP 8.6 support. `spl_object_hash()`, deprecated in PHP 8.6, is replaced with `spl_object_id()` in the query builders, global scopes, view cache keys, and the testing preload. Closure global scope keys now carry a `closure:` prefix and stay string keys for `with_global_scope()` ([#1014](https://github.com/alleyinteractive/mantle-framework/pull/1014)).
+- Chainable HTML assertions `assertHasClass()`, `assertNotHasClass()`, `assertHasAnyClass()`, and `assertNotHasAnyClass()`. They replace `has_class()` mid-chain, which silently returned `false` instead of failing ([#883](https://github.com/alleyinteractive/mantle-framework/pull/883)).
 - Factory `with_meta()` (post, term, user, Co-Authors Plus, and Byline Manager factories) accepts
   several meta arrays in one call. A key repeated across the arrays is stored once per array,
-  which creates multiple meta entries for the same key (#925).
+  which creates multiple meta entries for the same key ([#925](https://github.com/alleyinteractive/mantle-framework/pull/925)).
 
 ### Fixed
 
-- `WordPress_Cache_Repository::get_multiple()` (and `getMultiple()`) unwraps values stored by `flexible()`, matching `get()` (#971).
+- `WordPress_Cache_Repository::get_multiple()` (and `getMultiple()`) unwraps values stored by `flexible()`, matching `get()` ([#971](https://github.com/alleyinteractive/mantle-framework/pull/971)).
+- Child views (`view( '_child' )`) resolve when a directory in the parent view's path contains a dot ([#1014](https://github.com/alleyinteractive/mantle-framework/pull/1014)).
 
 #### Database
 
@@ -37,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### HTTP
 
-- Route model binding no longer resolves draft, pending, private, future, or trashed posts for users who cannot read them (#165).
+- Route model binding no longer resolves draft, pending, private, future, or trashed posts for users who cannot read them ([#165](https://github.com/alleyinteractive/mantle-framework/pull/165)).
 - `Request::file()`, `all_files()`, and `has_file()` no longer throw a `TypeError` on a real upload.
 - Fluent route attributes such as `middleware()` and `name()` no longer leak to sibling routes registered inside a `rest_api()` closure.
 - REST routes sharing a path across different namespaces no longer overwrite each other.
@@ -89,8 +92,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A test skipped by a `#[Before]` hook (such as `Multisite_Test` and `Single_Site_Test`) is no longer reported as an error on PHPUnit 12.5.40 and later, which does not run `setUp()` for it but still runs `tearDown()`.
 - REST requests made with the test client are served once instead of once per request made so far in the test.
 - `wp_scripts` and `wp_styles` are deep-copied so localized and inline data on core handles no longer leaks between tests.
-- User roles and capabilities are restored between tests (#828).
-- A checkout whose path contains the content directory but has no WordPress installation above it is rsynced instead of silently skipping `maybe_rsync()`, `with_sqlite()`, and related calls (#906).
+- User roles and capabilities are restored between tests ([#828](https://github.com/alleyinteractive/mantle-framework/pull/828)).
+- A checkout whose path contains the content directory but has no WordPress installation above it is rsynced instead of silently skipping `maybe_rsync()`, `with_sqlite()`, and related calls ([#906](https://github.com/alleyinteractive/mantle-framework/pull/906)).
 - `assertDatabaseHas()` and `assertHookApplied()` honor an explicit count of 0.
 - A failed `chdir()` fallback during rsync no longer exits silently, and the composer executable detection works.
 - The user factory generates unique logins and emails.
@@ -107,13 +110,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Web routes enforce `where()` patterns and `domain()` hosts. A request that fails a pattern or comes from another host now gets a 404 where it used to match the route.
 - After a verb call such as `get()` or `post()`, the HTTP client's `url()` and `method()` no longer return that request's values, and `purge()` with no URL throws instead of purging the previous request. Pass the URL to `purge()`.
 - HTTP client middleware receives a per-request copy of the pending request, so changes it makes (such as a refreshed auth header) no longer carry over to later requests made with the same client.
+- The `guzzlehttp/guzzle` requirement allows `^7.7 || ^8.0` ([#910](https://github.com/alleyinteractive/mantle-framework/pull/910)).
+
+### Deprecated
+
+- `assertNodeHasClass()` and `assertNodeHasAnyClass()` on the HTML assertions. Use `assertHasClass()` and `assertHasAnyClass()` ([#883](https://github.com/alleyinteractive/mantle-framework/pull/883)).
 - Rector config (`rector.php`) drops skips and rules that Rector 2.8 deprecated, so `composer rector` prints no warnings.
 
 ## v1.22.2
 
 ### Changed
 
-- Updated the `alleyinteractive/wp-asset-manager` requirement to allow `^1.4.0 || ^2.0` (#919).
+- Updated the `alleyinteractive/wp-asset-manager` requirement to allow `^1.4.0 || ^2.0` ([#919](https://github.com/alleyinteractive/mantle-framework/pull/919)).
   Projects that require the plugin only through Mantle will upgrade to 2.x on `composer update`.
   Review the [wp-asset-manager 2.0 changes](https://github.com/alleyinteractive/wp-asset-manager/releases/tag/v2.0.0)
   first: for example, a stylesheet with the `defer` load method now loads as `async` and raises
@@ -151,7 +159,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Rector target version were updated to match. This is a backwards-incompatible change
   for projects still running PHP 8.2.
 
-- **The framework is now fully PSR-4 compliant (#812).** Class, trait, interface, and
+- **The framework is now fully PSR-4 compliant ([#812](https://github.com/alleyinteractive/mantle-framework/pull/812)).** Class, trait, interface, and
   enum names — and the published package names (which remain lowercase-hyphenated, e.g.
   `mantle-framework/http-client`) — are unchanged, so this is not a breaking change.
 
