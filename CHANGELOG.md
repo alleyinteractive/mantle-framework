@@ -107,6 +107,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Web routes enforce `where()` patterns and `domain()` hosts. A request that fails a pattern or comes from another host now gets a 404 where it used to match the route.
 - After a verb call such as `get()` or `post()`, the HTTP client's `url()` and `method()` no longer return that request's values, and `purge()` with no URL throws instead of purging the previous request. Pass the URL to `purge()`.
 - HTTP client middleware receives a per-request copy of the pending request, so changes it makes (such as a refreshed auth header) no longer carry over to later requests made with the same client.
+- Rector config (`rector.php`) drops skips and rules that Rector 2.8 deprecated, so `composer rector` prints no warnings.
 
 ## v1.22.2
 
