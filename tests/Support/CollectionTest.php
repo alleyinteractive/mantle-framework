@@ -226,19 +226,21 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEmpty($data->all());
 	}
 
-//	/**
-//	 * @dataProvider collectionClassProvider
-//	 */
-//	#[DataProvider( 'collectionClassProvider' )]
-//	public function testCollectionShuffleWithSeed($collection)
-//	{
-//		$data = new $collection(range(0, 100, 10));
-//
-//		$firstRandom = $data->shuffle(1234);
-//		$secondRandom = $data->shuffle(1234);
-//
-//		$this->assertSame($firstRandom, $secondRandom);
-//	}
+	/**
+	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
+	#[DataProvider( 'collectionClassProvider' )]
+	public function testCollectionShuffleWithSeed(string $collection ): void
+	{
+		$data = new $collection(range(0, 100, 10));
+
+		$firstRandom = $data->shuffle(1234);
+		$secondRandom = $data->shuffle(1234);
+
+		$this->assertEquals($firstRandom, $secondRandom);
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
@@ -548,181 +550,177 @@ class CollectionTest extends FrameworkTestCase {
 		})->all());
 	}
 
-//	/**
-//	 * @dataProvider collectionClassProvider
-//	 */
-//	#[DataProvider( 'collectionClassProvider' )]
-//	public function testHigherOrderKeyBy($collection)
-//	{
-//		$c = new $collection([
-//			['id' => 'id1', 'name' => 'first'],
-//			['id' => 'id2', 'name' => 'second'],
-//		]);
-//
-//		$this->assertSame(['id1' => 'first', 'id2' => 'second'], $c->keyBy->id->map->name->all());
-//	}
+	/**
+	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
+	#[DataProvider( 'collectionClassProvider' )]
+	public function testHigherOrderKeyBy(string $collection ): void
+	{
+		$c = new $collection([
+			['id' => 'id1', 'name' => 'first'],
+			['id' => 'id2', 'name' => 'second'],
+		]);
 
-//	/**
-//	 * @dataProvider collectionClassProvider
-//	 */
-//	#[DataProvider( 'collectionClassProvider' )]
-//	public function testHigherOrderUnique($collection)
-//	{
-//		$c = new $collection([
-//			['id' => '1', 'name' => 'first'],
-//			['id' => '1', 'name' => 'second'],
-//		]);
-//
-//		$this->assertCount(1, $c->unique->id);
-//	}
+		$this->assertSame(['id1' => 'first', 'id2' => 'second'], $c->key_by->id->map->name->all());
+	}
 
-//	/**
-//	 * @dataProvider collectionClassProvider
-//	 */
-//	#[DataProvider( 'collectionClassProvider' )]
-//	public function testHigherOrderFilter($collection)
-//	{
-//		$c = new $collection([
-//			new class {
-//				public $name = 'Alex';
-//
-//				public function active()
-//				{
-//					return true;
-//				}
-//			},
-//			new class {
-//				public $name = 'John';
-//
-//				public function active()
-//				{
-//					return false;
-//				}
-//			},
-//		]);
-//
-//		$this->assertCount(1, $c->filter->active());
-//	}
+	/**
+	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
+	#[DataProvider( 'collectionClassProvider' )]
+	public function testHigherOrderUnique(string $collection ): void
+	{
+		$c = new $collection([
+			['id' => '1', 'name' => 'first'],
+			['id' => '1', 'name' => 'second'],
+		]);
 
-//	/**
-//	 * @dataProvider collectionClassProvider
-//	 */
-//	#[DataProvider( 'collectionClassProvider' )]
-//	public function testWhere($collection)
-//	{
-//		$c = new $collection([['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]]);
-//
-//		$this->assertSame(
-//			[['v' => 3], ['v' => '3']],
-//			$c->where('v', 3)->values()->all()
-//		);
-//		$this->assertSame(
-//			[['v' => 3], ['v' => '3']],
-//			$c->where('v', '=', 3)->values()->all()
-//		);
-//		$this->assertSame(
-//			[['v' => 3], ['v' => '3']],
-//			$c->where('v', '==', 3)->values()->all()
-//		);
-//		$this->assertSame(
-//			[['v' => 3], ['v' => '3']],
-//			$c->where('v', 'garbage', 3)->values()->all()
-//		);
-//		$this->assertSame(
-//			[['v' => 3]],
-//			$c->where('v', '===', 3)->values()->all()
-//		);
-//
-//		$this->assertSame(
-//			[['v' => 1], ['v' => 2], ['v' => 4]],
-//			$c->where('v', '<>', 3)->values()->all()
-//		);
-//		$this->assertSame(
-//			[['v' => 1], ['v' => 2], ['v' => 4]],
-//			$c->where('v', '!=', 3)->values()->all()
-//		);
-//		$this->assertSame(
-//			[['v' => 1], ['v' => 2], ['v' => '3'], ['v' => 4]],
-//			$c->where('v', '!==', 3)->values()->all()
-//		);
-//		$this->assertSame(
-//			[['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3']],
-//			$c->where('v', '<=', 3)->values()->all()
-//		);
-//		$this->assertSame(
-//			[['v' => 3], ['v' => '3'], ['v' => 4]],
-//			$c->where('v', '>=', 3)->values()->all()
-//		);
-//		$this->assertSame(
-//			[['v' => 1], ['v' => 2]],
-//			$c->where('v', '<', 3)->values()->all()
-//		);
-//		$this->assertSame(
-//			[['v' => 4]],
-//			$c->where('v', '>', 3)->values()->all()
-//		);
-//
-//		$object = (object) ['foo' => 'bar'];
-//
-//		$this->assertSame(
-//			[],
-//			$c->where('v', $object)->values()->all()
-//		);
-//
-//		$this->assertSame(
-//			[['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]],
-//			$c->where('v', '<>', $object)->values()->all()
-//		);
-//
-//		$this->assertSame(
-//			[['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]],
-//			$c->where('v', '!=', $object)->values()->all()
-//		);
-//
-//		$this->assertSame(
-//			[['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]],
-//			$c->where('v', '!==', $object)->values()->all()
-//		);
-//
-//		$this->assertSame(
-//			[],
-//			$c->where('v', '>', $object)->values()->all()
-//		);
-//
-//		$c = new $collection([['v' => 1], ['v' => $object]]);
-//		$this->assertSame(
-//			[['v' => $object]],
-//			$c->where('v', $object)->values()->all()
-//		);
-//
-//		$this->assertSame(
-//			[['v' => 1], ['v' => $object]],
-//			$c->where('v', '<>', null)->values()->all()
-//		);
-//
-//		$this->assertSame(
-//			[],
-//			$c->where('v', '<', null)->values()->all()
-//		);
-//
-//		$c = new $collection([['v' => 1], ['v' => new HtmlString('hello')]]);
-//		$this->assertSame(
-//			[['v' => new HtmlString('hello')]],
-//			$c->where('v', 'hello')->values()->all()
-//		);
-//
-//		$c = new $collection([['v' => 1], ['v' => 'hello']]);
-//		$this->assertSame(
-//			[['v' => 'hello']],
-//			$c->where('v', new HtmlString('hello'))->values()->all()
-//		);
-//
-//		$c = new $collection([['v' => 1], ['v' => 2], ['v' => null]]);
-//		$this->assertSame(
-//			[['v' => 1], ['v' => 2]],
-//			$c->where('v')->values()->all()
-//		);
-//	}
+		$this->assertCount(1, $c->unique->id);
+	}
+
+	/**
+	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
+	#[DataProvider( 'collectionClassProvider' )]
+	public function testHigherOrderFilter(string $collection ): void
+	{
+		$c = new $collection([
+			new class {
+				public string $name = 'Alex';
+
+				public function active(): bool
+				{
+					return true;
+				}
+			},
+			new class {
+				public string $name = 'John';
+
+				public function active(): bool
+				{
+					return false;
+				}
+			},
+		]);
+
+		$this->assertCount(1, $c->filter->active());
+	}
+
+	/**
+	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
+	#[DataProvider( 'collectionClassProvider' )]
+	public function testWhere(string $collection ): void
+	{
+		$c = new $collection([['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]]);
+
+		$this->assertSame(
+			[['v' => 3], ['v' => '3']],
+			$c->where('v', 3)->values()->all()
+		);
+		$this->assertSame(
+			[['v' => 3], ['v' => '3']],
+			$c->where('v', '=', 3)->values()->all()
+		);
+		$this->assertSame(
+			[['v' => 3], ['v' => '3']],
+			$c->where('v', '==', 3)->values()->all()
+		);
+		$this->assertSame(
+			[['v' => 3], ['v' => '3']],
+			$c->where('v', 'garbage', 3)->values()->all()
+		);
+		$this->assertSame(
+			[['v' => 3]],
+			$c->where('v', '===', 3)->values()->all()
+		);
+
+		$this->assertSame(
+			[['v' => 1], ['v' => 2], ['v' => 4]],
+			$c->where('v', '<>', 3)->values()->all()
+		);
+		$this->assertSame(
+			[['v' => 1], ['v' => 2], ['v' => 4]],
+			$c->where('v', '!=', 3)->values()->all()
+		);
+		$this->assertSame(
+			[['v' => 1], ['v' => 2], ['v' => '3'], ['v' => 4]],
+			$c->where('v', '!==', 3)->values()->all()
+		);
+		$this->assertSame(
+			[['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3']],
+			$c->where('v', '<=', 3)->values()->all()
+		);
+		$this->assertSame(
+			[['v' => 3], ['v' => '3'], ['v' => 4]],
+			$c->where('v', '>=', 3)->values()->all()
+		);
+		$this->assertSame(
+			[['v' => 1], ['v' => 2]],
+			$c->where('v', '<', 3)->values()->all()
+		);
+		$this->assertSame(
+			[['v' => 4]],
+			$c->where('v', '>', 3)->values()->all()
+		);
+
+		$object = (object) ['foo' => 'bar'];
+
+		$this->assertSame(
+			[],
+			$c->where('v', $object)->values()->all()
+		);
+
+		$this->assertSame(
+			[['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]],
+			$c->where('v', '<>', $object)->values()->all()
+		);
+
+		$this->assertSame(
+			[['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]],
+			$c->where('v', '!=', $object)->values()->all()
+		);
+
+		$this->assertSame(
+			[['v' => 1], ['v' => 2], ['v' => 3], ['v' => '3'], ['v' => 4]],
+			$c->where('v', '!==', $object)->values()->all()
+		);
+
+		$this->assertSame(
+			[],
+			$c->where('v', '>', $object)->values()->all()
+		);
+
+		$c = new $collection([['v' => 1], ['v' => $object]]);
+		$this->assertSame(
+			[['v' => $object]],
+			$c->where('v', $object)->values()->all()
+		);
+
+		$this->assertSame(
+			[['v' => 1], ['v' => $object]],
+			$c->where('v', '<>', null)->values()->all()
+		);
+
+		$this->assertSame(
+			[],
+			$c->where('v', '<', null)->values()->all()
+		);
+
+		$c = new $collection([['v' => 1], ['v' => 2], ['v' => null]]);
+		$this->assertSame(
+			[['v' => 1], ['v' => 2]],
+			$c->where('v')->values()->all()
+		);
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
@@ -1819,54 +1817,58 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-//	/**
-//	 * @dataProvider collectionClassProvider
-//	 */
-//	#[DataProvider( 'collectionClassProvider' )]
-//	public function testEvery($collection)
-//	{
-//		$c = new $collection([]);
-//		$this->assertTrue($c->every('key', 'value'));
-//		$this->assertTrue($c->every(function () {
-//			return false;
-//		}));
-//
-//		$c = new $collection([['age' => 18], ['age' => 20], ['age' => 20]]);
-//		$this->assertFalse($c->every('age', 18));
-//		$this->assertTrue($c->every('age', '>=', 18));
-//		$this->assertTrue($c->every(function ($item) {
-//			return $item['age'] >= 18;
-//		}));
-//		$this->assertFalse($c->every(function ($item) {
-//			return $item['age'] >= 20;
-//		}));
-//
-//		$c = new $collection([null, null]);
-//		$this->assertTrue($c->every(function ($item) {
-//			return $item === null;
-//		}));
-//
-//		$c = new $collection([['active' => true], ['active' => true]]);
-//		$this->assertTrue($c->every('active'));
-//		$this->assertTrue($c->every->active);
-//		$this->assertFalse($c->concat([['active' => false]])->every->active);
-//	}
+	/**
+	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
+	#[DataProvider( 'collectionClassProvider' )]
+	public function testEvery(string $collection ): void
+	{
+		$c = new $collection([]);
+		$this->assertTrue($c->every('key', 'value'));
+		$this->assertTrue($c->every(function () {
+			return false;
+		}));
 
-//	/**
-//	 * @dataProvider collectionClassProvider
-//	 */
-//	#[DataProvider( 'collectionClassProvider' )]
-//	public function testExcept($collection)
-//	{
-//		$data = new $collection(['first' => 'Taylor', 'last' => 'Otwell', 'email' => 'taylorotwell@gmail.com']);
-//
-//		$this->assertSame(['first' => 'Taylor'], $data->except(['last', 'email', 'missing'])->all());
-//		$this->assertSame(['first' => 'Taylor'], $data->except('last', 'email', 'missing')->all());
-//
-//		$this->assertSame(['first' => 'Taylor'], $data->except(collect(['last', 'email', 'missing']))->all());
-//		$this->assertSame(['first' => 'Taylor', 'email' => 'taylorotwell@gmail.com'], $data->except(['last'])->all());
-//		$this->assertSame(['first' => 'Taylor', 'email' => 'taylorotwell@gmail.com'], $data->except('last')->all());
-//	}
+		$c = new $collection([['age' => 18], ['age' => 20], ['age' => 20]]);
+		$this->assertFalse($c->every('age', 18));
+		$this->assertTrue($c->every('age', '>=', 18));
+		$this->assertTrue($c->every(function ($item) {
+			return $item['age'] >= 18;
+		}));
+		$this->assertFalse($c->every(function ($item) {
+			return $item['age'] >= 20;
+		}));
+
+		$c = new $collection([null, null]);
+		$this->assertTrue($c->every(function ($item) {
+			return $item === null;
+		}));
+
+		$c = new $collection([['active' => true], ['active' => true]]);
+		$this->assertTrue($c->every('active'));
+		$this->assertTrue($c->every->active);
+		$this->assertFalse($c->concat([['active' => false]])->every->active);
+	}
+
+	/**
+	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
+	#[DataProvider( 'collectionClassProvider' )]
+	public function testExcept(string $collection ): void
+	{
+		$data = new $collection(['first' => 'Taylor', 'last' => 'Otwell', 'email' => 'taylorotwell@gmail.com']);
+
+		$this->assertSame(['first' => 'Taylor'], $data->except(['last', 'email', 'missing'])->all());
+		$this->assertSame(['first' => 'Taylor'], $data->except('last', 'email', 'missing')->all());
+
+		$this->assertSame(['first' => 'Taylor'], $data->except(collect(['last', 'email', 'missing']))->all());
+		$this->assertSame(['first' => 'Taylor', 'email' => 'taylorotwell@gmail.com'], $data->except(['last'])->all());
+		$this->assertSame(['first' => 'Taylor', 'email' => 'taylorotwell@gmail.com'], $data->except('last')->all());
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
@@ -2010,42 +2012,44 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['taylor', 'shawn', 'dayle'], $data->all());
 	}
 
-//	/**
-//	 * @dataProvider collectionClassProvider
-//	 */
-//	#[DataProvider( 'collectionClassProvider' )]
-//	public function testRandom($collection)
-//	{
-//		$data = new $collection([1, 2, 3, 4, 5, 6]);
-//
-//		$random = $data->random();
-//		$this->assertIsInt($random);
-//		$this->assertContains($random, $data->all());
-//
-//		$random = $data->random(0);
-//		$this->assertInstanceOf($collection, $random);
-//		$this->assertCount(0, $random);
-//
-//		$random = $data->random(1);
-//		$this->assertInstanceOf($collection, $random);
-//		$this->assertCount(1, $random);
-//
-//		$random = $data->random(2);
-//		$this->assertInstanceOf($collection, $random);
-//		$this->assertCount(2, $random);
-//
-//		$random = $data->random('0');
-//		$this->assertInstanceOf($collection, $random);
-//		$this->assertCount(0, $random);
-//
-//		$random = $data->random('1');
-//		$this->assertInstanceOf($collection, $random);
-//		$this->assertCount(1, $random);
-//
-//		$random = $data->random('2');
-//		$this->assertInstanceOf($collection, $random);
-//		$this->assertCount(2, $random);
-//	}
+	/**
+	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
+	#[DataProvider( 'collectionClassProvider' )]
+	public function testRandom(string $collection ): void
+	{
+		$data = new $collection([1, 2, 3, 4, 5, 6]);
+
+		$random = $data->random();
+		$this->assertIsInt($random);
+		$this->assertContains($random, $data->all());
+
+		$random = $data->random(0);
+		$this->assertInstanceOf($collection, $random);
+		$this->assertCount(0, $random);
+
+		$random = $data->random(1);
+		$this->assertInstanceOf($collection, $random);
+		$this->assertCount(1, $random);
+
+		$random = $data->random(2);
+		$this->assertInstanceOf($collection, $random);
+		$this->assertCount(2, $random);
+
+		$random = $data->random('0');
+		$this->assertInstanceOf($collection, $random);
+		$this->assertCount(0, $random);
+
+		$random = $data->random('1');
+		$this->assertInstanceOf($collection, $random);
+		$this->assertCount(1, $random);
+
+		$random = $data->random('2');
+		$this->assertInstanceOf($collection, $random);
+		$this->assertCount(2, $random);
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
@@ -2379,36 +2383,41 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([$o], $data->all());
 	}
 
-//	/**
-//	 * @dataProvider collectionClassProvider
-//	 */
-//	#[DataProvider( 'collectionClassProvider' )]
-//	public function testWrapWithCollectionClass($collection)
-//	{
-//		$data = $collection::wrap($collection::make(['foo']));
-//		$this->assertSame(['foo'], $data->all());
-//	}
+	/**
+	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
+	#[DataProvider( 'collectionClassProvider' )]
+	public function testWrapWithCollectionClass(string $collection ): void
+	{
+		$data = $collection::wrap($collection::make(['foo']));
+		$this->assertSame(['foo'], $data->all());
+	}
 
-//	/**
-//	 * @dataProvider collectionClassProvider
-//	 */
-//	#[DataProvider( 'collectionClassProvider' )]
-//	public function testWrapWithCollectionSubclass($collection)
-//	{
-//		$data = TestCollectionSubclass::wrap($collection::make(['foo']));
-//		$this->assertSame(['foo'], $data->all());
-//		$this->assertInstanceOf(TestCollectionSubclass::class, $data);
-//	}
+	/**
+	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
+	#[DataProvider( 'collectionClassProvider' )]
+	public function testWrapWithCollectionSubclass(string $collection ): void
+	{
+		$data = TestCollectionSubclass::wrap($collection::make(['foo']));
+		$this->assertSame(['foo'], $data->all());
+	}
 
-//	/**
-//	 * @dataProvider collectionClassProvider
-//	 */
-//	#[DataProvider( 'collectionClassProvider' )]
-//	public function testUnwrapCollection($collection)
-//	{
-//		$data = new $collection(['foo']);
-//		$this->assertSame(['foo'], $collection::unwrap($data));
-//	}
+	/**
+	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
+	#[DataProvider( 'collectionClassProvider' )]
+	public function testUnwrapCollection(string $collection ): void
+	{
+		$data = new $collection(['foo']);
+		$this->assertSame(['foo'], $collection::unwrap($data));
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
@@ -3112,51 +3121,53 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals($expected_result, $result->to_array());
 	}
 
-//	/**
-//	 * @dataProvider collectionClassProvider
-//	 */
-//	#[DataProvider( 'collectionClassProvider' )]
-//	public function testGroupByMultiLevelAndClosurePreservingKeys($collection)
-//	{
-//		$data = new $collection([
-//			10 => ['user' => 1, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_3']],
-//			20 => ['user' => 2, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_2']],
-//			30 => ['user' => 3, 'skilllevel' => 2, 'roles' => ['Role_1']],
-//			40 => ['user' => 4, 'skilllevel' => 2, 'roles' => ['Role_2']],
-//		]);
-//
-//		$result = $data->group_by([
-//			'skilllevel',
-//			function ($item) {
-//				return $item['roles'];
-//			},
-//		], true);
-//
-//		$expected_result = [
-//			1 => [
-//				'Role_1' => [
-//					10 => ['user' => 1, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_3']],
-//					20 => ['user' => 2, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_2']],
-//				],
-//				'Role_3' => [
-//					10 => ['user' => 1, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_3']],
-//				],
-//				'Role_2' => [
-//					20 => ['user' => 2, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_2']],
-//				],
-//			],
-//			2 => [
-//				'Role_1' => [
-//					30 => ['user' => 3, 'skilllevel' => 2, 'roles' => ['Role_1']],
-//				],
-//				'Role_2' => [
-//					40 => ['user' => 4, 'skilllevel' => 2, 'roles' => ['Role_2']],
-//				],
-//			],
-//		];
-//
-//		$this->assertSame($expected_result, $result->to_array());
-//	}
+	/**
+	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
+	#[DataProvider( 'collectionClassProvider' )]
+	public function testGroupByMultiLevelAndClosurePreservingKeys(string $collection ): void
+	{
+		$data = new $collection([
+			10 => ['user' => 1, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_3']],
+			20 => ['user' => 2, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_2']],
+			30 => ['user' => 3, 'skilllevel' => 2, 'roles' => ['Role_1']],
+			40 => ['user' => 4, 'skilllevel' => 2, 'roles' => ['Role_2']],
+		]);
+
+		$result = $data->group_by([
+			'skilllevel',
+			function ($item) {
+				return $item['roles'];
+			},
+		], true);
+
+		$expected_result = [
+			1 => [
+				'Role_1' => [
+					10 => ['user' => 1, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_3']],
+					20 => ['user' => 2, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_2']],
+				],
+				'Role_3' => [
+					10 => ['user' => 1, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_3']],
+				],
+				'Role_2' => [
+					20 => ['user' => 2, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_2']],
+				],
+			],
+			2 => [
+				'Role_1' => [
+					30 => ['user' => 3, 'skilllevel' => 2, 'roles' => ['Role_1']],
+				],
+				'Role_2' => [
+					40 => ['user' => 4, 'skilllevel' => 2, 'roles' => ['Role_2']],
+				],
+			],
+		];
+
+		$this->assertSame($expected_result, $result->to_array());
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
@@ -3219,109 +3230,113 @@ class CollectionTest extends FrameworkTestCase {
 		], $result->all());
 	}
 
-//	/**
-//	 * @dataProvider collectionClassProvider
-//	 */
-//	#[DataProvider( 'collectionClassProvider' )]
-//	public function testContains($collection)
-//	{
-//		$c = new $collection([1, 3, 5]);
-//
-//		$this->assertTrue($c->contains(1));
-//		$this->assertTrue($c->contains('1'));
-//		$this->assertFalse($c->contains(2));
-//		$this->assertFalse($c->contains('2'));
-//
-//		$c = new $collection(['1']);
-//		$this->assertTrue($c->contains('1'));
-//		$this->assertTrue($c->contains(1));
-//
-//		$c = new $collection([null]);
-//		$this->assertTrue($c->contains(false));
-//		$this->assertTrue($c->contains(null));
-//		$this->assertTrue($c->contains([]));
-//		$this->assertTrue($c->contains(0));
-//		$this->assertTrue($c->contains(''));
-//
-//		$c = new $collection([0]);
-//		$this->assertTrue($c->contains(0));
-//		$this->assertTrue($c->contains('0'));
-//		$this->assertTrue($c->contains(false));
-//		$this->assertTrue($c->contains(null));
-//
-//		$this->assertTrue($c->contains(function ($value) {
-//			return $value < 5;
-//		}));
-//		$this->assertFalse($c->contains(function ($value) {
-//			return $value > 5;
-//		}));
-//
-//		$c = new $collection([['v' => 1], ['v' => 3], ['v' => 5]]);
-//
-//		$this->assertTrue($c->contains('v', 1));
-//		$this->assertFalse($c->contains('v', 2));
-//
-//		$c = new $collection(['date', 'class', (object) ['foo' => 50]]);
-//
-//		$this->assertTrue($c->contains('date'));
-//		$this->assertTrue($c->contains('class'));
-//		$this->assertFalse($c->contains('foo'));
-//
-//		$c = new $collection([['a' => false, 'b' => false], ['a' => true, 'b' => false]]);
-//
-//		$this->assertTrue($c->contains->a);
-//		$this->assertFalse($c->contains->b);
-//
-//		$c = new $collection([
-//			null, 1, 2,
-//		]);
-//
-//		$this->assertTrue($c->contains(function ($value) {
-//			return is_null($value);
-//		}));
-//	}
+	/**
+	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
+	#[DataProvider( 'collectionClassProvider' )]
+	public function testContains(string $collection ): void
+	{
+		$c = new $collection([1, 3, 5]);
 
-//	/**
-//	 * @dataProvider collectionClassProvider
-//	 */
-//	#[DataProvider( 'collectionClassProvider' )]
-//	public function testSome($collection)
-//	{
-//		$c = new $collection([1, 3, 5]);
-//
-//		$this->assertTrue($c->some(1));
-//		$this->assertFalse($c->some(2));
-//		$this->assertTrue($c->some(function ($value) {
-//			return $value < 5;
-//		}));
-//		$this->assertFalse($c->some(function ($value) {
-//			return $value > 5;
-//		}));
-//
-//		$c = new $collection([['v' => 1], ['v' => 3], ['v' => 5]]);
-//
-//		$this->assertTrue($c->some('v', 1));
-//		$this->assertFalse($c->some('v', 2));
-//
-//		$c = new $collection(['date', 'class', (object) ['foo' => 50]]);
-//
-//		$this->assertTrue($c->some('date'));
-//		$this->assertTrue($c->some('class'));
-//		$this->assertFalse($c->some('foo'));
-//
-//		$c = new $collection([['a' => false, 'b' => false], ['a' => true, 'b' => false]]);
-//
-//		$this->assertTrue($c->some->a);
-//		$this->assertFalse($c->some->b);
-//
-//		$c = new $collection([
-//			null, 1, 2,
-//		]);
-//
-//		$this->assertTrue($c->some(function ($value) {
-//			return is_null($value);
-//		}));
-//	}
+		$this->assertTrue($c->contains(1));
+		$this->assertTrue($c->contains('1'));
+		$this->assertFalse($c->contains(2));
+		$this->assertFalse($c->contains('2'));
+
+		$c = new $collection(['1']);
+		$this->assertTrue($c->contains('1'));
+		$this->assertTrue($c->contains(1));
+
+		$c = new $collection([null]);
+		$this->assertTrue($c->contains(false));
+		$this->assertTrue($c->contains(null));
+		$this->assertTrue($c->contains([]));
+		$this->assertTrue($c->contains(0));
+		$this->assertTrue($c->contains(''));
+
+		$c = new $collection([0]);
+		$this->assertTrue($c->contains(0));
+		$this->assertTrue($c->contains('0'));
+		$this->assertTrue($c->contains(false));
+		$this->assertTrue($c->contains(null));
+
+		$this->assertTrue($c->contains(function ($value) {
+			return $value < 5;
+		}));
+		$this->assertFalse($c->contains(function ($value) {
+			return $value > 5;
+		}));
+
+		$c = new $collection([['v' => 1], ['v' => 3], ['v' => 5]]);
+
+		$this->assertTrue($c->contains('v', 1));
+		$this->assertFalse($c->contains('v', 2));
+
+		$c = new $collection(['date', 'class', (object) ['foo' => 50]]);
+
+		$this->assertTrue($c->contains('date'));
+		$this->assertTrue($c->contains('class'));
+		$this->assertFalse($c->contains('foo'));
+
+		$c = new $collection([['a' => false, 'b' => false], ['a' => true, 'b' => false]]);
+
+		$this->assertTrue($c->contains->a);
+		$this->assertFalse($c->contains->b);
+
+		$c = new $collection([
+			null, 1, 2,
+		]);
+
+		$this->assertTrue($c->contains(function ($value) {
+			return is_null($value);
+		}));
+	}
+
+	/**
+	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
+	#[DataProvider( 'collectionClassProvider' )]
+	public function testSome(string $collection ): void
+	{
+		$c = new $collection([1, 3, 5]);
+
+		$this->assertTrue($c->some(1));
+		$this->assertFalse($c->some(2));
+		$this->assertTrue($c->some(function ($value) {
+			return $value < 5;
+		}));
+		$this->assertFalse($c->some(function ($value) {
+			return $value > 5;
+		}));
+
+		$c = new $collection([['v' => 1], ['v' => 3], ['v' => 5]]);
+
+		$this->assertTrue($c->some('v', 1));
+		$this->assertFalse($c->some('v', 2));
+
+		$c = new $collection(['date', 'class', (object) ['foo' => 50]]);
+
+		$this->assertTrue($c->some('date'));
+		$this->assertTrue($c->some('class'));
+		$this->assertFalse($c->some('foo'));
+
+		$c = new $collection([['a' => false, 'b' => false], ['a' => true, 'b' => false]]);
+
+		$this->assertTrue($c->some->a);
+		$this->assertFalse($c->some->b);
+
+		$c = new $collection([
+			null, 1, 2,
+		]);
+
+		$this->assertTrue($c->some(function ($value) {
+			return is_null($value);
+		}));
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
@@ -3792,31 +3807,31 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame($expected, $actual);
 	}
 
-//	public function testPushWithMultipleItems()
-//	{
-//		$expected = [
-//			0 => 4,
-//			1 => 5,
-//			2 => 6,
-//			3 => 'Jonny',
-//			4 => 'from',
-//			5 => 'Laroe',
-//			6 => 'Jonny',
-//			7 => 'from',
-//			8 => 'Laroe',
-//			9 => 'a',
-//			10 => 'b',
-//			11 => 'c',
-//		];
-//
-//		$data = new Collection([4, 5, 6]);
-//		$data->push('Jonny', 'from', 'Laroe');
-//		$data->push(...[11 => 'Jonny', 12 => 'from', 13 => 'Laroe']);
-//		$data->push(...collect(['a', 'b', 'c']));
-//		$actual = $data->push(...[])->to_array();
-//
-//		$this->assertSame($expected, $actual);
-//	}
+	public function testPushWithMultipleItems(): void
+	{
+		$expected = [
+			0 => 4,
+			1 => 5,
+			2 => 6,
+			3 => 'Jonny',
+			4 => 'from',
+			5 => 'Laroe',
+			6 => 'Jonny',
+			7 => 'from',
+			8 => 'Laroe',
+			9 => 'a',
+			10 => 'b',
+			11 => 'c',
+		];
+
+		$data = new Collection([4, 5, 6]);
+		$data->push('Jonny', 'from', 'Laroe');
+		$data->push(...[11 => 'Jonny', 12 => 'from', 13 => 'Laroe']);
+		$data->push(...collect(['a', 'b', 'c']));
+		$actual = $data->push(...[])->to_array();
+
+		$this->assertSame($expected, $actual);
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
@@ -4792,22 +4807,24 @@ class CollectionTest extends FrameworkTestCase {
 		}));
 	}
 
-//	/**
-//	 * @dataProvider collectionClassProvider
-//	 */
-//	#[DataProvider( 'collectionClassProvider' )]
-//	public function testHigherOrderPartition($collection)
-//	{
-//		$courses = new $collection([
-//			'a' => ['free' => true], 'b' => ['free' => false], 'c' => ['free' => true],
-//		]);
-//
-//		[$free, $premium] = $courses->partition->free->all();
-//
-//		$this->assertSame(['a' => ['free' => true], 'c' => ['free' => true]], $free->to_array());
-//
-//		$this->assertSame(['b' => ['free' => false]], $premium->to_array());
-//	}
+	/**
+	 * @dataProvider collectionClassProvider
+	 *
+	 * @param class-string<Collection<array-key, mixed>> $collection
+	 */
+	#[DataProvider( 'collectionClassProvider' )]
+	public function testHigherOrderPartition(string $collection ): void
+	{
+		$courses = new $collection([
+			'a' => ['free' => true], 'b' => ['free' => false], 'c' => ['free' => true],
+		]);
+
+		[$free, $premium] = $courses->partition->free->all();
+
+		$this->assertSame(['a' => ['free' => true], 'c' => ['free' => true]], $free->to_array());
+
+		$this->assertSame(['b' => ['free' => false]], $premium->to_array());
+	}
 
 	/**
 	 * @dataProvider collectionClassProvider
