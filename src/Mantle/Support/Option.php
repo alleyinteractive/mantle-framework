@@ -54,14 +54,22 @@ class Option implements ArrayAccess, Jsonable, \JsonSerializable, \Stringable {
 	/**
 	 * Save the option.
 	 *
+	 * Autoload is only changed when the value changes, as update_option() skips
+	 * the update otherwise. Use wp_set_option_autoload() to change autoload alone.
+	 *
+	 * @param bool|null $autoload Optional. Whether to load the option when WordPress starts up.
+	 *                            True to autoload, false to not autoload. Null (default)
+	 *                            keeps the current value of an existing option and lets
+	 *                            WordPress decide for a new one.
+	 *
 	 * @throws InvalidArgumentException If the option is a sub-property of an option and the option name is not passed.
 	 */
-	public function save(): static {
+	public function save( ?bool $autoload = null ): static {
 		if ( ! $this->option ) {
 			throw new InvalidArgumentException( 'Unable to save sub-property of an option.' );
 		}
 
-		update_option( $this->option, $this->value );
+		update_option( $this->option, $this->value, $autoload );
 
 		$this->value = get_option( $this->option );
 
