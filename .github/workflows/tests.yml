@@ -134,7 +134,8 @@ jobs:
             wordpress: "latest"
             dependencies: "prefer-stable"
             multisite: false
-    runs-on: ubuntu-latest
+    # Pinned: ubuntu-latest moved to 26.04 (libxml 2.15), which breaks the HTML snapshot tests.
+    runs-on: ubuntu-24.04
     name: "PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }} ${{ matrix.multisite && 'Multisite ' || '' }}Dependencies ${{ matrix.dependencies }}${{ matrix.vip-mu-plugins && ' vip-mu-plugins' || '' }}"
     env:
       MANTLE_INSTALL_VIP_MU_PLUGINS: ${{ matrix.vip-mu-plugins && '1' || '0' }}
@@ -162,7 +163,8 @@ jobs:
         php: [8.3, 8.4]
         wordpress: ["latest"]
         vip-mu-plugins: [true, false]
-    runs-on: ubuntu-latest
+    # Pinned: see the note on the unit-tests job.
+    runs-on: ubuntu-24.04
     name: "Parallel PR Tests PHP ${{ matrix.php }} WordPress ${{ matrix.wordpress }}"
     env:
       MANTLE_INSTALL_VIP_MU_PLUGINS: ${{ matrix.vip-mu-plugins && '1' || '0' }}
