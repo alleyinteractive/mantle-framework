@@ -516,7 +516,8 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 	}
 
 	public function test_match_snapshot_http(): void {
-		Route::get( '/example/', static fn () => 'example' );
+		// Use real HTML: libxml 2.14+ no longer wraps plain text in a <p>.
+		Route::get( '/example/', static fn () => '<p>example</p>' );
 
 		$this->get( '/example' )
 			->assertOk()
@@ -551,10 +552,9 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 
 		$this->get( '/example' )
 			->assertOk()
-			->assertMatchesSnapshotHtml( [
-				'/html/body/div[@class="example"]',
-				'/html/body/div[@class="example-two"]',
-			] );
+			// A single selector: the snapshot of several nodes nests them differently
+			// between libxml versions (2.9 vs 2.14+), so it cannot be stored reliably.
+			->assertMatchesSnapshotHtml( '/html/body/div[@class="example"]' );
 	}
 
 	public function test_match_snapshot_no_selectors_matched(): void {
