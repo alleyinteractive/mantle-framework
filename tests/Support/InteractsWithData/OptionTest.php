@@ -3,6 +3,7 @@ namespace Mantle\Tests\Support\InteractsWithDataTest;
 
 use Mantle\Support\Option;
 use Mantle\Testing\FrameworkTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
@@ -34,6 +35,54 @@ class OptionTest extends FrameworkTestCase {
 
 		$this->assertSame( 'new-test', $option->string() );
 		$this->assertSame( 'new-test', get_option( 'test_option' ) );
+	}
+
+	/**
+	 * @dataProvider save_autoload_provider
+	 *
+	 * @param bool|null $existing Autoload of the existing option. Null if the option does not exist yet.
+	 * @param bool|null $autoload Autoload argument passed to save().
+	 * @param bool      $expected Whether the option is autoloaded after saving.
+	 */
+	#[DataProvider( 'save_autoload_provider' )]
+	public function test_save_autoload( ?bool $existing, ?bool $autoload, bool $expected ): void {
+		if ( null !== $existing ) {
+			update_option( 'test_option', 'test', $existing );
+		}
+
+		$option = new Option( 'test_option', 'new-test' );
+		$option->save( $autoload );
+
+		$this->assertSame( 'new-test', get_option( 'test_option' ) );
+		$this->assertSame( $expected, $this->is_autoloaded( 'test_option' ) );
+	}
+
+	/**
+	 * @return array<string, array{bool|null, bool|null, bool}>
+	 */
+	public static function save_autoload_provider(): array {
+		return [
+			'new option, default' => [ null, null, true ],
+			'new option, autoload' => [ null, true, true ],
+			'new option, no autoload' => [ null, false, false ],
+			'autoloaded option, default keeps autoload' => [ true, null, true ],
+			'autoloaded option, no autoload' => [ true, false, false ],
+			'non-autoloaded option, default keeps no autoload' => [ false, null, false ],
+			'non-autoloaded option, autoload' => [ false, true, true ],
+		];
+	}
+
+	/**
+	 * Check if an option is autoloaded in the database.
+	 *
+	 * WordPress 6.6+ stores 'on'/'off'/'auto-*'; older versions use 'yes'/'no'.
+	 */
+	protected function is_autoloaded( string $option ): bool {
+		global $wpdb;
+
+		$value = $wpdb->get_var( $wpdb->prepare( "SELECT autoload FROM {$wpdb->options} WHERE option_name = %s", $option ) );
+
+		return in_array( $value, [ 'yes', 'on', 'auto-on', 'auto' ], true );
 	}
 
 	public function test_arrayaccess_get(): void {
