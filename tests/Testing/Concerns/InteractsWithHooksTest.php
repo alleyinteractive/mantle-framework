@@ -3,6 +3,7 @@ namespace Mantle\Tests\Testing\Concerns;
 
 use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\ExpectationFailedException;
 
 /**
  * @group testing
@@ -48,6 +49,61 @@ class InteractsWithHooksTest extends FrameworkTestCase {
 		$this->expectAdded( 'filter_to_add', '__return_true' );
 
 		add_filter( 'filter_to_add', '__return_true' );
+	}
+
+	public static function static_handle(): void {}
+
+	public function test_hook_callback_count(): void {
+		$object = new class() {
+			public function handle(): void {}
+
+			public function other(): void {}
+		};
+
+		$this->assertHookCallbackCount( 'callback_count_hook', $object::class, 'handle', 0 );
+
+		add_action( 'callback_count_hook', [ $object, 'handle' ] );
+		add_action( 'callback_count_hook', [ $object, 'handle' ], 20 );
+		add_action( 'callback_count_hook', [ $object, 'other' ] );
+
+		$this->assertHookCallbackCount( 'callback_count_hook', $object::class, 'handle', 2 );
+		$this->assertHookCallbackCount( 'callback_count_hook', $object::class, 'handle', 1, 10 );
+		$this->assertHookCallbackCount( 'callback_count_hook', $object::class, 'handle', 1, 20 );
+		$this->assertHookCallbackCount( 'callback_count_hook', $object::class, 'handle', 0, 30 );
+		$this->assertHookCallbackCount( 'callback_count_hook', $object::class, 'other', 1 );
+		$this->assertHookCallbackCount( 'callback_count_hook', $object::class, 'missing', 0 );
+		$this->assertHookCallbackCount( 'other_hook', $object::class, 'handle', 0 );
+	}
+
+	public function test_hook_callback_count_matches_the_exact_class_and_ignores_other_callbacks(): void {
+		$first = new class() {
+			public function handle(): void {}
+		};
+
+		$second = new class() {
+			public function handle(): void {}
+		};
+
+		add_action( 'callback_count_hook', [ $first, 'handle' ] );
+		add_action( 'callback_count_hook', [ $second, 'handle' ] );
+		add_action( 'callback_count_hook', [ self::class, 'static_handle' ] );
+		add_action( 'callback_count_hook', static function (): void {} );
+
+		$this->assertHookCallbackCount( 'callback_count_hook', $first::class, 'handle', 1 );
+		$this->assertHookCallbackCount( 'callback_count_hook', $second::class, 'handle', 1 );
+		$this->assertHookCallbackCount( 'callback_count_hook', self::class, 'static_handle', 0 );
+	}
+
+	public function test_hook_callback_count_fails_on_mismatch(): void {
+		$object = new class() {
+			public function handle(): void {}
+		};
+
+		add_action( 'callback_count_hook', [ $object, 'handle' ] );
+
+		$this->expectException( ExpectationFailedException::class );
+
+		$this->assertHookCallbackCount( 'callback_count_hook', $object::class, 'handle', 2 );
 	}
 
 	public function test_hook_return_boolean(): void {

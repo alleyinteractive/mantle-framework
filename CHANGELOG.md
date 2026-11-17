@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- Testing: `assertHookCallbackCount()` asserts how many callbacks on a hook call a method on an object of a class, at one priority or at any. It does not need the object that added them.
+
 ## v1.23.0
 
 ### Added
