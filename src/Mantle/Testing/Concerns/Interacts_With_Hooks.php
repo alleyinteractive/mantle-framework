@@ -109,6 +109,76 @@ trait Interacts_With_Hooks {
 	}
 
 	/**
+	 * Assert the number of callbacks on a hook that call a method on an object of a class.
+	 *
+	 * Useful to check that a feature adds each of its hooks once, without needing
+	 * the object that added them. Closures and function callbacks are not counted.
+	 *
+	 * @param string   $hook       Hook name.
+	 * @param string   $class_name Exact class of the callback object.
+	 * @param string   $method     Callback method.
+	 * @param int      $count      Expected number of callbacks.
+	 * @param int|null $priority   Optional. Hook priority. Defaults to all priorities.
+	 */
+	public function assertHookCallbackCount( string $hook, string $class_name, string $method, int $count, ?int $priority = null ): void {
+		PHPUnit::assertSame(
+			$count,
+			$this->count_hook_callbacks( $hook, $class_name, $method, $priority ),
+			sprintf(
+				'Asserted that [%s] has %d %s of %s::%s%s.',
+				$hook,
+				$count,
+				1 === $count ? 'callback' : 'callbacks',
+				$class_name,
+				$method,
+				null === $priority ? '' : " at priority {$priority}",
+			),
+		);
+	}
+
+	/**
+	 * Count the callbacks on a hook that call a method on an object of a class.
+	 *
+	 * @param string   $hook       Hook name.
+	 * @param string   $class_name Exact class of the callback object.
+	 * @param string   $method     Callback method.
+	 * @param int|null $priority   Optional. Hook priority. Defaults to all priorities.
+	 */
+	protected function count_hook_callbacks( string $hook, string $class_name, string $method, ?int $priority = null ): int {
+		global $wp_filter;
+
+		if ( ! isset( $wp_filter[ $hook ] ) ) {
+			return 0;
+		}
+
+		/** @var array<int, array<string, array{function: mixed, accepted_args: int}>> $callbacks */
+		$callbacks = $wp_filter[ $hook ]->callbacks;
+
+		if ( null !== $priority ) {
+			$callbacks = [ $priority => $callbacks[ $priority ] ?? [] ];
+		}
+
+		$count = 0;
+
+		foreach ( $callbacks as $priority_callbacks ) {
+			foreach ( $priority_callbacks as $callback ) {
+				$function = $callback['function'];
+
+				if (
+					is_array( $function )
+					&& is_object( $function[0] )
+					&& $class_name === $function[0]::class
+					&& $method === $function[1]
+				) {
+					++$count;
+				}
+			}
+		}
+
+		return $count;
+	}
+
+	/**
 	 * Add expectation that an action applied.
 	 *
 	 * @param string $hook Action to listen to.
