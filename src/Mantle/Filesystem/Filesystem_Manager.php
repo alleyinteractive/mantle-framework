@@ -146,7 +146,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	/**
 	 * Create an instance of the local driver.
 	 *
-	 * @param  array<mixed> $config Configuration.
+	 * @param array<mixed> $config Configuration.
 	 *
 	 * @throws InvalidArgumentException Thrown on missing WordPress.
 	 */
@@ -237,7 +237,7 @@ class Filesystem_Manager implements Filesystem_Manager_Contract {
 	/**
 	 * Format the given S3 configuration with the default options.
 	 *
-	 * @param  array<mixed> $config
+	 * @param array<mixed> $config
 	 * @return array<mixed>
 	 */
 	protected function format_s3_config( array $config ): array {

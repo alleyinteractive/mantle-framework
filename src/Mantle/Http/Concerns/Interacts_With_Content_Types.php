@@ -19,8 +19,8 @@ trait Interacts_With_Content_Types {
 	/**
 	 * Determine if the given content types match.
 	 *
-	 * @param  string $actual
-	 * @param  string $type
+	 * @param string $actual
+	 * @param string $type
 	 */
 	public static function matches_type( $actual, $type ): bool {
 		if ( $actual === $type ) {
@@ -66,7 +66,7 @@ trait Interacts_With_Content_Types {
 	/**
 	 * Determines whether the current requests accepts a given content type.
 	 *
-	 * @param  string|string[] $content_types
+	 * @param string|string[] $content_types
 	 */
 	public function accepts( $content_types ): bool {
 		$accepts = $this->getAcceptableContentTypes();
@@ -95,7 +95,7 @@ trait Interacts_With_Content_Types {
 	/**
 	 * Return the most suitable content type from the given array based on content negotiation.
 	 *
-	 * @param  string|string[] $content_types
+	 * @param string|string[] $content_types
 	 */
 	public function prefers( array|string $content_types ): ?string {
 		$accepts = $this->getAcceptableContentTypes();
@@ -156,7 +156,7 @@ trait Interacts_With_Content_Types {
 	/**
 	 * Get the data format expected in the response.
 	 *
-	 * @param  string $default
+	 * @param string $default
 	 * @return string
 	 */
 	public function format( $default = 'html' ) {

@@ -116,8 +116,8 @@ class Pending_Testable_Request {
 	/**
 	 * Specify an authorization token for the request.
 	 *
-	 * @param  string $token
-	 * @param  string $type
+	 * @param string $token
+	 * @param string $type
 	 */
 	public function with_token( string $token, string $type = 'Bearer' ): static {
 		return $this->with_header( 'Authorization', trim( "{$type} {$token}" ) );

@@ -22,7 +22,7 @@ trait Manages_Frequencies {
 	/**
 	 * The Cron expression representing the event's frequency.
 	 *
-	 * @param  string $expression
+	 * @param string $expression
 	 */
 	public function cron( string $expression ): static {
 		$this->expression = $expression;
@@ -33,8 +33,8 @@ trait Manages_Frequencies {
 	/**
 	 * Schedule the event to run between start and end time.
 	 *
-	 * @param  string $start_time
-	 * @param  string $end_time
+	 * @param string $start_time
+	 * @param string $end_time
 	 */
 	public function between( string $start_time, string $end_time ): static {
 		return $this->when( $this->inTimeInterval( $start_time, $end_time ) );
@@ -43,8 +43,8 @@ trait Manages_Frequencies {
 	/**
 	 * Schedule the event to not run between start and end time.
 	 *
-	 * @param  string $start_time
-	 * @param  string $end_time
+	 * @param string $start_time
+	 * @param string $end_time
 	 */
 	public function unlessBetween( string $start_time, string $end_time ): static {
 		return $this->skip( $this->inTimeInterval( $start_time, $end_time ) );
@@ -53,8 +53,8 @@ trait Manages_Frequencies {
 	/**
 	 * Schedule the event to run between start and end time.
 	 *
-	 * @param  string $start_time
-	 * @param  string $end_time
+	 * @param string $start_time
+	 * @param string $end_time
 	 */
 	private function inTimeInterval( string $start_time, string $end_time ): \Closure {
 		[ $now, $start_time, $end_time ] = [
@@ -140,7 +140,7 @@ trait Manages_Frequencies {
 	/**
 	 * Schedule the event to run hourly at a given offset in the hour.
 	 *
-	 * @param  int[]|int $offset
+	 * @param int[]|int $offset
 	 */
 	public function hourlyAt( $offset ): static {
 		$offset = is_array( $offset ) ? implode( ',', $offset ) : $offset;
@@ -191,7 +191,7 @@ trait Manages_Frequencies {
 	/**
 	 * Schedule the command at a given time.
 	 *
-	 * @param  string $time
+	 * @param string $time
 	 */
 	public function at( $time ): static {
 		return $this->dailyAt( $time );
@@ -200,7 +200,7 @@ trait Manages_Frequencies {
 	/**
 	 * Schedule the event to run daily at a given time (10:00, 19:30, etc).
 	 *
-	 * @param  string $time
+	 * @param string $time
 	 */
 	public function dailyAt( $time ): static {
 		$segments = explode( ':', $time );
@@ -212,8 +212,8 @@ trait Manages_Frequencies {
 	/**
 	 * Schedule the event to run twice daily.
 	 *
-	 * @param  int $first
-	 * @param  int $second
+	 * @param int $first
+	 * @param int $second
 	 */
 	public function twiceDaily( $first = 1, $second = 13 ): static {
 		$hours = $first . ',' . $second;
@@ -297,8 +297,8 @@ trait Manages_Frequencies {
 	/**
 	 * Schedule the event to run weekly on a given day and time.
 	 *
-	 * @param  int    $day
-	 * @param  string $time
+	 * @param int    $day
+	 * @param string $time
 	 */
 	public function weeklyOn( int $day, string $time = '0:0' ): static {
 		$this->dailyAt( $time );
@@ -318,8 +318,8 @@ trait Manages_Frequencies {
 	/**
 	 * Schedule the event to run monthly on a given day and time.
 	 *
-	 * @param  int    $day
-	 * @param  string $time
+	 * @param int    $day
+	 * @param string $time
 	 */
 	public function monthlyOn( int $day = 1, string $time = '0:0' ): static {
 		$this->dailyAt( $time );
@@ -330,9 +330,9 @@ trait Manages_Frequencies {
 	/**
 	 * Schedule the event to run twice monthly at a given time.
 	 *
-	 * @param  int    $first
-	 * @param  int    $second
-	 * @param  string $time
+	 * @param int    $first
+	 * @param int    $second
+	 * @param string $time
 	 */
 	public function twiceMonthly( int $first = 1, int $second = 16, string $time = '0:0' ): static {
 		$days = $first . ',' . $second;
@@ -347,7 +347,7 @@ trait Manages_Frequencies {
 	/**
 	 * Schedule the event to run on the last day of the month.
 	 *
-	 * @param  string $time
+	 * @param string $time
 	 */
 	public function lastDayOfMonth( string $time = '0:0' ): static {
 		$this->dailyAt( $time );
@@ -378,7 +378,7 @@ trait Manages_Frequencies {
 	/**
 	 * Set the days of the week the command should run on.
 	 *
-	 * @param  array<int>|int $days
+	 * @param array<int>|int $days
 	 */
 	public function days( array|int $days ): static {
 		$days = is_array( $days ) ? $days : func_get_args();
@@ -389,7 +389,7 @@ trait Manages_Frequencies {
 	/**
 	 * Set the timezone the date should be evaluated on.
 	 *
-	 * @param  \DateTimeZone|string $timezone
+	 * @param \DateTimeZone|string $timezone
 	 */
 	public function timezone( \DateTimeZone|string $timezone ): static {
 		$this->timezone = is_string( $timezone ) ? new \DateTimeZone( $timezone ) : $timezone;
@@ -400,8 +400,8 @@ trait Manages_Frequencies {
 	/**
 	 * Splice the given value into the given position of the expression.
 	 *
-	 * @param  int        $position
-	 * @param  int|string $value
+	 * @param int        $position
+	 * @param int|string $value
 	 */
 	protected function splice_into_position( int $position, int|string $value ): static {
 		$segments = explode( ' ', $this->expression );

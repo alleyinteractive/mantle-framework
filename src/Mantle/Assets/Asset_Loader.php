@@ -48,7 +48,7 @@ class Asset_Loader {
 	/**
 	 * Get the path to a versioned asset.
 	 *
-	 * @param  string $path Asset file path.
+	 * @param string $path Asset file path.
 	 *
 	 * @throws Asset_Not_Found Thrown on missing manifest or asset.
 	 */

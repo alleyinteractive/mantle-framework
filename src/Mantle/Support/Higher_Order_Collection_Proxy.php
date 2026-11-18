@@ -16,15 +16,15 @@ class Higher_Order_Collection_Proxy {
 	/**
 	 * Create a new proxy instance.
 	 *
-	 * @param  Enumerable $collection The collection being operated on.
-	 * @param  string     $method     The method being proxied.
+	 * @param Enumerable $collection The collection being operated on.
+	 * @param string     $method     The method being proxied.
 	 */
 	public function __construct( protected Enumerable $collection, protected string $method ) {}
 
 	/**
 	 * Proxy accessing an attribute onto the collection items.
 	 *
-	 * @param  string $key
+	 * @param string $key
 	 */
 	public function __get( string $key ): mixed {
 		return $this->collection->{ $this->method }(
@@ -35,8 +35,8 @@ class Higher_Order_Collection_Proxy {
 	/**
 	 * Proxy a method call onto the collection items.
 	 *
-	 * @param  string       $method
-	 * @param  array<mixed> $parameters
+	 * @param string       $method
+	 * @param array<mixed> $parameters
 	 */
 	public function __call( string $method, array $parameters ): mixed {
 		return $this->collection->{ $this->method }(

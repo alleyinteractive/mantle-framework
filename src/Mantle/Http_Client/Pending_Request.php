@@ -236,8 +236,8 @@ class Pending_Request {
 	/**
 	 * Attach a raw body to the request.
 	 *
-	 * @param  string $content Content to attach.
-	 * @param  string $content_type Content mime type.
+	 * @param string $content Content to attach.
+	 * @param string $content_type Content mime type.
 	 */
 	public function with_body( string $content, string $content_type ): static {
 		$this->body_format( 'body' );
@@ -313,7 +313,7 @@ class Pending_Request {
 	/**
 	 * Indicate the type of content that should be returned by the server.
 	 *
-	 * @param  string $content_type Content type.
+	 * @param string $content_type Content type.
 	 */
 	public function accept( $content_type ): static {
 		return $this->with_headers( [ 'Accept' => $content_type ] );
@@ -322,7 +322,7 @@ class Pending_Request {
 	/**
 	 * Add the given headers to the request.
 	 *
-	 * @param  array<string, mixed> $headers Headers to add.
+	 * @param array<string, mixed> $headers Headers to add.
 	 */
 	public function with_headers( array $headers ): static {
 		// WordPress sends a repeated header as the literal string "Array", so the last value wins.
@@ -367,7 +367,7 @@ class Pending_Request {
 	/**
 	 * Retrieve a specific header for the request.
 	 *
-	 * @param  string $key Header key.
+	 * @param string $key Header key.
 	 */
 	public function header( string $key ): mixed {
 		return $this->headers()[ $key ] ?? null;
@@ -389,8 +389,8 @@ class Pending_Request {
 	/**
 	 * Specify an authorization token for the request.
 	 *
-	 * @param  string $token
-	 * @param  string $type
+	 * @param string $token
+	 * @param string $type
 	 */
 	public function with_token( string $token, string $type = 'Bearer' ): static {
 		return $this->with_header( 'Authorization', trim( "{$type} {$token}" ) );
@@ -399,7 +399,7 @@ class Pending_Request {
 	/**
 	 * Specify the user agent for the request.
 	 *
-	 * @param  string $user_agent User agent to set.
+	 * @param string $user_agent User agent to set.
 	 */
 	public function with_user_agent( string $user_agent ): static {
 		$this->options['user-agent'] = $user_agent;
@@ -417,7 +417,7 @@ class Pending_Request {
 	/**
 	 * Specify the cookies that should be included with the request.
 	 *
-	 * @param  \WP_Http_Cookie[] $cookies Cookies to pass.
+	 * @param \WP_Http_Cookie[] $cookies Cookies to pass.
 	 */
 	public function with_cookies( array $cookies ): static {
 		$this->options['cookies'] = array_merge_recursive(
@@ -466,7 +466,7 @@ class Pending_Request {
 	/**
 	 * Specify the timeout (in seconds) for the request.
 	 *
-	 * @param  int $seconds
+	 * @param int $seconds
 	 */
 	public function timeout( int $seconds ): static {
 		$this->options['timeout'] = $seconds;
@@ -591,8 +591,8 @@ class Pending_Request {
 	/**
 	 * Issue a GET request to the given URL.
 	 *
-	 * @param  string|null                      $url URL to retrieve.
-	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
+	 * @param string|null                      $url URL to retrieve.
+	 * @param array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
 	 * @return Response
 	 */
 	public function get( ?string $url = null, array|string|null $query = null ): mixed {
@@ -606,8 +606,8 @@ class Pending_Request {
 	/**
 	 * Issue a HEAD request to the given URL.
 	 *
-	 * @param  string|null                      $url URL to retrieve.
-	 * @param  array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
+	 * @param string|null                      $url URL to retrieve.
+	 * @param array<string, mixed>|string|null $query Query parameters (assumed to be urlencoded).
 	 * @return Response
 	 */
 	public function head( ?string $url = null, array|string|null $query = null ): mixed {
@@ -621,8 +621,8 @@ class Pending_Request {
 	/**
 	 * Issue a POST request to the given URL.
 	 *
-	 * @param  string|null               $url URL to post.
-	 * @param  array<string, mixed>|null $data Data to send with the request.
+	 * @param string|null               $url URL to post.
+	 * @param array<string, mixed>|null $data Data to send with the request.
 	 * @return Response
 	 */
 	public function post( ?string $url = null, ?array $data = null ): mixed {
@@ -636,8 +636,8 @@ class Pending_Request {
 	/**
 	 * Issue a PATCH request to the given URL.
 	 *
-	 * @param  string|null               $url URL to patch.
-	 * @param  array<string, mixed>|null $data Data to send with the request.
+	 * @param string|null               $url URL to patch.
+	 * @param array<string, mixed>|null $data Data to send with the request.
 	 * @return Response
 	 */
 	public function patch( ?string $url = null, ?array $data = null ): mixed {
@@ -651,8 +651,8 @@ class Pending_Request {
 	/**
 	 * Issue a PUT request to the given URL.
 	 *
-	 * @param  string|null               $url URL to put.
-	 * @param  array<string, mixed>|null $data Data to send with the request.
+	 * @param string|null               $url URL to put.
+	 * @param array<string, mixed>|null $data Data to send with the request.
 	 * @return Response
 	 */
 	public function put( ?string $url = null, ?array $data = null ): mixed {
@@ -666,8 +666,8 @@ class Pending_Request {
 	/**
 	 * Issue a DELETE request to the given URL.
 	 *
-	 * @param  string|null               $url URL to delete.
-	 * @param  array<string, mixed>|null $data Data to send with the request.
+	 * @param string|null               $url URL to delete.
+	 * @param array<string, mixed>|null $data Data to send with the request.
 	 * @return Response
 	 */
 	public function delete( ?string $url = null, ?array $data = null ): mixed {
@@ -683,9 +683,9 @@ class Pending_Request {
 	 *
 	 * @throws InvalidArgumentException If the request does not have a URL set.
 	 *
-	 * @param  string|Http_Method|null $method HTTP Method, optional.
-	 * @param  string                  $url URL for the request, optional.
-	 * @param  array<string, mixed>    $options Options for the request.
+	 * @param string|Http_Method|null $method HTTP Method, optional.
+	 * @param string                  $url URL for the request, optional.
+	 * @param array<string, mixed>    $options Options for the request.
 	 */
 	public function send( string|Http_Method|null $method = null, ?string $url = null, array $options = [] ): Response {
 		// Per-call state (URL, method, query, body) is applied to a copy so it

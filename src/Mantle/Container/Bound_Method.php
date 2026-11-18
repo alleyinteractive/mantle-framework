@@ -23,10 +23,10 @@ class Bound_Method {
 	/**
 	 * Call the given Closure / class@method and inject its dependencies.
 	 *
-	 * @param  Container       $container Container instance.
-	 * @param  callable|string $callback Callback.
-	 * @param  array<mixed>    $parameters Parameters.
-	 * @param  string|null     $default_method Default method.
+	 * @param Container       $container Container instance.
+	 * @param callable|string $callback Callback.
+	 * @param array<mixed>    $parameters Parameters.
+	 * @param string|null     $default_method Default method.
 	 * @return mixed
 	 *
 	 * @throws \ReflectionException Throw on invalid arguments.
@@ -47,10 +47,10 @@ class Bound_Method {
 	/**
 	 * Call a string reference to a class using Class@method syntax.
 	 *
-	 * @param  Container    $container Container instance.
-	 * @param  string       $target Target to call.
-	 * @param  array<mixed> $parameters Parameters for the class.
-	 * @param  string|null  $default_method Default method to call.
+	 * @param Container    $container Container instance.
+	 * @param string       $target Target to call.
+	 * @param array<mixed> $parameters Parameters for the class.
+	 * @param string|null  $default_method Default method to call.
 	 * @return mixed
 	 *
 	 * @throws \InvalidArgumentException Throw on invalid arguments.
@@ -77,9 +77,9 @@ class Bound_Method {
 	/**
 	 * Call a method that has been bound to the container.
 	 *
-	 * @param  Container $container Container instance.
-	 * @param  callable  $callback Callback function.
-	 * @param  mixed     $default Default value.
+	 * @param Container $container Container instance.
+	 * @param callable  $callback Callback function.
+	 * @param mixed     $default Default value.
 	 */
 	protected static function call_bound_method( $container, $callback, $default ): mixed {
 		if ( ! is_array( $callback ) ) {
@@ -111,9 +111,9 @@ class Bound_Method {
 	/**
 	 * Get all dependencies for a given method.
 	 *
-	 * @param  Container       $container Container instance.
-	 * @param  callable|string $callback Callback function.
-	 * @param  array<mixed>    $parameters Parameters to pass.
+	 * @param Container       $container Container instance.
+	 * @param callable|string $callback Callback function.
+	 * @param array<mixed>    $parameters Parameters to pass.
 	 * @return array<mixed>
 	 *
 	 * @throws \ReflectionException Throw on invalid arguments.
@@ -131,7 +131,7 @@ class Bound_Method {
 	/**
 	 * Get the proper reflection instance for the given callback.
 	 *
-	 * @param  callable|string $callback Callback to get from.
+	 * @param callable|string $callback Callback to get from.
 	 * @throws \ReflectionException Throw on invalid arguments.
 	 */
 	protected static function get_call_reflector( $callback ): \ReflectionMethod|\ReflectionFunction {
@@ -149,10 +149,10 @@ class Bound_Method {
 	/**
 	 * Get the dependency for the given call parameter.
 	 *
-	 * @param  Container            $container Container instance.
-	 * @param  \ReflectionParameter $parameter Reflect Parameter.
-	 * @param  array<mixed>         $parameters Parameters to pass.
-	 * @param  array<mixed>         $dependencies Class dependencies.
+	 * @param Container            $container Container instance.
+	 * @param \ReflectionParameter $parameter Reflect Parameter.
+	 * @param array<mixed>         $parameters Parameters to pass.
+	 * @param array<mixed>         $dependencies Class dependencies.
 	 *
 	 * @throws Binding_Resolution_Exception Thrown for invalid binding resolution.
 	 */
@@ -186,7 +186,7 @@ class Bound_Method {
 	/**
 	 * Determine if the given string is in Class@method syntax.
 	 *
-	 * @param  mixed $callback Callback.
+	 * @param mixed $callback Callback.
 	 */
 	protected static function is_callable_with_at_sign( $callback ): bool {
 		return is_string( $callback ) && strpos( $callback, '@' ) !== false;

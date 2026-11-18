@@ -82,8 +82,8 @@ class Handler implements Contract {
 	/**
 	 * Set the log level for the given exception type.
 	 *
-	 * @param  class-string<\Throwable> $type
-	 * @param  \Psr\Log\LogLevel::*     $level
+	 * @param class-string<\Throwable> $type
+	 * @param \Psr\Log\LogLevel::*     $level
 	 */
 	public function level( string $type, string $level ): static {
 		$this->levels[ $type ] = $level;
@@ -131,7 +131,7 @@ class Handler implements Contract {
 	/**
 	 * Determine if the exception should be reported.
 	 *
-	 * @param  \Throwable $e
+	 * @param \Throwable $e
 	 */
 	public function should_report( Throwable $e ): bool {
 		return ! $this->shouldnt_report( $e );
@@ -140,7 +140,7 @@ class Handler implements Contract {
 	/**
 	 * Determine if the exception is in the "do not report" list.
 	 *
-	 * @param  \Throwable $e
+	 * @param \Throwable $e
 	 */
 	protected function shouldnt_report( Throwable $e ): bool {
 		$dont_report = array_merge( $this->dont_report, $this->internal_dont_report );
@@ -224,8 +224,8 @@ class Handler implements Contract {
 	/**
 	 * Prepare a response for the given exception.
 	 *
-	 * @param  \Mantle\Http\Request $request Request object.
-	 * @param  \Throwable           $e Exception thrown.
+	 * @param \Mantle\Http\Request $request Request object.
+	 * @param \Throwable           $e Exception thrown.
 	 */
 	protected function prepare_http_response( $request, Throwable $e ): Response {
 		return new Response(
@@ -338,7 +338,7 @@ class Handler implements Contract {
 	/**
 	 * Convert the given exception to an array.
 	 *
-	 * @param  \Throwable $e
+	 * @param \Throwable $e
 	 * @return array<string, mixed>
 	 */
 	protected function convert_exception_to_array( Throwable $e ): array {

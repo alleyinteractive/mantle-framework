@@ -22,8 +22,8 @@ trait Interacts_With_Container {
 	/**
 	 * Register an instance of an object in the container.
 	 *
-	 * @param  string $abstract Abstract to swap.
-	 * @param  object $instance Instance to use.
+	 * @param string $abstract Abstract to swap.
+	 * @param object $instance Instance to use.
 	 * @return object
 	 */
 	protected function swap( $abstract, $instance ) {
@@ -35,8 +35,8 @@ trait Interacts_With_Container {
 	 *
 	 * @throws \RuntimeException If the application container is not available.
 	 *
-	 * @param  string $abstract Abstract to swap.
-	 * @param  object $instance Instance to use.
+	 * @param string $abstract Abstract to swap.
+	 * @param object $instance Instance to use.
 	 * @return object
 	 */
 	protected function instance( $abstract, $instance ) {
@@ -52,8 +52,8 @@ trait Interacts_With_Container {
 	/**
 	 * Mock an instance of an object in the container.
 	 *
-	 * @param  string        $abstract Abstract to swap.
-	 * @param  \Closure|null $mock Mock to use.
+	 * @param string        $abstract Abstract to swap.
+	 * @param \Closure|null $mock Mock to use.
 	 */
 	protected function mock( $abstract, ?Closure $mock = null ): \Mockery\MockInterface {
 		$mock_instance = Mockery::mock( ...array_filter( func_get_args() ) );
@@ -64,8 +64,8 @@ trait Interacts_With_Container {
 	/**
 	 * Mock a partial instance of an object in the container.
 	 *
-	 * @param  string        $abstract Abstract to swap.
-	 * @param  \Closure|null $mock Mock to use.
+	 * @param string        $abstract Abstract to swap.
+	 * @param \Closure|null $mock Mock to use.
 	 */
 	protected function partial_mock( $abstract, ?Closure $mock = null ): \Mockery\LegacyMockInterface {
 		$mock_instance = Mockery::mock( ...array_filter( func_get_args() ) )->makePartial();
@@ -76,8 +76,8 @@ trait Interacts_With_Container {
 	/**
 	 * Spy an instance of an object in the container.
 	 *
-	 * @param  string        $abstract Abstract to swap.
-	 * @param  \Closure|null $mock Mock to use.
+	 * @param string        $abstract Abstract to swap.
+	 * @param \Closure|null $mock Mock to use.
 	 */
 	protected function spy( $abstract, ?Closure $mock = null ): \Mockery\MockInterface {
 		$mock_instance = Mockery::spy( ...array_filter( func_get_args() ) );

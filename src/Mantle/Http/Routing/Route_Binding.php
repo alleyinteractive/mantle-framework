@@ -34,8 +34,8 @@ class Route_Binding {
 	/**
 	 * Create a class based binding using the IoC container.
 	 *
-	 * @param  Container $container
-	 * @param  string    $binding Binding name.
+	 * @param Container $container
+	 * @param string    $binding Binding name.
 	 * @return \Closure
 	 */
 	protected static function create_class_binding( Container $container, string $binding ) {
@@ -56,9 +56,9 @@ class Route_Binding {
 	/**
 	 * Create a Route model binding for a model.
 	 *
-	 * @param  Container     $container Container instance.
-	 * @param  string        $class Class name.
-	 * @param  \Closure|null $callback Callback for binding.
+	 * @param Container     $container Container instance.
+	 * @param string        $class Class name.
+	 * @param \Closure|null $callback Callback for binding.
 	 */
 	public static function for_model( Container $container, string $class, ?Closure $callback = null ): Closure {
 		return function ( $value ) use ( $container, $class, $callback ) {

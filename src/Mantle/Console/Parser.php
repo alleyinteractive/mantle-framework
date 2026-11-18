@@ -23,7 +23,7 @@ class Parser {
 	/**
 	 * Parse the given console command definition into an array.
 	 *
-	 * @param  string $expression
+	 * @param string $expression
 	 * @return array<mixed>
 	 *
 	 * @throws \InvalidArgumentException
@@ -41,7 +41,7 @@ class Parser {
 	/**
 	 * Extract the name of the command from the expression.
 	 *
-	 * @param  string $expression
+	 * @param string $expression
 	 *
 	 * @throws \InvalidArgumentException
 	 */
@@ -56,7 +56,7 @@ class Parser {
 	/**
 	 * Extract all of the parameters from the tokens.
 	 *
-	 * @param  array<string, string> $tokens
+	 * @param array<string, string> $tokens
 	 * @return array<mixed>
 	 */
 	protected static function parameters( array $tokens ): array {
@@ -78,7 +78,7 @@ class Parser {
 	/**
 	 * Parse an argument expression.
 	 *
-	 * @param  string $token
+	 * @param string $token
 	 */
 	protected static function parse_argument( $token ): \Symfony\Component\Console\Input\InputArgument {
 		[ $token, $description ] = static::extract_description( $token );
@@ -109,7 +109,7 @@ class Parser {
 	/**
 	 * Parse an option expression.
 	 *
-	 * @param  string $token
+	 * @param string $token
 	 */
 	protected static function parse_option( $token ): \Symfony\Component\Console\Input\InputOption {
 		[$token, $description] = static::extract_description( $token );
@@ -145,7 +145,7 @@ class Parser {
 	/**
 	 * Parse the token into its token and description segments.
 	 *
-	 * @param  string $token
+	 * @param string $token
 	 * @return array<string>
 	 */
 	protected static function extract_description( $token ): array {

@@ -81,7 +81,7 @@ abstract class Seeder {
 	 *
 	 * @throws InvalidArgumentException If the class is not an instance of Seeder.
 	 *
-	 * @param  class-string $class Seeder class to resolve.
+	 * @param class-string $class Seeder class to resolve.
 	 */
 	protected function resolve( string $class ): Seeder {
 		$instance = $this->container instanceof \Mantle\Contracts\Container ? $this->container->make( $class ) : new $class();

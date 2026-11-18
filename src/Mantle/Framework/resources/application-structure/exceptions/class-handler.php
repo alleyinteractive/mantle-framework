@@ -38,8 +38,8 @@ class Handler extends Base_Handler {
 	/**
 	 * Render an exception into an HTTP response.
 	 *
-	 * @param  Request   $request Request object.
-	 * @param  Throwable $exception Exception thrown.
+	 * @param Request   $request Request object.
+	 * @param Throwable $exception Exception thrown.
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	#[\Override]

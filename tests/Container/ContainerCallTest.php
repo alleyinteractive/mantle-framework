@@ -224,8 +224,8 @@ class ContainerTestCallStub {
 	}
 
 	/**
-	 * @param  mixed $foo Unresolvable parameter.
-	 * @param  mixed $bar Unresolvable parameter.
+	 * @param mixed $foo Unresolvable parameter.
+	 * @param mixed $bar Unresolvable parameter.
 	 * @return array<int, mixed>
 	 */
 	public function unresolvable( $foo, $bar ): array {
