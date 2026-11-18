@@ -199,7 +199,7 @@ function object_get( $object, $key, $default = null ) {
  * @param array<string>  $replacements Strings in which to replace sequentially.
  * @param string $subject Subject in which to search/replace.
  *
- * @return string
+ * @return string|null The result, or null on a regex error.
  */
 function preg_replace_array( $pattern, array $replacements, $subject ): ?string {
 	return preg_replace_callback(

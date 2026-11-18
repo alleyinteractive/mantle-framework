@@ -210,8 +210,6 @@ class Belongs_To extends Relation {
 	 *
 	 * @throws Model_Exception Thrown when parent is not an instance of Core_Object.
 	 * @throws Model_Exception Thrown when parent is not an instance of Model_Meta.
-	 *
-	 * @return static
 	 */
 	public function dissociate(): static {
 		// todo: remove in PHP 8.1+.
