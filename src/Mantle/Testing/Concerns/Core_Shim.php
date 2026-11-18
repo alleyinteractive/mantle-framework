@@ -39,10 +39,12 @@ trait Core_Shim {
 	 * Allows tests to be skipped when Multisite is not in use.
 	 *
 	 * Use in conjunction with the ms-required group.
+	 *
+	 * @param string $message Optional. Message to display when the test is skipped.
 	 */
-	public function skipWithoutMultisite(): void {
+	public function skipWithoutMultisite( string $message = 'Test only runs on Multisite' ): void {
 		if ( ! is_multisite() ) {
-			$this->markTestSkipped( 'Test only runs on Multisite' );
+			$this->markTestSkipped( $message );
 		}
 	}
 
@@ -50,10 +52,12 @@ trait Core_Shim {
 	 * Allows tests to be skipped when Multisite is in use.
 	 *
 	 * Use in conjunction with the ms-excluded group.
+	 *
+	 * @param string $message Optional. Message to display when the test is skipped.
 	 */
-	public function skipWithMultisite(): void {
+	public function skipWithMultisite( string $message = 'Test does not run on Multisite' ): void {
 		if ( is_multisite() ) {
-			$this->markTestSkipped( 'Test does not run on Multisite' );
+			$this->markTestSkipped( $message );
 		}
 	}
 
@@ -63,23 +67,24 @@ trait Core_Shim {
 	 * @deprecated Not encouraged for use in Mantle. Remote requests should be mocked.
 	 *
 	 * @param array|WP_Error $response HTTP response.
+	 * @param string         $message  Optional. Message to display when the test is skipped.
 	 */
 	#[\Deprecated( 'Not encouraged for use in Mantle. Remote requests should be mocked.' )]
-	public function skipTestOnTimeout( $response ): void {
+	public function skipTestOnTimeout( $response, string $message = 'HTTP timeout' ): void {
 		if ( ! is_wp_error( $response ) ) {
 			return;
 		}
 
 		if ( 'connect() timed out!' === $response->get_error_message() ) {
-			$this->markTestSkipped( 'HTTP timeout' );
+			$this->markTestSkipped( $message );
 		}
 
 		if ( false !== strpos( $response->get_error_message(), 'timed out after' ) ) {
-			$this->markTestSkipped( 'HTTP timeout' );
+			$this->markTestSkipped( $message );
 		}
 
 		if ( str_starts_with( $response->get_error_message(), 'stream_socket_client(): unable to connect to tcp://s.w.org:80' ) ) {
-			$this->markTestSkipped( 'HTTP timeout' );
+			$this->markTestSkipped( $message );
 		}
 	}
 }
