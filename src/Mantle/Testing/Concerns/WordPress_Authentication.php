@@ -12,8 +12,10 @@ namespace Mantle\Testing\Concerns;
 use Mantle\Database\Model\Model_Exception;
 use Mantle\Database\Model\User;
 use Mantle\Testing\Attributes\Acting_As;
+use Mantle\Testing\Attributes\Acting_As_Super_Admin;
 use Mantle\Testing\Exceptions\Exception;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\Before;
 use ReflectionAttribute;
 use WP_User;
 
@@ -33,10 +35,43 @@ trait WordPress_Authentication {
 	protected int $backup_user;
 
 	/**
+	 * User granted super admin privileges for this test.
+	 */
+	private ?int $test_super_admin_id = null;
+
+	/**
+	 * Skip single-site tests before WordPress setup starts.
+	 */
+	#[Before]
+	protected function require_multisite_for_super_admin(): void {
+		if ( ! is_multisite() && $this->method_has_attribute( Acting_As_Super_Admin::class ) ) {
+			Assert::markTestSkipped( 'Acting_As_Super_Admin requires multisite.' );
+		}
+	}
+
+	/**
 	 * Backup the current global user.
 	 */
 	public function wordpress_authentication_set_up(): void {
 		$this->backup_user = get_current_user_id();
+
+		if ( $this->method_has_attribute( Acting_As_Super_Admin::class ) ) {
+			$this->register_attribute( Acting_As_Super_Admin::class, function (): void {
+				if ( null !== $this->test_super_admin_id ) {
+					return;
+				}
+
+				$user = $this->acting_as( 'administrator' );
+
+				if ( ! grant_super_admin( $user->ID ) ) {
+					throw new Exception( 'Could not grant super admin privileges to the test user.' );
+				}
+
+				$this->test_super_admin_id = $user->ID;
+			} );
+
+			return;
+		}
 
 		// Set the test case up using the user from the attribute in descending order (class -> method).
 		$this->register_attribute(
@@ -49,9 +84,15 @@ trait WordPress_Authentication {
 	 * Restore the backed up global user.
 	 */
 	public function wordpress_authentication_tear_down(): void {
-		// If the user changed, set it back.
-		if ( get_current_user_id() !== $this->backup_user ) {
-			wp_set_current_user( $this->backup_user );
+		try {
+			if ( null !== $this->test_super_admin_id ) {
+				revoke_super_admin( $this->test_super_admin_id );
+				$this->test_super_admin_id = null;
+			}
+		} finally {
+			if ( isset( $this->backup_user ) && get_current_user_id() !== $this->backup_user ) {
+				wp_set_current_user( $this->backup_user );
+			}
 		}
 	}
 
