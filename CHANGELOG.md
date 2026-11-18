@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   several meta arrays in one call. A key repeated across the arrays is stored once per array,
   which creates multiple meta entries for the same key (#925).
 
+### Changed
+
+- `Str::finish()` and `Str::start()` now declare a `string` return type. Subclasses overriding either method must declare a compatible return type.
+
 ### Fixed
 
 #### Database

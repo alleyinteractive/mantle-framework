@@ -321,9 +321,8 @@ class Str {
 	 *
 	 * @param  string $value
 	 * @param  string $cap
-	 * @return string
 	 */
-	public static function finish( $value, string $cap ) {
+	public static function finish( $value, string $cap ): string {
 		$quoted = preg_quote( $cap, '/' );
 
 		return preg_replace( '/(?:' . $quoted . ')+$/u', '', $value ) . $cap;
@@ -909,9 +908,8 @@ class Str {
 	 *
 	 * @param  string $value
 	 * @param  string $prefix
-	 * @return string
 	 */
-	public static function start( $value, string $prefix ) {
+	public static function start( $value, string $prefix ): string {
 		$quoted = preg_quote( $prefix, '/' );
 
 		return $prefix . preg_replace( '/^(?:' . $quoted . ')+/u', '', $value );
