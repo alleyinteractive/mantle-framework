@@ -855,7 +855,7 @@ trait Enumerates_Values {
 	 * @param  mixed       $value
 	 * @return \Closure
 	 */
-	protected function operator_for_where( ?string $key, ?string $operator = null, mixed $value = null ) {
+	protected function operator_for_where( ?string $key, mixed $operator = null, mixed $value = null ) {
 		if ( func_num_args() === 1 ) {
 			$value = true;
 

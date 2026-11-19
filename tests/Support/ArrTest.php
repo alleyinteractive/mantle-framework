@@ -57,8 +57,8 @@ class ArrTest extends TestCase {
 		$data = [ [ 'foo', 'bar' ], [ 'baz' ] ];
 		$this->assertSame( [ 'foo', 'bar', 'baz' ], Arr::collapse( $data ) );
 
-		// $array = [ [ 1 ], [ 2 ], [ 3 ], [ 'foo', 'bar' ], collect( [ 'baz', 'boom' ] ) ];
-		// $this->assertSame( [ 1, 2, 3, 'foo', 'bar', 'baz', 'boom' ], Arr::collapse( $array ) );
+		$array = [ [ 1 ], [ 2 ], [ 3 ], [ 'foo', 'bar' ], new Collection( [ 'baz', 'boom' ] ) ];
+		$this->assertSame( [ 1, 2, 3, 'foo', 'bar', 'baz', 'boom' ], Arr::collapse( $array ) );
 	}
 
 	public function testCrossJoin(): void {
