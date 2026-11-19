@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Testing: `assertHookCallbackCount()` asserts how many callbacks on a hook call a method on an object of a class, at one priority or at any. It does not need the object that added them.
 - `Option::save()` accepts an optional `$autoload` argument to set whether the option is autoloaded. The default (`null`) keeps the current behavior. The value is only applied when the option value changes ([#1021](https://github.com/alleyinteractive/mantle-framework/pull/1021)).
 
 ## v1.23.0
