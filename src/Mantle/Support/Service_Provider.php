@@ -104,8 +104,8 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	/**
 	 * Setup an after resolving listener, or fire immediately if already resolved.
 	 *
-	 * @param  string   $name Abstract name.
-	 * @param  \Closure $callback Callback.
+	 * @param string   $name Abstract name.
+	 * @param \Closure $callback Callback.
 	 */
 	protected function call_after_resolving( string $name, \Closure $callback ): void {
 		$this->app->after_resolving( $name, $callback );
@@ -188,8 +188,8 @@ abstract class Service_Provider implements LoggerAwareInterface {
 	 * Passing both a provider and a tag will return all paths that are
 	 * published by that provider and tag.
 	 *
-	 * @param  class-string<Service_Provider>|array<class-string<Service_Provider>>|null $providers The service provider class name.
-	 * @param  string|array<string>|null                                                 $tags      The tag name.
+	 * @param class-string<Service_Provider>|array<class-string<Service_Provider>>|null $providers The service provider class name.
+	 * @param string|array<string>|null                                                 $tags      The tag name.
 	 * @return array<string, string> The paths to publish. Index is the source path, value is the destination path.
 	 */
 	public static function paths_to_publish( array|string|null $providers = null, array|string|null $tags = null ): array {

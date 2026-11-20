@@ -30,7 +30,7 @@ interface Filesystem {
 	/**
 	 * Get all (recursive) of the directories within a given directory.
 	 *
-	 * @param  string $directory Directory name.
+	 * @param string $directory Directory name.
 	 * @return string[]
 	 */
 	public function all_directories( ?string $directory = null ): array;
@@ -206,9 +206,9 @@ interface Filesystem {
 	/**
 	 * Get a temporary URL for the file at the given path.
 	 *
-	 * @param  string             $path File path.
-	 * @param  \DateTimeInterface $expiration File expiration.
-	 * @param  array              $options Options for the URL.
+	 * @param string             $path File path.
+	 * @param \DateTimeInterface $expiration File expiration.
+	 * @param array              $options Options for the URL.
 	 *
 	 * @throws \RuntimeException Thrown on missing temporary URL.
 	 */

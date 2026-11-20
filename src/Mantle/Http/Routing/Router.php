@@ -182,7 +182,7 @@ class Router implements Router_Contract {
 	/**
 	 * Load the provided routes.
 	 *
-	 * @param  \Closure|string $routes
+	 * @param \Closure|string $routes
 	 * @return void
 	 */
 	protected function load_routes( \Closure|string $routes ) {
@@ -391,8 +391,8 @@ class Router implements Router_Contract {
 	/**
 	 * Register a short-hand name for a middleware.
 	 *
-	 * @param  string       $name
-	 * @param  class-string $class
+	 * @param string       $name
+	 * @param class-string $class
 	 */
 	public function alias_middleware( string $name, string $class ): static {
 		$this->middleware[ $name ] = $class;
@@ -412,8 +412,8 @@ class Router implements Router_Contract {
 	/**
 	 * Register a group of middleware.
 	 *
-	 * @param  string              $name
-	 * @param  array<class-string> $middleware
+	 * @param string              $name
+	 * @param array<class-string> $middleware
 	 */
 	public function middleware_group( string $name, array $middleware ): static {
 		$this->middleware_groups[ $name ] = $middleware;
@@ -426,8 +426,8 @@ class Router implements Router_Contract {
 	 *
 	 * If the middleware is already in the group, it will not be added again.
 	 *
-	 * @param  string       $group
-	 * @param  class-string $middleware
+	 * @param string       $group
+	 * @param class-string $middleware
 	 */
 	public function prepend_middleware_to_group( string $group, string $middleware ): static {
 		if ( isset( $this->middleware_groups[ $group ] ) && ! in_array( $middleware, $this->middleware_groups[ $group ], true ) ) {
@@ -442,8 +442,8 @@ class Router implements Router_Contract {
 	 *
 	 * If the middleware is already in the group, it will not be added again.
 	 *
-	 * @param  string       $group
-	 * @param  class-string $middleware
+	 * @param string       $group
+	 * @param class-string $middleware
 	 */
 	public function push_middleware_to_group( string $group, string $middleware ): static {
 		if ( ! array_key_exists( $group, $this->middleware_groups ) ) {
@@ -551,9 +551,9 @@ class Router implements Router_Contract {
 	/**
 	 * Call the binding callback for the given key.
 	 *
-	 * @param  string  $key Route key.
-	 * @param  string  $value Value.
-	 * @param  Request $request Request object.
+	 * @param string  $key Route key.
+	 * @param string  $value Value.
+	 * @param Request $request Request object.
 	 */
 	protected function perform_binding( string $key, $value, Request $request ): mixed {
 		return call_user_func( $this->binders[ $key ], $value, $request );

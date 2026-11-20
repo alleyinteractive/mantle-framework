@@ -21,7 +21,7 @@ class Reflector {
 	/**
 	 * Get the class name of the given parameter's type, if possible.
 	 *
-	 * @param  \ReflectionParameter $parameter
+	 * @param \ReflectionParameter $parameter
 	 * @return string|null
 	 */
 	public static function get_parameter_class_name( $parameter ) {
@@ -49,7 +49,7 @@ class Reflector {
 	/**
 	 * Get the class names of the given parameter's type, including union types.
 	 *
-	 * @param  \ReflectionParameter $parameter
+	 * @param \ReflectionParameter $parameter
 	 * @return array<string>
 	 */
 	public static function get_parameter_class_names( $parameter ): array {
@@ -75,8 +75,8 @@ class Reflector {
 	/**
 	 * Get the given type's class name.
 	 *
-	 * @param  \ReflectionParameter $parameter
-	 * @param  \ReflectionNamedType $type
+	 * @param \ReflectionParameter $parameter
+	 * @param \ReflectionNamedType $type
 	 * @return string
 	 */
 	protected static function get_type_name( $parameter, $type ) {
@@ -98,8 +98,8 @@ class Reflector {
 	/**
 	 * Determine if the parameter's type is a subclass of the given type.
 	 *
-	 * @param  \ReflectionParameter $parameter
-	 * @param  string               $class_name
+	 * @param \ReflectionParameter $parameter
+	 * @param string               $class_name
 	 */
 	public static function is_parameter_subclass_of( \ReflectionParameter $parameter, string $class_name ): bool {
 		$param_class_name = static::get_parameter_class_name( $parameter );
@@ -114,12 +114,12 @@ class Reflector {
 	 *
 	 * @template T of object
 	 *
-	 * @param  object|class-string  $class     The class name.
-	 * @param  string               $method    The method name.
-	 * @param  class-string<T>|null $attribute The attribute name to filter by, or null for all attributes.
-	 * @param  int                  $flags     Flags to pass to getAttributes().
-	 * @param  bool                 $inherit   Whether to include attributes from parent classes.
-	 * @param  bool                 $inherit_from_class Whether to include attributes from the class itself.
+	 * @param object|class-string  $class     The class name.
+	 * @param string               $method    The method name.
+	 * @param class-string<T>|null $attribute The attribute name to filter by, or null for all attributes.
+	 * @param int                  $flags     Flags to pass to getAttributes().
+	 * @param bool                 $inherit   Whether to include attributes from parent classes.
+	 * @param bool                 $inherit_from_class Whether to include attributes from the class itself.
 	 * @return array<\ReflectionAttribute>
 	 *
 	 * @phpstan-param class-string<T>|null $attribute

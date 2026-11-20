@@ -70,6 +70,28 @@ if ( FrameworkTestCase::phpunit_version_compare( '11.0.0', '<' ) ) {
 			$this->assertEmpty( getenv( 'WP_ENVIRONMENT_TYPE' ) );
 		}
 
+		public function test_multisite_skip_messages(): void {
+			$message = 'Custom skip reason.';
+			$helper  = is_multisite() ? 'skipWithMultisite' : 'skipWithoutMultisite';
+			$default = is_multisite() ? 'Test does not run on Multisite' : 'Test only runs on Multisite';
+
+			// The opposite helper must not skip the test.
+			if ( is_multisite() ) {
+				$this->skipWithoutMultisite( $message );
+			} else {
+				$this->skipWithMultisite( $message );
+			}
+
+			foreach ( [ [], [ $message ] ] as $arguments ) {
+				try {
+					$this->{$helper}( ...$arguments );
+					$this->fail( 'Expected the test to be skipped.' );
+				} catch ( \PHPUnit\Framework\SkippedTest $exception ) {
+					$this->assertSame( $arguments[0] ?? $default, $exception->getMessage() );
+				}
+			}
+		}
+
 		public function test_switch_to_site_restored(): void {
 			$this->skipWithoutMultisite();
 

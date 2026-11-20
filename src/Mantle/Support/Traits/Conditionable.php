@@ -24,9 +24,9 @@ trait Conditionable {
 	 * @template TWhenParameter
 	 * @template TWhenReturnType = mixed
 	 *
-	 * @param  (\Closure($this): TWhenParameter)|TWhenParameter  $value
-	 * @param  (callable($this, TWhenParameter): TWhenReturnType)|null  $callback
-	 * @param  (callable($this, TWhenParameter): TWhenReturnType)|null  $default
+	 * @param (\Closure($this): TWhenParameter)|TWhenParameter  $value
+	 * @param (callable($this, TWhenParameter): TWhenReturnType)|null  $callback
+	 * @param (callable($this, TWhenParameter): TWhenReturnType)|null  $default
 	 * @return static|TWhenReturnType|Higher_Order_When_Proxy
 	 * @phpstan-return ($callback is null ? Higher_Order_When_Proxy : static|TWhenReturnType)
 	 */
@@ -54,9 +54,9 @@ trait Conditionable {
 	 * @template TUnlessParameter
 	 * @template TUnlessReturnType = mixed
 	 *
-	 * @param  (\Closure( $this): TUnlessParameter)|TUnlessParameter  $value
-	 * @param  (callable( $this, TUnlessParameter): TUnlessReturnType)|null  $callback
-	 * @param  (callable( $this, TUnlessParameter): TUnlessReturnType)|null  $default
+	 * @param (\Closure( $this): TUnlessParameter)|TUnlessParameter  $value
+	 * @param (callable( $this, TUnlessParameter): TUnlessReturnType)|null  $callback
+	 * @param (callable( $this, TUnlessParameter): TUnlessReturnType)|null  $default
 	 * @return static|TUnlessReturnType|Higher_Order_When_Proxy
 	 * @phpstan-return ($callback is null ? Higher_Order_When_Proxy : static|TUnlessReturnType)
 	 */

@@ -29,9 +29,9 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 	/**
 	 * Register an event listener with the dispatcher.
 	 *
-	 * @param  string|string[] $events
-	 * @param  string|callable $listener
-	 * @param  int             $priority
+	 * @param string|string[] $events
+	 * @param string|callable $listener
+	 * @param int             $priority
 	 */
 	#[\Override]
 	public function listen( string|array $events, string|callable $listener, int $priority = 10 ): void {
@@ -52,7 +52,7 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 	/**
 	 * Determine if a given event has listeners.
 	 *
-	 * @param  string $event_name
+	 * @param string $event_name
 	 */
 	#[\Override]
 	public function has_listeners( string $event_name ): bool {
@@ -62,7 +62,7 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 	/**
 	 * Register an event subscriber with the dispatcher.
 	 *
-	 * @param  object|string $subscriber
+	 * @param object|string $subscriber
 	 *
 	 * @throws RuntimeException Thrown if run.
 	 */
@@ -76,8 +76,8 @@ class Lightweight_Event_Dispatcher extends Dispatcher {
 	 *
 	 * @throws RuntimeException Thrown if the event is an object and payload is passed.
 	 *
-	 * @param  string|object $event Event name.
-	 * @param  mixed         ...$payload Event payload.
+	 * @param string|object $event Event name.
+	 * @param mixed         ...$payload Event payload.
 	 */
 	#[\Override]
 	public function dispatch( string|object $event, mixed ...$payload ): mixed {

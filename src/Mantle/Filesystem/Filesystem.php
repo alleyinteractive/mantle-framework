@@ -26,7 +26,7 @@ class Filesystem {
 	/**
 	 * Determine if a file or directory exists.
 	 *
-	 * @param  string $path
+	 * @param string $path
 	 */
 	public function exists( string $path ): bool {
 		return file_exists( $path );
@@ -35,7 +35,7 @@ class Filesystem {
 	/**
 	 * Determine if a file or directory is missing.
 	 *
-	 * @param  string $path
+	 * @param string $path
 	 */
 	public function missing( string $path ): bool {
 		return ! $this->exists( $path );
@@ -44,8 +44,8 @@ class Filesystem {
 	/**
 	 * Get the contents of a file.
 	 *
-	 * @param  string $path
-	 * @param  bool   $lock
+	 * @param string $path
+	 * @param bool   $lock
 	 *
 	 * @throws File_Not_Found_Exception Thrown on missing file.
 	 */
@@ -60,7 +60,7 @@ class Filesystem {
 	/**
 	 * Get contents of a file with shared access.
 	 *
-	 * @param  string $path
+	 * @param string $path
 	 * @return string
 	 */
 	public function shared_get( string $path ): string|false {
@@ -88,8 +88,8 @@ class Filesystem {
 	/**
 	 * Get the returned value of a file.
 	 *
-	 * @param  string               $path
-	 * @param  array<string, mixed> $data
+	 * @param string               $path
+	 * @param array<string, mixed> $data
 	 * @return mixed
 	 *
 	 * @throws File_Not_Found_Exception Thrown on missing file.
@@ -121,8 +121,8 @@ class Filesystem {
 	/**
 	 * Require the given file once.
 	 *
-	 * @param  string $path
-	 * @param  array  $data
+	 * @param string $path
+	 * @param array  $data
 	 * @return mixed
 	 *
 	 * @throws File_Not_Found_Exception Thrown on missing file.
@@ -145,7 +145,7 @@ class Filesystem {
 	/**
 	 * Get the MD5 hash of the file at the given path.
 	 *
-	 * @param  string $path
+	 * @param string $path
 	 */
 	public function hash( string $path ): string|false {
 		return md5_file( $path );
@@ -154,9 +154,9 @@ class Filesystem {
 	/**
 	 * Write the contents of a file.
 	 *
-	 * @param  string $path
-	 * @param  string $contents
-	 * @param  bool   $lock
+	 * @param string $path
+	 * @param string $contents
+	 * @param bool   $lock
 	 */
 	public function put( string $path, string $contents, bool $lock = false ): int|false {
 		return file_put_contents( $path, $contents, $lock ? LOCK_EX : 0 );
@@ -165,9 +165,9 @@ class Filesystem {
 	/**
 	 * Write the contents of a file as JSON.
 	 *
-	 * @param  string $path
-	 * @param  mixed  $data
-	 * @param  int    $options
+	 * @param string $path
+	 * @param mixed  $data
+	 * @param int    $options
 	 */
 	public function put_json( string $path, mixed $data, int $options = 0 ): int|false {
 		$contents = json_encode( $data, $options ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
@@ -182,8 +182,8 @@ class Filesystem {
 	/**
 	 * Write the contents of a file, replacing it atomically if it already exists.
 	 *
-	 * @param  string $path
-	 * @param  string $content
+	 * @param string $path
+	 * @param string $content
 	 */
 	public function replace( string $path, string $content ): void {
 		// If the path already exists and is a symlink, get the real path...
@@ -204,8 +204,8 @@ class Filesystem {
 	/**
 	 * Prepend to a file.
 	 *
-	 * @param  string $path
-	 * @param  string $data
+	 * @param string $path
+	 * @param string $data
 	 * @return int
 	 */
 	public function prepend( $path, string $data ): int|false {
@@ -219,8 +219,8 @@ class Filesystem {
 	/**
 	 * Append to a file.
 	 *
-	 * @param  string $path
-	 * @param  string $data
+	 * @param string $path
+	 * @param string $data
 	 * @return int
 	 */
 	public function append( $path, $data ): int|false {
@@ -230,8 +230,8 @@ class Filesystem {
 	/**
 	 * Get or set UNIX mode of a file or directory.
 	 *
-	 * @param  string   $path
-	 * @param  int|null $mode
+	 * @param string   $path
+	 * @param int|null $mode
 	 */
 	public function chmod( string $path, ?int $mode = null ): bool|string {
 		if ( $mode ) {
@@ -244,7 +244,7 @@ class Filesystem {
 	/**
 	 * Delete the file at a given path.
 	 *
-	 * @param  string ...$paths
+	 * @param string ...$paths
 	 */
 	public function delete( string ...$paths ): bool {
 		$success = true;
@@ -267,8 +267,8 @@ class Filesystem {
 	/**
 	 * Move a file to a new location.
 	 *
-	 * @param  string $path
-	 * @param  string $target
+	 * @param string $path
+	 * @param string $target
 	 */
 	public function move( string $path, string $target ): bool {
 		return rename( $path, $target );
@@ -277,8 +277,8 @@ class Filesystem {
 	/**
 	 * Copy a file to a new location.
 	 *
-	 * @param  string $path
-	 * @param  string $target
+	 * @param string $path
+	 * @param string $target
 	 */
 	public function copy( string $path, string $target ): bool {
 		return copy( $path, $target );
@@ -287,8 +287,8 @@ class Filesystem {
 	/**
 	 * Create a symlink to the target file or directory. On Windows, a hard link is created if the target is a file.
 	 *
-	 * @param  string $target
-	 * @param  string $link
+	 * @param string $target
+	 * @param string $link
 	 */
 	public function link( string $target, string $link ): void {
 		if ( 'Windows' !== PHP_OS_FAMILY ) {
@@ -305,7 +305,7 @@ class Filesystem {
 	/**
 	 * Extract the file name from a file path.
 	 *
-	 * @param  string $path
+	 * @param string $path
 	 */
 	public function name( string $path ): string {
 		return pathinfo( $path, PATHINFO_FILENAME );
@@ -314,7 +314,7 @@ class Filesystem {
 	/**
 	 * Extract the trailing name component from a file path.
 	 *
-	 * @param  string $path
+	 * @param string $path
 	 */
 	public function basename( string $path ): string {
 		return pathinfo( $path, PATHINFO_BASENAME );
@@ -323,7 +323,7 @@ class Filesystem {
 	/**
 	 * Extract the parent directory from a file path.
 	 *
-	 * @param  string $path
+	 * @param string $path
 	 */
 	public function dirname( string $path ): string {
 		return pathinfo( $path, PATHINFO_DIRNAME );
@@ -332,7 +332,7 @@ class Filesystem {
 	/**
 	 * Extract the file extension from a file path.
 	 *
-	 * @param  string $path
+	 * @param string $path
 	 */
 	public function extension( string $path ): string {
 		return pathinfo( $path, PATHINFO_EXTENSION );
@@ -341,7 +341,7 @@ class Filesystem {
 	/**
 	 * Guess the file extension from the mime-type of a given file.
 	 *
-	 * @param  string $path
+	 * @param string $path
 	 *
 	 * @throws RuntimeException Thrown on missing extension.
 	 */
@@ -375,7 +375,7 @@ class Filesystem {
 	/**
 	 * Get the file type of a given file.
 	 *
-	 * @param  string $path
+	 * @param string $path
 	 */
 	public function type( string $path ): string|false {
 		return filetype( $path );
@@ -384,7 +384,7 @@ class Filesystem {
 	/**
 	 * Get the mime-type of a given file.
 	 *
-	 * @param  string $path
+	 * @param string $path
 	 */
 	public function mime_type( string $path ): string|false {
 		$finfo = finfo_open( FILEINFO_MIME_TYPE );
@@ -398,7 +398,7 @@ class Filesystem {
 	/**
 	 * Get the file size of a given file.
 	 *
-	 * @param  string $path
+	 * @param string $path
 	 */
 	public function size( string $path ): int|false {
 		return filesize( $path );
@@ -407,7 +407,7 @@ class Filesystem {
 	/**
 	 * Get the file's last modification time.
 	 *
-	 * @param  string $path
+	 * @param string $path
 	 */
 	public function last_modified( string $path ): int|false {
 		return filemtime( $path );
@@ -416,7 +416,7 @@ class Filesystem {
 	/**
 	 * Determine if the given path is a directory.
 	 *
-	 * @param  string $directory
+	 * @param string $directory
 	 */
 	public function is_directory( string $directory ): bool {
 		return is_dir( $directory );
@@ -425,7 +425,7 @@ class Filesystem {
 	/**
 	 * Determine if the given path is readable.
 	 *
-	 * @param  string $path
+	 * @param string $path
 	 */
 	public function is_readable( string $path ): bool {
 		return is_readable( $path );
@@ -434,7 +434,7 @@ class Filesystem {
 	/**
 	 * Determine if the given path is writable.
 	 *
-	 * @param  string $path
+	 * @param string $path
 	 */
 	public function is_writable( string $path ): bool {
 		return is_writable( $path );
@@ -443,7 +443,7 @@ class Filesystem {
 	/**
 	 * Determine if the given path is a file.
 	 *
-	 * @param  string $file
+	 * @param string $file
 	 */
 	public function is_file( string $file ): bool {
 		return is_file( $file );
@@ -452,8 +452,8 @@ class Filesystem {
 	/**
 	 * Find path names matching a given pattern.
 	 *
-	 * @param  string $pattern
-	 * @param  int    $flags
+	 * @param string $pattern
+	 * @param int    $flags
 	 * @return array<string>
 	 */
 	public function glob( string $pattern, int $flags = 0 ): array {
@@ -463,8 +463,8 @@ class Filesystem {
 	/**
 	 * Get an array of all files in a directory.
 	 *
-	 * @param  string $directory
-	 * @param  bool   $hidden
+	 * @param string $directory
+	 * @param bool   $hidden
 	 * @return \Symfony\Component\Finder\SplFileInfo[]
 	 */
 	public function files( string|array $directory, $hidden = false ): array {
@@ -477,8 +477,8 @@ class Filesystem {
 	/**
 	 * Get all of the files from the given directory (recursive).
 	 *
-	 * @param  string $directory
-	 * @param  bool   $hidden
+	 * @param string $directory
+	 * @param bool   $hidden
 	 * @return \Symfony\Component\Finder\SplFileInfo[]
 	 */
 	public function all_files( string|array $directory, $hidden = false ): array {
@@ -491,7 +491,7 @@ class Filesystem {
 	/**
 	 * Get all of the directories within a given directory.
 	 *
-	 * @param  string|string[] $directory
+	 * @param string|string[] $directory
 	 * @return string[]
 	 */
 	public function directories( string|array $directory ): array {
@@ -507,9 +507,9 @@ class Filesystem {
 	/**
 	 * Ensure a directory exists.
 	 *
-	 * @param  string $path
-	 * @param  int    $mode
-	 * @param  bool   $recursive
+	 * @param string $path
+	 * @param int    $mode
+	 * @param bool   $recursive
 	 */
 	public function ensure_directory_exists( string $path, int $mode = 0755, bool $recursive = true ): bool {
 		if ( ! $this->is_directory( $path ) ) {
@@ -522,9 +522,9 @@ class Filesystem {
 	/**
 	 * Create a directory.
 	 *
-	 * @param  string $path
-	 * @param  int    $mode
-	 * @param  bool   $recursive
+	 * @param string $path
+	 * @param int    $mode
+	 * @param bool   $recursive
 	 */
 	public function make_directory( string $path, int $mode = 0755, bool $recursive = false ): bool {
 		return mkdir( $path, $mode, $recursive );
@@ -533,9 +533,9 @@ class Filesystem {
 	/**
 	 * Move a directory.
 	 *
-	 * @param  string $from
-	 * @param  string $to
-	 * @param  bool   $overwrite
+	 * @param string $from
+	 * @param string $to
+	 * @param bool   $overwrite
 	 */
 	public function move_directory( string $from, string $to, bool $overwrite = false ): bool {
 		if ( $overwrite && $this->is_directory( $to ) && ! $this->delete_directory( $to ) ) {
@@ -548,9 +548,9 @@ class Filesystem {
 	/**
 	 * Copy a directory from one location to another.
 	 *
-	 * @param  string   $directory
-	 * @param  string   $destination
-	 * @param  int|null $options
+	 * @param string   $directory
+	 * @param string   $destination
+	 * @param int|null $options
 	 */
 	public function copy_directory( string $directory, string $destination, ?int $options = null ): bool {
 		if ( ! $this->is_directory( $directory ) ) {
@@ -596,8 +596,8 @@ class Filesystem {
 	 *
 	 * The directory itself may be optionally preserved.
 	 *
-	 * @param  string $directory
-	 * @param  bool   $preserve
+	 * @param string $directory
+	 * @param bool   $preserve
 	 */
 	public function delete_directory( string $directory, bool $preserve = false ): bool {
 		if ( ! $this->is_directory( $directory ) ) {
@@ -634,7 +634,7 @@ class Filesystem {
 	/**
 	 * Remove all of the directories within a given directory.
 	 *
-	 * @param  string|string[] $directory
+	 * @param string|string[] $directory
 	 */
 	public function delete_directories( string|array $directory ): bool {
 		$all_directories = $this->directories( $directory );
@@ -653,7 +653,7 @@ class Filesystem {
 	/**
 	 * Empty the specified directory of all files and folders.
 	 *
-	 * @param  string $directory
+	 * @param string $directory
 	 */
 	public function clean_directory( string $directory ): bool {
 		return $this->delete_directory( $directory, true );

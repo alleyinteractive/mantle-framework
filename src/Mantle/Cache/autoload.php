@@ -15,8 +15,8 @@ if ( ! function_exists( 'cache' ) ) {
 	 *
 	 * If an array is passed, we'll assume you want to put to the cache.
 	 *
-	 * @param  array<mixed>|string|null $key Cache key or array of a key / value pair to set.
-	 * @param  mixed                    $default Default value to return if the key does not exist.
+	 * @param array<mixed>|string|null $key Cache key or array of a key / value pair to set.
+	 * @param mixed                    $default Default value to return if the key does not exist.
 	 * @phpstan-return ($key is null ? \Mantle\Cache\Repository : mixed)
 	 *
 	 * @throws \Exception
@@ -53,9 +53,9 @@ if ( ! function_exists( 'remember' ) ) {
 	/**
 	 * Get an item from the cache, or execute the given Closure and store the result.
 	 *
-	 * @param  string                                    $key Cache key.
-	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl Cache TTL.
-	 * @param  \Closure                                  $callback Closure to invoke.
+	 * @param string                                    $key Cache key.
+	 * @param \DateTimeInterface|\DateInterval|int|null $ttl Cache TTL.
+	 * @param \Closure                                  $callback Closure to invoke.
 	 */
 	function remember( string $key, \DateTimeInterface|\DateInterval|int|null $ttl, Closure $closure ): mixed {
 		return cache()->remember( $key, $ttl, $closure );

@@ -490,7 +490,7 @@ class FilesystemTest extends TestCase {
 	}
 
 	/**
-	 * @param  string $file
+	 * @param string $file
 	 * @return int
 	 */
 	private function get_file_permissions( $file ) {

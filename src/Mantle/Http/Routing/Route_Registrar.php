@@ -99,8 +99,8 @@ class Route_Registrar implements Registrar_Contract {
 	/**
 	 * Set the value for a given attribute.
 	 *
-	 * @param  string $key
-	 * @param  mixed  $value
+	 * @param string $key
+	 * @param mixed  $value
 	 *
 	 * @throws InvalidArgumentException Thrown on unknown attribute.
 	 */
@@ -117,7 +117,7 @@ class Route_Registrar implements Registrar_Contract {
 	/**
 	 * Create a route group with shared attributes.
 	 *
-	 * @param  \Closure|string $callback
+	 * @param \Closure|string $callback
 	 */
 	public function group( callable|string $callback ): static {
 		assert( $this->router instanceof Router, 'Router instance is required to create route groups.' );
@@ -130,9 +130,9 @@ class Route_Registrar implements Registrar_Contract {
 	/**
 	 * Register a new route with the router.
 	 *
-	 * @param  string|string[]                   $method
-	 * @param  string                            $uri
-	 * @param  \Closure|array<mixed>|string|null $action
+	 * @param string|string[]                   $method
+	 * @param string                            $uri
+	 * @param \Closure|array<mixed>|string|null $action
 	 */
 	public function register_route( string|array $method, string $uri, Closure|array|string|null $action = null ): Route {
 		assert( $this->router instanceof Router, 'Router instance is required to create route groups.' );
@@ -273,8 +273,8 @@ class Route_Registrar implements Registrar_Contract {
 	/**
 	 * Dynamically handle calls into the route registrar.
 	 *
-	 * @param  string       $method
-	 * @param  array<mixed> $parameters
+	 * @param string       $method
+	 * @param array<mixed> $parameters
 	 *
 	 * @throws BadMethodCallException Thrown on missing method.
 	 */

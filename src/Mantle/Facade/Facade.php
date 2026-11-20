@@ -111,8 +111,8 @@ abstract class Facade {
 	/**
 	 * Handle dynamic, static calls to the object.
 	 *
-	 * @param  string $method Method invoked.
-	 * @param  array  $args Arguments to pass to the method.
+	 * @param string $method Method invoked.
+	 * @param array  $args Arguments to pass to the method.
 	 * @return mixed
 	 *
 	 * @throws \RuntimeException Throw on missing Facade root.

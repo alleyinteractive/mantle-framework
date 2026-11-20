@@ -42,8 +42,8 @@ if ( ! function_exists( 'environment' ) ) {
 	 *
 	 * @see Mantle\Support\Environment
 	 *
-	 * @param  string $key Environment variable key.
-	 * @param  mixed  $default Default value.
+	 * @param string $key Environment variable key.
+	 * @param mixed  $default Default value.
 	 */
 	function environment( string $key, $default = null ): mixed {
 		return Environment::get( $key, $default );
@@ -54,8 +54,8 @@ if ( ! function_exists( 'environment_mixed' ) ) {
 	/**
 	 * Gets the value of an environment variable as a Mixed Data object.
 	 *
-	 * @param  string $key Environment variable key.
-	 * @param  mixed  $default Default value.
+	 * @param string $key Environment variable key.
+	 * @param mixed  $default Default value.
 	 */
 	function environment_mixed( string $key, $default = null ): Mixed_Data {
 		return mixed( environment( $key, $default ) );
@@ -88,7 +88,7 @@ if ( ! function_exists( 'storage_path' ) ) {
 	/**
 	 * Get the path to the storage folder.
 	 *
-	 * @param  string  $path Path to append.
+	 * @param string  $path Path to append.
 	 */
 	function storage_path( string $path = '' ): string {
 		return app()->get_storage_path( $path );

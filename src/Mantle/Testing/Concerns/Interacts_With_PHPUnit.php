@@ -26,7 +26,7 @@ trait Interacts_With_PHPUnit {
 	 */
 	public static function skip_for_phpunit_version( string $version, string $compare = '>=', string $message = '' ): void {
 		if ( ! class_exists( Version::class ) || ! method_exists( Version::class, 'id' ) ) {
-			static::markTestSkipped( 'PHPUnit version check not available.' );
+			static::markTestSkipped( $message ?: 'PHPUnit version check not available.' );
 		}
 
 		if ( static::phpunit_version_compare( $version, $compare ) ) {

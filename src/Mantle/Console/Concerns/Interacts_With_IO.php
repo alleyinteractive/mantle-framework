@@ -51,7 +51,7 @@ trait Interacts_With_IO {
 	/**
 	 * Determine if the given argument is present.
 	 *
-	 * @param  string|int $name
+	 * @param string|int $name
 	 */
 	public function has_argument( string|int $name ): bool {
 		return $this->input->hasArgument( (string) $name );
@@ -60,7 +60,7 @@ trait Interacts_With_IO {
 	/**
 	 * Get the value of a command argument.
 	 *
-	 * @param  string|null $key
+	 * @param string|null $key
 	 * @return string|mixed
 	 */
 	public function argument( $key = null ) {
@@ -83,7 +83,7 @@ trait Interacts_With_IO {
 	/**
 	 * Determine if the given option is present.
 	 *
-	 * @param  string $name
+	 * @param string $name
 	 * @return bool
 	 */
 	public function has_option( $name ) {
@@ -93,8 +93,8 @@ trait Interacts_With_IO {
 	/**
 	 * Get the value of a command option.
 	 *
-	 * @param  string|null $key The option name.
-	 * @param  mixed       $default Default value if the option does not exist.
+	 * @param string|null $key The option name.
+	 * @param mixed       $default Default value if the option does not exist.
 	 * @return string|array<mixed>|bool|null
 	 */
 	public function option( ?string $key = null, mixed $default = null ) {
@@ -108,8 +108,8 @@ trait Interacts_With_IO {
 	/**
 	 * Get the value of a command option as a mixed type.
 	 *
-	 * @param  string $key The option name.
-	 * @param  mixed  $default Default value if the option does not exist.
+	 * @param string $key The option name.
+	 * @param mixed  $default Default value if the option does not exist.
 	 */
 	public function mixed_option( string $key, mixed $default = null ): Mixed_Data {
 		return mixed( $this->option( $key, $default ) );
@@ -127,8 +127,8 @@ trait Interacts_With_IO {
 	/**
 	 * Write a string as question output.
 	 *
-	 * @param  string          $string
-	 * @param  int|string|null $verbosity
+	 * @param string          $string
+	 * @param int|string|null $verbosity
 	 */
 	public function question( string $string, $verbosity = null ): void {
 		$this->line( $string, 'question', $verbosity );
@@ -137,8 +137,8 @@ trait Interacts_With_IO {
 	/**
 	 * Confirm a question with the user.
 	 *
-	 * @param  string $question
-	 * @param  bool   $default
+	 * @param string $question
+	 * @param bool   $default
 	 * @return bool
 	 */
 	public function confirm( string $question, bool $default = false ) {
@@ -148,8 +148,8 @@ trait Interacts_With_IO {
 	/**
 	 * Prompt the user for input.
 	 *
-	 * @param  string      $question
-	 * @param  string|null $default
+	 * @param string      $question
+	 * @param string|null $default
 	 * @return mixed
 	 */
 	public function ask( $question, $default = null ) {
@@ -159,9 +159,9 @@ trait Interacts_With_IO {
 	/**
 	 * Prompt the user for input with auto completion.
 	 *
-	 * @param  string                                       $question
-	 * @param  array<string>|array<string, string>|callable $choices
-	 * @param  string|null                                  $default
+	 * @param string                                       $question
+	 * @param array<string>|array<string, string>|callable $choices
+	 * @param string|null                                  $default
 	 */
 	public function anticipate( $question, $choices, $default = null ): mixed {
 		return $this->ask_with_completion( $question, $choices, $default );
@@ -170,9 +170,9 @@ trait Interacts_With_IO {
 	/**
 	 * Prompt the user for input with auto completion.
 	 *
-	 * @param  string                                       $question
-	 * @param  array<string>|array<string, string>|callable $choices
-	 * @param  string|null                                  $default
+	 * @param string                                       $question
+	 * @param array<string>|array<string, string>|callable $choices
+	 * @param string|null                                  $default
 	 */
 	public function ask_with_completion( $question, $choices, $default = null ): mixed {
 		$question = new Question( $question, $default );
@@ -187,8 +187,8 @@ trait Interacts_With_IO {
 	/**
 	 * Prompt the user for input but hide the answer from the console.
 	 *
-	 * @param  string $question
-	 * @param  bool   $fallback
+	 * @param string $question
+	 * @param bool   $fallback
 	 */
 	public function secret( string $question, bool $fallback = true ): mixed {
 		$question = new Question( $question );
@@ -201,11 +201,11 @@ trait Interacts_With_IO {
 	/**
 	 * Give the user a single choice from an array of answers.
 	 *
-	 * @param  string          $question
-	 * @param  array<string>   $choices
-	 * @param  string|int|null $default
-	 * @param  int|null        $attempts
-	 * @param  bool            $multiple
+	 * @param string          $question
+	 * @param array<string>   $choices
+	 * @param string|int|null $default
+	 * @param int|null        $attempts
+	 * @param bool            $multiple
 	 */
 	public function choice( string $question, array $choices, mixed $default = null, ?int $attempts = null, bool $multiple = false ): mixed {
 		$question = new ChoiceQuestion( $question, $choices, $default );
@@ -237,10 +237,10 @@ trait Interacts_With_IO {
 	/**
 	 * Format input to textual table.
 	 *
-	 * @param  array<string>                                       $headers
-	 * @param  Arrayable<int, string> |array<string[]>             $rows
-	 * @param  \Symfony\Component\Console\Helper\TableStyle|string $table_style
-	 * @param  array<mixed>                                        $column_styles
+	 * @param array<string>                                       $headers
+	 * @param Arrayable<int, string> |array<string[]>             $rows
+	 * @param \Symfony\Component\Console\Helper\TableStyle|string $table_style
+	 * @param array<mixed>                                        $column_styles
 	 */
 	public function table( array $headers, array|Arrayable $rows, TableStyle|string $table_style = 'default', array $column_styles = [] ): void {
 		$table = new Table( $this->output );
@@ -263,8 +263,8 @@ trait Interacts_With_IO {
 	 *
 	 * @template TData
 	 *
-	 * @param  iterable<TData>|int $total_steps
-	 * @param  \Closure            $callback
+	 * @param iterable<TData>|int $total_steps
+	 * @param \Closure            $callback
 	 * @return iterable<TData>|null
 	 */
 	public function with_progress_bar( iterable|int $total_steps, Closure $callback ): ?iterable {
@@ -292,8 +292,8 @@ trait Interacts_With_IO {
 	/**
 	 * Write a string as information output.
 	 *
-	 * @param  string          $string
-	 * @param  int|string|null $verbosity
+	 * @param string          $string
+	 * @param int|string|null $verbosity
 	 */
 	public function info( $string, $verbosity = null ): void {
 		$this->line( $string, 'info', $verbosity );
@@ -324,9 +324,9 @@ trait Interacts_With_IO {
 	/**
 	 * Write a string as standard output.
 	 *
-	 * @param  string          $string
-	 * @param  string|null     $style
-	 * @param  int|string|null $verbosity
+	 * @param string          $string
+	 * @param string|null     $style
+	 * @param int|string|null $verbosity
 	 */
 	public function line( $string, $style = null, $verbosity = null ): void {
 		$styled = $style ? "<{$style}>{$string}</{$style}>" : $string;
@@ -337,8 +337,8 @@ trait Interacts_With_IO {
 	/**
 	 * Write a string as comment output.
 	 *
-	 * @param  string          $string
-	 * @param  int|string|null $verbosity
+	 * @param string          $string
+	 * @param int|string|null $verbosity
 	 */
 	public function comment( $string, $verbosity = null ): void {
 		$this->line( $string, 'comment', $verbosity );
@@ -347,8 +347,8 @@ trait Interacts_With_IO {
 	/**
 	 * Write a string as error output.
 	 *
-	 * @param  string          $string
-	 * @param  int|string|null $verbosity
+	 * @param string          $string
+	 * @param int|string|null $verbosity
 	 */
 	public function error( string $string, $verbosity = null ): void {
 		$this->line( $string, 'error', $verbosity );
@@ -357,8 +357,8 @@ trait Interacts_With_IO {
 	/**
 	 * Write a string as warning output.
 	 *
-	 * @param  string          $string
-	 * @param  int|string|null $verbosity
+	 * @param string          $string
+	 * @param int|string|null $verbosity
 	 */
 	public function warn( string $string, $verbosity = null ): void {
 		if ( ! $this->output->getFormatter()->hasStyle( 'warning' ) ) {
@@ -373,8 +373,8 @@ trait Interacts_With_IO {
 	/**
 	 * Write a string as success output.
 	 *
-	 * @param  string          $string
-	 * @param  int|string|null $verbosity
+	 * @param string          $string
+	 * @param int|string|null $verbosity
 	 */
 	public function success( string $string, $verbosity = null ): void {
 		if ( ! $this->output->getFormatter()->hasStyle( 'success' ) ) {
@@ -389,8 +389,8 @@ trait Interacts_With_IO {
 	/**
 	 * Write a string in an alert box.
 	 *
-	 * @param  string          $string
-	 * @param  int|string|null $verbosity
+	 * @param string          $string
+	 * @param int|string|null $verbosity
 	 */
 	public function alert( string $string, $verbosity = null ): void {
 		$length = Str::length( strip_tags( $string ) ) + 12;
@@ -405,7 +405,7 @@ trait Interacts_With_IO {
 	/**
 	 * Write a blank line.
 	 *
-	 * @param  int $count
+	 * @param int $count
 	 * @return static
 	 */
 	public function new_line( $count = 1 ) {
@@ -453,7 +453,7 @@ trait Interacts_With_IO {
 	/**
 	 * Get the verbosity level in terms of Symfony's OutputInterface level.
 	 *
-	 * @param  string|int|null $level
+	 * @param string|int|null $level
 	 */
 	protected function parse_verbosity( string|int|null $level = null ): int {
 		if ( $level && isset( $this->verbosity_map[ $level ] ) ) {

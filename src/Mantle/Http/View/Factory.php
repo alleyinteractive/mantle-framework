@@ -329,7 +329,7 @@ class Factory implements Contract {
 	/**
 	 * Get the extension used by the view file.
 	 *
-	 * @param  string $path Path to check against.
+	 * @param string $path Path to check against.
 	 */
 	protected function get_extension( string $path ): ?string {
 		$extensions = array_keys( $this->extensions );

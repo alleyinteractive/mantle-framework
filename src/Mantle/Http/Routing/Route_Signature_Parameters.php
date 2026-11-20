@@ -24,8 +24,8 @@ class Route_Signature_Parameters {
 	/**
 	 * Extract the route action's signature parameters.
 	 *
-	 * @param  array<mixed> $action Route action.
-	 * @param  string|null  $sub_class Route subclass to compare against.
+	 * @param array<mixed> $action Route action.
+	 * @param string|null  $sub_class Route subclass to compare against.
 	 * @return array<mixed>
 	 *
 	 * @throws HttpException Thrown on missing callback.
@@ -53,7 +53,7 @@ class Route_Signature_Parameters {
 	/**
 	 * Get the parameters for the given class / method by string.
 	 *
-	 * @param  string $uses Route callback.
+	 * @param string $uses Route callback.
 	 * @return array<\ReflectionParameter>
 	 */
 	protected static function from_class_method_string( string $uses ): array {
