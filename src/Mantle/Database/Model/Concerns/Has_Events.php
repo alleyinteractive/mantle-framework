@@ -26,8 +26,8 @@ trait Has_Events {
 	/**
 	 * Register a model event with the dispatcher.
 	 *
-	 * @param  string          $event Event name to listen to.
-	 * @param  \Closure|string $callback
+	 * @param string          $event Event name to listen to.
+	 * @param \Closure|string $callback
 	 * @throws InvalidArgumentException Thrown on a missing dispatcher.
 	 */
 	protected static function register_model_event( string $event, \Closure|string $callback ): void {
@@ -61,7 +61,7 @@ trait Has_Events {
 	 *
 	 * Note: *is not* supported at this time!
 	 *
-	 * @param  \Closure|string $callback
+	 * @param \Closure|string $callback
 	 * @throws \RuntimeException Thrown on use.
 	 */
 	public static function creating( $callback ): never {
@@ -71,7 +71,7 @@ trait Has_Events {
 	/**
 	 * Register a created model event with the dispatcher.
 	 *
-	 * @param  \Closure|string $callback
+	 * @param \Closure|string $callback
 	 */
 	public static function created( \Closure|string $callback ): void {
 		static::register_model_event( 'created', $callback );
@@ -80,7 +80,7 @@ trait Has_Events {
 	/**
 	 * Register a updating model event with the dispatcher.
 	 *
-	 * @param  \Closure|string $callback
+	 * @param \Closure|string $callback
 	 */
 	public static function updating( \Closure|string $callback ): void {
 		static::register_model_event( 'updating', $callback );
@@ -89,7 +89,7 @@ trait Has_Events {
 	/**
 	 * Register a updated model event with the dispatcher.
 	 *
-	 * @param  \Closure|string $callback
+	 * @param \Closure|string $callback
 	 */
 	public static function updated( \Closure|string $callback ): void {
 		static::register_model_event( 'updated', $callback );
@@ -98,7 +98,7 @@ trait Has_Events {
 	/**
 	 * Register a trashing model event with the dispatcher.
 	 *
-	 * @param  \Closure|string $callback
+	 * @param \Closure|string $callback
 	 */
 	public static function trashing( \Closure|string $callback ): void {
 		static::register_model_event( 'trashing', $callback );
@@ -107,7 +107,7 @@ trait Has_Events {
 	/**
 	 * Register a trashed model event with the dispatcher.
 	 *
-	 * @param  \Closure|string $callback
+	 * @param \Closure|string $callback
 	 */
 	public static function trashed( \Closure|string $callback ): void {
 		static::register_model_event( 'trashed', $callback );
@@ -116,7 +116,7 @@ trait Has_Events {
 	/**
 	 * Register a deleting model event with the dispatcher.
 	 *
-	 * @param  \Closure|string $callback
+	 * @param \Closure|string $callback
 	 */
 	public static function deleting( \Closure|string $callback ): void {
 		static::register_model_event( 'deleting', $callback );
@@ -125,7 +125,7 @@ trait Has_Events {
 	/**
 	 * Register a deleted model event with the dispatcher.
 	 *
-	 * @param  \Closure|string $callback
+	 * @param \Closure|string $callback
 	 */
 	public static function deleted( \Closure|string $callback ): void {
 		static::register_model_event( 'deleted', $callback );

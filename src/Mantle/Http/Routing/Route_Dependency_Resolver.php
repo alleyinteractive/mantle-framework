@@ -24,9 +24,9 @@ trait Route_Dependency_Resolver {
 	/**
 	 * Resolve the object method's type-hinted dependencies.
 	 *
-	 * @param  array<mixed>  $parameters
-	 * @param  object $instance
-	 * @param  string $method
+	 * @param array<mixed>  $parameters
+	 * @param object $instance
+	 * @param string $method
 	 * @return array<mixed>
 	 */
 	protected function resolve_class_method_dependencies( array $parameters, $instance, $method ) {
@@ -43,8 +43,8 @@ trait Route_Dependency_Resolver {
 	/**
 	 * Resolve the given method's type-hinted dependencies.
 	 *
-	 * @param  array<mixed>                       $parameters
-	 * @param  \ReflectionFunctionAbstract $reflector
+	 * @param array<mixed>                       $parameters
+	 * @param \ReflectionFunctionAbstract $reflector
 	 * @return array<mixed>
 	 */
 	public function resolve_method_dependencies( array $parameters, ReflectionFunctionAbstract $reflector ): array {
@@ -73,9 +73,9 @@ trait Route_Dependency_Resolver {
 	/**
 	 * Attempt to transform the given parameter into a class instance.
 	 *
-	 * @param  \ReflectionParameter $parameter
-	 * @param  array<mixed>         $parameters
-	 * @param  object               $skippable_value
+	 * @param \ReflectionParameter $parameter
+	 * @param array<mixed>         $parameters
+	 * @param object               $skippable_value
 	 */
 	protected function transform_dependency( ReflectionParameter $parameter, $parameters, $skippable_value ): mixed {
 		$class_name = Reflector::get_parameter_class_name( $parameter );
@@ -97,8 +97,8 @@ trait Route_Dependency_Resolver {
 	/**
 	 * Determine if an object of the given class is in a list of parameters.
 	 *
-	 * @param  class-string $class
-	 * @param  array<mixed>        $parameters
+	 * @param class-string $class
+	 * @param array<mixed>        $parameters
 	 */
 	protected function already_in_parameters( string $class, array $parameters ): bool {
 		return ! is_null(
@@ -112,9 +112,9 @@ trait Route_Dependency_Resolver {
 	/**
 	 * Splice the given value into the parameter list.
 	 *
-	 * @param  array<mixed>  $parameters
-	 * @param  int    $offset
-	 * @param  mixed  $value
+	 * @param array<mixed>  $parameters
+	 * @param int    $offset
+	 * @param mixed  $value
 	 * @return void
 	 */
 	protected function splice_into_parameters( array &$parameters, int $offset, mixed $value ) {

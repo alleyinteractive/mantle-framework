@@ -182,7 +182,7 @@ class Route extends Symfony_Route {
 	/**
 	 * Get or set the middleware attached to the route.
 	 *
-	 * @param  array<class-string>|string|callable|null $middleware Middleware to set, optional.
+	 * @param array<class-string>|string|callable|null $middleware Middleware to set, optional.
 	 * @return static|array<class-string|callable>
 	 * @phpstan-return ($middleware is null ? array<class-string> : static)
 	 */
@@ -211,7 +211,7 @@ class Route extends Symfony_Route {
 	/**
 	 * Exclude middleware from the route.
 	 *
-	 * @param  array<class-string>|class-string|string $middleware Middleware to exclude, optional.
+	 * @param array<class-string>|class-string|string $middleware Middleware to exclude, optional.
 	 */
 	public function without_middleware( array|string $middleware = '*' ): static {
 		$this->action['excluded_middleware'] = array_merge(

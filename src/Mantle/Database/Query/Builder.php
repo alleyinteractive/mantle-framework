@@ -585,7 +585,7 @@ abstract class Builder {
 	/**
 	 * Register a new global scope.
 	 *
-	 * @param  string        $identifier Scope name.
+	 * @param string        $identifier Scope name.
 	 * @param Scope|\Closure $scope Scope callback.
 	 * @return static
 	 */

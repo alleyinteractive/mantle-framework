@@ -87,8 +87,8 @@ trait Hides_Attributes {
 	/**
 	 * Make the given, typically hidden, attributes visible if the given truth test passes.
 	 *
-	 * @param  bool|Closure $condition Condition to check.
-	 * @param  string       ...$attributes Attributes to make visible.
+	 * @param bool|Closure $condition Condition to check.
+	 * @param string       ...$attributes Attributes to make visible.
 	 */
 	public function make_visible_if( mixed $condition, string ...$attributes ): static {
 		$condition = $condition instanceof Closure ? $condition( $this ) : $condition;
@@ -99,7 +99,7 @@ trait Hides_Attributes {
 	/**
 	 * Make the given, typically visible, attributes hidden.
 	 *
-	 * @param  string ...$attributes Attributes to make hidden.
+	 * @param string ...$attributes Attributes to make hidden.
 	 */
 	public function make_hidden( string ...$attributes ): static {
 		$this->hidden = array_merge( $this->hidden, $attributes );
@@ -110,8 +110,8 @@ trait Hides_Attributes {
 	/**
 	 * Make the given, typically visible, attributes hidden if the given truth test passes.
 	 *
-	 * @param  bool|Closure $condition Condition to check.
-	 * @param  string       ...$attributes Attributes to make hidden.
+	 * @param bool|Closure $condition Condition to check.
+	 * @param string       ...$attributes Attributes to make hidden.
 	 */
 	public function make_hidden_if( mixed $condition, string ...$attributes ): static {
 		$condition = $condition instanceof Closure ? $condition( $this ) : $condition;

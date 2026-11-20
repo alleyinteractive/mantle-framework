@@ -131,7 +131,7 @@ class Event {
 	/**
 	 * Call all of the "before" callbacks for the event.
 	 *
-	 * @param  \Mantle\Contracts\Container $container
+	 * @param \Mantle\Contracts\Container $container
 	 */
 	public function call_before_callbacks( Container $container ): void {
 		foreach ( $this->before_callbacks as $before_callback ) {
@@ -142,7 +142,7 @@ class Event {
 	/**
 	 * Call all of the "after" callbacks for the event.
 	 *
-	 * @param  \Mantle\Contracts\Container $container
+	 * @param \Mantle\Contracts\Container $container
 	 */
 	public function call_after_callbacks( Container $container ): void {
 		foreach ( $this->after_callbacks as $after_callback ) {
@@ -206,7 +206,7 @@ class Event {
 	/**
 	 * Register a callback to ping a given URL before the job runs.
 	 *
-	 * @param  string $url URL to ping.
+	 * @param string $url URL to ping.
 	 */
 	public function ping_before( string $url ): static {
 		return $this->before( $this->ping_callback( $url ) );
@@ -217,7 +217,7 @@ class Event {
 	 *
 	 * @deprecated Use ping_before() instead.
 	 *
-	 * @param  string $url URL to ping.
+	 * @param string $url URL to ping.
 	 */
 	#[\Deprecated( 'Use ping_before() instead.' )]
 	public function pingBefore( string $url ): static {
@@ -227,8 +227,8 @@ class Event {
 	/**
 	 * Register a callback to ping a given URL before the job runs if the given condition is true.
 	 *
-	 * @param  bool   $value Value to compare.
-	 * @param  string $url URL to ping.
+	 * @param bool   $value Value to compare.
+	 * @param string $url URL to ping.
 	 */
 	public function ping_before_if( mixed $value, string $url ): static {
 		return $value ? $this->ping_before( $url ) : $this;
@@ -239,8 +239,8 @@ class Event {
 	 *
 	 * @deprecated Use ping_before_if() instead.
 	 *
-	 * @param  mixed  $value Value to compare.
-	 * @param  string $url URL to ping.
+	 * @param mixed  $value Value to compare.
+	 * @param string $url URL to ping.
 	 */
 	#[\Deprecated( 'Use ping_before_if() instead.' )]
 	public function pingBeforeIf( mixed $value, string $url ): static {
@@ -271,8 +271,8 @@ class Event {
 	/**
 	 * Register a callback to ping a given URL after the job runs if the given condition is true.
 	 *
-	 * @param  bool   $value Value to compare.
-	 * @param  string $url URL to ping.
+	 * @param bool   $value Value to compare.
+	 * @param string $url URL to ping.
 	 */
 	public function then_ping_if( mixed $value, string $url ): static {
 		return $value ? $this->then_ping( $url ) : $this;
@@ -283,8 +283,8 @@ class Event {
 	 *
 	 * @deprecated Use then_ping_if() instead.
 	 *
-	 * @param  bool   $value Value to compare.
-	 * @param  string $url URL to ping.
+	 * @param bool   $value Value to compare.
+	 * @param string $url URL to ping.
 	 */
 	#[\Deprecated( 'Use then_ping_if() instead.' )]
 	public function thenPingIf( mixed $value, string $url ): static {
@@ -312,7 +312,7 @@ class Event {
 	/**
 	 * Register a callback to ping a given URL if the operation fails.
 	 *
-	 * @param  string $url
+	 * @param string $url
 	 */
 	public function pingOnFailure( string $url ): static {
 		return $this->onFailure( $this->ping_callback( $url ) );
@@ -337,7 +337,7 @@ class Event {
 	/**
 	 * Limit the environments the command should run in.
 	 *
-	 * @param  string ...$environments Environments to run on.
+	 * @param string ...$environments Environments to run on.
 	 */
 	public function environments( string ...$environments ): static {
 		$this->environments = $environments;

@@ -77,7 +77,7 @@ class Spy_REST_Server extends WP_REST_Server {
 	/**
 	 * Overrides the dispatch method so we can get a handle on the request object.
 	 *
-	 * @param  \WP_REST_Request $request Request to attempt dispatching.
+	 * @param \WP_REST_Request $request Request to attempt dispatching.
 	 * @return \WP_REST_Response Response returned by the callback.
 	 */
 	public function dispatch( $request ): mixed {

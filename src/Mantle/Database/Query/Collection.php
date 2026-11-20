@@ -58,7 +58,7 @@ class Collection extends Base_Collection {
 	 *
 	 * @template TMapValue
 	 *
-	 * @param  callable(TModel, TKey): TMapValue $callback The callback to run.
+	 * @param callable(TModel, TKey): TMapValue $callback The callback to run.
 	 * @return \Mantle\Support\Collection<TKey, TMapValue>|static<TKey, TMapValue>
 	 */
 	public function map( callable $callback ) {
@@ -81,7 +81,7 @@ class Collection extends Base_Collection {
 	 * @template TMapWithKeysKey of array-key
 	 * @template TMapWithKeysValue
 	 *
-	 * @param  callable(TModel, TKey): array<TMapWithKeysKey, TMapWithKeysValue> $callback The callback to run.
+	 * @param callable(TModel, TKey): array<TMapWithKeysKey, TMapWithKeysValue> $callback The callback to run.
 	 * @return \Mantle\Support\Collection<TMapWithKeysKey, TMapWithKeysValue>|static<TMapWithKeysKey, TMapWithKeysValue>
 	 */
 	public function map_with_keys( callable $callback ) {
@@ -103,7 +103,7 @@ class Collection extends Base_Collection {
 	/**
 	 * Count the number of items in the collection by a field or using a callback.
 	 *
-	 * @param  (callable(TModel, TKey): array-key)|string|null $count_by
+	 * @param (callable(TModel, TKey): array-key)|string|null $count_by
 	 * @return \Mantle\Support\Collection<array-key, int>
 	 */
 	public function count_by( $count_by = null ) {
@@ -122,7 +122,7 @@ class Collection extends Base_Collection {
 	/**
 	 * Get a flattened array of the items in the collection.
 	 *
-	 * @param  int|float $depth
+	 * @param int|float $depth
 	 * @return \Mantle\Support\Collection<int, mixed>
 	 */
 	public function flatten( $depth = INF ) {
@@ -152,8 +152,8 @@ class Collection extends Base_Collection {
 	 *
 	 * @template TPadValue
 	 *
-	 * @param  int       $size
-	 * @param  TPadValue $value
+	 * @param int       $size
+	 * @param TPadValue $value
 	 * @return \Mantle\Support\Collection<int, TModel|TPadValue>
 	 */
 	public function pad( $size, $value ) {
@@ -163,8 +163,8 @@ class Collection extends Base_Collection {
 	/**
 	 * Get an array with the values of a given key.
 	 *
-	 * @param  string|array<array-key, string> $value
-	 * @param  string|null                     $key
+	 * @param string|array<array-key, string> $value
+	 * @param string|null                     $key
 	 * @return \Mantle\Support\Collection<array-key, mixed>
 	 */
 	public function pluck( $value, $key = null ) {
@@ -176,7 +176,7 @@ class Collection extends Base_Collection {
 	 *
 	 * @template TZipValue
 	 *
-	 * @param  \Mantle\Contracts\Support\Arrayable<array-key, TZipValue>|iterable<array-key, TZipValue> ...$items
+	 * @param \Mantle\Contracts\Support\Arrayable<array-key, TZipValue>|iterable<array-key, TZipValue> ...$items
 	 * @return static<int, static<TKey, TModel|TZipValue>>
 	 */
 	public function zip( ...$items ) { // @phpstan-ignore-line return

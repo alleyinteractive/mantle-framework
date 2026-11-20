@@ -16,8 +16,8 @@ interface Route_Registrar {
 	/**
 	 * Set the value for a given attribute.
 	 *
-	 * @param  string $key
-	 * @param  mixed  $value
+	 * @param string $key
+	 * @param mixed  $value
 	 */
 	public function attribute( string $key, mixed $value ): static;
 

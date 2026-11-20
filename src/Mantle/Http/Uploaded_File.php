@@ -30,8 +30,8 @@ class Uploaded_File extends SymfonyUploadedFile {
 	/**
 	 * Store the uploaded file on a filesystem disk.
 	 *
-	 * @param  string              $path
-	 * @param  array<mixed>|string $options
+	 * @param string              $path
+	 * @param array<mixed>|string $options
 	 * @return string|false
 	 */
 	public function store( $path, array|string $options = [] ) {
@@ -41,8 +41,8 @@ class Uploaded_File extends SymfonyUploadedFile {
 	/**
 	 * Store the uploaded file on a filesystem disk with public visibility.
 	 *
-	 * @param  string              $path
-	 * @param  array<mixed>|string $options
+	 * @param string              $path
+	 * @param array<mixed>|string $options
 	 * @return string|false
 	 */
 	public function store_publicly( $path, $options = [] ) {
@@ -56,9 +56,9 @@ class Uploaded_File extends SymfonyUploadedFile {
 	/**
 	 * Store the uploaded file on a filesystem disk with public visibility.
 	 *
-	 * @param  string              $path
-	 * @param  string              $name
-	 * @param  array<mixed>|string $options
+	 * @param string              $path
+	 * @param string              $name
+	 * @param array<mixed>|string $options
 	 * @return string|false
 	 */
 	public function store_publicly_as( $path, $name, $options = [] ) {
@@ -72,9 +72,9 @@ class Uploaded_File extends SymfonyUploadedFile {
 	/**
 	 * Store the uploaded file on a filesystem disk.
 	 *
-	 * @param  string              $path
-	 * @param  string              $name
-	 * @param  array<mixed>|string $options
+	 * @param string              $path
+	 * @param string              $name
+	 * @param array<mixed>|string $options
 	 * @return string|false
 	 */
 	public function store_as( $path, $name, $options = [] ) {
@@ -164,7 +164,7 @@ class Uploaded_File extends SymfonyUploadedFile {
 	/**
 	 * Parse and format the given options.
 	 *
-	 * @param  array<mixed>|string $options
+	 * @param array<mixed>|string $options
 	 * @return array<mixed>
 	 */
 	protected function parse_options( array|string $options ): array {
@@ -178,8 +178,8 @@ class Uploaded_File extends SymfonyUploadedFile {
 	/**
 	 * Create a new file instance from a base instance.
 	 *
-	 * @param  \Symfony\Component\HttpFoundation\File\UploadedFile $file
-	 * @param  bool                                                $test
+	 * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file
+	 * @param bool                                                $test
 	 */
 	public static function createFromBase( \Symfony\Component\HttpFoundation\File\UploadedFile $file, $test = false ): static {
 		return $file instanceof static ? $file : new static(

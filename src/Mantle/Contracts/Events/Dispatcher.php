@@ -14,30 +14,30 @@ interface Dispatcher {
 	/**
 	 * Register an event listener with the dispatcher.
 	 *
-	 * @param  string|string[] $events
-	 * @param  string|callable $listener
+	 * @param string|string[] $events
+	 * @param string|callable $listener
 	 */
 	public function listen( string|array $events, string|callable $listener ): void;
 
 	/**
 	 * Determine if a given event has listeners.
 	 *
-	 * @param  string $event_name
+	 * @param string $event_name
 	 */
 	public function has_listeners( string $event_name ): bool;
 
 	/**
 	 * Register an event subscriber with the dispatcher.
 	 *
-	 * @param  object|string $subscriber
+	 * @param object|string $subscriber
 	 */
 	public function subscribe( object|string $subscriber ): void;
 
 	/**
 	 * Dispatch an event and call the listeners.
 	 *
-	 * @param  string|object $event Event name.
-	 * @param  mixed         ...$payload Event payload.
+	 * @param string|object $event Event name.
+	 * @param mixed         ...$payload Event payload.
 	 */
 	public function dispatch( string|object $event, mixed ...$payload ): mixed;
 

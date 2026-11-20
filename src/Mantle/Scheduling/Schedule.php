@@ -163,7 +163,7 @@ class Schedule {
 	/**
 	 * Get all of the events on the schedule that are due.
 	 *
-	 * @param  Application $app Application instance.
+	 * @param Application $app Application instance.
 	 * @return Collection<int, Event>
 	 */
 	public function due_events( Application $app ): Collection {

@@ -752,9 +752,9 @@ class Test_Response implements ResponseContract {
 	/**
 	 * Assert that the expected value and type exists at the given path in the response.
 	 *
-	 * @param  string $path
-	 * @param  mixed  $expect
-	 * @param  string $message Optional message on failure.
+	 * @param string $path
+	 * @param mixed  $expect
+	 * @param string $message Optional message on failure.
 	 */
 	public function assertJsonPath( string $path, mixed $expect, string $message = '' ): static {
 		$this->decoded_json()->assertPath( $path, $expect, $message );
@@ -891,7 +891,7 @@ class Test_Response implements ResponseContract {
 	/**
 	 * Assert that the response contains the given JSON fragment.
 	 *
-	 * @param  array<mixed> $data Data to compare.
+	 * @param array<mixed> $data Data to compare.
 	 */
 	public function assertJsonFragment( array $data ): static {
 		$this->decoded_json()->assertFragment( $data );
@@ -902,8 +902,8 @@ class Test_Response implements ResponseContract {
 	/**
 	 * Assert that the response does not contain the given JSON fragment.
 	 *
-	 * @param  array<mixed> $data Data to compare.
-	 * @param  bool         $exact Flag for exact match, defaults to false.
+	 * @param array<mixed> $data Data to compare.
+	 * @param bool         $exact Flag for exact match, defaults to false.
 	 */
 	public function assertJsonMissing( array $data, $exact = false ): static {
 		$this->decoded_json()->assertMissing( $data, $exact );
@@ -914,7 +914,7 @@ class Test_Response implements ResponseContract {
 	/**
 	 * Assert that the response does not contain the exact JSON fragment.
 	 *
-	 * @param  array<mixed> $data
+	 * @param array<mixed> $data
 	 */
 	public function assertJsonMissingExact( array $data ): static {
 		$this->decoded_json()->assertMissingExact( $data );
@@ -925,8 +925,8 @@ class Test_Response implements ResponseContract {
 	/**
 	 * Assert that the response JSON has the expected count of items at the given key.
 	 *
-	 * @param  int         $count
-	 * @param  string|null $key
+	 * @param int         $count
+	 * @param string|null $key
 	 */
 	public function assertJsonCount( int $count, ?string $key = null ): static {
 		$this->decoded_json()->assertCount( $count, $key );
@@ -937,7 +937,7 @@ class Test_Response implements ResponseContract {
 	/**
 	 * Assert that the response has the similar JSON as given.
 	 *
-	 * @param  array $data
+	 * @param array $data
 	 */
 	public function assertJsonSimilar( array $data ): static {
 		$this->decoded_json()->assertSimilar( $data );
@@ -948,7 +948,7 @@ class Test_Response implements ResponseContract {
 	/**
 	 * Assert that the response has a given JSON structure.
 	 *
-	 * @param  array|null $structure Structure to check.
+	 * @param array|null $structure Structure to check.
 	 */
 	public function assertJsonStructure( ?array $structure = null ): static {
 		$this->decoded_json()->assertStructure( $structure );

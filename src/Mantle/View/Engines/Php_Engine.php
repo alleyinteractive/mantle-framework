@@ -57,8 +57,8 @@ class Php_Engine implements Engine {
 	/**
 	 * Handle a view exception.
 	 *
-	 * @param  \Throwable $e Exception thrown.
-	 * @param  int        $ob_level Output buffer level.
+	 * @param \Throwable $e Exception thrown.
+	 * @param int        $ob_level Output buffer level.
 	 * @return void
 	 *
 	 * @throws \Throwable Rethrows the exception thrown.

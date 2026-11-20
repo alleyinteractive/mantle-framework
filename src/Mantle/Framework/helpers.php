@@ -18,7 +18,7 @@ if ( ! function_exists( 'report' ) ) {
 	/**
 	 * Report an exception.
 	 *
-	 * @param  \Throwable|string  $exception
+	 * @param \Throwable|string  $exception
 	 */
 	function report( $exception ): void {
 		if ( is_string( $exception ) ) {
