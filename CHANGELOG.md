@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- `Collection::where()` accepts a non-string operator, as in Laravel, instead of throwing a `TypeError` ([#1018](https://github.com/alleyinteractive/mantle-framework/pull/1018)).
+
 ### Added
 
 - Testing: `#[Acting_As_Super_Admin]` signs in a super admin for multisite tests and cleans up after the test ([#1028](https://github.com/alleyinteractive/mantle-framework/issues/1028)).
