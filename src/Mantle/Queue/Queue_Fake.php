@@ -28,8 +28,8 @@ class Queue_Fake extends Queue_Manager {
 	/**
 	 * Assert if a job was pushed based on a truth-test callback.
 	 *
-	 * @param  string|\Closure   $job
-	 * @param  callable|int|null $callback
+	 * @param string|\Closure   $job
+	 * @param callable|int|null $callback
 	 */
 	public function assertPushed( $job, $callback = null ): void {
 		if ( is_numeric( $callback ) ) {
@@ -46,8 +46,8 @@ class Queue_Fake extends Queue_Manager {
 	/**
 	 * Assert if a job was pushed a number of times.
 	 *
-	 * @param  string $job
-	 * @param  int    $times
+	 * @param string $job
+	 * @param int    $times
 	 * @return void
 	 */
 	protected function assertPushedTimes( $job, $times = 1 ) {
@@ -63,8 +63,8 @@ class Queue_Fake extends Queue_Manager {
 	/**
 	 * Determine if a job was pushed based on a truth-test callback.
 	 *
-	 * @param  string|\Closure $job
-	 * @param  callable|null   $callback
+	 * @param string|\Closure $job
+	 * @param callable|null   $callback
 	 */
 	public function assertNotPushed( $job, $callback = null ): void {
 			PHPUnit::assertCount(
@@ -84,8 +84,8 @@ class Queue_Fake extends Queue_Manager {
 	/**
 	 * Get all of the jobs matching a truth-test callback.
 	 *
-	 * @param  string        $job
-	 * @param  callable|null $callback
+	 * @param string        $job
+	 * @param callable|null $callback
 	 * @return \Mantle\Support\Collection
 	 */
 	public function pushed( $job, $callback = null ) {
@@ -103,7 +103,7 @@ class Queue_Fake extends Queue_Manager {
 	/**
 	 * Determine if there are any stored jobs for a given class.
 	 *
-	 * @param  string $job
+	 * @param string $job
 	 */
 	public function hasPushed( $job ): bool {
 		return isset( $this->jobs[ $job ] ) && ! empty( $this->jobs[ $job ] );
@@ -112,9 +112,9 @@ class Queue_Fake extends Queue_Manager {
 	/**
 	 * Push a new job onto the queue.
 	 *
-	 * @param  string|object $job
-	 * @param  mixed         $data
-	 * @param  string        $queue
+	 * @param string|object $job
+	 * @param mixed         $data
+	 * @param string        $queue
 	 */
 	public function push( $job, $data = '', $queue = null ): void {
 		$this->jobs[ is_object( $job ) ? $job::class : $job ][] = [

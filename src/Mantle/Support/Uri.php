@@ -286,8 +286,8 @@ class Uri implements Htmlable, Stringable {
 	/**
 	 * Create a redirect HTTP response for the given URI.
 	 *
-	 * @param  int                   $status HTTP status code for the redirect. Default is 302 (Found).
-	 * @param  array<string, string> $headers Additional headers to include in the response.
+	 * @param int                   $status HTTP status code for the redirect. Default is 302 (Found).
+	 * @param array<string, string> $headers Additional headers to include in the response.
 	 */
 	public function redirect( int $status = 302, array $headers = [] ): RedirectResponse {
 		return new RedirectResponse( $this->value(), $status, $headers );
@@ -337,7 +337,7 @@ class Uri implements Htmlable, Stringable {
 	/**
 	 * Dump the string representation of the URI.
 	 *
-	 * @param  mixed ...$args
+	 * @param mixed ...$args
 	 * @return $this
 	 */
 	public function dump( ...$args ): static {

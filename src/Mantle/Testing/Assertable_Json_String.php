@@ -76,9 +76,9 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Assert that the expected value and type exists at the given path in the response.
 	 *
-	 * @param  string $path
-	 * @param  mixed  $expect
-	 * @param  string $message Optional message on failure.
+	 * @param string $path
+	 * @param mixed  $expect
+	 * @param string $message Optional message on failure.
 	 */
 	public function assertPath( string $path, mixed $expect, string $message = '' ): static {
 		PHPUnit::assertSame( $expect, $this->json( $path ), $message );
@@ -218,7 +218,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Assert that the response has the similar JSON as given.
 	 *
-	 * @param  array $data
+	 * @param array $data
 	 */
 	public function assertSimilar( array $data ): static {
 		$actual = json_encode( Arr::sort_recursive(
@@ -233,8 +233,8 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Assert that the response has a given JSON structure.
 	 *
-	 * @param  array|null $structure
-	 * @param  array|null $response_data
+	 * @param array|null $structure
+	 * @param array|null $response_data
 	 * @return static
 	 */
 	public function assertStructure( ?array $structure = null, $response_data = null ) {
@@ -268,7 +268,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Assert that the response has the exact given JSON.
 	 *
-	 * @param  array $data
+	 * @param array $data
 	 */
 	public function assertExact( array $data ): static {
 		$actual = wp_json_encode(
@@ -285,7 +285,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Assert that the response contains the given JSON fragment.
 	 *
-	 * @param  array $data Data to compare.
+	 * @param array $data Data to compare.
 	 */
 	public function assertFragment( array $data ): static {
 		$actual = (string) wp_json_encode(
@@ -312,8 +312,8 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Assert that the response does not contain the given JSON fragment.
 	 *
-	 * @param  array $data Data to compare.
-	 * @param  bool  $exact Flag for exact match, defaults to false.
+	 * @param array $data Data to compare.
+	 * @param bool  $exact Flag for exact match, defaults to false.
 	 */
 	public function assertMissing( array $data, $exact = false ): static {
 		if ( $exact ) {
@@ -344,7 +344,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Assert that the response does not contain the exact JSON fragment.
 	 *
-	 * @param  array $data
+	 * @param array $data
 	 */
 	public function assertMissingExact( array $data ): static {
 		$actual = (string) wp_json_encode(
@@ -372,8 +372,8 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Assert that the response JSON has the expected count of items at the given key.
 	 *
-	 * @param  int         $count
-	 * @param  string|null $key
+	 * @param int         $count
+	 * @param string|null $key
 	 */
 	public function assertCount( int $count, $key = null ): static {
 		if ( ! is_null( $key ) ) {
@@ -398,8 +398,8 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Get the strings we need to search for when examining the JSON.
 	 *
-	 * @param  string $key
-	 * @param  string $value
+	 * @param string $key
+	 * @param string $value
 	 */
 	protected function json_search_strings( $key, $value ): array {
 		$needle = substr( (string) wp_json_encode( [ $key => $value ] ), 1, -1 );
@@ -421,7 +421,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Determine whether an offset exists.
 	 *
-	 * @param  mixed $offset
+	 * @param mixed $offset
 	 */
 	public function offsetExists( $offset ): bool {
 		return isset( $this->decoded[ $offset ] );
@@ -430,7 +430,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Get the value at the given offset.
 	 *
-	 * @param  string $offset
+	 * @param string $offset
 	 */
 	public function offsetGet( $offset ): mixed {
 		return $this->decoded[ $offset ];
@@ -439,8 +439,8 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Set the value at the given offset.
 	 *
-	 * @param  string $offset
-	 * @param  mixed  $value
+	 * @param string $offset
+	 * @param mixed  $value
 	 */
 	public function offsetSet( $offset, $value ): void {
 		$this->decoded[ $offset ] = $value;
@@ -449,7 +449,7 @@ class Assertable_Json_String implements ArrayAccess, Countable {
 	/**
 	 * Unset the value at the given offset.
 	 *
-	 * @param  string $offset
+	 * @param string $offset
 	 */
 	public function offsetUnset( $offset ): void {
 		unset( $this->decoded[ $offset ] );

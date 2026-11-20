@@ -43,8 +43,8 @@ trait Route_Group {
 	/**
 	 * Create a route group with shared attributes.
 	 *
-	 * @param  array<mixed>    $attributes
-	 * @param  \Closure|string $routes
+	 * @param array<mixed>    $attributes
+	 * @param \Closure|string $routes
 	 */
 	public function group( array $attributes, Closure|string $routes ): void {
 		$this->update_group_stack( $attributes );
@@ -60,7 +60,7 @@ trait Route_Group {
 	/**
 	 * Update the group stack with the given attributes.
 	 *
-	 * @param  array<mixed> $attributes
+	 * @param array<mixed> $attributes
 	 * @return void
 	 */
 	protected function update_group_stack( array $attributes ) {
@@ -112,9 +112,9 @@ trait Route_Group {
 	/**
 	 * Merge route groups into a new array.
 	 *
-	 * @param  array<mixed> $new
-	 * @param  array<mixed> $old
-	 * @param  bool         $prepend_existing_prefix
+	 * @param array<mixed> $new
+	 * @param array<mixed> $old
+	 * @param bool         $prepend_existing_prefix
 	 * @return array<mixed>
 	 */
 	public static function merge( array $new, array $old, bool $prepend_existing_prefix = true ): array {
@@ -143,8 +143,8 @@ trait Route_Group {
 	/**
 	 * Format the namespace for the new group attributes.
 	 *
-	 * @param  array<mixed> $new
-	 * @param  array<mixed> $old
+	 * @param array<mixed> $new
+	 * @param array<mixed> $old
 	 * @return string|null
 	 */
 	protected static function format_namespace( array $new, array $old ) {
@@ -160,9 +160,9 @@ trait Route_Group {
 	/**
 	 * Format the prefix for the new group attributes.
 	 *
-	 * @param  array<mixed> $new
-	 * @param  array<mixed> $old
-	 * @param  bool         $prepend_existing_prefix
+	 * @param array<mixed> $new
+	 * @param array<mixed> $old
+	 * @param bool         $prepend_existing_prefix
 	 * @return string|null
 	 */
 	protected static function format_prefix( array $new, array $old, $prepend_existing_prefix = true ) {
@@ -178,8 +178,8 @@ trait Route_Group {
 	/**
 	 * Format the "wheres" for the new group attributes.
 	 *
-	 * @param  array<mixed> $new
-	 * @param  array<mixed> $old
+	 * @param array<mixed> $new
+	 * @param array<mixed> $old
 	 * @return array<mixed>
 	 */
 	protected static function format_where( array $new, array $old ): array {
@@ -192,8 +192,8 @@ trait Route_Group {
 	/**
 	 * Format the "as" clause of the new group attributes.
 	 *
-	 * @param  array<mixed> $new
-	 * @param  array<mixed> $old
+	 * @param array<mixed> $new
+	 * @param array<mixed> $old
 	 * @return array<mixed>
 	 */
 	protected static function format_as( array $new, array $old ): array {

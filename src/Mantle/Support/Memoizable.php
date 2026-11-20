@@ -66,7 +66,7 @@ class Memoizable {
 	/**
 	 * Computes the object of the memoizable from the given trace, if any.
 	 *
-	 * @param  array<int, array<string, mixed>> $trace
+	 * @param array<int, array<string, mixed>> $trace
 	 */
 	protected static function object_from_trace( array $trace ): ?object {
 		return $trace[1]['object'] ?? null;

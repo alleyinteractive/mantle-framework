@@ -81,8 +81,8 @@ interface Kernel extends \Mantle\Contracts\Kernel {
 	/**
 	 * Terminate the application.
 	 *
-	 * @param  \Symfony\Component\Console\Input\InputInterface $input
-	 * @param  int                                             $status
+	 * @param \Symfony\Component\Console\Input\InputInterface $input
+	 * @param int                                             $status
 	 */
 	public function terminate( $input, $status ): void;
 }

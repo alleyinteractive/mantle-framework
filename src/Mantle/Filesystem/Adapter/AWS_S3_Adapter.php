@@ -20,10 +20,10 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 	/**
 	 * Create a new AwsS3V3FilesystemAdapter instance.
 	 *
-	 * @param  \League\Flysystem\FilesystemOperator     $driver
-	 * @param  \League\Flysystem\AwsS3V3\AwsS3V3Adapter $adapter
-	 * @param  array<mixed>                             $config
-	 * @param  \Aws\S3\S3Client                         $client
+	 * @param \League\Flysystem\FilesystemOperator     $driver
+	 * @param \League\Flysystem\AwsS3V3\AwsS3V3Adapter $adapter
+	 * @param array<mixed>                             $config
+	 * @param \Aws\S3\S3Client                         $client
 	 */
 	public function __construct( FilesystemOperator $driver, S3Adapter $adapter, array $config, protected \Aws\S3\S3Client $client ) {
 		parent::__construct( $driver, $adapter, $config );
@@ -32,7 +32,7 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 	/**
 	 * Get the URL for the file at the given path.
 	 *
-	 * @param  string $path
+	 * @param string $path
 	 */
 	#[\Override]
 	public function url( string $path ): string {
@@ -60,9 +60,9 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 	/**
 	 * Get a temporary URL for the file at the given path.
 	 *
-	 * @param  string             $path
-	 * @param  \DateTimeInterface $expiration
-	 * @param  array<mixed>       $options
+	 * @param string             $path
+	 * @param \DateTimeInterface $expiration
+	 * @param array<mixed>       $options
 	 */
 	#[\Override]
 	public function temporary_url( string $path, DateTimeInterface $expiration, array $options = [] ): string {
@@ -96,9 +96,9 @@ class AWS_S3_Adapter extends Filesystem_Adapter {
 	/**
 	 * Get a temporary upload URL for the file at the given path.
 	 *
-	 * @param  string             $path
-	 * @param  \DateTimeInterface $expiration
-	 * @param  array<mixed>       $options
+	 * @param string             $path
+	 * @param \DateTimeInterface $expiration
+	 * @param array<mixed>       $options
 	 * @return array{url: string, headers: array<mixed>}
 	 */
 	public function temporary_upload_url( string $path, $expiration, array $options = [] ): array {

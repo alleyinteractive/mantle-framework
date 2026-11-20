@@ -24,8 +24,8 @@ trait Interacts_With_Input {
 	/**
 	 * Retrieve a server variable from the request.
 	 *
-	 * @param  string|null $key
-	 * @param  mixed       $default
+	 * @param string|null $key
+	 * @param mixed       $default
 	 */
 	public function server( ?string $key = null, mixed $default = null ): mixed {
 		return $this->retrieve_item( 'server', $key, $default );
@@ -43,8 +43,8 @@ trait Interacts_With_Input {
 	/**
 	 * Retrieve a header from the request.
 	 *
-	 * @param  string|null $key
-	 * @param  mixed       $default
+	 * @param string|null $key
+	 * @param mixed       $default
 	 */
 	public function header( $key = null, mixed $default = null ): mixed {
 		return $this->retrieve_item( 'headers', $key, $default );
@@ -70,7 +70,7 @@ trait Interacts_With_Input {
 	/**
 	 * Determine if the request contains a given input item key.
 	 *
-	 * @param  string|array<string> $key
+	 * @param string|array<string> $key
 	 */
 	public function exists( $key ): bool {
 		return $this->has( $key );
@@ -79,7 +79,7 @@ trait Interacts_With_Input {
 	/**
 	 * Determine if the request contains a given input item key.
 	 *
-	 * @param  string|array<string> $key
+	 * @param string|array<string> $key
 	 */
 	public function has( $key ): bool {
 		$keys = is_array( $key ) ? $key : func_get_args();
@@ -98,7 +98,7 @@ trait Interacts_With_Input {
 	/**
 	 * Determine if the request contains any of the given inputs.
 	 *
-	 * @param  string|array<string> $keys
+	 * @param string|array<string> $keys
 	 */
 	public function has_any( $keys ): bool {
 		$keys = is_array( $keys ) ? $keys : func_get_args();
@@ -111,7 +111,7 @@ trait Interacts_With_Input {
 	/**
 	 * Determine if the request contains a non-empty value for an input item.
 	 *
-	 * @param  string|array<string> $key
+	 * @param string|array<string> $key
 	 */
 	public function filled( $key ): bool {
 		$keys = is_array( $key ) ? $key : func_get_args();
@@ -128,7 +128,7 @@ trait Interacts_With_Input {
 	/**
 	 * Determine if the request contains a non-empty value for any of the given inputs.
 	 *
-	 * @param  string|array<string> $keys
+	 * @param string|array<string> $keys
 	 */
 	public function any_filled( $keys ): bool {
 		$keys = is_array( $keys ) ? $keys : func_get_args();
@@ -145,7 +145,7 @@ trait Interacts_With_Input {
 	/**
 	 * Determine if the request is missing a given input item key.
 	 *
-	 * @param  string|array<string> $key
+	 * @param string|array<string> $key
 	 */
 	public function missing( $key ): bool {
 		$keys = is_array( $key ) ? $key : func_get_args();
@@ -156,7 +156,7 @@ trait Interacts_With_Input {
 	/**
 	 * Determine if the given input key is an empty string for "has".
 	 *
-	 * @param  string $key
+	 * @param string $key
 	 */
 	protected function is_empty_string( string $key ): bool {
 		$value = $this->input( $key );
@@ -176,7 +176,7 @@ trait Interacts_With_Input {
 	/**
 	 * Get all of the input and files for the request.
 	 *
-	 * @param  string|string[]|null $keys
+	 * @param string|string[]|null $keys
 	 * @return array<mixed>
 	 */
 	public function all( string|array|null $keys = null ): array {
@@ -198,8 +198,8 @@ trait Interacts_With_Input {
 	/**
 	 * Retrieve an input item from the request.
 	 *
-	 * @param  string|null $key
-	 * @param  mixed       $default
+	 * @param string|null $key
+	 * @param mixed       $default
 	 */
 	public function input( ?string $key = null, mixed $default = null ): mixed {
 		return data_get(
@@ -214,8 +214,8 @@ trait Interacts_With_Input {
 	 *
 	 * Returns true when value is "1", "true", "on", and "yes". Otherwise, returns false.
 	 *
-	 * @param  string|null $key
-	 * @param  bool        $default
+	 * @param string|null $key
+	 * @param bool        $default
 	 */
 	public function boolean( ?string $key = null, mixed $default = false ): bool {
 		return filter_var( $this->input( $key, $default ), FILTER_VALIDATE_BOOLEAN );
@@ -224,7 +224,7 @@ trait Interacts_With_Input {
 	/**
 	 * Get a subset containing the provided keys with values from the input data.
 	 *
-	 * @param  string[]|string $keys
+	 * @param string[]|string $keys
 	 * @return array<mixed>
 	 */
 	public function only( array|string $keys ): array {
@@ -248,7 +248,7 @@ trait Interacts_With_Input {
 	/**
 	 * Get all of the input except for a specified array of items.
 	 *
-	 * @param  string[]|string $keys
+	 * @param string[]|string $keys
 	 * @return array<mixed>
 	 */
 	public function except( array|string $keys ): array {
@@ -264,8 +264,8 @@ trait Interacts_With_Input {
 	/**
 	 * Retrieve a query string item from the request.
 	 *
-	 * @param  string|null $key
-	 * @param  mixed       $default
+	 * @param string|null $key
+	 * @param mixed       $default
 	 */
 	public function query( ?string $key = null, mixed $default = null ): mixed {
 		return $this->retrieve_item( 'query', $key, $default );
@@ -274,8 +274,8 @@ trait Interacts_With_Input {
 	/**
 	 * Retrieve a request payload item from the request.
 	 *
-	 * @param  string|null $key
-	 * @param  mixed       $default
+	 * @param string|null $key
+	 * @param mixed       $default
 	 */
 	public function post( ?string $key = null, mixed $default = null ): mixed {
 		return $this->retrieve_item( 'request', $key, $default );
@@ -284,7 +284,7 @@ trait Interacts_With_Input {
 	/**
 	 * Determine if a cookie is set on the request.
 	 *
-	 * @param  string $key
+	 * @param string $key
 	 */
 	public function has_cookie( string $key ): bool {
 		return ! is_null( $this->cookie( $key ) );
@@ -293,8 +293,8 @@ trait Interacts_With_Input {
 	/**
 	 * Retrieve a cookie from the request.
 	 *
-	 * @param  string|null $key
-	 * @param  mixed       $default
+	 * @param string|null $key
+	 * @param mixed       $default
 	 */
 	public function cookie( $key = null, mixed $default = null ): mixed {
 		return $this->retrieve_item( 'cookies', $key, $default );
@@ -303,9 +303,9 @@ trait Interacts_With_Input {
 	/**
 	 * Retrieve a parameter item from a given source.
 	 *
-	 * @param  string $source
-	 * @param  string $key
-	 * @param  mixed  $default
+	 * @param string $source
+	 * @param string $key
+	 * @param mixed  $default
 	 */
 	protected function retrieve_item( string $source, string|null $key, mixed $default ): mixed {
 		if ( empty( $key ) ) {
@@ -331,7 +331,7 @@ trait Interacts_With_Input {
 	/**
 	 * Convert the given array of Symfony Uploaded_Files to custom Mantle Uploaded_Files.
 	 *
-	 * @param  array<mixed> $files
+	 * @param array<mixed> $files
 	 * @return array<mixed>
 	 */
 	protected function convert_uploaded_files( array $files ): array {
@@ -352,7 +352,7 @@ trait Interacts_With_Input {
 	/**
 	 * Determine if the uploaded data contains a file.
 	 *
-	 * @param  string $key
+	 * @param string $key
 	 */
 	public function has_file( string $key ): bool {
 		$files = $this->file( $key );
@@ -372,7 +372,7 @@ trait Interacts_With_Input {
 	/**
 	 * Check that the given file is a valid file instance.
 	 *
-	 * @param  mixed $file
+	 * @param mixed $file
 	 */
 	protected function is_valid_file( mixed $file ): bool {
 		return $file instanceof Uploaded_File && $file->getPath() !== '';
@@ -381,8 +381,8 @@ trait Interacts_With_Input {
 	/**
 	 * Retrieve a file from the request.
 	 *
-	 * @param  string|null $key
-	 * @param  mixed       $default
+	 * @param string|null $key
+	 * @param mixed       $default
 	 * @return \Mantle\Http\Uploaded_File|\Mantle\Http\Uploaded_File[]|null
 	 */
 	public function file( ?string $key = null, mixed $default = null ): mixed {

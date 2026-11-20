@@ -49,7 +49,7 @@ class Response extends HttpFoundationResponse {
 	/**
 	 * Set the content on the response.
 	 *
-	 * @param  mixed $content
+	 * @param mixed $content
 	 *
 	 * @throws InvalidArgumentException When the HTTP status code is not valid.
 	 */
@@ -80,7 +80,7 @@ class Response extends HttpFoundationResponse {
 	/**
 	 * Determine if the given content should be turned into JSON.
 	 *
-	 * @param  Arrayable|Jsonable|ArrayObject|JsonSerializable|array|mixed $content
+	 * @param Arrayable|Jsonable|ArrayObject|JsonSerializable|array|mixed $content
 	 */
 	protected function should_be_json( mixed $content ): bool {
 		return $content instanceof Arrayable ||
@@ -93,7 +93,7 @@ class Response extends HttpFoundationResponse {
 	/**
 	 * Morph the given content into JSON.
 	 *
-	 * @param  Arrayable|Jsonable|ArrayObject|JsonSerializable|array|mixed $content
+	 * @param Arrayable|Jsonable|ArrayObject|JsonSerializable|array|mixed $content
 	 */
 	protected function morph_to_json( $content ): string|false {
 		return match ( true ) {

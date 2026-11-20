@@ -42,8 +42,8 @@ class Pluralizer {
 	/**
 	 * Get the plural form of an English word.
 	 *
-	 * @param  string                      $value
-	 * @param  int|array<mixed>|\Countable $count
+	 * @param string                      $value
+	 * @param int|array<mixed>|\Countable $count
 	 */
 	public static function plural( string $value, int|array|\Countable $count = 2 ): string {
 		if ( is_countable( $count ) ) {
@@ -62,7 +62,7 @@ class Pluralizer {
 	/**
 	 * Get the singular form of an English word.
 	 *
-	 * @param  string $value
+	 * @param string $value
 	 */
 	public static function singular( string $value ): string {
 		$singular = static::inflector()->singularize( $value );
@@ -73,7 +73,7 @@ class Pluralizer {
 	/**
 	 * Determine if the given value is uncountable.
 	 *
-	 * @param  string $value
+	 * @param string $value
 	 */
 	protected static function uncountable( $value ): bool {
 		return in_array( strtolower( $value ), static::$uncountable, true );
@@ -82,8 +82,8 @@ class Pluralizer {
 	/**
 	 * Attempt to match the case on two strings.
 	 *
-	 * @param  string $value
-	 * @param  string $comparison
+	 * @param string $value
+	 * @param string $comparison
 	 */
 	protected static function match_case( string $value, string $comparison ): string {
 		$functions = [ 'mb_strtolower', 'mb_strtoupper', 'ucfirst', 'ucwords' ];
@@ -109,7 +109,7 @@ class Pluralizer {
 	/**
 	 * Specify the language that should be used by the inflector.
 	 *
-	 * @param  string $language
+	 * @param string $language
 	 */
 	public static function use_language( string $language ): void {
 		static::$language = $language;

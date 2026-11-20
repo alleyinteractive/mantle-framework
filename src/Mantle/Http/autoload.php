@@ -42,10 +42,10 @@ if ( ! function_exists( 'redirect' ) ) {
 	/**
 	 * Get an instance of the redirector.
 	 *
-	 * @param  string|null $to      URL to redirect to, optional.
-	 * @param  int         $status  Status code, optional.
-	 * @param  array<string, string>       $headers Headers, optional.
-	 * @param  bool|null   $secure  Whether the redirect should be secure, optional.
+	 * @param string|null $to      URL to redirect to, optional.
+	 * @param int         $status  Status code, optional.
+	 * @param array<string, string>       $headers Headers, optional.
+	 * @param bool|null   $secure  Whether the redirect should be secure, optional.
 	 * @return \Mantle\Http\Routing\Redirector
 	 */
 	function redirect( ?string $to = null, int $status = 302, array $headers = [], ?bool $secure = null ) {
@@ -61,8 +61,8 @@ if ( ! function_exists( 'request' ) ) {
 	/**
 	 * Get an instance of the current request or an input item from the request.
 	 *
-	 * @param  array<string>|string|null $key     Request key.
-	 * @param  mixed             $default Default value.
+	 * @param array<string>|string|null $key     Request key.
+	 * @param mixed             $default Default value.
 	 * @return \Mantle\Http\Request|string|array<mixed>|null
 	 */
 	function request( $key = null, $default = null ) {
@@ -229,8 +229,8 @@ if ( ! function_exists( 'abort' ) ) {
 	 * Throw an HttpException with the given data.
 	 *
 	 * @param int     $code Error code or exception.
-	 * @param  string $message Response message
-	 * @param  array<string, string>  $headers HTTP Headers
+	 * @param string $message Response message
+	 * @param array<string, string>  $headers HTTP Headers
 	 */
 	function abort( int $code, string $message = '', array $headers = [] ): void {
 		app()->abort( $code, $message, $headers );
@@ -241,10 +241,10 @@ if ( ! function_exists( 'abort_if' ) ) {
 	/**
 	 * Throw an HttpException with the given data if the given condition is true.
 	 *
-	 * @param  mixed  $condition
-	 * @param  int  $code
-	 * @param  string  $message Response message
-	 * @param  array<string, string>  $headers HTTP Headers
+	 * @param mixed  $condition
+	 * @param int  $code
+	 * @param string  $message Response message
+	 * @param array<string, string>  $headers HTTP Headers
 	 */
 	function abort_if( mixed $condition, int $code, string $message = '', array $headers = [] ): void {
 		if ( $condition ) {
@@ -257,10 +257,10 @@ if ( ! function_exists( 'abort_unless' ) ) {
 	/**
 	 * Throw an HttpException with the given data unless the given condition is true.
 	 *
-	 * @param  mixed  $boolean
-	 * @param  int  $code
-	 * @param  string  $message Response message
-	 * @param  array<string, string>  $headers HTTP Headers
+	 * @param mixed  $boolean
+	 * @param int  $code
+	 * @param string  $message Response message
+	 * @param array<string, string>  $headers HTTP Headers
 	 */
 	function abort_unless( $condition, int $code, string $message = '', array $headers = [] ): void {
 		if ( ! $condition ) {

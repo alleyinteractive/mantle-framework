@@ -137,7 +137,7 @@ exit( 0 );
 /**
  * Resolve the facades from the given directory.
  *
- * @param  \Symfony\Component\Finder\Finder $finder
+ * @param \Symfony\Component\Finder\Finder $finder
  * @return \Collection<\ReflectionClass>
  */
 function resolveClasses( Finder $finder ): Collection {
@@ -161,7 +161,7 @@ function resolveClasses( Finder $finder ): Collection {
 /**
  * Resolve the classes referenced in the @see docblocks.
  *
- * @param  \ReflectionClass $class
+ * @param \ReflectionClass $class
  * @return \Illuminate\Support\Collection<class-string>
  */
 function resolveDocSees( $class ) {
@@ -172,7 +172,7 @@ function resolveDocSees( $class ) {
 /**
  * Resolve the classes referenced methods in the @methods docblocks.
  *
- * @param  \ReflectionClass $class
+ * @param \ReflectionClass $class
  * @return \Illuminate\Support\Collection<string>
  */
 function resolveDocMethods( $class ) {
@@ -184,8 +184,8 @@ function resolveDocMethods( $class ) {
 /**
  * Resolve the parameters type from the @param docblocks.
  *
- * @param  \ReflectionMethodDecorator $method
- * @param  \ReflectionParameter       $parameter
+ * @param \ReflectionMethodDecorator $method
+ * @param \ReflectionParameter       $parameter
  * @return string|null
  */
 function resolveDocParamType( $method, $parameter ) {
@@ -212,7 +212,7 @@ function resolveDocParamType( $method, $parameter ) {
 /**
  * Resolve the return type from the @return docblock.
  *
- * @param  \ReflectionMethodDecorator $method
+ * @param \ReflectionMethodDecorator $method
  * @return string|null
  */
 function resolveReturnDocType( $method ) {
@@ -230,7 +230,7 @@ function resolveReturnDocType( $method ) {
 /**
  * Parse the given docblock.
  *
- * @param  string $docblock
+ * @param string $docblock
  * @return \PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode
  */
 function parseDocblock( $docblock ) {
@@ -242,8 +242,8 @@ function parseDocblock( $docblock ) {
 /**
  * Resolve the types from the docblock.
  *
- * @param  \ReflectionMethodDecorator              $method
- * @param  \PHPStan\PhpDocParser\Ast\Type\TypeNode $typeNode
+ * @param \ReflectionMethodDecorator              $method
+ * @param \PHPStan\PhpDocParser\Ast\Type\TypeNode $typeNode
  * @return string
  */
 function resolveDocblockTypes( $method, $typeNode ) {
@@ -334,8 +334,8 @@ function resolveDocblockTypes( $method, $typeNode ) {
 /**
  * Handle conditional types.
  *
- * @param  \ReflectionMethodDecorator                         $method
- * @param  \PHPStan\PhpDocParser\Ast\Type\ConditionalTypeNode $typeNode
+ * @param \ReflectionMethodDecorator                         $method
+ * @param \PHPStan\PhpDocParser\Ast\Type\ConditionalTypeNode $typeNode
  * @return string
  */
 function handleConditionalType( $method, $typeNode ) {
@@ -353,8 +353,8 @@ function handleConditionalType( $method, $typeNode ) {
 /**
  * Handle unknown identifier types.
  *
- * @param  \ReflectionMethodDecorator                        $method
- * @param  \PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode $typeNode
+ * @param \ReflectionMethodDecorator                        $method
+ * @param \PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode $typeNode
  * @return string
  */
 function handleUnknownIdentifierType( $method, $typeNode ) {
@@ -425,7 +425,7 @@ function handleUnknownIdentifierType( $method, $typeNode ) {
 /**
  * Determine if the type is a built-in.
  *
- * @param  string $type
+ * @param string $type
  * @return bool
  */
 function isBuiltIn( $type ) {
@@ -457,7 +457,7 @@ function isBuiltIn( $type ) {
 /**
  * Determine if the type is known optional dependency.
  *
- * @param  string $type
+ * @param string $type
  * @return bool
  */
 function isKnownOptionalDependency( $type ) {
@@ -473,7 +473,7 @@ function isKnownOptionalDependency( $type ) {
 /**
  * Resolve the declared type.
  *
- * @param  \ReflectionType|null $type
+ * @param \ReflectionType|null $type
  * @return string|null
  */
 function resolveType( $type ) {
@@ -505,8 +505,8 @@ function resolveType( $type ) {
 /**
  * Resolve the docblock tags.
  *
- * @param  string $docblock
- * @param  string $tag
+ * @param string $docblock
+ * @param string $tag
  * @return \Illuminate\Support\Collection<string>
  */
 function resolveDocTags( $docblock, $tag ) {
@@ -525,7 +525,7 @@ function resolveDocTags( $docblock, $tag ) {
 /**
  * Recursively resolve docblock mixins.
  *
- * @param  \ReflectionClass $class
+ * @param \ReflectionClass $class
  * @return \Illuminate\Support\Collection<\ReflectionClass>
  */
 function resolveDocMixins( $class ) {
@@ -537,7 +537,7 @@ function resolveDocMixins( $class ) {
 /**
  * Resolve the classes referenced methods in the @methods docblocks.
  *
- * @param  \ReflectionMethodDecorator $method
+ * @param \ReflectionMethodDecorator $method
  * @return \Illuminate\Support\Collection<int, string>
  */
 function resolveDocParameters( $method ) {
@@ -548,7 +548,7 @@ function resolveDocParameters( $method ) {
 /**
  * Determine if the method is magic.
  *
- * @param  \ReflectionMethod|string $method
+ * @param \ReflectionMethod|string $method
  * @return bool
  */
 function isMagic( $method ) {
@@ -558,7 +558,7 @@ function isMagic( $method ) {
 /**
  * Determine if the method is marked as @internal.
  *
- * @param  \ReflectionMethod|string $method
+ * @param \ReflectionMethod|string $method
  * @return bool
  */
 function isInternal( $method ) {
@@ -572,7 +572,7 @@ function isInternal( $method ) {
 /**
  * Determine if the method is deprecated.
  *
- * @param  \ReflectionMethod|string $method
+ * @param \ReflectionMethod|string $method
  * @return bool
  */
 function isDeprecated( $method ) {
@@ -586,7 +586,7 @@ function isDeprecated( $method ) {
 /**
  * Determine if the method is for a builtin contract.
  *
- * @param  \ReflectionMethodDecorator|string $method
+ * @param \ReflectionMethodDecorator|string $method
  * @return bool
  */
 function fulfillsBuiltinInterface( $method ) {
@@ -604,7 +604,7 @@ function fulfillsBuiltinInterface( $method ) {
 /**
  * Resolve the methods name.
  *
- * @param  \ReflectionMethod|string $method
+ * @param \ReflectionMethod|string $method
  * @return string
  */
 function resolveName( $method ) {
@@ -616,7 +616,7 @@ function resolveName( $method ) {
 /**
  * Resolve the classes methods.
  *
- * @param  \ReflectionClass $class
+ * @param \ReflectionClass $class
  * @return \Illuminate\Support\Collection<\ReflectionMethodDecorator|string>
  */
 function resolveMethods( $class ) {
@@ -628,8 +628,8 @@ function resolveMethods( $class ) {
 /**
  * Determine if the given method conflicts with a Facade method.
  *
- * @param  \ReflectionClass         $facade
- * @param  \ReflectionMethod|string $method
+ * @param \ReflectionClass         $facade
+ * @param \ReflectionMethod|string $method
  * @return bool
  */
 function conflictsWithFacade( $facade, $method ) {
@@ -641,7 +641,7 @@ function conflictsWithFacade( $facade, $method ) {
 /**
  * Normalise the method details into a easier format to work with.
  *
- * @param  \ReflectionMethodDecorator|string $method
+ * @param \ReflectionMethodDecorator|string $method
  * @return array|string
  */
 function normaliseDetails( $method ) {
@@ -666,7 +666,7 @@ function normaliseDetails( $method ) {
 /**
  * Resolve the parameters for the method.
  *
- * @param  \ReflectionMethodDecorator $method
+ * @param \ReflectionMethodDecorator $method
  * @return \Illuminate\Support\Collection<int, \ReflectionParameter|\DynamicParameter>
  */
 function resolveParameters( $method ) {
@@ -680,7 +680,7 @@ function resolveParameters( $method ) {
 /**
  * Resolve the classes imports.
  *
- * @param  \ReflectionClass $class
+ * @param \ReflectionClass $class
  * @return \Illuminate\Support\Collection<string, class-string>
  */
 function resolveClassImports( $class ) {
@@ -699,7 +699,7 @@ function resolveClassImports( $class ) {
 /**
  * Resolve the default value for the parameter.
  *
- * @param  array $parameter
+ * @param array $parameter
  * @return string
  */
 function resolveDefaultValue( $parameter ) {
@@ -724,15 +724,15 @@ function resolveDefaultValue( $parameter ) {
 class ReflectionMethodDecorator {
 
 	/**
-	 * @param  \ReflectionMethod $method
-	 * @param  class-string      $sourceClass
+	 * @param \ReflectionMethod $method
+	 * @param class-string      $sourceClass
 	 */
 	public function __construct( private $method, private $sourceClass ) {
 	}
 
 	/**
-	 * @param  string $name
-	 * @param  array  $arguments
+	 * @param string $name
+	 * @param array  $arguments
 	 * @return mixed
 	 */
 	public function __call( $name, $arguments ) {
@@ -757,7 +757,7 @@ class ReflectionMethodDecorator {
 class DynamicParameter {
 
 	/**
-	 * @param  string $definition
+	 * @param string $definition
 	 */
 	public function __construct( private $definition ) {
 	}

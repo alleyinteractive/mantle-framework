@@ -175,7 +175,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	/**
 	 * Format the array of URL parameters.
 	 *
-	 * @param  mixed|array<string, mixed> $parameters
+	 * @param mixed|array<string, mixed> $parameters
 	 * @return array<string, mixed>
 	 */
 	public function format_parameters( $parameters ): array {
@@ -193,7 +193,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	/**
 	 * Get the default scheme for a raw URL.
 	 *
-	 * @param  bool|null $secure Flag if should be secure.
+	 * @param bool|null $secure Flag if should be secure.
 	 */
 	public function format_scheme( $secure = null ): string {
 		if ( ! is_null( $secure ) ) {
@@ -210,7 +210,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	/**
 	 * Extract the query string from the given path.
 	 *
-	 * @param  string $path URL Path.
+	 * @param string $path URL Path.
 	 * @return array<int, string>
 	 */
 	protected function extract_query_string( $path ): array {
@@ -250,8 +250,8 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	/**
 	 * Get the base URL for the request.
 	 *
-	 * @param  string      $scheme
-	 * @param  string|null $root
+	 * @param string      $scheme
+	 * @param string|null $root
 	 */
 	public function format_root( string $scheme, ?string $root = null ): string {
 		$root ??= $this->root_url;
@@ -266,8 +266,8 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	 *
 	 * Preserves the path's trailing slash if present.
 	 *
-	 * @param  string $root URL root.
-	 * @param  string $path URL path.
+	 * @param string $root URL root.
+	 * @param string $path URL path.
 	 */
 	public function format( string $root, string $path ): string {
 		return trim( rtrim( $root, '/' ) . '/' . ltrim( $path, '/' ) );
@@ -276,7 +276,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	/**
 	 * Determine if the given path is a valid URL.
 	 *
-	 * @param  string $path
+	 * @param string $path
 	 */
 	public function is_valid_url( $path ): bool {
 		if ( ! preg_match( '~^(#|//|https?://|(mailto|tel|sms):)~', $path ) ) {
@@ -289,7 +289,7 @@ class Url_Generator extends UrlGenerator implements Generator_Contract {
 	/**
 	 * Force the scheme for URLs.
 	 *
-	 * @param  string $scheme
+	 * @param string $scheme
 	 */
 	public function force_scheme( string $scheme ): void {
 		$this->cached_scheme = null;
