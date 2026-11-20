@@ -4,7 +4,6 @@ namespace Mantle\Tests\Concerns;
 use Mantle\Testing\Attributes\Acting_As;
 use Mantle\Testing\Attributes\Acting_As_Super_Admin;
 use Mantle\Testing\FrameworkTestCase;
-use PHPUnit\Framework\Attributes\After;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
@@ -65,8 +64,15 @@ class WordPressAuthenticationTest extends FrameworkTestCase {
 		} );
 	}
 
-	#[After( -10 )]
-	public function assert_super_admin_cleanup(): void {
+	/**
+	 * Assert the super admin grant was cleaned up by the framework tear down.
+	 *
+	 * Uses `tearDown()` instead of `#[After( -10 )]`: the priority argument is
+	 * not supported on PHPUnit 10.
+	 */
+	protected function tearDown(): void {
+		parent::tearDown();
+
 		if ( null !== $this->super_admin_login ) {
 			$this->assertTrue( $this->super_admin_revoked );
 			$this->assertNotContains( $this->super_admin_login, get_super_admins() );
