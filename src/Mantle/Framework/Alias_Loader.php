@@ -53,7 +53,7 @@ class Alias_Loader {
 	/**
 	 * Load a class alias if it is registered.
 	 *
-	 * @param  string $alias Alias to load.
+	 * @param string $alias Alias to load.
 	 */
 	public function load( string $alias ): void {
 		if ( isset( $this->aliases[ $alias ] ) ) {
@@ -64,8 +64,8 @@ class Alias_Loader {
 	/**
 	 * Add an alias to the loader.
 	 *
-	 * @param  string $class Fully qualified class the alias points to.
-	 * @param  string $alias Alias name.
+	 * @param string $class Fully qualified class the alias points to.
+	 * @param string $alias Alias name.
 	 */
 	public function alias( string $class, string $alias ): void {
 		$this->aliases[ $alias ] = $class;
@@ -121,7 +121,7 @@ class Alias_Loader {
 	/**
 	 * Set the "registered" state of the loader.
 	 *
-	 * @param  bool $value Value to set.
+	 * @param bool $value Value to set.
 	 */
 	public function set_registered( $value ): void {
 		$this->registered = $value;

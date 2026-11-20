@@ -16,7 +16,7 @@ class Local_Adapter extends Filesystem_Adapter {
 	/**
 	 * Get the URL for the file at the given path.
 	 *
-	 * @param  string $path
+	 * @param string $path
 	 */
 	#[\Override]
 	public function url( string $path ): string {

@@ -199,7 +199,7 @@ function object_get( $object, $key, $default = null ) {
  * @param array<string>  $replacements Strings in which to replace sequentially.
  * @param string $subject Subject in which to search/replace.
  *
- * @return string
+ * @return string|null The result, or null on a regex error.
  */
 function preg_replace_array( $pattern, array $replacements, $subject ): ?string {
 	return preg_replace_callback(
@@ -488,8 +488,8 @@ function add_filter( string $hook, callable $callable, int $priority = 10 ): voi
 /**
  * Dispatch an event and call the listeners.
  *
- * @param  string|object  $event Event object.
- * @param  mixed          ...$payload Event payload.
+ * @param string|object  $event Event object.
+ * @param mixed          ...$payload Event payload.
  */
 function event( string|object $event, mixed ...$payload ): mixed {
 	return Container::get_instance()->make( 'events' )->dispatch( $event, ...$payload );

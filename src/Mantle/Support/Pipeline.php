@@ -58,7 +58,7 @@ class Pipeline implements PipelineContract {
 	/**
 	 * Set the array of pipes.
 	 *
-	 * @param  array<callable|object|string>|callable|string|null $pipes
+	 * @param array<callable|object|string>|callable|string|null $pipes
 	 */
 	public function through( array|callable|string|null $pipes ): static {
 		$this->pipes = is_array( $pipes ) ? $pipes : func_get_args();
@@ -69,7 +69,7 @@ class Pipeline implements PipelineContract {
 	/**
 	 * Set the method to call on the pipes.
 	 *
-	 * @param  string $method
+	 * @param string $method
 	 */
 	public function via( string $method ): static {
 		$this->method = $method;
@@ -80,7 +80,7 @@ class Pipeline implements PipelineContract {
 	/**
 	 * Run the pipeline with a final destination callback.
 	 *
-	 * @param  \Closure $destination
+	 * @param \Closure $destination
 	 * @return mixed
 	 */
 	public function then( Closure $destination ) {
@@ -105,7 +105,7 @@ class Pipeline implements PipelineContract {
 	/**
 	 * Get the final piece of the Closure onion.
 	 *
-	 * @param  \Closure $destination
+	 * @param \Closure $destination
 	 * @return \Closure
 	 */
 	protected function prepare_destination( Closure $destination ) {
@@ -163,7 +163,7 @@ class Pipeline implements PipelineContract {
 	/**
 	 * Parse full pipe string to get name and parameters.
 	 *
-	 * @param  string $pipe
+	 * @param string $pipe
 	 * @return array{0: string, 1: array<mixed>}
 	 */
 	protected function parse_pipe_string( $pipe ): array {
@@ -201,7 +201,7 @@ class Pipeline implements PipelineContract {
 	/**
 	 * Handle the value returned from each pipe before passing it to the next.
 	 *
-	 * @param  mixed $carry
+	 * @param mixed $carry
 	 * @return mixed
 	 */
 	protected function handle_carry( $carry ) {

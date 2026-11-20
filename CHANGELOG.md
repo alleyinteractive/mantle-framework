@@ -10,12 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `Collection::where()` accepts a non-string operator, as in Laravel, instead of throwing a `TypeError` ([#1018](https://github.com/alleyinteractive/mantle-framework/pull/1018)).
+- Remove redundant return tags and document that `preg_replace_array()` can return `null` on a regex error. Native signatures are unchanged.
 
 ### Added
 
 - Testing: `#[Acting_As_Super_Admin]` signs in a super admin for multisite tests and cleans up after the test ([#1028](https://github.com/alleyinteractive/mantle-framework/issues/1028)).
+- Testing: Public skip helpers accept custom messages without changing their default messages or skip conditions ([#1027](https://github.com/alleyinteractive/mantle-framework/issues/1027)).
 - Testing: `assertHookCallbackCount()` asserts how many callbacks on a hook call a method on an object of a class, at one priority or at any. It does not need the object that added them.
 - `Option::save()` accepts an optional `$autoload` argument to set whether the option is autoloaded. The default (`null`) keeps the current behavior. The value is only applied when the option value changes ([#1021](https://github.com/alleyinteractive/mantle-framework/pull/1021)).
+
+### Changed
+
+- Normalize spacing after `@param` in PHPDoc across the repository ([#1029](https://github.com/alleyinteractive/mantle-framework/issues/1029)).
 
 ## v1.23.0
 

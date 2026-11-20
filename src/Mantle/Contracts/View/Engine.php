@@ -14,8 +14,8 @@ interface Engine {
 	/**
 	 * Get the evaluated contents of the view.
 	 *
-	 * @param  string $path View path.
-	 * @param  array  $data View data.
+	 * @param string $path View path.
+	 * @param array  $data View data.
 	 */
 	public function get( string $path, array $data = [] ): string;
 }

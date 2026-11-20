@@ -146,16 +146,16 @@ interface Router {
 	/**
 	 * Register a group of middleware.
 	 *
-	 * @param  string $name
-	 * @param  array  $middleware
+	 * @param string $name
+	 * @param array  $middleware
 	 */
 	public function middleware_group( string $name, array $middleware ): static;
 
 	/**
 	 * Register a short-hand name for a middleware.
 	 *
-	 * @param  string $name
-	 * @param  string $class
+	 * @param string $name
+	 * @param string $class
 	 */
 	public function alias_middleware( string $name, string $class ): static;
 

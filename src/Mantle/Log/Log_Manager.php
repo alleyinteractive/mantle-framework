@@ -235,7 +235,7 @@ class Log_Manager implements LoggerInterface {
 	/**
 	 * Parse the string level into a Monolog constant.
 	 *
-	 * @param  array<mixed> $config Handler configuration.
+	 * @param array<mixed> $config Handler configuration.
 	 *
 	 * @phpstan-return Level
 	 * @throws \InvalidArgumentException Thrown for unknown log.

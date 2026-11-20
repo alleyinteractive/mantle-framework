@@ -102,8 +102,8 @@ abstract class Repository implements CacheInterface {
 	/**
 	 * Retrieve an item from the cache and delete it.
 	 *
-	 * @param  string $key
-	 * @param  mixed  $default
+	 * @param string $key
+	 * @param mixed  $default
 	 */
 	public function pull( string $key, mixed $default = null ): mixed {
 		$value = $this->get( $key, $default );
@@ -146,9 +146,9 @@ abstract class Repository implements CacheInterface {
 	/**
 	 * Store an item in the cache if the key does not exist.
 	 *
-	 * @param  string                                    $key
-	 * @param  mixed                                     $value
-	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
+	 * @param string                                    $key
+	 * @param mixed                                     $value
+	 * @param \DateTimeInterface|\DateInterval|int|null $ttl
 	 */
 	public function add( string $key, mixed $value, \DateTimeInterface|\DateInterval|int|null $ttl = null ): bool {
 		if ( ! $this->has( $key ) ) {
@@ -190,8 +190,8 @@ abstract class Repository implements CacheInterface {
 	/**
 	 * Store an item in the cache indefinitely.
 	 *
-	 * @param  string $key Cache key.
-	 * @param  mixed  $value Value.
+	 * @param string $key Cache key.
+	 * @param mixed  $value Value.
 	 */
 	public function forever( string $key, mixed $value ): bool {
 		return $this->put( $key, $value, null );
@@ -200,9 +200,9 @@ abstract class Repository implements CacheInterface {
 	/**
 	 * Get an item from the cache, or execute the given Closure and store the result.
 	 *
-	 * @param  string                                    $key
-	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
-	 * @param  \Closure                                  $callback
+	 * @param string                                    $key
+	 * @param \DateTimeInterface|\DateInterval|int|null $ttl
+	 * @param \Closure                                  $callback
 	 */
 	public function remember( string $key, \DateTimeInterface|\DateInterval|int|null $ttl, Closure $callback ): mixed {
 		$value = $this->get( $key );
@@ -221,8 +221,8 @@ abstract class Repository implements CacheInterface {
 	/**
 	 * Get an item from the cache, or execute the given Closure and store the result forever.
 	 *
-	 * @param  string   $key Cache key.
-	 * @param  \Closure $callback Callback to invoke.
+	 * @param string   $key Cache key.
+	 * @param \Closure $callback Callback to invoke.
 	 */
 	public function remember_forever( string $key, Closure $callback ): mixed {
 		$value = $this->get( $key );
@@ -241,8 +241,8 @@ abstract class Repository implements CacheInterface {
 	/**
 	 * Get an item from the cache, or execute the given Closure and store the result forever.
 	 *
-	 * @param  string   $key Cache key.
-	 * @param  \Closure $callback Callback to invoke.
+	 * @param string   $key Cache key.
+	 * @param \Closure $callback Callback to invoke.
 	 */
 	public function sear( string $key, Closure $callback ): mixed {
 		return $this->remember_forever( $key, $callback );

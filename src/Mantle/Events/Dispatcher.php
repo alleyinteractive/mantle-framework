@@ -76,7 +76,7 @@ class Dispatcher implements Dispatcher_Contract {
 	 * @param string|string[] $events Event(s) to listen to.
 	 * @param string|callable        $listener Listener to register.
 	 * @param int          $priority Event priority.
-	 * @param  \Closure|string $listener Listener callback.
+	 * @param \Closure|string $listener Listener callback.
 	 */
 	public function listen( string|array $events, string|callable $listener, int $priority = 10 ): void {
 		foreach ( (array) $events as $event ) {
@@ -120,7 +120,7 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Determine if a given event has listeners.
 	 *
-	 * @param  string $event_name Event name.
+	 * @param string $event_name Event name.
 	 */
 	public function has_listeners( string $event_name ): bool {
 		return has_filter( $event_name ) || $this->has_wildcard_listeners( $event_name );
@@ -129,7 +129,7 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Determine if a given event has wildcard listeners.
 	 *
-	 * @param  string $event_name Event name.
+	 * @param string $event_name Event name.
 	 */
 	public function has_wildcard_listeners( string $event_name ): bool {
 		return ! empty( $this->get_wildcard_listeners( $event_name ) );
@@ -138,7 +138,7 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Register an event subscriber with the dispatcher.
 	 *
-	 * @param  object|string $subscriber
+	 * @param object|string $subscriber
 	 */
 	public function subscribe( object|string $subscriber ): void {
 		$subscriber = $this->resolve_subscriber( $subscriber );
@@ -149,7 +149,7 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Resolve the subscriber instance.
 	 *
-	 * @param  object|string $subscriber
+	 * @param object|string $subscriber
 	 * @return mixed
 	 */
 	protected function resolve_subscriber( object|string $subscriber ) {
@@ -165,8 +165,8 @@ class Dispatcher implements Dispatcher_Contract {
 	 *
 	 * @throws RuntimeException Thrown if the event is an object and payload is passed.
 	 *
-	 * @param  string|object $event Event name.
-	 * @param  mixed         ...$payload Event payload.
+	 * @param string|object $event Event name.
+	 * @param mixed         ...$payload Event payload.
 	 */
 	public function dispatch( string|object $event, mixed ...$payload ): mixed {
 		if ( is_object( $event ) && ! empty( $payload ) ) {
@@ -192,8 +192,8 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Parse the given event and payload and prepare them for dispatching.
 	 *
-	 * @param  string|object $event
-	 * @param  mixed $payload
+	 * @param string|object $event
+	 * @param mixed $payload
 	 * @return array{0: string, 1: mixed}
 	 */
 	protected function parse_event_and_payload( string|object $event, mixed $payload ): array {
@@ -207,7 +207,7 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Get all of the wildcard listeners for a given event name.
 	 *
-	 * @param  string $event_name
+	 * @param string $event_name
 	 * @return array<string|callable>
 	 */
 	public function get_wildcard_listeners( string $event_name ): array {
@@ -231,8 +231,8 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Add the listeners for the event's interfaces to the given array.
 	 *
-	 * @param  string $event_name
-	 * @param  array<mixed>  $listeners
+	 * @param string $event_name
+	 * @param array<mixed>  $listeners
 	 * @return array<mixed>
 	 */
 	protected function add_interface_listeners( string $event_name, array $listeners = [] ): array {
@@ -259,8 +259,8 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Register an event listener with the dispatcher.
 	 *
-	 * @param  callable|string $listener
-	 * @param  bool            $object_event Whether the listener is for an object (class name) event.
+	 * @param callable|string $listener
+	 * @param bool            $object_event Whether the listener is for an object (class name) event.
 	 */
 	public function make_listener( callable|string $listener, bool $object_event = false ): Closure {
 		if ( is_string( $listener ) ) {
@@ -276,8 +276,8 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Create a class based listener using the IoC container.
 	 *
-	 * @param  string $listener
-	 * @param  bool   $object_event Whether the listener is for an object (class name) event.
+	 * @param string $listener
+	 * @param bool   $object_event Whether the listener is for an object (class name) event.
 	 */
 	public function create_class_listener( string $listener, bool $object_event = false ): Closure {
 		return function ( ...$payload ) use ( $listener, $object_event ) {
@@ -294,7 +294,7 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Create the class based event callable.
 	 *
-	 * @param  string $listener
+	 * @param string $listener
 	 * @return array{0: object, 1: string|null}
 	 */
 	protected function create_class_callable( string $listener ): array {
@@ -308,7 +308,7 @@ class Dispatcher implements Dispatcher_Contract {
 	/**
 	 * Parse the class listener into class and method.
 	 *
-	 * @param  string $listener
+	 * @param string $listener
 	 * @return array{0: string, 1: string|null}
 	 */
 	protected function parse_class_callable( string $listener ): array {

@@ -334,8 +334,8 @@ class Kernel implements \Mantle\Contracts\Console\Kernel {
 	/**
 	 * Terminate the kernel.
 	 *
-	 * @param  \Symfony\Component\Console\Input\InputInterface $input
-	 * @param  int                                             $status
+	 * @param \Symfony\Component\Console\Input\InputInterface $input
+	 * @param int                                             $status
 	 */
 	public function terminate( $input, $status ): void {
 		$this->app->terminate();

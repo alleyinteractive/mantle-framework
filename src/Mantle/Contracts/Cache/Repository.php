@@ -33,7 +33,7 @@ interface Repository extends CacheInterface {
 	 *
 	 * @template TCacheValue
 	 *
-	 * @param  string                                $key
+	 * @param string                                $key
 	 * @param TCacheValue|(\Closure(): TCacheValue) $default Default value.
 	 * @return (TCacheValue is null ? mixed : TCacheValue)
 	 */
@@ -42,42 +42,42 @@ interface Repository extends CacheInterface {
 	/**
 	 * Store an item in the cache.
 	 *
-	 * @param  string                                    $key
-	 * @param  mixed                                     $value
-	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
+	 * @param string                                    $key
+	 * @param mixed                                     $value
+	 * @param \DateTimeInterface|\DateInterval|int|null $ttl
 	 */
 	public function put( string $key, mixed $value, \DateTimeInterface|\DateInterval|int|null $ttl = null ): bool;
 
 	/**
 	 * Store an item in the cache if the key does not exist.
 	 *
-	 * @param  string                                    $key
-	 * @param  mixed                                     $value
-	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
+	 * @param string                                    $key
+	 * @param mixed                                     $value
+	 * @param \DateTimeInterface|\DateInterval|int|null $ttl
 	 */
 	public function add( string $key, mixed $value, \DateTimeInterface|\DateInterval|int|null $ttl = null ): bool;
 
 	/**
 	 * Increment the value of an item in the cache.
 	 *
-	 * @param  string $key
-	 * @param  int    $value
+	 * @param string $key
+	 * @param int    $value
 	 */
 	public function increment( string $key, int $value = 1 ): int|bool;
 
 	/**
 	 * Decrement the value of an item in the cache.
 	 *
-	 * @param  string $key
-	 * @param  int    $value
+	 * @param string $key
+	 * @param int    $value
 	 */
 	public function decrement( string $key, int $value = 1 ): int|bool;
 
 	/**
 	 * Store an item in the cache indefinitely.
 	 *
-	 * @param  string $key
-	 * @param  mixed  $value
+	 * @param string $key
+	 * @param mixed  $value
 	 */
 	public function forever( string $key, mixed $value ): bool;
 
@@ -86,17 +86,17 @@ interface Repository extends CacheInterface {
 	 *
 	 * @template TCacheValue
 	 *
-	 * @param  string                                    $key
-	 * @param  \DateTimeInterface|\DateInterval|int|null $ttl
-	 * @param  (\Closure(): TCacheValue)                 $callback
+	 * @param string                                    $key
+	 * @param \DateTimeInterface|\DateInterval|int|null $ttl
+	 * @param (\Closure(): TCacheValue)                 $callback
 	 */
 	public function remember( string $key, \DateTimeInterface|\DateInterval|int|null $ttl, Closure $callback ): mixed;
 
 	/**
 	 * Get an item from the cache, or execute the given Closure and store the result forever.
 	 *
-	 * @param  string   $key
-	 * @param  \Closure $callback
+	 * @param string   $key
+	 * @param \Closure $callback
 	 */
 	public function sear( string $key, Closure $callback ): mixed;
 
@@ -105,15 +105,15 @@ interface Repository extends CacheInterface {
 	 *
 	 * @template TCacheValue
 	 *
-	 * @param  string                    $key
-	 * @param  (\Closure(): TCacheValue) $callback
+	 * @param string                    $key
+	 * @param (\Closure(): TCacheValue) $callback
 	 */
 	public function remember_forever( string $key, Closure $callback ): mixed;
 
 	/**
 	 * Remove an item from the cache.
 	 *
-	 * @param  string $key
+	 * @param string $key
 	 */
 	public function forget( string $key ): bool;
 

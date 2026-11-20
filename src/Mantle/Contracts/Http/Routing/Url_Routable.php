@@ -39,8 +39,8 @@ interface Url_Routable {
 	/**
 	 * Retrieve the model for a bound value.
 	 *
-	 * @param  mixed       $value
-	 * @param  string|null $field
+	 * @param mixed       $value
+	 * @param string|null $field
 	 * @return static|null
 	 */
 	public function resolve_route_binding( $value, $field = null );

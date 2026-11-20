@@ -377,8 +377,8 @@ class Response implements ArrayAccess, ResponseContract {
 	/**
 	 * Get the JSON decoded body of the response as an array or scalar value.
 	 *
-	 * @param  string|null $key
-	 * @param  mixed       $default
+	 * @param string|null $key
+	 * @param mixed       $default
 	 * @return mixed
 	 */
 	public function json( ?string $key = null, mixed $default = null ) {
@@ -394,8 +394,8 @@ class Response implements ArrayAccess, ResponseContract {
 	/**
 	 * Get the JSON decoded body of the response as a Mixed_Data instance.
 	 *
-	 * @param  string|null $key
-	 * @param  mixed       $default
+	 * @param string|null $key
+	 * @param mixed       $default
 	 */
 	public function mixed_json( ?string $key = null, mixed $default = null ): Mixed_Data {
 		return Mixed_Data::of( $this->json( $key, $default ) );
@@ -458,7 +458,7 @@ class Response implements ArrayAccess, ResponseContract {
 	/**
 	 * Get the JSON decoded body of the response as a collection.
 	 *
-	 * @param  string|null $key
+	 * @param string|null $key
 	 * @return Collection<array-key, mixed>
 	 */
 	public function collect( ?string $key = null ): \Mantle\Support\Collection {

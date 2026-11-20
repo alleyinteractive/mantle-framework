@@ -127,7 +127,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Get the full URL for the request with the added query string parameters.
 	 *
-	 * @param  array<string, string> $query
+	 * @param array<string, string> $query
 	 */
 	public function full_url_with_query( array $query ): string {
 		$question = $this->getBaseUrl() . $this->getPathInfo() === '/' ? '/?' : '?';
@@ -156,8 +156,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Get a segment from the URI (1 based index).
 	 *
-	 * @param  int         $index
-	 * @param  string|null $default
+	 * @param int         $index
+	 * @param string|null $default
 	 * @return string|null
 	 */
 	public function segment( $index, $default = null ): mixed {
@@ -183,7 +183,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Determine if the current request URI matches a pattern.
 	 *
-	 * @param  mixed ...$patterns
+	 * @param mixed ...$patterns
 	 */
 	public function is( ...$patterns ): bool {
 		$path = $this->decoded_path();
@@ -200,7 +200,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Determine if the current request URL and query string matches a pattern.
 	 *
-	 * @param  mixed ...$patterns
+	 * @param mixed ...$patterns
 	 */
 	public function full_url_is( ...$patterns ): bool {
 		$url = $this->full_url();
@@ -269,7 +269,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Merge new input into the current request's input array.
 	 *
-	 * @param  array<mixed> $input
+	 * @param array<mixed> $input
 	 */
 	public function merge( array $input ): static {
 		$this->get_input_source()->add( $input );
@@ -280,7 +280,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Replace the input for the current request.
 	 *
-	 * @param  array<mixed> $input
+	 * @param array<mixed> $input
 	 */
 	public function replace( array $input ): static {
 		$this->get_input_source()->replace( $input );
@@ -293,8 +293,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	 *
 	 * Instead, you may use the "input" method.
 	 *
-	 * @param  string $key
-	 * @param  mixed  $default
+	 * @param string $key
+	 * @param mixed  $default
 	 */
 	#[\Override]
 	public function get( string $key, mixed $default = null ): mixed { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
@@ -304,8 +304,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Get the JSON payload for the request.
 	 *
-	 * @param  string|null $key
-	 * @param  mixed       $default
+	 * @param string|null $key
+	 * @param mixed       $default
 	 * @return \Symfony\Component\HttpFoundation\ParameterBag|mixed
 	 */
 	public function json( $key = null, $default = null ) {
@@ -344,7 +344,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Set the JSON payload for the request.
 	 *
-	 * @param  \Symfony\Component\HttpFoundation\ParameterBag $json
+	 * @param \Symfony\Component\HttpFoundation\ParameterBag $json
 	 */
 	public function set_json( ?\Symfony\Component\HttpFoundation\ParameterBag $json ): static {
 		$this->json = $json;
@@ -420,7 +420,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Determine if the given offset exists.
 	 *
-	 * @param  mixed $offset
+	 * @param mixed $offset
 	 */
 	public function offsetExists( mixed $offset ): bool {
 		return Arr::has(
@@ -432,7 +432,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Get the value at the given offset.
 	 *
-	 * @param  mixed $offset
+	 * @param mixed $offset
 	 */
 	public function offsetGet( mixed $offset ): mixed {
 		return $this->__get( $offset );
@@ -441,8 +441,8 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Set the value at the given offset.
 	 *
-	 * @param  mixed $offset
-	 * @param  mixed $value
+	 * @param mixed $offset
+	 * @param mixed $value
 	 */
 	public function offsetSet( mixed $offset, mixed $value ): void {
 		$this->get_input_source()->set( $offset, $value );
@@ -451,7 +451,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Remove the value at the given offset.
 	 *
-	 * @param  mixed $offset
+	 * @param mixed $offset
 	 */
 	public function offsetUnset( mixed $offset ): void {
 		$this->get_input_source()->remove( $offset );
@@ -460,7 +460,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Check if an input element is set on the request.
 	 *
-	 * @param  string $key
+	 * @param string $key
 	 * @return bool
 	 */
 	public function __isset( string $key ) {
@@ -470,7 +470,7 @@ class Request extends SymfonyRequest implements ArrayAccess, Arrayable {
 	/**
 	 * Get an input element from the request.
 	 *
-	 * @param  string $key Key to get.
+	 * @param string $key Key to get.
 	 */
 	public function __get( string $key ): mixed {
 		return Arr::get(

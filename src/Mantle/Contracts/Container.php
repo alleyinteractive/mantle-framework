@@ -97,9 +97,9 @@ interface Container extends ArrayAccess, ContainerInterface {
 	/**
 	 * Call the given Closure / class@method and inject its dependencies.
 	 *
-	 * @param  array|string|callable $callback
-	 * @param  array<mixed>          $parameters
-	 * @param  string|null           $default_method
+	 * @param array|string|callable $callback
+	 * @param array<mixed>          $parameters
+	 * @param string|null           $default_method
 	 */
 	public function call( $callback, array $parameters = [], $default_method = null ): mixed;
 
@@ -119,9 +119,9 @@ interface Container extends ArrayAccess, ContainerInterface {
 	 *
 	 * @template TAbstract of object
 	 *
-	 * @param  string       $class
+	 * @param string       $class
 	 * @phpstan-param class-string<TAbstract> $class
-	 * @param  array<mixed> $parameters
+	 * @param array<mixed> $parameters
 	 * @phpstan-return TAbstract
 	 */
 	public function class( string $class, array $parameters = [] ): object;

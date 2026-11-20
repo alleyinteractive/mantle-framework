@@ -90,7 +90,7 @@ class Filesystem_Adapter implements Filesystem {
 	/**
 	 * Assert that the given file does not exist.
 	 *
-	 * @param  string[]|string $path File path.
+	 * @param string[]|string $path File path.
 	 */
 	public function assertMissing( $path ): static {
 		$paths = Arr::wrap( $path );
@@ -108,7 +108,7 @@ class Filesystem_Adapter implements Filesystem {
 	/**
 	 * Get all (recursive) of the directories within a given directory.
 	 *
-	 * @param  string $directory Directory name.
+	 * @param string $directory Directory name.
 	 * @return string[]
 	 */
 	public function all_directories( ?string $directory = null ): array {
@@ -435,10 +435,10 @@ class Filesystem_Adapter implements Filesystem {
 	/**
 	 * Store the uploaded file on the disk with a given name.
 	 *
-	 * @param  string                                 $path File path.
-	 * @param  File|\Mantle\Http\Uploaded_File|string $file File object.
-	 * @param  string                                 $name File name.
-	 * @param  mixed                                  $options Options.
+	 * @param string                                 $path File path.
+	 * @param File|\Mantle\Http\Uploaded_File|string $file File object.
+	 * @param string                                 $name File name.
+	 * @param mixed                                  $options Options.
 	 * @return string|false
 	 */
 	public function put_file_as( string $path, $file, string $name, $options = [] ): string|bool {
@@ -629,9 +629,9 @@ class Filesystem_Adapter implements Filesystem {
 	/**
 	 * Get a temporary URL for the file at the given path.
 	 *
-	 * @param  string             $path File path.
-	 * @param  \DateTimeInterface $expiration File expiration.
-	 * @param  array              $options Options for the URL.
+	 * @param string             $path File path.
+	 * @param \DateTimeInterface $expiration File expiration.
+	 * @param array              $options Options for the URL.
 	 *
 	 * @throws RuntimeException Thrown on missing temporary URL.
 	 */
@@ -646,8 +646,8 @@ class Filesystem_Adapter implements Filesystem {
 	/**
 	 * Concatenate a path to a URL.
 	 *
-	 * @param  string $url
-	 * @param  string $path
+	 * @param string $url
+	 * @param string $path
 	 */
 	protected function concat_path_to_url( string $url, string $path ): string {
 		return rtrim( $url, '/' ) . '/' . ltrim( $path, '/' );
@@ -656,8 +656,8 @@ class Filesystem_Adapter implements Filesystem {
 	/**
 	 * Replace the scheme, host and port of the given UriInterface with values from the given URL.
 	 *
-	 * @param  \Psr\Http\Message\UriInterface $uri
-	 * @param  string                         $url
+	 * @param \Psr\Http\Message\UriInterface $uri
+	 * @param string                         $url
 	 */
 	protected function replace_base_url( UriInterface $uri, string $url ): UriInterface {
 		$parsed = wp_parse_url( $url );

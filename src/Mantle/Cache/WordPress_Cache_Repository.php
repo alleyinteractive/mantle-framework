@@ -122,8 +122,8 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	/**
 	 * Retrieve an item from the cache and delete it.
 	 *
-	 * @param  string $key
-	 * @param  mixed  $default
+	 * @param string $key
+	 * @param mixed  $default
 	 */
 	#[\Override]
 	public function pull( string $key, mixed $default = null ): mixed {
@@ -164,8 +164,8 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	/**
 	 * Increment the value of an item in the cache.
 	 *
-	 * @param  string $key Cache key.
-	 * @param  int    $value Value.
+	 * @param string $key Cache key.
+	 * @param int    $value Value.
 	 */
 	public function increment( string $key, int $value = 1 ): int|bool {
 		return \wp_cache_incr( $key, $value, $this->prefix );
@@ -174,8 +174,8 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	/**
 	 * Decrement the value of an item in the cache.
 	 *
-	 * @param  string $key Cache key.
-	 * @param  int    $value Value.
+	 * @param string $key Cache key.
+	 * @param int    $value Value.
 	 */
 	public function decrement( string $key, int $value = 1 ): int|bool {
 		return \wp_cache_decr( $key, $value, $this->prefix );
@@ -184,7 +184,7 @@ class WordPress_Cache_Repository extends Repository implements Taggable_Reposito
 	/**
 	 * Remove an item from the cache.
 	 *
-	 * @param  string $key Cache key.
+	 * @param string $key Cache key.
 	 */
 	public function delete( string $key ): bool {
 		return \wp_cache_delete( $key, $this->prefix );
