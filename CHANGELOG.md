@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `Collection::where()` accepts a non-string operator, as in Laravel, instead of throwing a `TypeError` ([#1018](https://github.com/alleyinteractive/mantle-framework/pull/1018)).
+- Remove redundant return tags and document that `preg_replace_array()` can return `null` on a regex error. Native signatures are unchanged.
 
 ### Added
 

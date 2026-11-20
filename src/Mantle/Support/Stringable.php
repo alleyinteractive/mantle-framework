@@ -104,7 +104,6 @@ class Stringable implements ArrayAccess, JsonSerializable, \Stringable {
 	 * Get the character at the specified index.
 	 *
 	 * @param int $index
-	 * @return string|false
 	 */
 	public function char_at( int $index ): string|false {
 		return Str::char_at( $this->value, $index );

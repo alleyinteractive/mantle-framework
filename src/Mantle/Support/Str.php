@@ -200,7 +200,6 @@ class Str {
 	 *
 	 * @param string $subject
 	 * @param int    $index
-	 * @return string|false
 	 */
 	public static function char_at( string $subject, int $index ): false|string {
 		$length = mb_strlen( $subject );
