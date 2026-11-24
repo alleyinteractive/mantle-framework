@@ -20,8 +20,8 @@ interface Asset_Manager {
 	 * @param string          $src Script URL.
 	 * @param string[]|string $deps Script dependencies.
 	 * @param array|string    $condition Condition to load.
-	 * @param string          $load_method Load method.
-	 * @param string          $load_hook Load hook.
+	 * @param Load_Method      $load_method Load method.
+	 * @param Load_Hook|string $load_hook Load hook.
 	 * @param string|null     $version Script version.
 	 * @return void
 	 */
@@ -34,8 +34,8 @@ interface Asset_Manager {
 	 * @param string          $src Stylesheet URL.
 	 * @param string[]|string $deps Stylesheet dependencies.
 	 * @param array|string    $condition Condition to load.
-	 * @param string          $load_method Load method.
-	 * @param string          $load_hook Load hook.
+	 * @param Load_Method      $load_method Load method.
+	 * @param Load_Hook|string $load_hook Load hook.
 	 * @param string|null     $version Script version.
 	 * @param string          $media Style media.
 	 * @return void
@@ -84,8 +84,8 @@ interface Asset_Manager {
 	/**
 	 * Change the load method of an asset.
 	 *
-	 * @param string $handle Handle to change.
-	 * @param string $load_method Load method to change to.
+	 * @param string      $handle Handle to change.
+	 * @param Load_Method $load_method Load method to change to.
 	 */
-	public function load_method( string $handle, string $load_method = Load_Method::SYNC ): void;
+	public function load_method( string $handle, Load_Method $load_method = Load_Method::SYNC ): void;
 }

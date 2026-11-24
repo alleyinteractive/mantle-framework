@@ -21,7 +21,7 @@ class AssetManagerTest extends TestCase {
 					"jquery",
 				],
 				"global",
-				"sync",
+				Load_Method::SYNC,
 			);
 
 		$head = $this->get_wp_head();
@@ -157,7 +157,7 @@ class AssetManagerTest extends TestCase {
 	}
 
 	public function test_async_and_defer_keeps_async_with_blocking_dependent_on_asset_manager_1x() {
-		if ( ! in_array( Load_Method::ASYNC_DEFER, Asset_Manager_Scripts::instance()->load_methods, true ) ) {
+		if ( ! in_array( Load_Method::ASYNC_DEFER->value, Asset_Manager_Scripts::instance()->load_methods, true ) ) {
 			$this->markTestSkipped( 'The async-defer load method requires wp-asset-manager 1.x.' );
 		}
 

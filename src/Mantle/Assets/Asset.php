@@ -48,8 +48,8 @@ class Asset {
 	 * @param string               $src         Asset URL.
 	 * @param array<string>        $deps        Asset dependencies.
 	 * @param array<string>|string $condition   Condition to load.
-	 * @param string               $load_method Load method.
-	 * @param string               $load_hook   Load hook.
+	 * @param Load_Method          $load_method Load method.
+	 * @param Load_Hook|string     $load_hook   Load hook, or a custom action name.
 	 * @param string|null          $version     Asset version.
 	 * @param bool                 $infer_from_loader Infer the asset from the loader if the source is not provided.
 	 */
@@ -59,8 +59,8 @@ class Asset {
 		protected ?string $src = null,
 		protected array $deps = [],
 		protected string|array $condition = 'global',
-		protected string $load_method = Load_Method::SYNC,
-		protected string $load_hook = Load_Hook::HEADER,
+		protected Load_Method $load_method = Load_Method::SYNC,
+		protected Load_Hook|string $load_hook = Load_Hook::HEADER,
 		protected ?string $version = null,
 		bool $infer_from_loader = true,
 	) {
@@ -292,7 +292,7 @@ class Asset {
 					'condition'   => $this->condition,
 					'load_method' => Asset_Manager::resolve_load_method( $this->load_method ),
 					'version'     => $this->version,
-					'load_hook'   => $this->load_hook,
+					'load_hook'   => $this->load_hook instanceof Load_Hook ? $this->load_hook->value : $this->load_hook,
 				]
 			);
 		} elseif ( 'style' === $this->type ) {
@@ -304,7 +304,7 @@ class Asset {
 					'condition'   => $this->condition,
 					'load_method' => Asset_Manager::resolve_load_method( $this->load_method ),
 					'version'     => $this->version,
-					'load_hook'   => $this->load_hook,
+					'load_hook'   => $this->load_hook instanceof Load_Hook ? $this->load_hook->value : $this->load_hook,
 					'media'       => $this->media,
 				]
 			);
