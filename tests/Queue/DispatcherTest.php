@@ -14,9 +14,6 @@ use Mantle\Queue\Queue_Manager;
 use Mockery as m;
 use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group queue
- */
 #[Group( 'queue' )]
 #[Group( 'events' )]
 class DispatcherTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {

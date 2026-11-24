@@ -7,9 +7,6 @@ use PHPUnit\Framework\Attributes\Group;
 
 use function Mantle\Support\Helpers\collect;
 
-/**
- * @group testing
- */
 #[Group( 'testing' )]
 class WordPressStateTest extends FrameworkTestCase {
 	public function test_show_posts_on_frontpage_by_default(): void {

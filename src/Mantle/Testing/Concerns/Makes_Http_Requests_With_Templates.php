@@ -9,6 +9,7 @@ namespace Mantle\Testing\Concerns;
 
 use Closure;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\Before;
 
 /**
  * Ensure that HTTP requests in unit tests load templates properly (such as
@@ -37,8 +38,9 @@ trait Makes_Http_Requests_With_Templates {
 	/**
 	 * Setup the trait and add the hooks to load templates.
 	 *
-	 * @todo Convert to Before attribute when PHPUnit 12 is minimum..
+	 * Runs after setUp() so the Hooks trait has already backed up the hooks this adds.
 	 */
+	#[Before( -10 )]
 	public function makes_http_requests_with_templates_set_up(): void {
 		foreach ( array_keys( static::$templates_loaded ) as $hook ) {
 			add_action( "get_{$hook}", $this->generate_template_callback( $hook ), 10, 2 );

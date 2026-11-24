@@ -24,9 +24,6 @@ use stdClass;
 use function Mantle\Support\Helpers\collect;
 
 class CollectionTest extends FrameworkTestCase {
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFirstReturnsFirstItemInCollection($collection)
 	{
@@ -34,9 +31,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame('foo', $c->first());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFirstWithCallback($collection)
 	{
@@ -47,9 +41,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame('bar', $result);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFirstWithCallbackAndDefault($collection)
 	{
@@ -60,9 +51,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame('default', $result);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFirstWithDefaultAndWithoutCallback($collection)
 	{
@@ -71,9 +59,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame('default', $result);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFirstWhere($collection)
 	{
@@ -88,9 +73,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertNull($data->first_where('nonexistent', 'key'));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testLastReturnsLastItemInCollection($collection)
 	{
@@ -98,9 +80,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame('bar', $c->last());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testLastWithCallback($collection)
 	{
@@ -115,9 +94,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(200, $result);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testLastWithCallbackAndDefault($collection)
 	{
@@ -128,9 +104,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame('default', $result);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testLastWithDefaultAndWithoutCallback($collection)
 	{
@@ -157,9 +130,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(null, $data->first());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testEmptyCollectionIsEmpty($collection)
 	{
@@ -168,9 +138,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertTrue($c->is_empty());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testEmptyCollectionIsNotEmpty($collection)
 	{
@@ -180,9 +147,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertTrue($c->is_not_empty());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCollectionIsConstructed($collection)
 	{
@@ -202,9 +166,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEmpty($data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 //	public function testCollectionShuffleWithSeed($collection)
 //	{
@@ -216,9 +177,6 @@ class CollectionTest extends FrameworkTestCase {
 //		$this->assertEquals($firstRandom, $secondRandom);
 //	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSkipMethod($collection)
 	{
@@ -229,9 +187,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([5, 6], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSkipUntil($collection)
 	{
@@ -248,9 +203,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([4, 4], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSkipWhile($collection)
 	{
@@ -267,9 +219,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([3, 3, 4, 4], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGetArrayableItems($collection)
 	{
@@ -303,9 +252,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['foo' => 'bar'], $array);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testToArrayCallsToArrayOnEachItemInCollection($collection)
 	{
@@ -319,9 +265,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['foo.array', 'bar.array'], $results);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testJsonSerializeCallsToArrayOrJsonSerializeOnEachItemInCollection($collection)
 	{
@@ -335,9 +278,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['foo.json', 'bar.array'], $results);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testToJsonEncodesTheJsonSerializeResult($collection)
 	{
@@ -347,9 +287,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertJsonStringEqualsJsonString(json_encode('foo'), $results);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCastingToStringJsonEncodesTheToArrayResult($collection)
 	{
@@ -432,9 +369,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertTrue(isset($c['name']));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCountable($collection)
 	{
@@ -442,9 +376,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertCount(2, $c);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCountableByWithoutPredicate($collection)
 	{
@@ -458,9 +389,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([1 => 3, 5 => 3], $c->count_by()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCountableByWithPredicate($collection)
 	{
@@ -482,9 +410,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['foo'], $c->getIterator()->getArrayCopy());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFilter($collection)
 	{
@@ -502,9 +427,6 @@ class CollectionTest extends FrameworkTestCase {
 		})->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 //	public function testHigherOrderKeyBy($collection)
 //	{
@@ -516,9 +438,6 @@ class CollectionTest extends FrameworkTestCase {
 //		$this->assertEquals(['id1' => 'first', 'id2' => 'second'], $c->keyBy->id->map->name->all());
 //	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 //	public function testHigherOrderUnique($collection)
 //	{
@@ -530,9 +449,6 @@ class CollectionTest extends FrameworkTestCase {
 //		$this->assertCount(1, $c->unique->id);
 //	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 //	public function testHigherOrderFilter($collection)
 //	{
@@ -558,9 +474,6 @@ class CollectionTest extends FrameworkTestCase {
 //		$this->assertCount(1, $c->filter->active());
 //	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 //	public function testWhere($collection)
 //	{
@@ -678,9 +591,6 @@ class CollectionTest extends FrameworkTestCase {
 //		);
 //	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereStrict($collection)
 	{
@@ -692,9 +602,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereInstanceOf($collection)
 	{
@@ -702,9 +609,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertCount(3, $c->where_instance_of(stdClass::class));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereIn($collection)
 	{
@@ -712,9 +616,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([['v' => 1], ['v' => 3], ['v' => '3']], $c->where_in('v', [1, 3])->values()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereInStrict($collection)
 	{
@@ -722,9 +623,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([['v' => 1], ['v' => 3]], $c->where_in_strict('v', [1, 3])->values()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNotIn($collection)
 	{
@@ -732,9 +630,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([['v' => 2], ['v' => 4]], $c->where_not_in('v', [1, 3])->values()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNotInStrict($collection)
 	{
@@ -742,9 +637,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([['v' => 2], ['v' => '3'], ['v' => 4]], $c->where_not_in_strict('v', [1, 3])->values()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testValues($collection)
 	{
@@ -754,9 +646,6 @@ class CollectionTest extends FrameworkTestCase {
 		})->values()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testBetween($collection)
 	{
@@ -768,9 +657,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([['v' => 3], ['v' => '3']], $c->where_between('v', [3, 3])->values()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNotBetween($collection)
 	{
@@ -781,9 +667,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([['v' => 1], ['v' => '2'], ['v' => '4']], $c->where_not_between('v', [3, 3])->values()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFlatten($collection)
 	{
@@ -820,9 +703,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['#foo', '#bar', '#zap', '#baz'], $c->flatten()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFlattenWithDepth($collection)
 	{
@@ -838,9 +718,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['#foo', '#bar', ['#baz'], '#zap'], $c->flatten(2)->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFlattenIgnoresKeys($collection)
 	{
@@ -853,9 +730,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['#foo', '#bar', '#baz', '#zap'], $c->flatten(1)->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMergeNull($collection)
 	{
@@ -863,9 +737,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['name' => 'Hello'], $c->merge(null)->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMergeArray($collection)
 	{
@@ -873,9 +744,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['name' => 'Hello', 'id' => 1], $c->merge(['id' => 1])->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMergeCollection($collection)
 	{
@@ -883,9 +751,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['name' => 'World', 'id' => 1], $c->merge(new $collection(['name' => 'World', 'id' => 1]))->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMergeRecursiveNull($collection)
 	{
@@ -893,9 +758,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['name' => 'Hello'], $c->merge_recursive(null)->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMergeRecursiveArray($collection)
 	{
@@ -903,9 +765,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['name' => 'Hello', 'id' => [1, 2]], $c->merge_recursive(['id' => 2])->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMergeRecursiveCollection($collection)
 	{
@@ -916,9 +775,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testReplaceNull($collection)
 	{
@@ -926,9 +782,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['a', 'b', 'c'], $c->replace(null)->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testReplaceArray($collection)
 	{
@@ -936,9 +789,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['a', 'd', 'e'], $c->replace([1 => 'd', 2 => 'e'])->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testReplaceCollection($collection)
 	{
@@ -949,9 +799,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testReplaceRecursiveNull($collection)
 	{
@@ -959,9 +806,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['a', 'b', ['c', 'd']], $c->replace_recursive(null)->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testReplaceRecursiveArray($collection)
 	{
@@ -969,9 +813,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['z', 'b', ['c', 'e']], $c->replace_recursive(['z', 2 => [1 => 'e']])->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testReplaceRecursiveCollection($collection)
 	{
@@ -982,9 +823,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnionNull($collection)
 	{
@@ -992,9 +830,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['name' => 'Hello'], $c->union(null)->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnionArray($collection)
 	{
@@ -1002,9 +837,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['name' => 'Hello', 'id' => 1], $c->union(['id' => 1])->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnionCollection($collection)
 	{
@@ -1012,9 +844,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['name' => 'Hello', 'id' => 1], $c->union(new $collection(['name' => 'World', 'id' => 1]))->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffCollection($collection)
 	{
@@ -1022,9 +851,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['id' => 1], $c->diff(new $collection(['first_word' => 'Hello', 'last_word' => 'World']))->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffUsingWithCollection($collection)
 	{
@@ -1035,9 +861,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['fr'], $c->diff_using(new $collection(['en_gb', 'hr']), 'strcasecmp')->values()->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffUsingWithNull($collection)
 	{
@@ -1045,9 +868,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['en_GB', 'fr', 'HR'], $c->diff_using(null, 'strcasecmp')->values()->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffNull($collection)
 	{
@@ -1055,9 +875,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['id' => 1, 'first_word' => 'Hello'], $c->diff(null)->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffKeys($collection)
 	{
@@ -1066,9 +883,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['first_word' => 'Hello'], $c1->diff_keys($c2)->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffKeysUsing($collection)
 	{
@@ -1080,9 +894,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['first_word' => 'Hello'], $c1->diff_keys_using($c2, 'strcasecmp')->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffAssoc($collection)
 	{
@@ -1091,9 +902,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['id' => 1, 'first_word' => 'Hello'], $c1->diff_assoc($c2)->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDiffAssocUsing($collection)
 	{
@@ -1105,9 +913,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['b' => 'brown', 'c' => 'blue', 'red'], $c1->diff_assoc_using($c2, 'strcasecmp')->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDuplicates($collection)
 	{
@@ -1128,9 +933,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([1 => $expected, 2 => $expected, 5 => '2'], $duplicates);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDuplicatesWithKey($collection)
 	{
@@ -1139,9 +941,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([2 => 'laravel'], $duplicates);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDuplicatesWithCallback($collection)
 	{
@@ -1152,9 +951,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([2 => 'laravel'], $duplicates);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testDuplicatesWithStrict($collection)
 	{
@@ -1175,9 +971,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([2 => $expected, 5 => '2'], $duplicates);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testEach($collection)
 	{
@@ -1199,9 +992,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([1, 2, 'foo' => 'bar'], $result);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testEachSpread($collection)
 	{
@@ -1235,9 +1025,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([[1, 'a', 0], [2, 'b', 1]], $result);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testIntersectNull($collection)
 	{
@@ -1245,9 +1032,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([], $c->intersect(null)->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testIntersectCollection($collection)
 	{
@@ -1255,9 +1039,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['first_word' => 'Hello'], $c->intersect(new $collection(['first_world' => 'Hello', 'last_word' => 'World']))->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testIntersectByKeysNull($collection)
 	{
@@ -1265,9 +1046,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([], $c->intersect_by_keys(null)->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testIntersectByKeys($collection)
 	{
@@ -1275,9 +1053,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['name' => 'Mateus'], $c->intersect_by_keys(new $collection(['name' => 'Mateus', 'surname' => 'Guimaraes']))->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnique($collection)
 	{
@@ -1288,9 +1063,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([[1, 2], [2, 3], [3, 4]], $c->unique()->values()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUniqueWithCallback($collection)
 	{
@@ -1324,9 +1096,6 @@ class CollectionTest extends FrameworkTestCase {
 		})->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUniqueStrict($collection)
 	{
@@ -1357,9 +1126,6 @@ class CollectionTest extends FrameworkTestCase {
 		], $c->unique_strict('id')->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCollapse($collection)
 	{
@@ -1367,9 +1133,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([$object1, $object2], $data->collapse()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCollapseWithNestedCollections($collection)
 	{
@@ -1377,9 +1140,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([1, 2, 3, 4, 5, 6], $data->collapse()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testJoin($collection)
 	{
@@ -1394,9 +1154,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame('', (new $collection([]))->join(', ', ' and '));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCrossJoin($collection)
 	{
@@ -1427,9 +1184,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSort($collection)
 	{
@@ -1449,9 +1203,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['T1', 'T2', 'T10'], $data->values()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortDesc($collection)
 	{
@@ -1471,9 +1222,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['T10', 'T2', 'T1'], $data->values()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortWithCallback($collection)
 	{
@@ -1488,9 +1236,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(range(1, 5), array_values($data->all()));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortBy($collection)
 	{
@@ -1509,9 +1254,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['taylor', 'dayle'], array_values($data->all()));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortByString($collection)
 	{
@@ -1526,9 +1268,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([['name' => 'dayle'], ['name' => 'taylor']], array_values($data->all()));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortByAlwaysReturnsAssoc($collection)
 	{
@@ -1547,9 +1286,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([1 => 'dayle', 0 => 'taylor'], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortKeys($collection)
 	{
@@ -1558,9 +1294,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['a' => 'taylor', 'b' => 'dayle'], $data->sort_keys()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSortKeysDesc($collection)
 	{
@@ -1569,9 +1302,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['b' => 'dayle', 'a' => 'taylor'], $data->sort_keys_desc()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testReverse($collection)
 	{
@@ -1586,9 +1316,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['framework' => 'laravel', 'name' => 'taylor'], $reversed->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFlip($collection)
 	{
@@ -1596,9 +1323,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['taylor' => 'name', 'laravel' => 'framework'], $data->flip()->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testChunk($collection)
 	{
@@ -1612,9 +1336,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([9 => 10], $data->get(3)->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testChunkWhenGivenZeroAsSize($collection)
 	{
@@ -1626,9 +1347,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testChunkWhenGivenLessThanZero($collection)
 	{
@@ -1640,9 +1358,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 //	public function testEvery($collection)
 //	{
@@ -1673,9 +1388,6 @@ class CollectionTest extends FrameworkTestCase {
 //		$this->assertFalse($c->concat([['active' => false]])->every->active);
 //	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 //	public function testExcept($collection)
 //	{
@@ -1689,9 +1401,6 @@ class CollectionTest extends FrameworkTestCase {
 //		$this->assertEquals(['first' => 'Taylor', 'email' => 'taylorotwell@gmail.com'], $data->except('last')->all());
 //	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testExceptSelf($collection)
 	{
@@ -1699,9 +1408,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['first' => 'Taylor', 'last' => 'Otwell'], $data->except($data)->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPluckWithArrayAndObjectValues($collection)
 	{
@@ -1710,9 +1416,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['foo', 'bar'], $data->pluck('email')->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPluckWithArrayAccessValues($collection)
 	{
@@ -1725,9 +1428,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['foo', 'bar'], $data->pluck('email')->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testHas($collection)
 	{
@@ -1738,9 +1438,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertFalse($data->has(['third', 'first']));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testImplode($collection)
 	{
@@ -1753,9 +1450,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame('taylor,dayle', $data->implode(','));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testImplodeStringable($collection)
 	{
@@ -1774,9 +1468,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testImplodeStr($collection)
 	{
@@ -1790,9 +1481,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame( 'example string here', $data->implode_str( ' ' )->value() );
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTake($collection)
 	{
@@ -1815,9 +1503,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['taylor', 'shawn', 'dayle'], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 //	public function testRandom($collection)
 //	{
@@ -1852,9 +1537,6 @@ class CollectionTest extends FrameworkTestCase {
 //		$this->assertCount(2, $random);
 //	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testRandomOnEmptyCollection($collection)
 	{
@@ -1869,9 +1551,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertCount(0, $random);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTakeLast($collection)
 	{
@@ -1880,9 +1559,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([1 => 'dayle', 2 => 'shawn'], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTakeUntilUsingValue($collection)
 	{
@@ -1893,9 +1569,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([1, 2], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTakeUntilUsingCallback($collection)
 	{
@@ -1908,9 +1581,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([1, 2], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTakeUntilReturnsAllItemsForUnmetValue($collection)
 	{
@@ -1927,9 +1597,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame($data->to_array(), $actual->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTakeUntilCanBeProxied($collection)
 	{
@@ -1946,9 +1613,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame('Taylor', $actual->get(1)->name);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTakeWhileUsingValue($collection)
 	{
@@ -1959,9 +1623,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([1, 1], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTakeWhileUsingCallback($collection)
 	{
@@ -1974,9 +1635,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([1, 2], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTakeWhileReturnsNoItemsForUnmetValue($collection)
 	{
@@ -1993,9 +1651,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([], $actual->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTakeWhileCanBeProxied($collection)
 	{
@@ -2013,9 +1668,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame('Adam', $actual->get(1)->name);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 //	public function testMacroable($collection)
 //	{
@@ -2033,9 +1685,6 @@ class CollectionTest extends FrameworkTestCase {
 //		$this->assertSame(['a', 'aa', 'aaa'], $c->foo()->all());
 //	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 //	public function testCanAddMethodsToProxy($collection)
 //	{
@@ -2052,9 +1701,6 @@ class CollectionTest extends FrameworkTestCase {
 //		$this->assertSame([['age' => 18], ['age' => 56]], $c->adults->age->values()->all());
 //	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMakeMethod($collection)
 	{
@@ -2062,9 +1708,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['foo'], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMakeMethodFromNull($collection)
 	{
@@ -2075,9 +1718,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMakeMethodFromCollection($collection)
 	{
@@ -2086,9 +1726,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['foo' => 'bar'], $secondCollection->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMakeMethodFromArray($collection)
 	{
@@ -2096,9 +1733,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['foo' => 'bar'], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWrapWithScalar($collection)
 	{
@@ -2106,9 +1740,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['foo'], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWrapWithArray($collection)
 	{
@@ -2116,9 +1747,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['foo'], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWrapWithArrayable($collection)
 	{
@@ -2126,9 +1754,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([$o], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWrapWithJsonable($collection)
 	{
@@ -2136,9 +1761,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([$o], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWrapWithJsonSerialize($collection)
 	{
@@ -2146,9 +1768,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([$o], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 //	public function testWrapWithCollectionClass($collection)
 //	{
@@ -2156,9 +1775,6 @@ class CollectionTest extends FrameworkTestCase {
 //		$this->assertEquals(['foo'], $data->all());
 //	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 //	public function testWrapWithCollectionSubclass($collection)
 //	{
@@ -2167,9 +1783,6 @@ class CollectionTest extends FrameworkTestCase {
 //		$this->assertInstanceOf(TestCollectionSubclass::class, $data);
 //	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 //	public function testUnwrapCollection($collection)
 //	{
@@ -2177,27 +1790,18 @@ class CollectionTest extends FrameworkTestCase {
 //		$this->assertEquals(['foo'], $collection::unwrap($data));
 //	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnwrapCollectionWithArray($collection)
 	{
 		$this->assertEquals(['foo'], $collection::unwrap(['foo']));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnwrapCollectionWithScalar($collection)
 	{
 		$this->assertSame('foo', $collection::unwrap('foo'));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTimesMethod($collection)
 	{
@@ -2221,9 +1825,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(range(1, 5), $range->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testConstructMakeFromObject($collection)
 	{
@@ -2233,9 +1834,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['foo' => 'bar'], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testConstructMethod($collection)
 	{
@@ -2243,9 +1841,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['foo'], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testConstructMethodFromNull($collection)
 	{
@@ -2256,9 +1851,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testConstructMethodFromCollection($collection)
 	{
@@ -2267,9 +1859,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['foo' => 'bar'], $secondCollection->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testConstructMethodFromArray($collection)
 	{
@@ -2277,9 +1866,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['foo' => 'bar'], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testConstructMethodFromObject($collection)
 	{
@@ -2309,9 +1895,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['baz'], $cut->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGetPluckValueWithAccessors($collection)
 	{
@@ -2322,9 +1905,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['foo', 'bar'], $data->pluck('some')->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMap($collection)
 	{
@@ -2335,9 +1915,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['first' => 'first-rolyat', 'last' => 'last-llewto'], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapSpread($collection)
 	{
@@ -2360,9 +1937,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['1-a-0', '2-b-1'], $result->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testFlatMap($collection)
 	{
@@ -2376,9 +1950,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['programming', 'basketball', 'music', 'powerlifting'], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapToDictionary($collection)
 	{
@@ -2410,9 +1981,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['key' => [1, 3, 4, 5]], $groups->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapToDictionaryWithNumericKeys($collection)
 	{
@@ -2425,9 +1993,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([1 => [0, 4], 2 => [1, 3], 3 => [2]], $groups->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapToGroups($collection)
 	{
@@ -2447,9 +2012,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertInstanceOf($collection, $groups->get('A'));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapToGroupsWithNumericKeys($collection)
 	{
@@ -2462,9 +2024,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([1 => [0, 4], 2 => [1, 3], 3 => [2]], $groups->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapWithKeys($collection)
 	{
@@ -2482,9 +2041,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapWithKeysIntegerKeys($collection)
 	{
@@ -2502,9 +2058,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapWithKeysMultipleRows($collection)
 	{
@@ -2529,9 +2082,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapWithKeysCallbackKey($collection)
 	{
@@ -2549,9 +2099,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapInto($collection)
 	{
@@ -2599,9 +2146,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertFalse( ( new Collection( [ [ 'id' => 1 ] ] ) )->contains( 'id', '!=', '1' ) );
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testNth($collection)
 	{
@@ -2620,9 +2164,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['d'], $data->nth(4, 3)->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMapWithKeysOverwritingKeys($collection)
 	{
@@ -2652,9 +2193,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['first' => 'first-rolyat', 'last' => 'last-llewto'], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByAttribute($collection)
 	{
@@ -2667,9 +2205,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([1 => [['rating' => 1, 'url' => '1'], ['rating' => 1, 'url' => '1']], 2 => [['rating' => 2, 'url' => '2']]], $result->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByCallable($collection)
 	{
@@ -2692,9 +2227,6 @@ class CollectionTest extends FrameworkTestCase {
 		return $value['url'];
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByAttributePreservingKeys($collection)
 	{
@@ -2710,9 +2242,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals($expected_result, $result->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByClosureWhereItemsHaveSingleGroup($collection)
 	{
@@ -2725,9 +2254,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([1 => [['rating' => 1, 'url' => '1'], ['rating' => 1, 'url' => '1']], 2 => [['rating' => 2, 'url' => '2']]], $result->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByClosureWhereItemsHaveSingleGroupPreservingKeys($collection)
 	{
@@ -2745,9 +2271,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals($expected_result, $result->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByClosureWhereItemsHaveMultipleGroups($collection)
 	{
@@ -2778,9 +2301,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals($expected_result, $result->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGroupByClosureWhereItemsHaveMultipleGroupsPreservingKeys($collection)
 	{
@@ -2811,9 +2331,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals($expected_result, $result->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 //	public function testGroupByMultiLevelAndClosurePreservingKeys($collection)
 //	{
@@ -2857,9 +2374,6 @@ class CollectionTest extends FrameworkTestCase {
 //		$this->assertEquals($expected_result, $result->to_array());
 //	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testKeyByAttribute($collection)
 	{
@@ -2874,9 +2388,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([2 => ['rating' => 1, 'name' => '1'], 4 => ['rating' => 2, 'name' => '2'], 6 => ['rating' => 3, 'name' => '3']], $result->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testKeyByClosure($collection)
 	{
@@ -2893,9 +2404,6 @@ class CollectionTest extends FrameworkTestCase {
 		], $result->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testKeyByObject($collection)
 	{
@@ -2912,9 +2420,6 @@ class CollectionTest extends FrameworkTestCase {
 		], $result->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 //	public function testContains($collection)
 //	{
@@ -2974,9 +2479,6 @@ class CollectionTest extends FrameworkTestCase {
 //		}));
 //	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 //	public function testSome($collection)
 //	{
@@ -3016,9 +2518,6 @@ class CollectionTest extends FrameworkTestCase {
 //		}));
 //	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testContainsStrict($collection)
 	{
@@ -3065,9 +2564,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertTrue($c->contains_strict(''));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testContainsWithOperator($collection)
 	{
@@ -3079,9 +2575,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertTrue($c->contains('v', '>', 4));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGettingSumFromCollection($collection)
 	{
@@ -3094,9 +2587,6 @@ class CollectionTest extends FrameworkTestCase {
 		}));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCanSumValuesWithoutACallback($collection)
 	{
@@ -3104,9 +2594,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(15, $c->sum());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGettingSumFromEmptyCollection($collection)
 	{
@@ -3114,9 +2601,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(0, $c->sum('foo'));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testValueRetrieverAcceptsDotNotation($collection)
 	{
@@ -3149,9 +2633,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame('foo', $value);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testRejectRemovesElementsPassingTruthTest($collection)
 	{
@@ -3180,9 +2661,6 @@ class CollectionTest extends FrameworkTestCase {
 		})->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testRejectWithoutAnArgumentRemovesTruthyValues($collection)
 	{
@@ -3204,9 +2682,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSearchReturnsIndexOfFirstFoundItem($collection)
 	{
@@ -3223,9 +2698,6 @@ class CollectionTest extends FrameworkTestCase {
 		}));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSearchInStrictMode($collection)
 	{
@@ -3239,9 +2711,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(4, $c->search('', true));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSearchReturnsFalseWhenItemIsNotFound($collection)
 	{
@@ -3378,9 +2847,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertNull($c->after(5));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testKeys($collection)
 	{
@@ -3388,9 +2854,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['name', 'framework'], $c->keys()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPaginate($collection)
 	{
@@ -3461,9 +2924,6 @@ class CollectionTest extends FrameworkTestCase {
 //		$this->assertSame($expected, $actual);
 //	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testZip($collection)
 	{
@@ -3493,9 +2953,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([3, 6, null], $c->get(2)->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPadPadsArrayWithValue($collection)
 	{
@@ -3516,9 +2973,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([1, 2, 3, 4, 5], $c->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGettingMaxItemsFromCollection($collection)
 	{
@@ -3540,9 +2994,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertNull($c->max());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGettingMinItemsFromCollection($collection)
 	{
@@ -3574,9 +3025,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertNull($c->min());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testOnly($collection)
 	{
@@ -3596,9 +3044,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals( [ 'first' => 'Taylor', 'email' => 'taylorotwell@gmail.com' ], $data->only( collect( [ 'first', 'email' ] ) )->all() );
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testOnlyChildren($collection)
 	{
@@ -3652,9 +3097,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals( $expected, $data->only_children( collect( [ 'first', 'last' ] ) )->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGettingAvgItemsFromCollection($collection)
 	{
@@ -3683,9 +3125,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertNull($c->avg());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testJsonSerialize($collection)
 	{
@@ -3704,9 +3143,6 @@ class CollectionTest extends FrameworkTestCase {
 		], $c->jsonSerialize());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCombineWithArray($collection)
 	{
@@ -3722,9 +3158,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame($expected, $actual);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCombineWithCollection($collection)
 	{
@@ -3741,9 +3174,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame($expected, $actual);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testConcatWithArray($collection)
 	{
@@ -3770,9 +3200,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame($expected, $actual);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testConcatWithCollection($collection)
 	{
@@ -3801,9 +3228,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame($expected, $actual);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testReduce($collection)
 	{
@@ -3813,9 +3237,6 @@ class CollectionTest extends FrameworkTestCase {
 		}));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testRandomThrowsAnExceptionUsingAmountBiggerThanCollectionSize($collection)
 	{
@@ -3825,9 +3246,6 @@ class CollectionTest extends FrameworkTestCase {
 		$data->random(4);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPipe($collection)
 	{
@@ -3838,9 +3256,6 @@ class CollectionTest extends FrameworkTestCase {
 		}));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMedianValueWithArrayCollection($collection)
 	{
@@ -3849,9 +3264,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(2, $data->median());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMedianValueByKey($collection)
 	{
@@ -3864,9 +3276,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(2, $data->median('foo'));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMedianOnCollectionWithNull($collection)
 	{
@@ -3879,9 +3288,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(2, $data->median('foo'));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testEvenMedianCollection($collection)
 	{
@@ -3892,9 +3298,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(1.5, $data->median('foo'));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMedianOutOfOrderCollection($collection)
 	{
@@ -3906,9 +3309,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(3, $data->median('foo'));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMedianOnEmptyCollectionReturnsNull($collection)
 	{
@@ -3916,9 +3316,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertNull($data->median());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testModeOnNullCollection($collection)
 	{
@@ -3926,9 +3323,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertNull($data->mode());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testMode($collection)
 	{
@@ -3936,9 +3330,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([4], $data->mode());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testModeValueByKey($collection)
 	{
@@ -3951,9 +3342,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([1], $data->mode('foo'));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWithMultipleModeValues($collection)
 	{
@@ -3961,9 +3349,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([1, 2], $data->mode());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSliceOffset($collection)
 	{
@@ -3971,9 +3356,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([4, 5, 6, 7, 8], $data->slice(3)->values()->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSliceNegativeOffset($collection)
 	{
@@ -3981,9 +3363,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([6, 7, 8], $data->slice(-3)->values()->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSliceOffsetAndLength($collection)
 	{
@@ -3991,9 +3370,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([4, 5, 6], $data->slice(3, 3)->values()->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSliceOffsetAndNegativeLength($collection)
 	{
@@ -4001,9 +3377,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([4, 5, 6, 7], $data->slice(3, -1)->values()->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSliceNegativeOffsetAndLength($collection)
 	{
@@ -4011,9 +3384,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([4, 5, 6], $data->slice(-5, 3)->values()->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSliceNegativeOffsetAndNegativeLength($collection)
 	{
@@ -4021,9 +3391,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([3, 4, 5, 6], $data->slice(-6, -2)->values()->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCollectionFromTraversable($collection)
 	{
@@ -4031,9 +3398,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([1, 2, 3], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCollectionFromTraversableWithKeys($collection)
 	{
@@ -4041,9 +3405,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['foo' => 1, 'bar' => 2, 'baz' => 3], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitCollectionWithADivisibleCount($collection)
 	{
@@ -4066,9 +3427,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitCollectionWithAnUndivisableCount($collection)
 	{
@@ -4082,9 +3440,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitCollectionWithCountLessThenDivisor($collection)
 	{
@@ -4098,9 +3453,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitCollectionIntoThreeWithCountOfFour($collection)
 	{
@@ -4114,9 +3466,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitCollectionIntoThreeWithCountOfFive($collection)
 	{
@@ -4130,9 +3479,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitCollectionIntoSixWithCountOfTen($collection)
 	{
@@ -4146,9 +3492,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testSplitEmptyCollection($collection)
 	{
@@ -4162,9 +3505,6 @@ class CollectionTest extends FrameworkTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testHigherOrderCollectionGroupBy($collection)
 	{
@@ -4186,9 +3526,6 @@ class CollectionTest extends FrameworkTestCase {
 		], $data->group_by->uppercase()->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testHigherOrderCollectionMap($collection)
 	{
@@ -4204,9 +3541,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['TAYLOR', 'TAYLOR'], $data->each->uppercase()->map->name->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testHigherOrderCollectionMapFromArrays($collection)
 	{
@@ -4222,9 +3556,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['TAYLOR', 'TAYLOR'], $data->each->uppercase()->map->name->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPartition($collection)
 	{
@@ -4238,9 +3569,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals([6, 7, 8, 9, 10], $secondPartition->values()->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPartitionCallbackWithKey($collection)
 	{
@@ -4254,9 +3582,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertEquals(['one', 'three'], $odd->values()->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPartitionByKey($collection)
 	{
@@ -4270,9 +3595,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([['free' => false, 'title' => 'Premium']], $premium->values()->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPartitionWithOperators($collection)
 	{
@@ -4308,9 +3630,6 @@ class CollectionTest extends FrameworkTestCase {
 		]);
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPartitionPreservesKeys($collection)
 	{
@@ -4324,9 +3643,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['b' => ['free' => false]], $premium->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testPartitionEmptyCollection($collection)
 	{
@@ -4337,9 +3653,6 @@ class CollectionTest extends FrameworkTestCase {
 		}));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 //	public function testHigherOrderPartition($collection)
 //	{
@@ -4354,9 +3667,6 @@ class CollectionTest extends FrameworkTestCase {
 //		$this->assertSame(['b' => ['free' => false]], $premium->to_array());
 //	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testTap($collection)
 	{
@@ -4371,9 +3681,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([1, 2, 3], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhen($collection)
 	{
@@ -4394,9 +3701,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['michael', 'tom'], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhenDefault($collection)
 	{
@@ -4411,9 +3715,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['michael', 'tom', 'taylor'], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhenEmpty($collection)
 	{
@@ -4434,9 +3735,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['adam'], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhenEmptyDefault($collection)
 	{
@@ -4451,9 +3749,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['michael', 'tom', 'taylor'], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhenNotEmpty($collection)
 	{
@@ -4474,9 +3769,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhenNotEmptyDefault($collection)
 	{
@@ -4491,9 +3783,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['michael', 'tom', 'adam'], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnless($collection)
 	{
@@ -4514,9 +3803,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['michael', 'tom'], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnlessDefault($collection)
 	{
@@ -4531,9 +3817,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['michael', 'tom', 'taylor'], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnlessEmpty($collection)
 	{
@@ -4554,9 +3837,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnlessEmptyDefault($collection)
 	{
@@ -4571,9 +3851,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['michael', 'tom', 'adam'], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnlessNotEmpty($collection)
 	{
@@ -4594,9 +3871,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['adam'], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testUnlessNotEmptyDefault($collection)
 	{
@@ -4611,9 +3885,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['michael', 'tom', 'taylor'], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testHasReturnsValidResults($collection)
 	{
@@ -4636,9 +3907,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame(['foo' => 3, 'bar' => ['nested' => 'two']], $data->to_array());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testItThrowsExceptionWhenTryingToAccessNoProxyProperty($collection)
 	{
@@ -4648,9 +3916,6 @@ class CollectionTest extends FrameworkTestCase {
 		$data->foo;
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testGetWithNullReturnsNull($collection)
 	{
@@ -4658,9 +3923,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertNull($data->get(null));
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNull($collection)
 	{
@@ -4679,9 +3941,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame([], $data->where_null()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNullWithoutKey($collection)
 	{
@@ -4691,9 +3950,6 @@ class CollectionTest extends FrameworkTestCase {
 		], $collection->where_null()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNotNull($collection)
 	{
@@ -4715,9 +3971,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertSame($originalData, $data->where_not_null()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testWhereNotNullWithoutKey($collection)
 	{
@@ -4732,9 +3985,6 @@ class CollectionTest extends FrameworkTestCase {
 		], $data->where_not_null()->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function testCollect($collection)
 	{
@@ -4753,9 +4003,6 @@ class CollectionTest extends FrameworkTestCase {
 		], $data->all());
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function test_from_wp_query( $collection ) {
 		static::factory()->post->create_many( 5 );
@@ -4773,9 +4020,6 @@ class CollectionTest extends FrameworkTestCase {
 		} ) );
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function test_from_empty_wp_query( $collection ) {
 		$query = new \WP_Query();
@@ -4783,9 +4027,6 @@ class CollectionTest extends FrameworkTestCase {
 		$this->assertTrue( $c->is_empty() );
 	}
 
-	/**
-	 * @dataProvider collectionClassProvider
-	 */
 	#[DataProvider( 'collectionClassProvider' )]
 	public function test_from_fallback( $collection ) {
 		$c = $collection::from( ['a', 'b'] );

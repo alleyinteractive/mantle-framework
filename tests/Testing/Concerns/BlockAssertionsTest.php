@@ -6,9 +6,6 @@ use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
 use WP_Post;
 
-/**
- * @group testing
- */
 #[Group( 'testing' )]
 class BlockAssertionsTest extends FrameworkTestCase {
 	use With_Faker;

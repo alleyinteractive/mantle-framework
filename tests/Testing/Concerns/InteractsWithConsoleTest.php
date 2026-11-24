@@ -6,9 +6,6 @@ use Mantle\Facade\Console;
 use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group testing
- */
 #[Group( 'testing' )]
 class InteractsWithConsoleTest extends FrameworkTestCase {
 	protected function setUp(): void {

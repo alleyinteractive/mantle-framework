@@ -16,7 +16,6 @@ use Mantle\Support\Traits\Tappable;
  */
 class Installation_Manager {
 	use Conditionable;
-	use Concerns\PHPUnit_Upgrade_Warning;
 	use Concerns\Rsync_Installation;
 	use Singleton;
 	use Tappable;

@@ -15,7 +15,6 @@ use function Mantle\Support\Helpers\retry;
  * Tests for making internal HTTP requests in tests related to sitemaps and robots.txt.
  *
  * @see \Mantle\Testing\Concerns\Makes_Http_Requests_With_Sitemaps
- * @group testing
  */
 #[Group( 'testing' )]
 class MakesHttpRequestsWithSitemapTest extends FrameworkTestCase {
@@ -42,9 +41,6 @@ class MakesHttpRequestsWithSitemapTest extends FrameworkTestCase {
 			->assertSee( 'Sitemap: ' . home_url( '/wp-sitemap.xml' ) );
 	}
 
-	/**
-	 * @dataProvider dataprovider_run_test_multiple_times
-	 */
 	#[DataProvider( 'dataprovider_run_test_multiple_times' )]
 	public function test_sitemap( $run = 0 ): void {
 		$post = static::factory()->post->create_and_get( [

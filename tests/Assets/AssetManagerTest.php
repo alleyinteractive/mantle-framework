@@ -9,9 +9,6 @@ use Mantle\Contracts\Assets\Load_Method;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group assets
- */
 #[Group( 'assets' )]
 class AssetManagerTest extends TestCase {
 	public function test_register_script() {

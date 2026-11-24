@@ -9,9 +9,6 @@ use PHPUnit\Framework\Attributes\Group;
 use function Mantle\Testing\block_factory;
 use function Mantle\Testing\html_string;
 
-/**
- * @group testing
- */
 #[Group( 'testing' )]
 class ElementAssertionsTest extends FrameworkTestCase {
 	public string $test_content = '

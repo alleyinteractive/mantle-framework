@@ -8,8 +8,6 @@ use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Test for incorrect usage errors being thrown and handled.
- *
- * @group testing
  */
 #[Group( 'testing' )]
 class IncorrectUsageTest extends FrameworkTestCase {

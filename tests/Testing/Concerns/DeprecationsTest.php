@@ -9,8 +9,6 @@ use PHPUnit\Runner\Version;
 
 /**
  * Test for deprecation errors being thrown and handled.
- *
- * @group testing
  */
 #[Group( 'testing' )]
 class DeprecationsTest extends FrameworkTestCase {

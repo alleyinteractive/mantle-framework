@@ -14,8 +14,6 @@ use function Mantle\Support\Helpers\collect;
  *
  * Ensure that tests cannot cross contaminate each other by modifying global
  * state, unless explicitly allowed.
- *
- * @group testing
  */
 #[Group( 'testing' )]
 class PreserveGlobalsTest extends FrameworkTestCase {
@@ -39,15 +37,6 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 		flush_rewrite_rules();
 	}
 
-	/**
-	 * Run before each test.
-	 */
-	protected function setUp(): void {
-		parent::setUp();
-
-		$this->skip_for_phpunit_version( '10.0.0', '<', 'Global preservation is not supported in this PHPUnit version.' );
-	}
-
 	public function test_roles_restored_between_tests_first_run(): void {
 		add_role( 'qa_role', 'QA', [ 'read' => true ] );
 
@@ -68,8 +57,6 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 	 *
 	 * We also want to ensure that meta registered by the test itself is NOT
 	 * preserved. We want a clean slate at the start of each test.
-	 *
-	 * @dataProvider dataprovider_twice
 	 */
 	#[DataProvider( 'dataprovider_twice' )]
 	public function test_meta_keys_preserved_between_tests(): void {
@@ -139,8 +126,6 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 	 * unregister_post_type() would leave the features global empty for the
 	 * next test, causing post_type_supports() to return false even though
 	 * the post type itself was restored.
-	 *
-	 * @dataProvider dataprovider_twice
 	 */
 	#[DataProvider( 'dataprovider_twice' )]
 	public function test_post_type_features_preserved_between_tests(): void {
@@ -155,8 +140,6 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 
 	/**
 	 * Ensure that rewrite extra permastructs are preserved and originally stored correctly.
-	 *
-	 * @dataProvider dataprovider_twice
 	 */
 	#[DataProvider( 'dataprovider_twice' )]
 	public function test_rewrite_extra_permastructs_are_preserved(): void {
@@ -226,8 +209,6 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 	/**
 	 * Ensure that sitemap providers registered in one test are NOT preserved in
 	 * another.
-	 *
-	 * @dataProvider dataprovider_twice
 	 */
 	#[DataProvider( 'dataprovider_twice' )]
 	public function test_sitemap_providers_preserved_between_tests(): void {
@@ -250,8 +231,6 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 	/**
 	 * Test that a single template_redirect hook is registered for sitemaps. Previously, this was hooked more than
 	 * once when testing.
-	 *
-	 * @dataProvider dataprovider_twice
 	 */
 	#[DataProvider( 'dataprovider_twice' )]
 	public function test_sitemap_hooked_once_to_template_redirect(): void {

@@ -10,9 +10,6 @@ declare(strict_types=1);
 namespace Mantle\Testing\Concerns;
 
 use Mantle\Testing\Attributes\DisableGlobalPreservation;
-use PHPUnit\Framework\Attributes\AfterClass;
-use PHPUnit\Framework\Attributes\Before;
-use PHPUnit\Framework\Attributes\BeforeClass;
 use function DeepCopy\deep_copy;
 
 /**
@@ -24,11 +21,6 @@ use function DeepCopy\deep_copy;
  * can safely modify these globals without affecting other tests. Individual
  * tests can disable global preservation by using the DisableGlobalPreservation
  * attribute.
- *
- * Previously, this was written using PHPUnit hooks, but has been updated to be
- * called directly from the TestCase class to improve compatibility with
- * PHPUnit 10. Once PHPUnit 11+ is the minimum supported version, the methods below
- * can be updated to use BeforeClass, Before, and AfterClass attributes.
  *
  * For globals that are objects, deep copies are made to avoid reference issues. In addition
  * to the globals listed below, the WordPress public query variables are also preserved.

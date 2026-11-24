@@ -21,8 +21,6 @@ use function Mantle\Testing\mock_http_response;
 
 /**
  * Test for Mocking WP HTTP API Requests.
- *
- * @group testing
  */
 #[Group( 'testing' )]
 class InteractsWithExternalRequestsTest extends FrameworkTestCase {

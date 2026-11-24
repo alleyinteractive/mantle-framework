@@ -7,9 +7,6 @@ use Mantle\Testing\Attributes\Environment;
 use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group testing
- */
 #[Group( 'testing' )]
 class InteractsWithEnvironmentTest extends FrameworkTestCase {
 	public function test_default_environment(): void {

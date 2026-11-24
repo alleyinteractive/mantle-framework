@@ -7,9 +7,6 @@ use PHPUnit\Framework\Attributes\Group;
 use stdClass;
 use WP_Post;
 
-/**
- * @group factory
- */
 #[Group( 'factory' )]
 class CoAuthorsPlusFactoryTest extends FrameworkTestCase {
 	protected function setUp(): void {

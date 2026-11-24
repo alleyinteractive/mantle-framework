@@ -5,9 +5,6 @@ use Mantle\Testing\Attributes\Acting_As;
 use Mantle\Testing\FrameworkTestCase;
 use PHPUnit\Framework\Attributes\Group;
 
-/**
- * @group testing
- */
 #[Group( 'testing' )]
 class WordPressAuthenticationTest extends FrameworkTestCase {
 	public function test_acting_as_role() {

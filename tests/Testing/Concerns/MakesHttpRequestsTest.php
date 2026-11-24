@@ -28,7 +28,6 @@ use function Mantle\Support\Helpers\terminate_request;
  * Tests for making internal HTTP requests in tests.
  *
  * @see \Mantle\Testing\Concerns\Makes_Http_Requests
- * @group testing
  */
 #[Group( 'testing' )]
 class MakesHttpRequestsTest extends FrameworkTestCase {
@@ -402,9 +401,6 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			->assertNotContent( fn ( string $content ) => stringable( $content )->contains( 'this will not be found' ) );
 	}
 
-	/**
-	 * @dataProvider core_template_hook_data_provider
-	 */
 	#[DataProvider( 'core_template_hook_data_provider' )]
 	public function test_redirect_wordpress( string $hook ) {
 		add_action( $hook, fn () => wp_redirect( home_url( '/redirected/' ), 302 ) );
@@ -412,9 +408,6 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->get( '/' )->assertRedirect( home_url( '/redirected/' ) );
 	}
 
-	/**
-	 * @dataProvider core_template_hook_data_provider
-	 */
 	#[DataProvider( 'core_template_hook_data_provider' )]
 	public function test_exit_simulation( string $hook ): void {
 		add_action( $hook, function (): void {
@@ -501,8 +494,9 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 		$this->assertMatchesSnapshot( [ 1, 2, 3 ] );
 	}
 
-	public function test_match_snapshot_http() {
-		Route::get( '/example/', fn () => 'example' );
+	public function test_match_snapshot_http(): void {
+		// Use real HTML: libxml 2.14+ no longer wraps plain text in a <p>.
+		Route::get( '/example/', static fn () => '<p>example</p>' );
 
 		$this->get( '/example' )->assertMatchesSnapshotContent();
 	}
@@ -533,10 +527,11 @@ class MakesHttpRequestsTest extends FrameworkTestCase {
 			HTML
 		);
 
-		$this->get( '/example' )->assertMatchesSnapshotHtml( [
-			'/html/body/div[@class="example"]',
-			'/html/body/div[@class="example-two"]',
-		] );
+		$this->get( '/example' )
+			->assertOk()
+			// A single selector: the snapshot of several nodes nests them differently
+			// between libxml versions (2.9 vs 2.14+), so it cannot be stored reliably.
+			->assertMatchesSnapshotHtml( '/html/body/div[@class="example"]' );
 	}
 
 	public function test_match_snapshot_no_selectors_matched() {
