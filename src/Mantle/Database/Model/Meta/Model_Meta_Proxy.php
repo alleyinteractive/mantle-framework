@@ -32,6 +32,11 @@ class Model_Meta_Proxy implements ArrayAccess {
 			return $queued_value;
 		}
 
+		// get_metadata() returns '' for a missing key, which callers can't tell apart from a stored ''.
+		if ( ! $this->offsetExists( $key ) ) {
+			return null;
+		}
+
 		return $this->model->get_meta( $key );
 	}
 
@@ -60,6 +65,16 @@ class Model_Meta_Proxy implements ArrayAccess {
 	 * @param mixed $offset Meta key.
 	 */
 	public function offsetExists( mixed $offset ): bool {
+		$offset = (string) $offset;
+
+		if ( null !== $this->model->get_queued_meta_attribute( $offset ) ) {
+			return true;
+		}
+
+		if ( method_exists( $this->model, 'get_meta_type' ) && method_exists( $this->model, 'id' ) ) {
+			return \metadata_exists( $this->model->get_meta_type(), (int) $this->model->id(), $offset );
+		}
+
 		return null !== $this->model->get_meta( $offset );
 	}
 

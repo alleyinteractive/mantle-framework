@@ -172,8 +172,8 @@ trait Rsync_Installation {
 	public function maybe_rsync_wp_content(): static {
 		$content_directory_name = Utils::content_directory_name();
 
-		// Attempt to locate the content directory relative to the current directory.
-		if ( false !== strpos( __DIR__, '/' . $content_directory_name . '/' ) ) {
+		// A content directory in the path with no WordPress above it (e.g. a wp-content-rooted repo).
+		if ( false !== strpos( __DIR__, '/' . $content_directory_name . '/' ) && ! Utils::is_within_wordpress_install( __DIR__ ) ) {
 			return $this->maybe_rsync( '/', preg_replace( '#/' . preg_quote( $content_directory_name, '#' ) . '/.*$#', '/' . $content_directory_name, __DIR__ ) );
 		}
 
@@ -436,7 +436,7 @@ trait Rsync_Installation {
 	 * @see \Mantle\Testing\Utils::content_directory_name()
 	 */
 	public function is_within_wordpress_install(): bool {
-		return false !== strpos( __DIR__, '/' . Utils::content_directory_name() . '/' );
+		return Utils::is_within_wordpress_install( __DIR__ );
 	}
 
 	/**
@@ -540,9 +540,9 @@ trait Rsync_Installation {
 					"Unable to change directory to <em>{$this->rsync_to}</em>",
 					'Install Rsync'
 				);
-			}
 
-			exit( 1 );
+				exit( 1 );
+			}
 		}
 
 		$cwd = getcwd();
@@ -616,7 +616,7 @@ trait Rsync_Installation {
 				! empty( $_SERVER['PHP_SELF'] )
 				&& ! is_file( $executable )
 				&& ! is_executable( $executable )
-				&& ! str_starts_with( 'composer ', (string) $executable )
+				&& ! str_starts_with( (string) $executable, 'composer ' )
 			) {
 				$executable = $this->translate_location( $_SERVER['PHP_SELF'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			}

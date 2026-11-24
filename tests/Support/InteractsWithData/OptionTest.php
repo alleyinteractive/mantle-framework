@@ -13,13 +13,13 @@ class OptionTest extends FrameworkTestCase {
 	public function test_as_string(): void {
 		update_option( 'test_option', 'test' );
 
-		$this->assertEquals( 'test', Option::of( 'test_option' )->string() );
+		$this->assertSame( 'test', Option::of( 'test_option' )->string() );
 	}
 
 	public function test_json_serializable(): void {
 		update_option( 'test_option', [ 'test' ] );
 
-		$this->assertEquals( json_encode( [ 'test' ] ), Option::of( 'test_option' )->to_json() );
+		$this->assertSame( json_encode( [ 'test' ] ), Option::of( 'test_option' )->to_json() );
 	}
 
 	public function test_update(): void {
@@ -27,13 +27,13 @@ class OptionTest extends FrameworkTestCase {
 
 		$option = Option::of( 'test_option' );
 
-		$this->assertEquals( 'test', $option->string() );
+		$this->assertSame( 'test', $option->string() );
 
 		$option->set( 'new-test' );
 		$option->save();
 
-		$this->assertEquals( 'new-test', $option->string() );
-		$this->assertEquals( 'new-test', get_option( 'test_option' ) );
+		$this->assertSame( 'new-test', $option->string() );
+		$this->assertSame( 'new-test', get_option( 'test_option' ) );
 	}
 
 	public function test_arrayaccess_get(): void {
@@ -41,8 +41,8 @@ class OptionTest extends FrameworkTestCase {
 
 		$option = Option::of( 'test_option' );
 
-		$this->assertEquals( 'test', $option[0] );
-		$this->assertEquals( 'test2', $option[1] );
+		$this->assertSame( 'test', $option[0] );
+		$this->assertSame( 'test2', $option[1] );
 	}
 
 	public function test_arrayaccess_set(): void {
@@ -50,14 +50,14 @@ class OptionTest extends FrameworkTestCase {
 
 		$option = Option::of( 'test_option' );
 
-		$this->assertEquals( [ 'test', 'test2' ], $option->array() );
+		$this->assertSame( [ 'test', 'test2' ], $option->array() );
 
 		$option[0] = 'new-test';
 
 		$option->save();
 
-		$this->assertEquals( [ 'new-test', 'test2' ], $option->array() );
-		$this->assertEquals( [ 'new-test', 'test2' ], get_option( 'test_option' ) );
+		$this->assertSame( [ 'new-test', 'test2' ], $option->array() );
+		$this->assertSame( [ 'new-test', 'test2' ], get_option( 'test_option' ) );
 	}
 
 	public function test_arrayaccess_unset(): void {
@@ -65,14 +65,14 @@ class OptionTest extends FrameworkTestCase {
 
 		$option = Option::of( 'test_option' );
 
-		$this->assertEquals( [ 'test', 'test2' ], $option->array() );
+		$this->assertSame( [ 'test', 'test2' ], $option->array() );
 
 		unset( $option[0] );
 
 		$option->save();
 
-		$this->assertEquals( [ 1 => 'test2' ], $option->array() );
-		$this->assertEquals( [ 1 => 'test2' ], get_option( 'test_option' ) );
+		$this->assertSame( [ 1 => 'test2' ], $option->array() );
+		$this->assertSame( [ 1 => 'test2' ], get_option( 'test_option' ) );
 	}
 
 	public function test_arrayaccess_isset(): void {

@@ -258,7 +258,7 @@ class Pending_Testable_Request {
 	/**
 	 * Call the given URI and return the Response.
 	 *
-	 * @throws \Exception Exceptions thrown while setting up the WordPress query are re-thrown to the caller.
+	 * @throws \Throwable Exceptions thrown while setting up or serving the request are re-thrown to the caller after cleanup.
 	 * @throws InvalidArgumentException If the request is to an unsupported path.
 	 * @throws RuntimeException If the application instance is not available on the test case.
 	 *
@@ -396,12 +396,14 @@ class Pending_Testable_Request {
 				if ( ! empty( $e->headers ) ) {
 					$response_headers = array_merge( $response_headers, $e->headers );
 				}
-			} catch ( \Exception $e ) {
+			} catch ( \Throwable $e ) {
 				// If an exception occurs, make sure the output buffer is closed before
 				// the exception continues to the caller.
 				while ( ob_get_level() > $ob_level ) {
 					ob_end_clean();
 				}
+
+				$this->remove_request_interceptors( $intercept_status, $intercept_headers, $intercept_redirect );
 
 				throw $e;
 			}
@@ -430,14 +432,20 @@ class Pending_Testable_Request {
 				} catch ( Exception ) { // phpcs:ignore
 					// Mantle Exceptions are thrown to prevent some code from running, e.g.
 					// the tail end of wp_redirect().
+				} catch ( \Throwable $e ) {
+					while ( ob_get_level() > $ob_level ) {
+						ob_end_clean();
+					}
+
+					$this->remove_request_interceptors( $intercept_status, $intercept_headers, $intercept_redirect );
+
+					throw $e;
 				}
 
 				$response_content = ob_get_clean();
 			}
 
-			remove_filter( 'status_header', $intercept_status, 9999 );
-			remove_filter( 'wp_headers', $intercept_headers, 9999 );
-			remove_filter( 'wp_redirect', $intercept_redirect, 9999 );
+			$this->remove_request_interceptors( $intercept_status, $intercept_headers, $intercept_redirect );
 
 			$response_content = false === $response_content ? null : $response_content;
 
@@ -468,6 +476,11 @@ class Pending_Testable_Request {
 
 		return $response;
 	}
+
+	/**
+	 * The request currently wired up to serve REST API calls.
+	 */
+	protected static ?self $current_rest_request = null;
 
 	/**
 	 * Reset the global state related to requests.
@@ -660,7 +673,35 @@ class Pending_Testable_Request {
 
 		// Replace the `rest_api_loaded()` method with one we can control.
 		remove_filter( 'parse_request', 'rest_api_loaded' );
-		add_action( 'parse_request', [ $this, 'serve_rest_api_request' ] );
+
+		// Only the latest request serves REST calls; registering per instance would serve each request N times.
+		static::$current_rest_request = $this;
+
+		if ( ! has_action( 'parse_request', [ static::class, 'serve_current_rest_api_request' ] ) ) {
+			add_action( 'parse_request', [ static::class, 'serve_current_rest_api_request' ] );
+		}
+	}
+
+	/**
+	 * Remove the filters that intercept headers, status codes, and redirects for a request.
+	 *
+	 * @param callable $intercept_status Status interceptor.
+	 * @param callable $intercept_headers Headers interceptor.
+	 * @param callable $intercept_redirect Redirect interceptor.
+	 */
+	protected function remove_request_interceptors( callable $intercept_status, callable $intercept_headers, callable $intercept_redirect ): void {
+		remove_filter( 'status_header', $intercept_status, 9999 );
+		remove_filter( 'wp_headers', $intercept_headers, 9999 );
+		remove_filter( 'wp_redirect', $intercept_redirect, 9999 );
+		remove_filter( 'exit_on_http_head', '__return_false', 9999 );
+		remove_filter( 'wp_using_themes', '__return_true', 9999 );
+	}
+
+	/**
+	 * Serve the REST API request for the request currently being made.
+	 */
+	public static function serve_current_rest_api_request(): void {
+		static::$current_rest_request?->serve_rest_api_request();
 	}
 
 	/**

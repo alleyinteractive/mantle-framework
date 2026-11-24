@@ -885,6 +885,7 @@ trait Enumerates_Values {
 					return $retrieved == $value; // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 				case '!=':
 				case '<>':
+					return $retrieved != $value; // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual
 				case '!==':
 					return $retrieved !== $value;
 				case '<':

@@ -37,6 +37,16 @@ class PreserveGlobalsTest extends FrameworkTestCase {
 		flush_rewrite_rules();
 	}
 
+	public function test_roles_restored_between_tests_first_run(): void {
+		add_role( 'qa_role', 'QA', [ 'read' => true ] );
+
+		$this->assertNotNull( get_role( 'qa_role' ) );
+	}
+
+	public function test_roles_restored_between_tests_second_run(): void {
+		$this->assertNull( get_role( 'qa_role' ) );
+	}
+
 	/**
 	 * Ensure that meta keys registered in one test are still registered in
 	 * another.

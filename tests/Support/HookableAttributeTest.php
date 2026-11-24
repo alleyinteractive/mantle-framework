@@ -321,7 +321,7 @@ class HookableAttributeTest extends FrameworkTestCase {
 
 		do_action( 'example_action', 'foo' );
 
-		$this->assertEquals( [ 'foo' ], $_SERVER['__hook_fired'] );
+		$this->assertSame( [ 'foo' ], $_SERVER['__hook_fired'] );
 	}
 
 	/**
@@ -346,7 +346,7 @@ class HookableAttributeTest extends FrameworkTestCase {
 
 		do_action( 'example_action', 'foo' );
 
-		$this->assertEquals( [ 'foo', 'foo' ], $_SERVER['__hook_fired'] );
+		$this->assertSame( [ 'foo', 'foo' ], $_SERVER['__hook_fired'] );
 	}
 
 	public function test_throws_doing_it_wrong_if_method_is_not_public(): void {

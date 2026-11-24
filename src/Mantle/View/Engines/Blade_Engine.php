@@ -146,6 +146,13 @@ class Blade_Engine extends Php_Engine {
 			( static function () use ( $__view, $__data ): void {
 				global $posts, $post, $wp_did_header, $wp_query, $wp_rewrite, $wpdb, $wp_version, $wp, $id, $comment, $user_ID;
 
+				// Drop the global binding for any passed variable so extract() can set it locally.
+				foreach ( array_keys( $__data ) as $__key ) {
+					if ( ! str_starts_with( (string) $__key, '__' ) ) {
+						unset( ${$__key} );
+					}
+				}
+
 				extract( $__data, EXTR_SKIP ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract, WordPress.PHP.DiscouragedPHPFunctions.extract_extract, Squiz.PHP.Eval.Discouraged
 
 				eval( '?>' . $__view ); // phpcs:ignore WordPress.PHP.Eval.EvalFound, Squiz.PHP.Eval.Discouraged

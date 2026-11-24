@@ -27,13 +27,58 @@ class LightweightEventDispatcherTest extends TestCase {
 		$dispatcher->dispatch( 'event_name' );
 		$dispatcher->dispatch( 'event_name', 'arg1', 'arg2' );
 
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				[ 'event_name' ],
 				[ 'event_name', 'arg1', 'arg2' ],
 			],
 			$listener
 		);
+	}
+
+	public function test_void_listener_does_not_clobber_payload(): void {
+		$dispatcher = new Lightweight_Event_Dispatcher();
+		$seen       = [];
+
+		$dispatcher->listen( 'event_name', function ( $value ) use ( &$seen ): void { $seen[] = $value; } );
+		$dispatcher->listen( 'event_name', function ( $value ) use ( &$seen ) { $seen[] = $value; return $value; } );
+
+		$this->assertSame( 'hello', $dispatcher->dispatch( 'event_name', 'hello' ) );
+		$this->assertSame( [ 'hello', 'hello' ], $seen );
+
+		$event = new \stdClass();
+		$ids   = [];
+
+		$dispatcher->listen( \stdClass::class, function ( \stdClass $e ) use ( &$ids ) { $ids[] = spl_object_id( $e ); } );
+		$dispatcher->listen( \stdClass::class, function ( \stdClass $e ) use ( &$ids ) { $ids[] = spl_object_id( $e ); } );
+		$dispatcher->dispatch( $event );
+
+		$this->assertSame( [ spl_object_id( $event ), spl_object_id( $event ) ], $ids );
+	}
+
+	public function test_it_can_forget_a_specific_listener(): void {
+		$dispatcher = new Lightweight_Event_Dispatcher();
+		$listener   = fn ( $value ) => 'modified';
+
+		$dispatcher->listen( 'event_name', $listener );
+		$dispatcher->forget( 'event_name', $listener );
+
+		$this->assertFalse( $dispatcher->has_listeners( 'event_name' ) );
+		$this->assertSame( 'original', $dispatcher->dispatch( 'event_name', 'original' ) );
+	}
+
+	public function test_listener_registered_twice_runs_twice(): void {
+		$dispatcher = new Lightweight_Event_Dispatcher();
+		$listener   = fn ( int $value ) => $value + 1;
+
+		$dispatcher->listen( 'event_name', $listener );
+		$dispatcher->listen( 'event_name', $listener );
+
+		$this->assertSame( 3, $dispatcher->dispatch( 'event_name', 1 ) );
+
+		$dispatcher->forget( 'event_name', $listener );
+
+		$this->assertFalse( $dispatcher->has_listeners( 'event_name' ) );
 	}
 
 	public function test_it_can_listen_for_wildcard_events(): void {
@@ -50,7 +95,7 @@ class LightweightEventDispatcherTest extends TestCase {
 		$dispatcher->dispatch( 'event:name' );
 		$dispatcher->dispatch( 'event:name', 'arg1', 'arg2' );
 
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				[ 'wildcard_listener' ],
 				[ 'wildcard_listener', 'arg1', 'arg2' ],
@@ -93,7 +138,7 @@ class LightweightEventDispatcherTest extends TestCase {
 			return $value + 1;
 		} );
 
-		$this->assertEquals( '2', $dispatcher->dispatch( 'event_name', 1 ) );
+		$this->assertSame( 2, $dispatcher->dispatch( 'event_name', 1 ) );
 	}
 
 	public function test_it_can_listen_and_dispatch_class_events(): void {
@@ -108,7 +153,7 @@ class LightweightEventDispatcherTest extends TestCase {
 		$dispatcher->dispatch( new Example_Lightweight_Event() );
 		$dispatcher->dispatch( new Example_Lightweight_Event( 'test' ) );
 
-		$this->assertEquals( [ 'example', 'test' ], $listener );
+		$this->assertSame( [ 'example', 'test' ], $listener );
 	}
 
 	public function test_it_cannot_dispatch_object_event_with_payload(): void {

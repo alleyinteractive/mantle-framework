@@ -20,10 +20,8 @@ class WorkerTest extends MockeryTestCase {
 
 	/**
 	 * Application instance.
-	 *
-	 * @var Application
 	 */
-	protected $app;
+	protected Application $app;
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -108,7 +106,7 @@ class WorkerTest extends MockeryTestCase {
 }
 
 class Testable_Provider implements Provider {
-	protected $jobs = [];
+	protected array $jobs = [];
 
 	/**
 	 * Push a job to the queue.

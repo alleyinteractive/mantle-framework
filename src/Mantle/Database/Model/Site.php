@@ -132,7 +132,7 @@ class Site extends Model implements Contracts\Database\Core_Object, Contracts\Da
 			// Temporary tables will trigger DB errors when we attempt to reference them as new temporary tables.
 			$suppress = $wpdb->suppress_errors();
 
-			$save = \wp_insert_site( $this->get_attributes() );
+			$save = \wp_insert_site( $this->get_attributes_for_insert() );
 
 			$wpdb->suppress_errors( $suppress );
 		} else {

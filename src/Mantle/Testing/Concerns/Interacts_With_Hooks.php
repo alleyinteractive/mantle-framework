@@ -77,7 +77,7 @@ trait Interacts_With_Hooks {
 			"Asserted that [{$hook}] was not fired."
 		);
 
-		if ( $count ) {
+		if ( null !== $count ) {
 			$times_fired = $this->hooks_fired[ $hook ] ?? 0;
 
 			PHPUnit::assertEquals(

@@ -11,7 +11,7 @@ use SplFileInfo;
 
 class FilesystemTest extends TestCase {
 
-	private static $temp_dir;
+	private static ?string $temp_dir = null;
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -21,6 +21,15 @@ class FilesystemTest extends TestCase {
 		$files = new Filesystem();
 		$files->ensure_directory_exists( static::$temp_dir );
 		$files->clean_directory( static::$temp_dir );
+	}
+
+	public function testLinkCreatesSymlink() {
+		file_put_contents( static::$temp_dir . '/link-target.txt', 'target' );
+
+		( new Filesystem() )->link( static::$temp_dir . '/link-target.txt', static::$temp_dir . '/link.txt' );
+
+		$this->assertTrue( is_link( static::$temp_dir . '/link.txt' ) );
+		$this->assertSame( 'target', file_get_contents( static::$temp_dir . '/link.txt' ) );
 	}
 
 	protected function tearDown(): void {

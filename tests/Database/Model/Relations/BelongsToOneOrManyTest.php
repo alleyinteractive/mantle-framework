@@ -45,8 +45,8 @@ class BelongsToOneOrManyTest extends FrameworkTestCase {
 		);
 
 		$this->assertInstanceOf( Testable_Sponsor::class, $sponsor );
-		$this->assertEquals( $sponsor->id, $post->sponsor->id );
-		$this->assertEquals( $sponsor->id, get_post_meta( $post->id, 'testable_sponsor_id', true ) );
+		$this->assertSame( $sponsor->id, $post->sponsor->id );
+		$this->assertSame( (string) $sponsor->id, get_post_meta( $post->id, 'testable_sponsor_id', true ) );
 	}
 
 	public function test_post_to_post_using_terms() {
@@ -66,7 +66,7 @@ class BelongsToOneOrManyTest extends FrameworkTestCase {
 		);
 
 		$this->assertInstanceOf( Testable_Sponsor::class, $sponsor );
-		$this->assertEquals( $sponsor->id, $post->sponsor_with_terms->id );
+		$this->assertSame( $sponsor->id, $post->sponsor_with_terms->id );
 		$this->assertNotEmpty( get_the_terms( $post->id, Has_One_Or_Many::RELATION_TAXONOMY ) );
 	}
 
@@ -86,7 +86,7 @@ class BelongsToOneOrManyTest extends FrameworkTestCase {
 		static::factory()->tag->create_many( 10 );
 
 		$this->assertNotNull( $tag->related_tag, 'Term should have related relationship.' );
-		$this->assertEquals( $related->id, $tag->related_tag->id );
+		$this->assertSame( $related->id, $tag->related_tag->id );
 	}
 }
 

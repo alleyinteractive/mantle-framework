@@ -12,6 +12,7 @@ namespace Mantle\Filesystem;
 use DateTimeInterface;
 use InvalidArgumentException;
 use League\Flysystem\FilesystemAdapter;
+use League\Flysystem\FilesystemException;
 use League\Flysystem\FilesystemOperator;
 use League\Flysystem\PathPrefixer;
 use League\Flysystem\StorageAttributes;
@@ -383,6 +384,8 @@ class Filesystem_Adapter implements Filesystem {
 	 * @param string                                             $path File path.
 	 * @param string|File|Uploaded_File|StreamInterface|resource $contents File contents.
 	 * @param array<mixed>|string                                $options  Options for the files or a string visibility.
+	 *
+	 * @throws FilesystemException Thrown on write failure when the disk is configured to throw.
 	 */
 	public function put( string $path, $contents, $options = [] ): bool {
 		$options = is_string( $options )
@@ -396,15 +399,21 @@ class Filesystem_Adapter implements Filesystem {
 			return (bool) $this->put_file( $path, $contents, $options );
 		}
 
-		if ( $contents instanceof StreamInterface ) {
-			$this->driver->writeStream( $path, $contents->detach(), $options );
+		try {
+			if ( $contents instanceof StreamInterface ) {
+				$this->driver->writeStream( $path, $contents->detach(), $options );
+			} elseif ( is_resource( $contents ) ) {
+				$this->driver->writeStream( $path, $contents, $options );
+			} else {
+				$this->driver->write( $path, (string) $contents, $options );
+			}
+		} catch ( FilesystemException $e ) {
+			if ( $this->throws_exceptions() ) {
+				throw $e;
+			}
 
-			return true;
+			return false;
 		}
-
-		is_resource( $contents )
-			? $this->driver->writeStream( $path, $contents, $options )
-			: $this->driver->write( $path, (string) $contents, $options );
 
 		return true;
 	}

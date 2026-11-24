@@ -30,7 +30,7 @@ class ViewFinderTest extends FrameworkTestCase {
 	public function test_loading_view_alias() {
 		$this->load_view( '@view-loader-alias/view-loader' );
 
-		$this->assertEquals( 'alias', $_SERVER['__view_loaded'] );
+		$this->assertSame( 'alias', $_SERVER['__view_loaded'] );
 	}
 
 	/**
@@ -44,7 +44,25 @@ class ViewFinderTest extends FrameworkTestCase {
 		$this->assertTrue( $_SERVER['__view_loaded'] );
 
 		$this->load_view( '@view-loader-alias/alias-specific' );
-		$this->assertEquals( 'alias', $_SERVER['__view_loaded'] );
+		$this->assertSame( 'alias', $_SERVER['__view_loaded'] );
+	}
+
+	public function test_alias_takes_precedence_over_earlier_paths(): void {
+		View_Loader::clear_paths();
+		View_Loader::add_path( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view-loader', 'view-loader-plain' );
+		View_Loader::add_path( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view-loader/alias', 'view-loader-alias' );
+
+		$this->assertStringStartsWith( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view-loader/alias/', View_Loader::find( '@view-loader-alias/view-loader' ) );
+		$this->assertStringStartsWith( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view-loader/view-loader', View_Loader::find( '@view-loader-plain/view-loader' ) );
+	}
+
+	public function test_aliases_sharing_a_path_both_resolve(): void {
+		View_Loader::clear_paths();
+		View_Loader::add_path( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view-loader', 'first-alias' );
+		View_Loader::add_path( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view-loader', 'second-alias' );
+
+		$this->assertStringStartsWith( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view-loader/view-loader', View_Loader::find( '@first-alias/view-loader' ) );
+		$this->assertStringStartsWith( MANTLE_PHPUNIT_TEMPLATE_PATH . '/view-loader/view-loader', View_Loader::find( '@second-alias/view-loader' ) );
 	}
 
 	public function test_has_hint_information(): void {

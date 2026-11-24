@@ -44,12 +44,12 @@ class CachedHttpClientTest extends FrameworkTestCase {
 
 		$response = $this->client->get( 'https://example.com' );
 
-		$this->assertEquals( 'value', $response->json( 'example' ) );
+		$this->assertSame( 'value', $response->json( 'example' ) );
 
 		$response = $this->client->get( 'https://example.com' );
 
-		$this->assertEquals( 'value', $response->json( 'example' ) );
-		$this->assertEquals( Cache_Status::CACHED, $response->cached );
+		$this->assertSame( 'value', $response->json( 'example' ) );
+		$this->assertSame( Cache_Status::CACHED, $response->cached );
 
 		$this->assertRequestCount( 1 );
 	}
@@ -110,7 +110,7 @@ class CachedHttpClientTest extends FrameworkTestCase {
 
 	public function test_it_can_cache_with_a_callback_as_ttl(): void {
 		$this->client = Factory::create()->cache( function ( Pending_Request $request, Response $response ): int {
-			$this->assertEquals( 'https://example.com', $request->url() );
+			$this->assertSame( 'https://example.com', $request->url() );
 
 			return HOUR_IN_SECONDS;
 		} );
@@ -152,7 +152,7 @@ class CachedHttpClientTest extends FrameworkTestCase {
 		$second_request = $this->client->get( 'https://example.com' );
 
 		$this->assertRequestCount( 1 );
-		$this->assertEquals( 1, $second_request->json( 'request' ) );
+		$this->assertSame( 1, $second_request->json( 'request' ) );
 
 		// Fire the shutdown actions to confirm the deferred refresh does not happen.
 		do_action( 'shutdown' );
@@ -179,7 +179,7 @@ class CachedHttpClientTest extends FrameworkTestCase {
 		$second_request = $this->client->get( 'https://example.com' );
 
 		$this->assertRequestCount( 1 );
-		$this->assertEquals( 1, $second_request->json( 'request' ) );
+		$this->assertSame( 1, $second_request->json( 'request' ) );
 
 		// Fire the shutdown actions to trigger the deferred refresh.
 		do_action( 'shutdown' );
@@ -210,14 +210,14 @@ class CachedHttpClientTest extends FrameworkTestCase {
 			stale: function ( Pending_Request $request, Response $response ) use ( &$stale_called ): \DateTimeInterface {
 				$stale_called = true;
 
-				$this->assertEquals( 'https://example.com', $request->url() );
+				$this->assertSame( 'https://example.com', $request->url() );
 
 				return now()->addHour();
 			},
 			expire: function ( Pending_Request $request, Response $response ) use ( &$expire_called ): \DateTimeInterface {
 				$expire_called = true;
 
-				$this->assertEquals( 'https://example.com', $request->url() );
+				$this->assertSame( 'https://example.com', $request->url() );
 
 				return now()->addDay();
 			},

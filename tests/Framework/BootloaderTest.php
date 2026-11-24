@@ -166,7 +166,7 @@ class BootloaderTest extends TestCase {
 			] )
 			->boot();
 
-		$this->assertEquals( 'value', config( 'app.merged' ) );
+		$this->assertSame( 'value', config( 'app.merged' ) );
 		$this->assertFalse( config( 'app.debug' ) );
 	}
 }

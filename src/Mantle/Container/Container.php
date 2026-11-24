@@ -786,9 +786,15 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 			// If the class is null, it means the dependency is a string or some other
 			// primitive type which we can not resolve since it is not a class and
 			// we will just bomb out with an error since we have no-where to go.
-			$results[] = is_null( Reflector::get_parameter_class_name( $dependency ) )
+			$result = is_null( Reflector::get_parameter_class_name( $dependency ) )
 				? $this->resolve_primitive( $dependency )
 				: $this->resolveClass( $dependency );
+
+			if ( $dependency->isVariadic() ) {
+				$results = [ ...$results, ...( is_array( $result ) ? $result : [ $result ] ) ];
+			} else {
+				$results[] = $result;
+			}
 		}
 
 		return $results;
@@ -840,6 +846,10 @@ class Container implements ArrayAccess, \Mantle\Contracts\Container {
 
 		if ( $parameter->isDefaultValueAvailable() ) {
 			return $parameter->getDefaultValue();
+		}
+
+		if ( $parameter->isVariadic() ) {
+			return [];
 		}
 
 		$this->unresolvable_primitive( $parameter );

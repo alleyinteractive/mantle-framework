@@ -13,9 +13,9 @@ class HelpersMixedTest extends FrameworkTestCase {
 
 		set_query_var( 'test_key_string', 'test_value' );
 
-		$this->assertEquals( 'test_value', mixed_query_var( 'test_key_string' )->string() );
-		$this->assertEquals( [ 'test_value' ], mixed_query_var( 'test_key_string' )->array() );
+		$this->assertSame( 'test_value', mixed_query_var( 'test_key_string' )->string() );
+		$this->assertSame( [ 'test_value' ], mixed_query_var( 'test_key_string' )->array() );
 
-		$this->assertEquals( 'default_value', mixed_query_var( 'non_existent_key', 'default_value' )->string() );
+		$this->assertSame( 'default_value', mixed_query_var( 'non_existent_key', 'default_value' )->string() );
 	}
 }

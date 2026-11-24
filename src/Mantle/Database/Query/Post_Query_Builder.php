@@ -50,6 +50,7 @@ class Post_Query_Builder extends Builder {
 		'modified'     => 'post_modified',
 		'post_author'  => 'author',
 		'post_name'    => 'name',
+		'post_title'   => 'title',
 		'slug'         => 'name',
 		'status'       => 'post_status',
 	];
@@ -122,6 +123,8 @@ class Post_Query_Builder extends Builder {
 				'suppress_filters'    => false,
 				'tax_query'           => $this->tax_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 			],
+			// WP_Query ignores 'paged' once 'offset' is set, so only pass it when skipping rows.
+			$this->offset > 0 ? [ 'offset' => $this->get_result_offset() ] : [],
 			$this->get_date_query_args(),
 			$this->wheres,
 			[
@@ -171,15 +174,15 @@ class Post_Query_Builder extends Builder {
 	 * Get the count of the query results.
 	 */
 	public function count(): int {
-		$this->take( -1 );
+		$builder = ( clone $this )->take( -1 );
 
 		$query = new \WP_Query();
 
 		// Store the query hash for reference by side-effects.
-		$this->query_hash = spl_object_hash( $query );
+		$builder->query_hash = spl_object_hash( $query );
 
-		$this->with_clauses(
-			fn () => $query->query( $this->get_query_args() ),
+		$builder->with_clauses(
+			fn () => $query->query( $builder->get_query_args() ),
 		);
 
 		return $query->found_posts;

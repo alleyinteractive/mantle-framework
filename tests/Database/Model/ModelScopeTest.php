@@ -18,7 +18,7 @@ class ModelScopeTest extends FrameworkTestCase {
 		// Now set the post as the active one.
 		update_post_meta( $post_id, 'active', '1' );
 
-		$this->assertEquals( $post_id, Testable_Post_For_Scope::active()->first()->id() );
+		$this->assertSame( $post_id, Testable_Post_For_Scope::active()->first()->id() );
 	}
 
 	public function test_multiple_local_scopes() {
@@ -34,7 +34,7 @@ class ModelScopeTest extends FrameworkTestCase {
 
 		update_post_meta( $post_id, 'type', 'type-to-check' );
 
-		$this->assertEquals( $post_id, Testable_Post_For_Scope::active()->ofType( 'type-to-check' )->first()->id() );
+		$this->assertSame( $post_id, Testable_Post_For_Scope::active()->ofType( 'type-to-check' )->first()->id() );
 	}
 
 	public function test_global_scope() {
@@ -43,7 +43,7 @@ class ModelScopeTest extends FrameworkTestCase {
 		$this->assertEmpty( Testable_Post_For_Scope_Global_Scope::first() );
 		update_post_meta( $post_id, 'global_scope_active', '1' );
 
-		$this->assertEquals( $post_id, Testable_Post_For_Scope_Global_Scope::first()->id() );
+		$this->assertSame( $post_id, Testable_Post_For_Scope_Global_Scope::first()->id() );
 	}
 
 	public function test_global_scope_class() {
@@ -52,7 +52,7 @@ class ModelScopeTest extends FrameworkTestCase {
 		$this->assertEmpty( Testable_Post_For_Scope_Global_Scope_Class::first() );
 		update_post_meta( $post_id, 'global_scope_named_active', '1' );
 
-		$this->assertEquals( $post_id, Testable_Post_For_Scope_Global_Scope_Class::first()->id() );
+		$this->assertSame( $post_id, Testable_Post_For_Scope_Global_Scope_Class::first()->id() );
 	}
 
 	/**

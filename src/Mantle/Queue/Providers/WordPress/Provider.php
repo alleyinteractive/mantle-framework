@@ -126,11 +126,15 @@ class Provider implements Provider_Contract {
 				'post_name'   => "mantle_queue_{$job_name}_" . time(),
 				'post_status' => Post_Status::PENDING->value,
 				'meta'        => [
-					Meta_Key::JOB->value        => $job,
 					Meta_Key::START_TIME->value => now()->getTimestamp(),
 				],
 			]
 		);
+
+		// add_metadata() unslashes objects in place but wp_slash() skips them, so slash the
+		// job's strings once and store it with add_meta(): update_metadata() would unslash twice.
+		// map_deep() also writes in place, so slash a clone to leave the caller's job alone.
+		$object->add_meta( Meta_Key::JOB->value, map_deep( clone $job, fn ( $value ) => is_string( $value ) ? addslashes( $value ) : $value ) );
 
 		// Handle the job being delayed.
 		if ( isset( $job->delay ) ) {

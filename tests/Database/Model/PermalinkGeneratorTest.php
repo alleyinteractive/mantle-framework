@@ -10,7 +10,7 @@ class PermalinkGeneratorTest extends FrameworkTestCase {
 		$post  = static::factory()->post->create_and_get();
 		$model = Testable_Post_Generator::find( $post->ID );
 
-		$this->assertEquals(
+		$this->assertSame(
 			home_url( '/base/' . $post->post_name ),
 			(string) Permalink_Generator::create( '/base/{slug}', $model ),
 		);
@@ -20,7 +20,7 @@ class PermalinkGeneratorTest extends FrameworkTestCase {
 		$post  = static::factory()->post->create_and_get();
 		$model = Testable_Post_Alias::find( $post->ID );
 
-		$this->assertEquals(
+		$this->assertSame(
 			home_url( '/url-base/' . $post->post_name ),
 			(string) Permalink_Generator::create( '/url-base/{slug_alias}', $model ),
 		);

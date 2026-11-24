@@ -5,10 +5,7 @@ use Faker\Factory;
 use Mantle\Faker\Faker_Provider;
 
 class FakerTest extends \PHPUnit\Framework\TestCase {
-	/**
-	 * @var Factory&Faker_Provider
-	 */
-	protected $faker;
+	protected \Faker\Generator $faker;
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -18,22 +15,22 @@ class FakerTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function test_block() {
-		$this->assertEquals(
+		$this->assertSame(
 			'<!-- wp:namespace/block /-->',
 			$this->faker->block( 'namespace/block' )
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			'<!-- wp:namespace/block {"exampleAttr":true,"another":false} /-->',
 			$this->faker->block( 'namespace/block', null, [ 'exampleAttr' => true, 'another' => false ] )
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			sprintf( '<!-- wp:namespace/block {"exampleAttr":true,"another":false} -->%1$sThe Content%1$s<!-- /wp:namespace/block -->', PHP_EOL ),
 			$this->faker->block( 'namespace/block', 'The Content', [ 'exampleAttr' => true, 'another' => false ] )
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			sprintf( '<!-- wp:namespace/block -->%1$sThe Content%1$s<!-- /wp:namespace/block -->', PHP_EOL ),
 			$this->faker->block( 'namespace/block', 'The Content', [] )
 		);

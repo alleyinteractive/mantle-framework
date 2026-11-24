@@ -147,8 +147,6 @@ class Factory_Container {
 			function () {
 				$generator = \Faker\Factory::create();
 
-				$generator->unique();
-
 				$generator->addProvider( new Faker_Provider( $generator ) );
 
 				return $generator;

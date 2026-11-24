@@ -51,6 +51,15 @@ class Dispatcher implements Dispatcher_Contract {
 	protected array $wildcard_cache = [];
 
 	/**
+	 * Registered listener wrappers keyed by event, priority, and listener.
+	 *
+	 * The same listener can be registered more than once, so each key holds a list.
+	 *
+	 * @var array<string, array<int, array<string, array<int, Closure>>>>
+	 */
+	protected array $listener_map = [];
+
+	/**
 	 * Create a new event dispatcher instance.
 	 *
 	 * @param Container|null $container Container instance.
@@ -77,13 +86,35 @@ class Dispatcher implements Dispatcher_Contract {
 				continue;
 			}
 
-			add_action(
-				$event,
-				$this->make_listener( $listener ),
-				$priority,
-				999,
-			);
+			$wrapper = $this->make_listener( $listener, $this->is_object_event( $event ) );
+
+			$this->listener_map[ $event ][ $priority ][ $this->listener_key( $listener ) ][] = $wrapper;
+
+			add_action( $event, $wrapper, $priority, 999 );
 		}
+	}
+
+	/**
+	 * Build a stable key for a listener so its wrapper can be found again.
+	 *
+	 * @param string|callable $listener Listener.
+	 */
+	protected function listener_key( string|callable $listener ): string {
+		if ( is_string( $listener ) ) {
+			return $listener;
+		}
+
+		if ( is_object( $listener ) ) {
+			return 'object:' . spl_object_id( $listener );
+		}
+
+		if ( is_array( $listener ) ) {
+			$target = is_object( $listener[0] ) ? 'object:' . spl_object_id( $listener[0] ) : (string) $listener[0];
+
+			return "{$target}::{$listener[1]}";
+		}
+
+		return (string) $listener; // @phpstan-ignore-line cast.string
 	}
 
 	/**
@@ -217,17 +248,28 @@ class Dispatcher implements Dispatcher_Contract {
 	}
 
 	/**
+	 * Determine if an event name refers to an object event (a class or interface).
+	 *
+	 * @param string $event Event name.
+	 */
+	protected function is_object_event( string $event ): bool {
+		return class_exists( $event ) || interface_exists( $event );
+	}
+
+	/**
 	 * Register an event listener with the dispatcher.
 	 *
 	 * @param  callable|string $listener
+	 * @param  bool            $object_event Whether the listener is for an object (class name) event.
 	 */
-	public function make_listener( callable|string $listener ): Closure {
+	public function make_listener( callable|string $listener, bool $object_event = false ): Closure {
 		if ( is_string( $listener ) ) {
-			return $this->create_class_listener( $listener );
+			return $this->create_class_listener( $listener, $object_event );
 		}
 
 		return fn ( ...$payload ) => $this->create_action_callback(
 			$listener,
+			$object_event,
 		)( ...array_values( $payload ) );
 	}
 
@@ -235,12 +277,14 @@ class Dispatcher implements Dispatcher_Contract {
 	 * Create a class based listener using the IoC container.
 	 *
 	 * @param  string $listener
+	 * @param  bool   $object_event Whether the listener is for an object (class name) event.
 	 */
-	public function create_class_listener( string $listener ): Closure {
-		return function ( ...$payload ) use ( $listener ) {
+	public function create_class_listener( string $listener, bool $object_event = false ): Closure {
+		return function ( ...$payload ) use ( $listener, $object_event ) {
 			$callable = $this->create_action_callback(
 				// @phpstan-ignore argument.type
 				$this->create_class_callable( $listener ),
+				$object_event,
 			);
 
 			return $callable( ...array_values( $payload ) );
@@ -291,9 +335,26 @@ class Dispatcher implements Dispatcher_Contract {
 
 		if ( null === $listener ) {
 			remove_all_filters( $event, $priority );
-		} else {
-			remove_filter( $event, $listener, $priority );
+
+			unset( $this->listener_map[ $event ][ $priority ] );
+
+			return;
 		}
+
+		$key      = $this->listener_key( $listener );
+		$wrappers = $this->listener_map[ $event ][ $priority ][ $key ] ?? [];
+
+		if ( empty( $wrappers ) ) {
+			remove_filter( $event, $listener, $priority );
+
+			return;
+		}
+
+		foreach ( $wrappers as $wrapper ) {
+			remove_filter( $event, $wrapper, $priority );
+		}
+
+		unset( $this->listener_map[ $event ][ $priority ][ $key ] );
 	}
 
 	/**

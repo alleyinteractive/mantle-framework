@@ -9,7 +9,6 @@ namespace Mantle\Blocks;
 
 use InvalidArgumentException;
 use Mantle\Contracts\Block as Block_Contract;
-use Mantle\Facade\Storage;
 use Mantle\Facade\View_Loader;
 use Mantle\Http\View\View;
 use Mantle\Http\View\Factory as View_Factory;
@@ -43,6 +42,11 @@ abstract class Block implements Block_Contract {
 	 * A custom override value for the block's Editor script dependencies.
 	 */
 	protected array $editor_script_dependencies = [];
+
+	/**
+	 * Editor script version, read from the asset file when empty.
+	 */
+	protected string $editor_script_version = '';
 
 	/**
 	 * A custom override value for the block's Editor script handle.
@@ -183,31 +187,31 @@ abstract class Block implements Block_Contract {
 	}
 
 	/**
-	 * Get the block assets object from the block assets JSON file.
+	 * Get the block assets object from the block's generated asset file.
+	 *
+	 * Supports the PHP asset file emitted by @wordpress/scripts and the older
+	 * JSON format.
 	 */
 	protected function get_block_assets(): object {
-		$root = \trailingslashit( MANTLE_BASE_DIR ) . \trailingslashit( app( 'config' )->get( 'assets.path' ) );
-		$disk = Storage::create_local_driver(
-			[
-				'root' => $root,
-			]
-		);
+		$base = \trailingslashit( base_path( (string) app( 'config' )->get( 'assets.path', 'build' ) ) ) . "blocks/{$this->name}/{$this->entry_filename}";
 
 		try {
-			$assets = $disk->get( "blocks/{$this->name}/{$this->entry_filename}.asset.json" );
-			$assets = \json_decode( (string) $assets );
+			if ( is_readable( "{$base}.asset.php" ) ) {
+				$assets = include "{$base}.asset.php"; // phpcs:ignore
+
+				return is_array( $assets ) ? (object) $assets : new \stdClass();
+			}
+
+			if ( is_readable( "{$base}.asset.json" ) ) {
+				$assets = \json_decode( (string) file_get_contents( "{$base}.asset.json" ) ); // phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown
+
+				return is_object( $assets ) ? $assets : new \stdClass();
+			}
 		} catch ( Throwable ) {
 			return new \stdClass();
 		}
 
-		/**
-		 * Fallback to an empty object if the JSON is malformed.
-		 */
-		if ( ! is_object( $assets ) ) {
-			return new \stdClass();
-		}
-
-		return $assets;
+		return new \stdClass();
 	}
 
 	/**
@@ -240,19 +244,27 @@ abstract class Block implements Block_Contract {
 	}
 
 	/**
+	 * Resolve the built editor script URL for the block, if the asset exists.
+	 */
+	protected function get_default_editor_script_url(): string {
+		try {
+			return (string) ( asset_loader( "/blocks/{$this->name}/{$this->entry_filename}.js" ) ?? '' );
+		} catch ( Throwable ) {
+			return '';
+		}
+	}
+
+	/**
 	 * Get the version value from the Editor script's asset file.
 	 */
 	protected function get_editor_script_version(): string {
-		if (
-			is_array( $this->editor_script_dependencies )
-			&& ! empty( $this->editor_script_dependencies )
-		) {
-			return $this->editor_script_dependencies;
+		if ( '' !== $this->editor_script_version ) {
+			return $this->editor_script_version;
 		}
 
 		$assets = $this->get_block_assets();
 
-		return $assets->version ?? \sha1( \time() );
+		return (string) ( $assets->version ?? \sha1( (string) \time() ) );
 	}
 
 	/**
@@ -302,7 +314,7 @@ abstract class Block implements Block_Contract {
 		asset()
 			->script(
 				$this->get_editor_script_handle(),
-				$this->editor_script ?: mix( "blocks/{$this->name}/index.js" )
+				$this->editor_script ?: $this->get_default_editor_script_url()
 			)
 			->dependencies( $this->get_editor_script_dependencies() )
 			->version( $this->get_editor_script_version() )

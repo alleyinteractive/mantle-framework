@@ -61,9 +61,9 @@ class Response implements ArrayAccess, ResponseContract {
 	/**
 	 * The decoded JSON response.
 	 *
-	 * @var array<string, mixed>|null
+	 * @var array<string, mixed>|scalar|null
 	 */
-	protected ?array $decoded = null;
+	protected mixed $decoded = null;
 
 	/**
 	 * The decoded XML Element response.

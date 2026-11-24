@@ -11,6 +11,25 @@ use Symfony\Component\Console\Output\NullOutput;
 
 class CommandTest extends TestCase {
 
+	public function test_kernel_register_accepts_command_instance() {
+		\Mantle\Console\Application::forget_bootstrappers();
+
+		$app    = new Application();
+		$kernel = new \Mantle\Framework\Console\Kernel( $app );
+
+		$kernel->register(
+			new class extends Command {
+				protected $name = 'foo:instance';
+			}
+		);
+
+		$console = new \Mantle\Console\Application( $app );
+
+		$this->assertTrue( $console->has( 'foo:instance' ) );
+
+		\Mantle\Console\Application::forget_bootstrappers();
+	}
+
 	public function test_registering_command_with_just_name() {
 		$command = new class extends Command {
 			protected $name = 'foo:bar';
@@ -27,7 +46,7 @@ class CommandTest extends TestCase {
 		$this->assertSame( 'foo:bar', $command->getName() );
 		$this->assertSame( [ 'arg1', 'arg2' ], array_keys( $command->getDefinition()->getArguments() ) );
 		$this->assertSame( [ 'opt1', 'opt2', 'opt3' ], array_keys( $command->getDefinition()->getOptions() ) );
-		$this->assertEquals( 1, $command->getDefinition()->getArgumentRequiredCount() );
+		$this->assertSame( 1, $command->getDefinition()->getArgumentRequiredCount() );
 	}
 
 	public function test_command_argument_and_option_reading() {
@@ -48,7 +67,7 @@ class CommandTest extends TestCase {
 		] ), new NullOutput() );
 
 		$this->assertTrue( $command->has_argument( 'arg1' ) );
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				'arg1' => 'value1',
 				'arg2' => 'value2',
@@ -56,11 +75,11 @@ class CommandTest extends TestCase {
 			$command->arguments(),
 		);
 
-		$this->assertEquals( 'value1', $command->argument( 'arg1' ) );
-		$this->assertEquals( 'value2', $command->argument( 'arg2' ) );
-		$this->assertEquals( true, $command->option( 'opt1' ) );
-		$this->assertEquals( 'value3', $command->option( 'opt2' ) );
-		$this->assertEquals( [ 'value4', 'value5' ], $command->option( 'opt3' ) );
+		$this->assertSame( 'value1', $command->argument( 'arg1' ) );
+		$this->assertSame( 'value2', $command->argument( 'arg2' ) );
+		$this->assertTrue( $command->option( 'opt1' ) );
+		$this->assertSame( 'value3', $command->option( 'opt2' ) );
+		$this->assertSame( [ 'value4', 'value5' ], $command->option( 'opt3' ) );
 	}
 
 	public function test_command_invalid_arguments() {

@@ -47,11 +47,11 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertTrue( $response->is_json() );
 		$this->assertFalse( $response->is_xml() );
 
-		$this->assertEquals( 'Example-Value', $response->headers()['example-header'] );
-		$this->assertEquals( 'Example-Value', $response->header('example-header') );
-		$this->assertEquals( [ 'example' => 'value' ], $response->json() );
-		$this->assertEquals( 'value', $response->json( 'example' ) );
-		$this->assertEquals( 'value', $response['example'] );
+		$this->assertSame( 'Example-Value', $response->headers()['example-header'] );
+		$this->assertSame( 'Example-Value', $response->header('example-header') );
+		$this->assertSame( [ 'example' => 'value' ], $response->json() );
+		$this->assertSame( 'value', $response->json( 'example' ) );
+		$this->assertSame( 'value', $response['example'] );
 	}
 
 	public function test_make_get_request() {
@@ -113,7 +113,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$response = $this->http_factory->get( 'https://example.com/' );
 
 		$this->assertNotEmpty( $response->cookie( 'example' ) );
-		$this->assertEquals( 'value', $response->cookie( 'example' )->value );
+		$this->assertSame( 'value', $response->cookie( 'example' )->value );
 	}
 
 	public function test_make_request_with_json() {
@@ -156,9 +156,9 @@ class HttpClientTest extends FrameworkTestCase {
 
 		$this->assertRequestSent( 'https://example.com/' );
 
-		$this->assertEquals( [ 'example' => '123' ], $response->mixed_json()->array() );
-		$this->assertEquals( '123', $response->mixed_json( 'example' )->string() );
-		$this->assertEquals( 123, $response->mixed_json( 'example' )->int() );
+		$this->assertSame( [ 'example' => '123' ], $response->mixed_json()->array() );
+		$this->assertSame( '123', $response->mixed_json( 'example' )->string() );
+		$this->assertSame( 123, $response->mixed_json( 'example' )->int() );
 	}
 
 	public function test_make_request_with_basic_auth() {
@@ -221,6 +221,145 @@ class HttpClientTest extends FrameworkTestCase {
 		$rest_client->delete();
 
 		$this->assertRequestSent( 'https://example.com/api' );
+	}
+
+	public function test_json_scalar_body() {
+		$this->fake_request( fn () => Mock_Http_Response::create()->with_body( '123' )->with_header( 'Content-Type', 'application/json' ) );
+
+		$response = Http::get( 'https://example.com/scalar' );
+
+		$this->assertTrue( $response->is_json() );
+		$this->assertSame( 123, $response->json() );
+	}
+
+	public function test_with_user_agent() {
+		$this->fake_request();
+
+		Http::with_user_agent( 'MantleBot/1.0' )->get( 'https://example.com/user-agent/' );
+
+		$this->assertRequestSent( fn ( Request $request ) => 'MantleBot/1.0' === $request->get( 'user-agent' ) );
+	}
+
+	public function test_send_keeps_url_set_before_base_url_send() {
+		$this->fake_request();
+
+		Http::base_url( 'https://example.com' )->url( '/keep-me/' )->send();
+
+		$this->assertRequestSent( 'https://example.com/keep-me/' );
+	}
+
+	public function test_repeated_header_replaces_previous_value() {
+		$this->fake_request();
+
+		Http::with_token( 'first' )->with_token( 'second' )->get( 'https://example.com/token/' );
+
+		$this->assertRequestSent( fn ( Request $request ) => 'Bearer second' === $request->header( 'Authorization' ) );
+	}
+
+	public function test_base_url_slash_normalization() {
+		$this->fake_request();
+
+		Http::base_url( 'https://example.com/api/' )->get( '/users' );
+
+		$this->assertRequestSent( 'https://example.com/api/users' );
+	}
+
+	public function test_query_does_not_persist_between_requests(): void {
+		$this->fake_request();
+
+		$client = Http::base_url( 'https://example.com' );
+
+		$client->get( '/a', [ 'x' => 1 ] );
+		$client->get( '/b' );
+
+		$this->assertRequestSent( 'https://example.com/a?x=1' );
+		$this->assertRequestSent( 'https://example.com/b' );
+		$this->assertRequestNotSent( 'https://example.com/b?x=1' );
+	}
+
+	public function test_body_does_not_persist_between_requests(): void {
+		$this->fake_request();
+
+		$client = Http::base_url( 'https://example.com' );
+
+		$client->post( '/a', [ 'foo' => 'bar' ] );
+		$client->get( '/b' );
+
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://example.com/a' === $request->url()
+				&& 'POST' === $request->method()
+				&& [ 'foo' => 'bar' ] === $request->json()
+		);
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://example.com/b' === $request->url()
+				&& 'GET' === $request->method()
+				&& is_null( $request->body() )
+		);
+	}
+
+	public function test_url_and_method_do_not_persist_between_requests(): void {
+		$this->fake_request();
+
+		$client = Http::base_url( 'https://example.com/api' );
+
+		$client->put( '/a', [ 'foo' => 'bar' ] );
+		$client->send();
+
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://example.com/api' === $request->url()
+				&& 'GET' === $request->method()
+				&& is_null( $request->body() )
+		);
+	}
+
+	public function test_builder_options_persist_between_requests(): void {
+		$this->fake_request();
+
+		$client = Http::base_url( 'https://example.com' )
+			->with_header( 'X-Foo', 'Bar' )
+			->with_json( [ 'shared' => true ] );
+
+		$client->post( '/a' );
+		$client->post( '/b' );
+
+		foreach ( [ 'https://example.com/a', 'https://example.com/b' ] as $url ) {
+			$this->assertRequestSent(
+				fn ( Request $request ) => $url === $request->url()
+					&& 'Bar' === $request->header( 'X-Foo' )
+					&& [ 'shared' => true ] === $request->json()
+			);
+		}
+	}
+
+	public function test_retry_resends_per_call_query(): void {
+		$this->fake_request( fn () => Mock_Http_Response::create()->with_status( 500 ) );
+
+		$this->http_factory
+			->retry( 3 )
+			->get( 'https://example.com/retry/', [ 'x' => 1 ] );
+
+		$this->assertRequestSent( 'https://example.com/retry/?x=1', 3 );
+	}
+
+	public function test_pool_does_not_inherit_previous_per_call_state(): void {
+		$this->fake_request();
+
+		$client = Http::base_url( 'https://example.com' );
+
+		$client->post( '/a', [ 'foo' => 'bar' ] );
+		$client->get( '/b', [ 'x' => 1 ] );
+
+		$client->pool( fn ( Pool $pool ) => [
+			$pool->get( '/c', [ 'y' => 2 ] ),
+			$pool->post( '/d', [ 'baz' => 'qux' ] ),
+		] );
+
+		$this->assertRequestSent( 'https://example.com/c?y=2' );
+		$this->assertRequestSent(
+			fn ( Request $request ) => 'https://example.com/d' === $request->url()
+				&& 'POST' === $request->method()
+				&& [ 'baz' => 'qux' ] === $request->json()
+		);
 	}
 
 	public function test_facade_request() {
@@ -318,8 +457,8 @@ class HttpClientTest extends FrameworkTestCase {
 			->get( 'https://example.com/middleware/' );
 
 		$this->assertRequestSent( 'https://example.com/middleware/' );
-		$this->assertEquals( 'modified-value', $response->header( 'test-header' ) );
-		$this->assertEquals( 'example-body', $response->body() );
+		$this->assertSame( 'modified-value', $response->header( 'test-header' ) );
+		$this->assertSame( 'example-body', $response->body() );
 	}
 
 	public function test_wp_error_response() {
@@ -334,7 +473,7 @@ class HttpClientTest extends FrameworkTestCase {
 		$this->assertFalse( $response->successful() );
 		$this->assertFalse( $response->ok() );
 
-		$this->assertEquals( 'An error occurred.', $response->body() );
+		$this->assertSame( 'An error occurred.', $response->body() );
 	}
 
 	public function test_invalid_json() {
@@ -345,7 +484,7 @@ class HttpClientTest extends FrameworkTestCase {
 
 		$response = $this->http_factory->get( 'https://example.com/wp-error/' );
 
-		$this->assertEquals( 'text-body', $response->body() );
+		$this->assertSame( 'text-body', $response->body() );
 		$this->assertNull( $response->json() );
 	}
 
@@ -392,11 +531,11 @@ EOF
 		$this->assertTrue( $response->is_xml() );
 		$this->assertFalse( $response->is_json() );
 
-		$this->assertEquals( 'First Slide Title', $response->xml()->slide[0]->title );
-		$this->assertEquals( 'First Slide Title', $response['slide']->title );
-		$this->assertEquals( 'Second Slide Title', $response->xml()->slide[1]->title );
+		$this->assertSame( 'First Slide Title', (string) $response->xml()->slide[0]->title );
+		$this->assertSame( 'First Slide Title', (string) $response['slide']->title );
+		$this->assertSame( 'Second Slide Title', (string) $response->xml()->slide[1]->title );
 
-		$this->assertEquals( 'Another point!', $response->xml( '/slideshow/slide[@type="specific"]/point' )[0] ?? '' );
+		$this->assertSame( 'Another point!', (string) ( $response->xml( '/slideshow/slide[@type="specific"]/point' )[0] ?? '' ) );
 	}
 
 	public function test_pool_requests() {
@@ -410,8 +549,8 @@ EOF
 			$pool->post( 'https://example.com/second-async/' ),
 		] );
 
-		$this->assertEquals( 200, $response[0]->status() );
-		$this->assertEquals( 402, $response[1]->status() );
+		$this->assertSame( 200, $response[0]->status() );
+		$this->assertSame( 402, $response[1]->status() );
 	}
 
 	public function test_pool_requests_legacy() {
@@ -425,8 +564,8 @@ EOF
 			$pool->method( 'get' )->url( 'https://example.com/second-async/' ),
 		] );
 
-		$this->assertEquals( 200, $response[0]->status() );
-		$this->assertEquals( 402, $response[1]->status() );
+		$this->assertSame( 200, $response[0]->status() );
+		$this->assertSame( 402, $response[1]->status() );
 	}
 
 	public function test_pool_requests_name() {
@@ -440,8 +579,8 @@ EOF
 			$pool->as( 'second' )->method( 'post' )->url( 'https://example.com/second-async/' ),
 		] );
 
-		$this->assertEquals( 200, $response['first']->status() );
-		$this->assertEquals( 402, $response['second']->status() );
+		$this->assertSame( 200, $response['first']->status() );
+		$this->assertSame( 402, $response['second']->status() );
 
 		$this->assertRequestSent(
 			fn ( Request $request ) => 'https://example.com/async/' === $request->url()
@@ -468,8 +607,8 @@ EOF
 			$githubPool->url( '/endpoint-b/' )->method( 'post' ),
 		] );
 
-		$this->assertEquals( 200, $response[0]->status() );
-		$this->assertEquals( 404, $response[1]->status() );
+		$this->assertSame( 200, $response[0]->status() );
+		$this->assertSame( 404, $response[1]->status() );
 
 		$this->assertRequestSent(
 			fn ( Request $request ) => 'https://github.com/endpoint-a/' === $request->url()
@@ -488,19 +627,19 @@ EOF
 			->with_header( 'X-Foo', 'Bar' )
 			->when( true, fn ( Pending_Request $request ) => $request->with_header( 'X-Foo', 'Baz', true ) );
 
-		$this->assertEquals( 'Baz', $request->header( 'X-Foo' ) );
+		$this->assertSame( 'Baz', $request->header( 'X-Foo' ) );
 
 		$request = $this->http_factory
 			->with_header( 'X-Foo', 'Bar' )
 			->when( true )->with_header( 'X-Foo', 'Baz', true );
 
-		$this->assertEquals( 'Baz', $request->header( 'X-Foo' ) );
+		$this->assertSame( 'Baz', $request->header( 'X-Foo' ) );
 
 		$request = $this->http_factory
 			->with_header( 'X-Foo', 'Bar' )
 			->when( false, fn ( Pending_Request $request ) => $request->with_header( 'X-Foo', 'Baz', true ) );
 
-		$this->assertEquals( 'Bar', $request->header( 'X-Foo' ) );
+		$this->assertSame( 'Bar', $request->header( 'X-Foo' ) );
 	}
 
 	public function test_conditionable_unless_request() {
@@ -508,26 +647,26 @@ EOF
 			->with_header( 'X-Foo', 'Bar' )
 			->unless( false, fn ( Pending_Request $request ) => $request->with_header( 'X-Foo', 'Baz', true ) );
 
-		$this->assertEquals( 'Baz', $request->header( 'X-Foo' ) );
+		$this->assertSame( 'Baz', $request->header( 'X-Foo' ) );
 
 		$request = $this->http_factory
 			->with_header( 'X-Foo', 'Bar' )
 			->unless( false )->with_header( 'X-Foo', 'Baz', true );
 
-		$this->assertEquals( 'Baz', $request->header( 'X-Foo' ) );
+		$this->assertSame( 'Baz', $request->header( 'X-Foo' ) );
 
 		$request = $this->http_factory
 			->with_header( 'X-Foo', 'Bar' )
 			->unless( true, fn ( Pending_Request $request ) => $request->with_header( 'X-Foo', 'Baz', true ) );
 
-		$this->assertEquals( 'Bar', $request->header( 'X-Foo' ) );
+		$this->assertSame( 'Bar', $request->header( 'X-Foo' ) );
 	}
 
 	public function test_headers_as_form() {
 		$request = $this->http_factory
 			->as_form();
 
-		$this->assertEquals( 'application/x-www-form-urlencoded', $request->header( 'Content-Type' ) );
+		$this->assertSame( 'application/x-www-form-urlencoded', $request->header( 'Content-Type' ) );
 	}
 
 	public function test_helper_function() {
@@ -585,9 +724,9 @@ EOF
 
 		$this->assertInstanceOf( \SimplePie::class, $feed );
 		$this->assertTrue( $options_callback );
-		$this->assertEquals( 'Alley', $feed->get_title() );
+		$this->assertSame( 'Alley', $feed->get_title() );
 		$this->assertNotEmpty( $feed->get_items() );
-		$this->assertEquals( 'https://alley.com/', $feed->get_link() );
+		$this->assertSame( 'https://alley.com/', $feed->get_link() );
 
 		$this->assertCount( 10, $feed->get_items() );
 
@@ -596,8 +735,8 @@ EOF
 		// First expected feed item:
 		// url: https://alley.com/news/introducing-captain-hook-for-wordpress/
 		// title: Introducing Captain Hook for WordPress
-		$this->assertEquals( 'Introducing Captain Hook for WordPress', $item->get_title() );
-		$this->assertEquals( 'https://alley.com/news/introducing-captain-hook-for-wordpress/', $item->get_link() );
+		$this->assertSame( 'Introducing Captain Hook for WordPress', $item->get_title() );
+		$this->assertSame( 'https://alley.com/news/introducing-captain-hook-for-wordpress/', $item->get_link() );
 	}
 
 	public function test_simple_pie_feed_error(): void {

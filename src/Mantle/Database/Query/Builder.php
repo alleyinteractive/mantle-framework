@@ -461,30 +461,29 @@ abstract class Builder {
 	 * Retrieve the builder order to use in the query.
 	 *
 	 * Used internally to get the order/order by for use in term/post queries.
-	 * Queries support multiple conditions to order by but run into issues in some
-	 * cases where arrays are used in place of strings (post__in for example). To
-	 * support both, we'll store the order/order by as arrays and then flatten it
-	 * here if only one pair is set.
+	 * A single clause is returned as a string pair. Multiple clauses are
+	 * returned as a `column => direction` map, which is the only array shape
+	 * WP_Query accepts for `orderby`.
 	 *
 	 * @param string $default_order Default order.
 	 * @param string $default_order_by Default order by.
-	 * @return array{0: string, 1: string}
+	 * @return array{0: string, 1: string|array<string, string>}
 	 */
 	protected function get_builder_order( string $default_order, string $default_order_by ): array {
-		$order    = count( $this->order ) > 1 ? $this->order : Arr::first( $this->order );
-		$order_by = count( $this->order_by ) > 1 ? $this->order_by : Arr::first( $this->order_by );
-
-		// Provide a default order by if none is set.
-		if ( empty( $order ) ) {
-			$order = $default_order;
+		if ( count( $this->order_by ) > 1 ) {
+			return [
+				(string) Arr::first( $this->order ),
+				array_combine( $this->order_by, $this->order ),
+			];
 		}
 
-		// Provide a default order by if none is set.
-		if ( empty( $order_by ) ) {
-			$order_by = $default_order_by;
-		}
+		$order    = Arr::first( $this->order );
+		$order_by = Arr::first( $this->order_by );
 
-		return [ $order, $order_by ];
+		return [
+			empty( $order ) ? $default_order : $order,
+			empty( $order_by ) ? $default_order_by : $order_by,
+		];
 	}
 
 	/**
@@ -618,6 +617,39 @@ abstract class Builder {
 		$this->page = $page;
 
 		return $this;
+	}
+
+	/**
+	 * Set the number of results to skip, applied on top of the current page.
+	 *
+	 * @param int $offset Offset to set.
+	 */
+	public function offset( int $offset ): static {
+		$this->offset = max( 0, $offset );
+
+		return $this;
+	}
+
+	/**
+	 * Alias for `offset()`.
+	 *
+	 * @param int $offset Offset to set.
+	 */
+	public function skip( int $offset ): static {
+		return $this->offset( $offset );
+	}
+
+	/**
+	 * Calculate the absolute result offset from the page, limit, and offset.
+	 */
+	protected function get_result_offset(): int {
+		$per_page = (int) $this->limit;
+
+		if ( $per_page < 1 ) {
+			return $this->offset;
+		}
+
+		return ( max( 1, $this->page ) - 1 ) * $per_page + $this->offset;
 	}
 
 	/**

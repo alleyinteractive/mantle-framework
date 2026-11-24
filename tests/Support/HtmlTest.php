@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 class HtmlTest extends TestCase {
 	use Assertions;
 
-	public const TEST_CONTENT = '
+	public const string TEST_CONTENT = '
 	<div>
 		<section>Example Section</section>
 		<div class="test-class">Example Div By Class</div>

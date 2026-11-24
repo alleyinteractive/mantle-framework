@@ -92,7 +92,10 @@ class Scheduler {
 		$schedule = \wp_schedule_single_event( time() + $delay, static::EVENT, [ $queue, time() + $delay ], true );
 
 		if ( is_wp_error( $schedule ) ) {
-			dump( $schedule );
+			// report() is a framework helper; the queue package may be installed without it.
+			if ( function_exists( 'report' ) ) {
+				report( new \RuntimeException( 'Unable to schedule queue run: ' . $schedule->get_error_message() ) );
+			}
 
 			return false;
 		}
@@ -226,13 +229,13 @@ class Scheduler {
 		$config = config();
 
 		// Check for a queue-specific configuration value.
-		if ( $queue && $config->has( "queue.WordPress.queues.{$queue}.{$key}" ) ) {
-			return $config->get( "queue.WordPress.queues.{$queue}.{$key}" );
+		if ( $queue && $config->has( "queue.wordpress.queues.{$queue}.{$key}" ) ) {
+			return $config->get( "queue.wordpress.queues.{$queue}.{$key}" );
 		}
 
 		// Check for a default configuration for the queue provider.
-		if ( $config->has( "queue.WordPress.{$key}" ) ) {
-			return $config->get( "queue.WordPress.{$key}" );
+		if ( $config->has( "queue.wordpress.{$key}" ) ) {
+			return $config->get( "queue.wordpress.{$key}" );
 		}
 
 		// Check for a default configuration for the queue configuration.

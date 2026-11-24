@@ -38,7 +38,7 @@ class DatabaseQueryBuilderTest extends FrameworkTestCase {
 			'name' => 'John Doe',
 		] );
 
-		$this->assertEquals(
+		$this->assertSame(
 			'John Doe',
 			TestableDatabaseModel::first()->name,
 		);
@@ -46,7 +46,7 @@ class DatabaseQueryBuilderTest extends FrameworkTestCase {
 		$first = TestableDatabaseModel::query()->where( 'name', 'John Doe' )->first();
 
 		$this->assertInstanceOf( TestableDatabaseModel::class, $first );
-		$this->assertEquals( 'John Doe', $first->name );
+		$this->assertSame( 'John Doe', $first->name );
 		$this->assertNotNull( $first->id );
 
 		$missing = TestableDatabaseModel::query()->where( 'name', 'Jane Doe' )->first();
@@ -65,9 +65,9 @@ class DatabaseQueryBuilderTest extends FrameworkTestCase {
 
 		$count = TestableDatabaseModel::query()->count();
 
-		$this->assertEquals( 2, $count );
+		$this->assertSame( 2, $count );
 
-		$this->assertEquals( 0, TestableDatabaseModel::query()->where( 'name', 'Non-existing' )->count() );
+		$this->assertSame( 0, TestableDatabaseModel::query()->where( 'name', 'Non-existing' )->count() );
 	}
 }
 

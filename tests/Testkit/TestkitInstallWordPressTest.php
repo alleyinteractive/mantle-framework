@@ -20,8 +20,8 @@ class TestkitInstallWordPressTest extends TestCase {
 	public function test_mantle_is_installed_from_trait() {
 		$called = \mantle_after_wordpress_install( false );
 
-		$this->assertEquals( 1, $called );
+		$this->assertSame( 1, $called );
 
-		$this->assertEquals( 1, $_SERVER['__mantle_after_wordpress_install'] ?? 0 );
+		$this->assertSame( 1, $_SERVER['__mantle_after_wordpress_install'] ?? 0 );
 	}
 }

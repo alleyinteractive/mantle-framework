@@ -41,6 +41,17 @@ class ScheduleTest extends FrameworkTestCase {
 		$this->assertFalse( $_SERVER['__event_shouldnt_run'] );
 	}
 
+	public function test_running_command_event() {
+		$schedule = $this->app->make( Schedule::class );
+
+		$event = $schedule->command( \Mantle\Queue\Console\Cleanup_Jobs_Command::class );
+
+		$schedule->run_due_events();
+
+		$this->assertFalse( isset( $event->exception ), isset( $event->exception ) ? $event->exception->getMessage() : '' );
+		$this->assertSame( 0, $event->exit_code );
+	}
+
 	public function test_before_after_callback() {
 		$_SERVER['__event_before_callback'] = false;
 		$_SERVER['__event_after_callback']  = false;

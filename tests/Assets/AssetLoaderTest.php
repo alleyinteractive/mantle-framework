@@ -22,26 +22,26 @@ class AssetLoaderTest extends TestCase {
 	}
 
 	public function test_read_path() {
-		$this->assertEquals(
+		$this->assertSame(
 			'/app.js?id=8c5b220bf6f482881a90',
 			$this->loader->path( '/app.js' ),
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			'/app.css?id=8c5b220bf6f482881a90',
 			$this->loader->path( '/app.css' ),
 		);
 	}
 
 	public function test_read_path_subdir() {
-		$this->assertEquals(
+		$this->assertSame(
 			'/example-entry/index.js?id=534dc549a5fb03be27a1',
 			$this->loader->path( '/example-entry/index.js' ),
 		);
 	}
 
 	public function test_read_script_url() {
-		$this->assertEquals(
+		$this->assertSame(
 			'https://example.org/base/app.js?id=8c5b220bf6f482881a90',
 			$this->loader->url( '/app.js' ),
 		);
@@ -56,14 +56,14 @@ class AssetLoaderTest extends TestCase {
 	public function test_invoke() {
 		$loader = $this->loader;
 
-		$this->assertEquals(
+		$this->assertSame(
 			'https://example.org/base/app.js?id=8c5b220bf6f482881a90',
 			$loader( '/app.js' ),
 		);
 	}
 
 	public function test_read_blocks() {
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				$this->build_dir . '/example-block/index.php',
 			],
@@ -72,7 +72,7 @@ class AssetLoaderTest extends TestCase {
 	}
 
 	public function test_asset_loader_helper() {
-		$this->assertEquals(
+		$this->assertSame(
 			'https://example.org/base/app.js?id=8c5b220bf6f482881a90',
 			asset_loader( '/app.js' ),
 		);

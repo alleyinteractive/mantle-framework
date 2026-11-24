@@ -396,10 +396,10 @@ class Collection implements ArrayAccess, Enumerable {
 	 */
 	protected function duplicate_comparator( $strict ) {
 		if ( $strict ) {
-			return fn ( $a, $b ) => $a == $b; // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison, Universal.Operators.StrictComparisons.LooseEqual
+			return fn ( $a, $b ) => $a === $b;
 		}
 
-		return fn ( $a, $b ) => $a === $b;
+		return fn ( $a, $b ) => $a == $b; // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison, Universal.Operators.StrictComparisons.LooseEqual
 	}
 
 	/**
@@ -470,7 +470,7 @@ class Collection implements ArrayAccess, Enumerable {
 		}
 
 		if ( $count > 1 ) {
-			throw new Multiple_Items_Found_Exception( sprintf( 'Multiple items found (%d items).', $count ) );
+			throw new Multiple_Items_Found_Exception( $count );
 		}
 
 		return $items->first();
@@ -960,8 +960,8 @@ class Collection implements ArrayAccess, Enumerable {
 
 		$position = 0;
 
-		foreach ( $this->items as $item ) {
-			if ( $position % $step === $offset ) {
+		foreach ( $this->slice( $offset )->items as $item ) {
+			if ( $position % $step === 0 ) {
 				$new[] = $item;
 			}
 

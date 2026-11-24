@@ -60,7 +60,7 @@ class RegisterPostTypeTest extends FrameworkTestCase {
 		$object = get_post_type_object( Testable_Registration_Post_Type_Fluent::$object_name );
 
 		$this->assertFalse( $object->show_in_menu );
-		$this->assertEquals( 'Testable Post Types', $object->label );
+		$this->assertSame( 'Testable Post Types', $object->label );
 	}
 
 	public function test_register_post_type_legacy_arguments(): void {
@@ -116,17 +116,17 @@ class RegisterPostTypeTest extends FrameworkTestCase {
 		// Ensure the expected fields were registered.
 		$field = Registered_REST_Field::get_instance( 'post', 'testable-field' );
 		$this->assertNotNull( $field );
-		$this->assertEquals( 'Testable field description', $field->schema['description'] );
+		$this->assertSame( 'Testable field description', $field->schema['description'] );
 
 		$request = new \WP_REST_Request();
-		$this->assertEquals( 'testable_get_callback', $field->get_callback( 'post', 'testable-field', $request, 'post' ) );
+		$this->assertSame( 'testable_get_callback', $field->get_callback( 'post', 'testable-field', $request, 'post' ) );
 
 		// Ensure the callback is dynamic and will return a different value every time.
 		$_SERVER['__testable_get_callback'] = 'updated_value';
-		$this->assertEquals( 'updated_value', $field->get_callback( 'post', 'testable-field', $request, 'post' ) );
+		$this->assertSame( 'updated_value', $field->get_callback( 'post', 'testable-field', $request, 'post' ) );
 
 		// Verify the update callback.
-		$this->assertEquals( 'testable_update_callback', $field->update_callback( 'test', 'post', 'testable-field', $request, 'post' ) );
+		$this->assertSame( 'testable_update_callback', $field->update_callback( 'test', 'post', 'testable-field', $request, 'post' ) );
 	}
 }
 

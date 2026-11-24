@@ -20,15 +20,15 @@ class ObjectMetadataTest extends FrameworkTestCase {
 
 		$metadata = Object_Metadata::of( $object_type, $object_id, 'test_meta' );
 
-		$this->assertEquals( 'test', $metadata->string() );
-		$this->assertEquals( [ 'test' ], $metadata->array() );
+		$this->assertSame( 'test', $metadata->string() );
+		$this->assertSame( [ 'test' ], $metadata->array() );
 
 		$metadata = Object_Metadata::of( $object_type, $object_id, 'another_test_meta' );
 
-		$this->assertEquals( '1234', $metadata->string() );
-		$this->assertEquals( 1234, $metadata->int() );
-		$this->assertEquals( [ '1234' ], $metadata->array() );
-		$this->assertEquals( 1234.0, $metadata->float() );
+		$this->assertSame( '1234', $metadata->string() );
+		$this->assertSame( 1234, $metadata->int() );
+		$this->assertSame( [ '1234' ], $metadata->array() );
+		$this->assertSame( 1234.0, $metadata->float() );
 	}
 
 	#[DataProvider('objectTypeProvider')]
@@ -42,15 +42,15 @@ class ObjectMetadataTest extends FrameworkTestCase {
 
 		$metadata = $method( $object_id, 'test_meta' );
 
-		$this->assertEquals( 'test', $metadata->string() );
-		$this->assertEquals( [ 'test' ], $metadata->array() );
+		$this->assertSame( 'test', $metadata->string() );
+		$this->assertSame( [ 'test' ], $metadata->array() );
 
 		$metadata = $method( $object_id, 'another_test_meta' );
 
-		$this->assertEquals( '1234', $metadata->string() );
-		$this->assertEquals( 1234, $metadata->int() );
-		$this->assertEquals( [ '1234' ], $metadata->array() );
-		$this->assertEquals( 1234.0, $metadata->float() );
+		$this->assertSame( '1234', $metadata->string() );
+		$this->assertSame( 1234, $metadata->int() );
+		$this->assertSame( [ '1234' ], $metadata->array() );
+		$this->assertSame( 1234.0, $metadata->float() );
 	}
 
 	#[DataProvider('objectTypeProvider')]
@@ -68,7 +68,7 @@ class ObjectMetadataTest extends FrameworkTestCase {
 
 		// Test all meta values from the same key are retrieved.
 		$this->assertCount( 2, $all_values );
-		$this->assertEquals( [ 'new-test', 'new-test-2' ], $metadata->all()->array() );
+		$this->assertSame( [ 'new-test', 'new-test-2' ], $metadata->all()->array() );
 		$this->assertSame( get_metadata( $object_type, $object_id, 'test_meta' ),$all_values );
 	}
 
@@ -81,10 +81,10 @@ class ObjectMetadataTest extends FrameworkTestCase {
 		$metadata->set( 'new-test' );
 		$metadata->save();
 
-		$this->assertEquals( 'new-test', $metadata->value() );
-		$this->assertEquals( 'new-test', $metadata->string() );
+		$this->assertSame( 'new-test', $metadata->value() );
+		$this->assertSame( 'new-test', $metadata->string() );
 
-		$this->assertEquals( 'new-test', get_metadata( $object_type, $object_id, 'test_meta', true ) );
+		$this->assertSame( 'new-test', get_metadata( $object_type, $object_id, 'test_meta', true ) );
 	}
 
 	#[DataProvider('objectTypeProvider')]
@@ -128,11 +128,11 @@ class ObjectMetadataTest extends FrameworkTestCase {
 
 		$metadata = Object_Metadata::of( $object_type, $object_id, 'test_meta', 'default' );
 
-		$this->assertEquals( 'default', $metadata->value() );
-		$this->assertEquals( 'default', $metadata->string() );
-		$this->assertEquals( [ 'default' ], $metadata->array() );
-		$this->assertEquals( 0, $metadata->int() );
-		$this->assertEquals( 0.0, $metadata->float() );
+		$this->assertSame( 'default', $metadata->value() );
+		$this->assertSame( 'default', $metadata->string() );
+		$this->assertSame( [ 'default' ], $metadata->array() );
+		$this->assertSame( 0, $metadata->int() );
+		$this->assertSame( 0.0, $metadata->float() );
 	}
 
 	#[DataProvider('objectTypeProvider')]
@@ -143,11 +143,11 @@ class ObjectMetadataTest extends FrameworkTestCase {
 
 		$metadata = $method( $object_id, 'test_meta', 'default' );
 
-		$this->assertEquals( 'default', $metadata->value() );
-		$this->assertEquals( 'default', $metadata->string() );
-		$this->assertEquals( [ 'default' ], $metadata->array() );
-		$this->assertEquals( 0, $metadata->int() );
-		$this->assertEquals( 0.0, $metadata->float() );
+		$this->assertSame( 'default', $metadata->value() );
+		$this->assertSame( 'default', $metadata->string() );
+		$this->assertSame( [ 'default' ], $metadata->array() );
+		$this->assertSame( 0, $metadata->int() );
+		$this->assertSame( 0.0, $metadata->float() );
 	}
 
 	public static function objectTypeProvider(): array {

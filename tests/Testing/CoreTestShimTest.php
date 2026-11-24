@@ -4,7 +4,7 @@ namespace Mantle\Tests\Testing;
 use WP_UnitTestCase;
 
 class CoreTestShimTest extends WP_UnitTestCase {
-	protected $setup_called = false;
+	protected bool $setup_called = false;
 
 	public function set_up() {
 		parent::set_up();

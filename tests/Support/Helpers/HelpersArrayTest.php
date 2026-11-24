@@ -45,7 +45,7 @@ class HelpersArrayTest extends TestCase {
 			'users',
 			'last.name',
 		], 'Not found' ) );
-		$this->assertEquals( 56, data_get( $arrayAccess, 'price' ) );
+		$this->assertSame( 56, data_get( $arrayAccess, 'price' ) );
 		$this->assertSame( 'John', data_get( $arrayAccess, 'user.name' ) );
 		$this->assertSame( 'void', data_get( $arrayAccess, 'foo', 'void' ) );
 		$this->assertSame( 'void', data_get( $arrayAccess, 'user.foo', 'void' ) );
@@ -61,11 +61,11 @@ class HelpersArrayTest extends TestCase {
 			[ 'name' => 'dayle' ],
 		];
 
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'taylor', 'abigail', 'dayle' ],
 			data_get( $array, '*.name' )
 		);
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'taylorotwell@gmail.com', null, null ],
 			data_get( $array, '*.email', 'irrelevant' )
 		);
@@ -83,12 +83,12 @@ class HelpersArrayTest extends TestCase {
 			'posts' => null,
 		];
 
-		$this->assertEquals( [
+		$this->assertSame( [
 			'taylor',
 			'abigail',
 			'dayle',
 		], data_get( $array, 'users.*.first' ) );
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'taylorotwell@gmail.com', null, null ],
 			data_get( $array, 'users.*.email', 'irrelevant' )
 		);
@@ -120,34 +120,34 @@ class HelpersArrayTest extends TestCase {
 			],
 		];
 
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'taylor', 'abigail', 'abigail', 'dayle', 'dayle', 'taylor' ],
 			data_get( $array, 'posts.*.comments.*.author' )
 		);
-		$this->assertEquals(
+		$this->assertSame(
 			[ 4, 3, 2, null, null, 1 ],
 			data_get( $array, 'posts.*.comments.*.likes' )
 		);
-		$this->assertEquals( [], data_get( $array, 'posts.*.users.*.name', 'irrelevant' ) );
-		$this->assertEquals( [], data_get( $array, 'posts.*.users.*.name' ) );
+		$this->assertSame( [], data_get( $array, 'posts.*.users.*.name', 'irrelevant' ) );
+		$this->assertSame( [], data_get( $array, 'posts.*.users.*.name' ) );
 	}
 
 	public function testDataFill() {
 		$data = [ 'foo' => 'bar' ];
 
-		$this->assertEquals( [
+		$this->assertSame( [
 			'foo' => 'bar',
 			'baz' => 'boom',
 		], data_fill( $data, 'baz', 'boom' ) );
-		$this->assertEquals( [
+		$this->assertSame( [
 			'foo' => 'bar',
 			'baz' => 'boom',
 		], data_fill( $data, 'baz', 'noop' ) );
-		$this->assertEquals( [
+		$this->assertSame( [
 			'foo' => [],
 			'baz' => 'boom',
 		], data_fill( $data, 'foo.*', 'noop' ) );
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'foo' => [ 'bar' => 'kaboom' ], 'baz' => 'boom' ],
 			data_fill( $data, 'foo.bar', 'kaboom' )
 		);
@@ -156,17 +156,17 @@ class HelpersArrayTest extends TestCase {
 	public function testDataFillWithStar() {
 		$data = [ 'foo' => 'bar' ];
 
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'foo' => [] ],
 			data_fill( $data, 'foo.*.bar', 'noop' )
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'foo' => [], 'bar' => [ [ 'baz' => 'original' ], [] ] ],
 			data_fill( $data, 'bar', [ [ 'baz' => 'original' ], [] ] )
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				'foo' => [],
 				'bar' => [ [ 'baz' => 'original' ], [ 'baz' => 'boom' ] ],
@@ -174,7 +174,7 @@ class HelpersArrayTest extends TestCase {
 			data_fill( $data, 'bar.*.baz', 'boom' )
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				'foo' => [],
 				'bar' => [ [ 'baz' => 'original' ], [ 'baz' => 'boom' ] ],
@@ -224,32 +224,32 @@ class HelpersArrayTest extends TestCase {
 	public function testDataSet() {
 		$data = [ 'foo' => 'bar' ];
 
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'foo' => 'bar', 'baz' => 'boom' ],
 			data_set( $data, 'baz', 'boom' )
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'foo' => 'bar', 'baz' => 'kaboom' ],
 			data_set( $data, 'baz', 'kaboom' )
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'foo' => [], 'baz' => 'kaboom' ],
 			data_set( $data, 'foo.*', 'noop' )
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'foo' => [ 'bar' => 'boom' ], 'baz' => 'kaboom' ],
 			data_set( $data, 'foo.bar', 'boom' )
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'foo' => [ 'bar' => 'boom' ], 'baz' => [ 'bar' => 'boom' ] ],
 			data_set( $data, 'baz.bar', 'boom' )
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			[
 				'foo' => [ 'bar' => 'boom' ],
 				'baz' => [ 'bar' => [ 'boom' => [ 'kaboom' => 'boom' ] ] ],
@@ -261,22 +261,22 @@ class HelpersArrayTest extends TestCase {
 	public function testDataSetWithStar() {
 		$data = [ 'foo' => 'bar' ];
 
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'foo' => [] ],
 			data_set( $data, 'foo.*.bar', 'noop' )
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'foo' => [], 'bar' => [ [ 'baz' => 'original' ], [] ] ],
 			data_set( $data, 'bar', [ [ 'baz' => 'original' ], [] ] )
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'foo' => [], 'bar' => [ [ 'baz' => 'boom' ], [ 'baz' => 'boom' ] ] ],
 			data_set( $data, 'bar.*.baz', 'boom' )
 		);
 
-		$this->assertEquals(
+		$this->assertSame(
 			[ 'foo' => [], 'bar' => [ 'overwritten', 'overwritten' ] ],
 			data_set( $data, 'bar.*', 'overwritten' )
 		);

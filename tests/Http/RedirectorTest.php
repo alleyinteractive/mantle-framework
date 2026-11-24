@@ -16,22 +16,13 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class RedirectorTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
-	/**
-	 * @var Request
-	 */
-	protected $request;
+	protected Request $request;
 
-	/**
-	 * @var Url_Generator
-	 */
-	protected $url;
+	protected Url_Generator $url;
 
-	/**
-	 * @var Redirector
-	 */
-	protected $redirect;
+	protected Redirector $redirect;
 
-	protected $headers;
+	protected HeaderBag $headers;
 
 	public function setUp(): void {
 		parent::setUp();
@@ -67,7 +58,7 @@ class RedirectorTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 
 		$this->assertInstanceOf( RedirectResponse::class, $response );
 		$this->assertSame( 'http://foo.com/bar', $response->getTargetUrl() );
-		$this->assertEquals( 302, $response->getStatusCode() );
+		$this->assertSame( 302, $response->getStatusCode() );
 	}
 
 	public function testComplexRedirectTo() {
@@ -82,9 +73,9 @@ class RedirectorTest extends \Mockery\Adapter\Phpunit\MockeryTestCase {
 		);
 
 		$this->assertSame( 'https://foo.com/bar', $response->getTargetUrl() );
-		$this->assertEquals( 303, $response->getStatusCode() );
-		$this->assertEquals( 60, $response->headers->get( 'X-RateLimit-Limit' ) );
-		$this->assertEquals( 59, $response->headers->get( 'X-RateLimit-Remaining' ) );
+		$this->assertSame( 303, $response->getStatusCode() );
+		$this->assertSame( '60', $response->headers->get( 'X-RateLimit-Limit' ) );
+		$this->assertSame( '59', $response->headers->get( 'X-RateLimit-Remaining' ) );
 	}
 
 	public function testRefreshRedirectToCurrentUrl() {

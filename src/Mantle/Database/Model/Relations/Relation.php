@@ -80,6 +80,9 @@ abstract class Relation {
 
 		$this->related = $related;
 
+		// Relationships return every related model unless a limit is chained on explicitly.
+		$this->query->take( -1 );
+
 		if ( ! is_null( $uses_terms ) ) {
 			$this->uses_terms( $uses_terms );
 		}

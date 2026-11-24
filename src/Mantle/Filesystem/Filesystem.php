@@ -102,6 +102,13 @@ class Filesystem {
 			return ( static function () use ( $__path, $__data ) {
 				global $posts, $post, $wp_did_header, $wp_query, $wp_rewrite, $wpdb, $wp_version, $wp, $id, $comment, $user_ID;
 
+				// Drop the global binding for any passed variable so extract() can set it locally.
+				foreach ( array_keys( $__data ) as $__key ) {
+					if ( ! str_starts_with( (string) $__key, '__' ) ) {
+						unset( ${$__key} );
+					}
+				}
+
 				extract( $__data, EXTR_SKIP ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract, WordPress.PHP.DiscouragedPHPFunctions.extract_extract
 
 				return require $__path; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
@@ -284,6 +291,12 @@ class Filesystem {
 	 * @param  string $link
 	 */
 	public function link( string $target, string $link ): void {
+		if ( 'Windows' !== PHP_OS_FAMILY ) {
+			symlink( $target, $link );
+
+			return;
+		}
+
 		$mode = $this->is_directory( $target ) ? 'J' : 'H';
 
 		exec( "mklink /{$mode} " . escapeshellarg( $link ) . ' ' . escapeshellarg( $target ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.system_calls_exec
