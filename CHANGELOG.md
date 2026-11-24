@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Testing: `test-image.webp` in the test kit's `data/images` folder, copied from WordPress core's test data, for tests that need a WebP file (`DIR_TESTDATA . '/images/test-image.webp'`) ([#561](https://github.com/alleyinteractive/mantle-framework/issues/561)).
 - Testing: `#[Acting_As_Super_Admin]` signs in a super admin for multisite tests and cleans up after the test ([#1028](https://github.com/alleyinteractive/mantle-framework/issues/1028)).
 - Testing: Public skip helpers accept custom messages without changing their default messages or skip conditions ([#1027](https://github.com/alleyinteractive/mantle-framework/issues/1027)).
 - Testing: `assertHookCallbackCount()` asserts how many callbacks on a hook call a method on an object of a class, at one priority or at any. It does not need the object that added them.
