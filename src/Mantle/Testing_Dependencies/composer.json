@@ -15,6 +15,7 @@
     ],
     "require": {
         "php": "^8.3",
+        "alleyinteractive/wp-match-blocks": "^1.0 || ^2.0 || ^3.0 || ^4.0 || ^5.0",
         "fakerphp/faker": "^1.24",
         "filp/whoops": "^2.18.1",
         "myclabs/deep-copy": "^1.13",
