@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Testing: `mantle-framework/testing-dependencies` now requires `alleyinteractive/wp-match-blocks`, which the block assertions (`assertStringHasBlock()`, `assertPostHasBlock()`, and others) call but no package declared. Versions up to 5.x are allowed, so PHP 8.6 installs no longer need `--ignore-platform-req` ([#1012](https://github.com/alleyinteractive/mantle-framework/issues/1012)).
 - `Collection::where()` accepts a non-string operator, as in Laravel, instead of throwing a `TypeError` ([#1018](https://github.com/alleyinteractive/mantle-framework/pull/1018)).
 - Remove redundant return tags and document that `preg_replace_array()` can return `null` on a regex error. Native signatures are unchanged.
 

@@ -144,8 +144,7 @@ jobs:
       - name: Run PHP Tests
         uses: alleyinteractive/action-test-php@develop
         with:
-          # laminas/laminas-validator caps its supported PHP version below 8.6.
-          install-command: composer update --${{ matrix.dependencies }} --prefer-dist --no-interaction --no-progress ${{ matrix.php == 8.6 && '--ignore-platform-req=php+' || '' }}
+          install-command: composer update --${{ matrix.dependencies }} --prefer-dist --no-interaction --no-progress
           php-version: '${{ matrix.php }}'
           skip-wordpress-install: 'true'
           test-command: 'composer phpunit'
